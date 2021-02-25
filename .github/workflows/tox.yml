@@ -41,28 +41,36 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0  # needed by setuptools-scm
+
+    # https://github.com/actions/cache
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.cfg') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install tox
+
+    - name: Install test deps
       run: |
+        npm install
         python3 -m pip install --upgrade tox
+
     - name: Log installed dists
       run: >-
-        python -m pip freeze --all
+        python3 -m pip freeze --all
+
     - name: >-
         Initialize tox envs
       run: >-
-        python -m
-        tox
-        --parallel auto
-        --parallel-live
-        --notest
-        --skip-missing-interpreters false
-        -vv
+        python3 -m tox --notest --skip-missing-interpreters false -vv
       env: ${{ matrix.env }}
+
     - name: Test with tox
       run: |
-        python -m tox --parallel auto --parallel-live
+        python3 -m tox
       env: ${{ matrix.env }}
