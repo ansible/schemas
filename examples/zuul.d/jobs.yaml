@@ -1,0 +1,52 @@
+# valid zuul config sample
+- job:
+    name: minimal
+
+- job:
+    name: b
+    description: ...
+    pre-run: ...
+    run: ...
+    files:
+      - foo
+      - bar
+
+- job:
+    name: maximal
+    description: ...
+    run: ...
+    nodeset:
+      nodes: []
+    post-run: ...
+    parent: ...
+    vars:
+      foo: bar
+    files: 'pattern' # or list of patterns
+    override-checkout: master
+    success-url: docs/
+
+- project-template:
+    name: sample-template
+    description: Description
+    vars:
+      var_from_template: foo
+    post:
+      jobs:
+        - template_job
+    release:
+      jobs:
+        - template_job
+
+- project:
+    name: Sample project
+    description: Description
+    templates:
+      - sample-template
+    vars:
+      var_for_all_jobs: value
+    check:
+      jobs:
+        - job1
+        - job2:
+            vars:
+              var_for_all_jobs: override

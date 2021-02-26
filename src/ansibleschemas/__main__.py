@@ -13,6 +13,9 @@ from ansibleschemas.requirements import RequirementsFileModel
 from ansibleschemas.tasks import TasksFileModel
 from ansibleschemas.vars import VarsModel
 
+# Not really Ansible schemas, but included for convenience
+from ansibleschemas.zuul import ZuulConfigModel
+
 GALAXY_API_URL = "https://galaxy.ansible.com"
 out_dir = Path(os.getcwd()) / "f"
 module_dir = Path(__file__).resolve().parents[0]
@@ -71,6 +74,7 @@ def main() -> None:
         "requirements": RequirementsFileModel,
         "tasks": TasksFileModel,
         "vars": VarsModel,
+        "zuul": ZuulConfigModel,
     }
 
     for schema, model in schemas.items():
