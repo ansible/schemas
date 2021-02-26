@@ -76,11 +76,19 @@ def main() -> None:
         "vars": VarsModel,
         "zuul": ZuulConfigModel,
     }
+    schema_filenames = {
+        "meta": "ansible-meta",
+        "playbook": "ansible-playbook",
+        "requirements": "ansible-requirements",
+        "tasks": "ansible-tasks",
+        "vars": "ansible-vars",
+        "zuul": "zuul",
+    }
 
     for schema, model in schemas.items():
         print(f"Building schema for {schema}")
 
-        output_file = out_dir / f"ansible-{schema}.json"
+        output_file = out_dir / f"{schema_filenames[schema]}.json"
         with open(output_file, "w") as file:
             file.write(model.schema_json(
                 indent=2,
