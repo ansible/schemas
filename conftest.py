@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Optional
 
 import pytest
 from ansiblelint.config import options
-from ansiblelint.file_utils import kind_from_path
+from ansiblelint.file_utils import Lintable, kind_from_path
 
 if TYPE_CHECKING:
     from _pytest.config import Config
@@ -28,17 +28,27 @@ def pytest_collect_file(parent, path) -> Optional["Node"]:
     """Transform each found molecule.yml into a pytest test."""
 
     # additional mappings not known by ansible-lint (yet)
-    options.kinds.insert(  # pylint: disable=no-member
-        0, {"zuul": "**/zuul.d/*.{yaml,yml}"}
-    )
-    options.kinds.insert(0, {"zuul": "**/.zuul.yaml"})  # pylint: disable=no-member
+    extra_kinds = [
+        {"zuul": "**/zuul.d/*.{yaml,yml}"},
+        {"zuul": "**/.zuul.yaml"},
+        {"ansible-lint": "**/.ansiblelint"},
+        {"ansible-lint": "**/.config/ansiblelint.yml"},
+        {"json-schema": "f/*.json"},
+    ]
+    # appending extra kinds at beginning of default ones
+    options.kinds = [*extra_kinds, *options.kinds]
 
-    if path.ext in (".yaml", ".yml") and path.fnmatch("*/examples/*"):
-        return YamlFile.from_parent(parent, fspath=path)  # type: ignore
-    if path.ext == ".json" and path.fnmatch("f/*.json"):
+    if not path.fnmatch("*/examples/*") and not path.fnmatch("f/*.json"):
+        # We care only about f/ and examples/
+        return None
+    try:
+        lintable = Lintable(str(path))
+    except RuntimeError:
+        # ignore unknown file types
+        return None
+    if lintable.kind == 'json-schema':
         return SchemaFile.from_parent(parent, fspath=path)  # type: ignore
-
-    return None
+    return YamlFile.from_parent(parent, fspath=path)  # type: ignore
 
 
 class YamlFile(pytest.File):
@@ -123,6 +133,10 @@ class YamlItem(JSONSchemaItem):
         schema = kind_from_path(file)
         if schema in ["tasks", "vars", "playbook", "meta", "requirements"]:
             schema = f"ansible-{schema}"
+        if not os.path.isfile(f"f/{schema}.json"):
+            raise ValidationException(
+                self, f"{file} ({schema}) as it did not match any known schemas."
+            )
         # https://github.com/ajv-validator/ajv-cli
         cmd = [
             "npm",

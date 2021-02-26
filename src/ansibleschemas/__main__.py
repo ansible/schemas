@@ -7,6 +7,7 @@ from typing import Dict, List
 
 import requests
 
+from ansibleschemas.ansiblelint import AnsibleLintModel
 from ansibleschemas.meta import MetaModel
 from ansibleschemas.playbook import PlaybookFileModel
 from ansibleschemas.requirements import RequirementsFileModel
@@ -69,6 +70,7 @@ def main() -> None:
     dump_ansible_modules()
 
     schemas = {
+        "ansible-lint": AnsibleLintModel,
         "meta": MetaModel,
         "playbook": PlaybookFileModel,
         "requirements": RequirementsFileModel,
@@ -77,6 +79,7 @@ def main() -> None:
         "zuul": ZuulConfigModel,
     }
     schema_filenames = {
+        "ansible-lint": "ansible-lint",
         "meta": "ansible-meta",
         "playbook": "ansible-playbook",
         "requirements": "ansible-requirements",
