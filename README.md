@@ -1,4 +1,4 @@
-# Schemas for Ansible
+# Schemas for Ansible and Zuul
 
 This project that aims to generate JSON/YAML validation schemas for Ansible
 files as playbooks, tasks, requirements, meta or vars.
@@ -21,19 +21,9 @@ feel free to create pull-requests to improve the schema.
 
 ## Activating the schemas
 
-If you are brave enough to test these experimental schemas, you can configure
-[YAML vscode extension]() by changing your `settings.json` configuration as:
+At this moment installing [Ansible Language for vscode extension](https://marketplace.visualstudio.com/items?itemName=zbr.vscode-ansible)
+will activate these schemas. The file patterns used to trigger their use can be
+seen [here](https://github.com/ansible-community/vscode-ansible/blob/master/package.json#L86)
 
-```json
-{
-  "yaml.schemas": {
-    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-requirements.json": ["requirements.yml"],
-    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-meta.json": ["meta/main.yml"],
-    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-vars.json": ["vars/*.yml", "defaults/*.yml", "host_vars/*.yml", "group_vars/*.yml"],
-  },
-    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-tasks.json": ["tasks/*.yml", "handlers/*.yml"],
-  },
-    "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-playbook.json": ["playbooks/*.yml"],
-  },
-}
-```
+Because these schemas are generic, you can easily use them with any validators
+that support them.

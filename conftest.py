@@ -121,10 +121,8 @@ class YamlItem(JSONSchemaItem):
     def runtest(self):
         file = Path(self.fspath)
         schema = kind_from_path(file)
-        if schema not in ["tasks", "vars", "playbook", "meta", "requirements", "zuul"]:
-            raise ValidationException(
-                self, f"{file} ({schema}) as it did not match any known schemas."
-            )
+        if schema in ["tasks", "vars", "playbook", "meta", "requirements"]:
+            schema = f"ansible-{schema}"
         # https://github.com/ajv-validator/ajv-cli
         cmd = [
             "npm",
@@ -136,7 +134,7 @@ class YamlItem(JSONSchemaItem):
             "--strict=false",
             "--errors=json",  # JSON
             "-s",
-            f"f/ansible-{schema}.json",
+            f"f/{schema}.json",
             "-d",
             str(file),
         ]
