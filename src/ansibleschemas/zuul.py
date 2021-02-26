@@ -39,8 +39,8 @@ class JobModel(BaseModel):
     # based on https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play
     name: str
     description: Optional[str]
-    pre_run: Optional[str] = Field(alias="pre-run")
-    post_run: Optional[str] = Field(alias="post-run")
+    pre_run: Optional[Union[str, List[str]]] = Field(alias="pre-run")
+    post_run: Optional[Union[str, List[str]]] = Field(alias="post-run")
     run: Optional[str]
     nodeset: Optional[Any]
     parent: Optional[str]
