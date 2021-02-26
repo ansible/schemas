@@ -29,6 +29,8 @@ class ProjectBaseModel(BaseModel):
     release: Optional[PipelineModel]
     check: Optional[PipelineModel]
     gate: Optional[PipelineModel]
+    promote: Optional[PipelineModel]
+    periodic_weekly: Optional[PipelineModel] = Field(alias="periodic-weekly")
 
 
 class ProjectTemplateModel(ProjectBaseModel):
@@ -66,6 +68,8 @@ class JobModel(BaseModel):
         Union[float, Literal["2.7", "2.8", "2.9", "2.10", "2.11"]]
     ] = Field(alias="ansible-version")
     host_vars: Optional[Mapping[str, Mapping[str, Any]]] = Field(alias="host-vars")
+    tags: Optional[Union[str, List[str]]]
+    required_projects: Optional[List[str]] = Field(alias="required-projects")
 
     class Config:
         extra = Extra.forbid
