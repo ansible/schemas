@@ -1,9 +1,15 @@
 # Used to generate JSON Validations schema for Zuul config files.
+import sys
 from typing import Any, List, Mapping, Optional, Union
 
 from pydantic import BaseModel, Extra, Field
 
 from . import consts
+
+if sys.version_info >= (3, 8):
+    from typing import Literal  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import Literal
 
 
 class PipelineModel(BaseModel):
@@ -13,8 +19,8 @@ class PipelineModel(BaseModel):
         extra = Extra.forbid
 
 
-class ProjectTemplateModel(BaseModel):
-    name: str
+class ProjectBaseModel(BaseModel):
+
     description: Optional[str]
     vars: Optional[Mapping[str, Any]]
     # For the moment we hardcode common pipeline names, until we figure out
@@ -24,11 +30,16 @@ class ProjectTemplateModel(BaseModel):
     check: Optional[PipelineModel]
     gate: Optional[PipelineModel]
 
+
+class ProjectTemplateModel(ProjectBaseModel):
+    name: str
+
     class Config:
         extra = Extra.forbid
 
 
-class ProjectModel(ProjectTemplateModel):
+class ProjectModel(ProjectBaseModel):
+    name: Optional[str]
     templates: Optional[List[str]]
 
     class Config:
@@ -48,6 +59,13 @@ class JobModel(BaseModel):
     files: Optional[Union[str, List[str]]]
     override_checkout: Optional[str] = Field(alias="override-checkout")
     success_url: Optional[str] = Field(alias="success-url")
+    abstract: Optional[bool] = False
+    voting: Optional[bool] = True
+    timeout: Optional[int]
+    ansible_version: Optional[
+        Union[float, Literal["2.7", "2.8", "2.9", "2.10", "2.11"]]
+    ] = Field(alias="ansible-version")
+    host_vars: Optional[Mapping[str, Mapping[str, Any]]] = Field(alias="host-vars")
 
     class Config:
         extra = Extra.forbid
