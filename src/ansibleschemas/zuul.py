@@ -48,6 +48,23 @@ class ProjectModel(ProjectBaseModel):
         extra = Extra.forbid
 
 
+class SecretModel(BaseModel):
+    name: str
+    data: Mapping[str, Any]
+
+    class Config:
+        extra = Extra.forbid
+
+
+class JobSecretModel(BaseModel):
+    name: str
+    secret: str
+    pass_to_parent: Optional[bool] = Field(alias="pass-to-parent", default=False)
+
+    class Config:
+        extra = Extra.forbid
+
+
 class JobModel(BaseModel):
     # based on https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play
     name: str
@@ -70,6 +87,7 @@ class JobModel(BaseModel):
     host_vars: Optional[Mapping[str, Mapping[str, Any]]] = Field(alias="host-vars")
     tags: Optional[Union[str, List[str]]]
     required_projects: Optional[List[str]] = Field(alias="required-projects")
+    secrets: Optional[Union[JobSecretModel, List[Union[JobSecretModel, str]]]]
 
     class Config:
         extra = Extra.forbid
@@ -99,8 +117,15 @@ class ProjectEntry(BaseModel):
         extra = Extra.forbid
 
 
+class SecretEntry(BaseModel):
+    secret: SecretModel
+
+    class Config:
+        extra = Extra.forbid
+
+
 class ZuulConfigModel(BaseModel):
-    __root__: List[Union[JobEntry, ProjectEntry, ProjectTemplateEntry]]
+    __root__: List[Union[JobEntry, ProjectEntry, ProjectTemplateEntry, SecretEntry]]
 
     class Config:
         extra = Extra.forbid
