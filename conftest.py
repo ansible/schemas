@@ -29,6 +29,7 @@ def pytest_collect_file(parent, path) -> Optional["Node"]:
 
     # additional mappings not known by ansible-lint (yet)
     extra_kinds = [
+        {"molecule": "**/molecule/*/molecule.yml"},
         {"zuul": "**/zuul.d/*.{yaml,yml}"},
         {"zuul": "**/.zuul.yaml"},
         {"ansible-lint": "**/.ansiblelint"},
