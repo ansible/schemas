@@ -9,6 +9,7 @@ import requests
 
 from ansibleschemas.ansiblelint import AnsibleLintModel
 from ansibleschemas.meta import MetaModel
+from ansibleschemas.molecule import MoleculeScenarioModel
 from ansibleschemas.playbook import PlaybookFileModel
 from ansibleschemas.requirements import RequirementsFileModel
 from ansibleschemas.tasks import TasksFileModel
@@ -72,6 +73,7 @@ def main() -> None:
     schemas = {
         "ansible-lint": AnsibleLintModel,
         "meta": MetaModel,
+        "molecule": MoleculeScenarioModel,
         "playbook": PlaybookFileModel,
         "requirements": RequirementsFileModel,
         "tasks": TasksFileModel,
@@ -81,6 +83,7 @@ def main() -> None:
     schema_filenames = {
         "ansible-lint": "ansible-lint",
         "meta": "ansible-meta",
+        "molecule": "molecule",
         "playbook": "ansible-playbook",
         "requirements": "ansible-requirements",
         "tasks": "ansible-tasks",
