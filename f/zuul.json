@@ -135,6 +135,27 @@
           "title": "Run",
           "type": "string"
         },
+        "secrets": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/JobSecretModel"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/JobSecretModel"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Secrets"
+        },
         "success-url": {
           "title": "Success-Url",
           "type": "string"
@@ -171,6 +192,30 @@
         "name"
       ],
       "title": "JobModel",
+      "type": "object"
+    },
+    "JobSecretModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "pass-to-parent": {
+          "default": false,
+          "title": "Pass-To-Parent",
+          "type": "boolean"
+        },
+        "secret": {
+          "title": "Secret",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "secret"
+      ],
+      "title": "JobSecretModel",
       "type": "object"
     },
     "PipelineModel": {
@@ -294,6 +339,38 @@
       ],
       "title": "ProjectTemplateModel",
       "type": "object"
+    },
+    "SecretEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "secret": {
+          "$ref": "#/definitions/SecretModel"
+        }
+      },
+      "required": [
+        "secret"
+      ],
+      "title": "SecretEntry",
+      "type": "object"
+    },
+    "SecretModel": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "title": "Data",
+          "type": "object"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "data"
+      ],
+      "title": "SecretModel",
+      "type": "object"
     }
   },
   "items": {
@@ -306,6 +383,9 @@
       },
       {
         "$ref": "#/definitions/ProjectTemplateEntry"
+      },
+      {
+        "$ref": "#/definitions/SecretEntry"
       }
     ]
   },
