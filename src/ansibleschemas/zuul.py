@@ -14,6 +14,7 @@ else:
 
 class PipelineModel(BaseModel):
     jobs: Optional[List[Any]]
+    queue: Optional[str]
 
     class Config:
         extra = Extra.forbid
@@ -23,6 +24,7 @@ class ProjectBaseModel(BaseModel):
 
     description: Optional[str]
     vars: Optional[Mapping[str, Any]]
+    default_branch: Optional[str] = Field(alias="default-branch")
     # For the moment we hardcode common pipeline names, until we figure out
     # a way to distinguish pipelines from other properties.
     post: Optional[PipelineModel]
@@ -31,6 +33,7 @@ class ProjectBaseModel(BaseModel):
     gate: Optional[PipelineModel]
     promote: Optional[PipelineModel]
     periodic_weekly: Optional[PipelineModel] = Field(alias="periodic-weekly")
+    third_party_check: Optional[PipelineModel] = Field(alias="third-party-check")
 
 
 class ProjectTemplateModel(ProjectBaseModel):
