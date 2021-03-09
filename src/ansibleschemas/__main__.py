@@ -12,7 +12,7 @@ from ansibleschemas.meta import MetaModel
 from ansibleschemas.molecule import MoleculeScenarioModel
 from ansibleschemas.playbook import PlaybookFileModel
 from ansibleschemas.requirements import RequirementsFileModel
-from ansibleschemas.tasks import TasksFileModel
+from ansibleschemas.tasks import TasksListModel
 from ansibleschemas.vars import VarsModel
 
 # Not really Ansible schemas, but included for convenience
@@ -76,7 +76,7 @@ def main() -> None:
         "molecule": MoleculeScenarioModel,
         "playbook": PlaybookFileModel,
         "requirements": RequirementsFileModel,
-        "tasks": TasksFileModel,
+        "tasks": TasksListModel,
         "vars": VarsModel,
         "zuul": ZuulConfigModel,
     }
