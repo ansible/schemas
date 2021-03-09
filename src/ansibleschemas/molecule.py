@@ -167,7 +167,7 @@ class MoleculeScenarioModel(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        title = "Molecule Scenario Schema"
+        title = f"Molecule Scenario Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }

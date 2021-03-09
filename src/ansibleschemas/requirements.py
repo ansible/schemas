@@ -58,7 +58,7 @@ class RequirementsFileModel(BaseModel):
 
     class Config:
         extra = Extra.allow  # would break schema if added
-        title = "Ansible Requirements Schema"
+        title = f"Ansible Requirements Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }

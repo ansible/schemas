@@ -26,7 +26,7 @@ class AnsibleLintModel(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        title = "Ansible-lint Configuration Schema"
+        title = f"Ansible-lint Configuration Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }

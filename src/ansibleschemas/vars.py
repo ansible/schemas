@@ -8,7 +8,7 @@ from . import consts
 
 class VarsModel(BaseModel):
     class Config:
-        title = "Ansible Vars Schema"
+        title = f"Ansible Vars Schema {consts.REVISION}"
 
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,

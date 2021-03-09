@@ -132,7 +132,7 @@ class ZuulConfigModel(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        title = "Zuul Config Schema"
+        title = f"Zuul Config Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }

@@ -145,7 +145,7 @@ class TasksListModel(BaseModel):
         # Uncomment this once we succeed injecting all known modules to
         # the __root__ list, until then we have to ignore unknown properties.
         # extra = Extra.forbid
-        title = "Ansible Tasks Schema"
+        title = f"Ansible Tasks Schema {consts.REVISION}"
 
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,

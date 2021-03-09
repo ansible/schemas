@@ -52,7 +52,7 @@ class MetaModel(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        title = "Ansible Meta Schema"
+        title = f"Ansible Meta Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }

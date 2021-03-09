@@ -44,6 +44,7 @@ class PlayModel(_SharedModel):
     vars_prompt: Optional[List[str]]
 
     class Config:
+        title = f"Ansible Play Model {consts.REVISION}"
         extra = Extra.forbid
 
 
@@ -51,6 +52,7 @@ class ImportPlaybookModel(BaseModel):
     import_playbook: str
 
     class Config:
+        title = f"Ansible ImportPlaybook Model {consts.REVISION}"
         extra = Extra.forbid
 
 
@@ -59,7 +61,7 @@ class PlaybookFileModel(BaseModel):
 
     class Config:
         extra = Extra.forbid
-        title = "Ansible Playbook Schema"
+        title = f"Ansible Playbook Schema {consts.REVISION}"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
         }
