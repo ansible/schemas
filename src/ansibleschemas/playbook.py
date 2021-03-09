@@ -4,7 +4,7 @@ from typing import Any, List, Mapping, Optional, Union
 
 from pydantic import BaseModel, Extra
 
-from ansibleschemas.tasks import TaskModel, _SharedModel
+from ansibleschemas.tasks import TasksListModel, _SharedModel
 
 from . import consts
 
@@ -28,18 +28,18 @@ class PlayModel(_SharedModel):
     gather_facts: Optional[bool]
     gather_subset: Optional[bool]
     gather_timeout: Optional[int]
-    handlers: Optional[List[TaskModel]]
+    handlers: Optional[TasksListModel]
     hosts: str  # REQUIRED
     max_fail_percentage: Optional[float]
     order: Optional[
         Literal["default", "sorted", "reverse_sorted", "reverse_inventory", "shuffle"]
     ]
-    post_tasks: Optional[List[TaskModel]]
-    pre_tasks: Optional[List[TaskModel]]
+    post_tasks: Optional[TasksListModel]
+    pre_tasks: Optional[TasksListModel]
     roles: Optional[List[Union[RoleModel, str]]]
     serial: Optional[int]
     strategy: Optional[str]
-    tasks: Optional[List[TaskModel]]
+    tasks: Optional[TasksListModel]
     vars_files: Optional[List[str]]
     vars_prompt: Optional[List[str]]
 

@@ -111,6 +111,8 @@ class JSONSchemaItem(pytest.Item):
         if isinstance(excinfo.value, ValidationException):
             result = excinfo.value.result
             if result:
+                if not hasattr(result, 'args'):
+                    return str(result)
                 cmd = " ".join(result.args)
                 return "\n".join(
                     [
