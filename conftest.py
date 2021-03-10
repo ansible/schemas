@@ -134,7 +134,9 @@ class YamlItem(JSONSchemaItem):
     def runtest(self):
         file = Path(self.fspath)
         schema = kind_from_path(file)
-        if schema in ["tasks", "vars", "playbook", "meta", "requirements"]:
+        if file.name == "galaxy.yml":
+            schema = "ansible-galaxy"
+        if schema in ["tasks", "galaxy", "vars", "playbook", "meta", "requirements"]:
             schema = f"ansible-{schema}"
         if not os.path.isfile(f"f/{schema}.json"):
             raise ValidationException(
