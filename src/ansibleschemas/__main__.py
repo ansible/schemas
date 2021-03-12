@@ -8,6 +8,7 @@ from typing import Dict, List
 import requests
 
 from ansibleschemas.ansiblelint import AnsibleLintModel
+from ansibleschemas.galaxy import GalaxyFileModel
 from ansibleschemas.meta import MetaModel
 from ansibleschemas.molecule import MoleculeScenarioModel
 from ansibleschemas.playbook import PlaybookFileModel
@@ -72,6 +73,7 @@ def main() -> None:
 
     schemas = {
         "ansible-lint": AnsibleLintModel,
+        "galaxy": GalaxyFileModel,
         "meta": MetaModel,
         "molecule": MoleculeScenarioModel,
         "playbook": PlaybookFileModel,
@@ -82,6 +84,7 @@ def main() -> None:
     }
     schema_filenames = {
         "ansible-lint": "ansible-lint",
+        "galaxy": "ansible-galaxy",
         "meta": "ansible-meta",
         "molecule": "molecule",
         "playbook": "ansible-playbook",
