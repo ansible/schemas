@@ -49,6 +49,8 @@ def pytest_collect_file(parent, path) -> Optional["Node"]:
         return None
     if lintable.kind == 'json-schema':
         return SchemaFile.from_parent(parent, fspath=path)  # type: ignore
+    if not lintable.kind:
+        return None
     return YamlFile.from_parent(parent, fspath=path)  # type: ignore
 
 
