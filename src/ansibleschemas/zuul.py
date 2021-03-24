@@ -68,6 +68,13 @@ class JobSecretModel(BaseModel):
         extra = Extra.forbid
 
 
+class ZuulRoleModel(BaseModel):
+    zuul: str
+
+    class Config:
+        extra = Extra.forbid
+
+
 class JobModel(BaseModel):
     # based on https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play
     name: str
@@ -79,8 +86,10 @@ class JobModel(BaseModel):
     parent: Optional[str]
     vars: Optional[Mapping[str, Any]]
     files: Optional[Union[str, List[str]]]
+    irrelevant_files: Optional[Union[str, List[str]]] = Field(alias="irrelevant-files")
     override_checkout: Optional[str] = Field(alias="override-checkout")
     success_url: Optional[str] = Field(alias="success-url")
+    failure_url: Optional[str] = Field(alias="failure-url")
     abstract: Optional[bool] = False
     voting: Optional[bool] = True
     timeout: Optional[int]
@@ -91,6 +100,7 @@ class JobModel(BaseModel):
     tags: Optional[Union[str, List[str]]]
     required_projects: Optional[List[str]] = Field(alias="required-projects")
     secrets: Optional[Union[JobSecretModel, List[Union[JobSecretModel, str]]]]
+    roles: Optional[List[ZuulRoleModel]]
 
     class Config:
         extra = Extra.forbid
