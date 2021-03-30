@@ -1,6 +1,6 @@
 # Used to generate JSON Validations chema for ansible-lint config files
 # https://github.com/ansible-community/ansible-lint/blob/master/.ansible-lint
-from typing import Any, List, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional
 
 from pydantic import BaseModel, Extra
 
@@ -23,6 +23,7 @@ class AnsibleLintModel(BaseModel):
     use_default_rules: Optional[bool] = True
     verbosity: Optional[int] = 0
     warn_list: Optional[List[str]]
+    kinds: Optional[List[Dict[str, str]]]
 
     class Config:
         extra = Extra.forbid
