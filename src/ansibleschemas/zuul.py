@@ -101,6 +101,9 @@ class JobModel(BaseModel):
     required_projects: Optional[List[str]] = Field(alias="required-projects")
     secrets: Optional[Union[JobSecretModel, List[Union[JobSecretModel, str]]]]
     roles: Optional[List[ZuulRoleModel]]
+    allowed_projects: Optional[str] = Field(alias="allowed-projects")
+    requires: Optional[List[str]]
+    provides: Optional[str]
 
     class Config:
         extra = Extra.forbid
