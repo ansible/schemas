@@ -81,7 +81,7 @@ class JobModel(BaseModel):
     description: Optional[str]
     pre_run: Optional[Union[str, List[str]]] = Field(alias="pre-run")
     post_run: Optional[Union[str, List[str]]] = Field(alias="post-run")
-    run: Optional[str]
+    run: Optional[Union[str, List[str]]]
     nodeset: Optional[Any]
     parent: Optional[str]
     vars: Optional[Mapping[str, Any]]
