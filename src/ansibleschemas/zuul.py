@@ -75,6 +75,11 @@ class ZuulRoleModel(BaseModel):
         extra = Extra.forbid
 
 
+class RequiredProjectModel(BaseModel):
+    name: str
+    override_checkout: Optional[str] = Field(alias="override-checkout")
+
+
 class JobModel(BaseModel):
     # based on https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play
     name: str
@@ -93,12 +98,15 @@ class JobModel(BaseModel):
     abstract: Optional[bool] = False
     voting: Optional[bool] = True
     timeout: Optional[int]
+    post_timeout: Optional[int] = Field(alias="post-timeout")
     ansible_version: Optional[
         Union[float, Literal["2.7", "2.8", "2.9", "2.10", "2.11"]]
     ] = Field(alias="ansible-version")
     host_vars: Optional[Mapping[str, Mapping[str, Any]]] = Field(alias="host-vars")
     tags: Optional[Union[str, List[str]]]
-    required_projects: Optional[List[str]] = Field(alias="required-projects")
+    required_projects: Optional[List[Union[str, RequiredProjectModel]]] = Field(
+        alias="required-projects"
+    )
     secrets: Optional[Union[JobSecretModel, List[Union[JobSecretModel, str]]]]
     roles: Optional[List[ZuulRoleModel]]
     allowed_projects: Optional[str] = Field(alias="allowed-projects")
