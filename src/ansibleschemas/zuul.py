@@ -96,6 +96,7 @@ class JobModel(BaseModel):
     success_url: Optional[str] = Field(alias="success-url")
     failure_url: Optional[str] = Field(alias="failure-url")
     abstract: Optional[bool] = False
+    attempts: Optional[int] = None
     voting: Optional[bool] = True
     timeout: Optional[int]
     post_timeout: Optional[int] = Field(alias="post-timeout")
