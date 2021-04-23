@@ -46,6 +46,7 @@ class GalaxyInfoModel(BaseModel):
     author: Optional[str] = Field(regex=r"[a-z0-9][a-z0-9_]+", min_length=2)
     description: str
     company: str
+    issue_tracker_url: Optional[str]
     license: str
     min_ansible_version: str
     min_ansible_container_version: Optional[str]
