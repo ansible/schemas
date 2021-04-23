@@ -63,6 +63,7 @@ class DependencyModel(BaseModel):
     # name: Union[str, HttpUrl] = Field(regex=r"[a-z][a-z0-9_]+\.[a-z0-9][a-z0-9_]+", min_length=2)
     # ^ url or galaxy namespace.rolename
     vars: Optional[Mapping[str, Any]]
+    tags: Optional[List[str]]
     version: Optional[str]
     scm: Optional[Literal["hg", "git"]]
 
