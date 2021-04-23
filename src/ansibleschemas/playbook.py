@@ -21,6 +21,36 @@ class RoleModel(_SharedModel):
     tags: Optional[List[str]]
 
 
+class VarsPromptModel(BaseModel):
+    # https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html
+    name: str
+    prompt: str
+    private: Optional[bool] = True
+    encrypt: Optional[
+        Literal[
+            "des_crypt",
+            "bsdi_crypt",
+            "bigcrypt",
+            "crypt16",
+            "md5_crypt",
+            "bcrypt",
+            "sha1_crypt",
+            "sun_md5_crypt",
+            "sha256_crypt",
+            "sha512_crypt",
+            "apr_md5_crypt",
+            "phpass",
+            "pbkdf2_digest",
+            "cta_pbkdf2_sha1",
+            "dlitz_pbkdf2_sha1",
+            "scram",
+            "bsd_nthash",
+        ]
+    ]
+    confirm: Optional[bool]
+    salt_size: Optional[int] = 8
+
+
 class PlayModel(_SharedModel):
     # based on https://docs.ansible.com/ansible/latest/reference_appendices/playbooks_keywords.html#play
     fact_path: Optional[str]
@@ -41,7 +71,7 @@ class PlayModel(_SharedModel):
     strategy: Optional[str]
     tasks: Optional[TasksListModel]
     vars_files: Optional[List[str]]
-    vars_prompt: Optional[List[str]]
+    vars_prompt: Optional[List[VarsPromptModel]]
 
     class Config:
         extra = Extra.forbid
