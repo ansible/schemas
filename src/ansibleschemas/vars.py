@@ -1,12 +1,19 @@
 # Used to generate JSON Validations chema for requirements.
-from pydantic import BaseModel
+import re
+from typing import Any, Mapping, Union
+
+from pydantic import BaseModel, ConstrainedStr
 
 from . import consts
 
-# import META_SCHEMA_URI
+
+class EncryptedString(ConstrainedStr):
+    regex = re.compile(r'^\$ANSIBLE_VAULT;')
 
 
 class VarsModel(BaseModel):
+    __root__: Union[Mapping[str, Any], EncryptedString]
+
     class Config:
         title = "Ansible Vars Schema"
 
