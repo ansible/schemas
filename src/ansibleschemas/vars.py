@@ -19,4 +19,11 @@ class VarsModel(BaseModel):
 
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
+            "$globs": [
+                "playbooks/vars/*.yml",
+                "vars/*.yml",
+                "defaults/*.yml",
+                "host_vars/*.yml",
+                "group_vars/*.yml",
+            ],
         }

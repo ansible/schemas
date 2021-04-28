@@ -149,4 +149,5 @@ class TasksListModel(BaseModel):
 
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
+            "$globs": ["tasks/*.yml", "handlers/*.yml"],
         }
