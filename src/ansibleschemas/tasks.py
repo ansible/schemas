@@ -115,11 +115,6 @@ BlockModel.update_forward_refs()
 kwargs = dict()
 for module in ANSIBLE_MODULES:
 
-    # due to performance reasons, for the moment we include only those modules
-    # without a collection/namespace
-    if "." in module:
-        continue
-
     if module in ['copy']:
         module_sanitized = f"{module}_"
     else:
