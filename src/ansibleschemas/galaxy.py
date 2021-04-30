@@ -64,4 +64,4 @@ class GalaxyFileModel(BaseModel):
     class Config:
         extra = Extra.forbid
         title = "Ansible galaxy.yml Schema"
-        schema_extra = {"$schema": consts.META_SCHEMA_URI, "$globs": ["galaxy.yml"]}
+        schema_extra = {"$schema": consts.META_SCHEMA_URI, "examples": ["galaxy.yml"]}

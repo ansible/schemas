@@ -92,5 +92,5 @@ class PlaybookFileModel(BaseModel):
         title = "Ansible Playbook Schema"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
-            "$globs": ["playbooks/*.yml", "playbooks/*.yaml"],
+            "examples": ["playbooks/*.yml", "playbooks/*.yaml"],
         }

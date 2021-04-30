@@ -80,4 +80,7 @@ class MetaModel(BaseModel):
     class Config:
         extra = Extra.forbid
         title = "Ansible Meta Schema"
-        schema_extra = {"$schema": consts.META_SCHEMA_URI, "$globs": ["meta/main.yml"]}
+        schema_extra = {
+            "$schema": consts.META_SCHEMA_URI,
+            "examples": ["meta/main.yml"],
+        }

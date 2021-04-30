@@ -170,5 +170,5 @@ class MoleculeScenarioModel(BaseModel):
         title = "Molecule Scenario Schema"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
-            "$globs": ["molecule/*/molecule.yml"],
+            "examples": ["molecule/*/molecule.yml"],
         }

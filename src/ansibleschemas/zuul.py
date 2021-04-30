@@ -157,5 +157,5 @@ class ZuulConfigModel(BaseModel):
         title = "Zuul Config Schema"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
-            "$globs": ["zuul.d/*.yaml", "zuul-tests.d/*.yaml", ".zuul.yaml"],
+            "examples": ["zuul.d/*.yaml", "zuul-tests.d/*.yaml", ".zuul.yaml"],
         }
