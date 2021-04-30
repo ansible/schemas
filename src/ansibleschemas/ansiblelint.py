@@ -30,5 +30,5 @@ class AnsibleLintModel(BaseModel):
         title = "Ansible-lint Configuration Schema"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
-            "$globs": [".ansible-lint", ".config/ansiblelint.yml"],
+            "examples": [".ansible-lint", ".config/ansiblelint.yml"],
         }

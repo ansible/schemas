@@ -61,5 +61,5 @@ class RequirementsFileModel(BaseModel):
         title = "Ansible Requirements Schema"
         schema_extra = {
             "$schema": consts.META_SCHEMA_URI,
-            "$globs": ["requirements.yml"],
+            "examples": ["requirements.yml"],
         }

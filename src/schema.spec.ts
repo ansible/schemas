@@ -19,7 +19,7 @@ fs.readdir("f/", function(err, files) {
   schemaFiles.forEach(function (file) {
     let schema_json = JSON.parse(fs.readFileSync(`f/${file}`, 'utf8'));
     const validator = ajv.compile(schema_json);
-    schema_json['$globs'].forEach(function(glob: string) {
+    schema_json['examples'].forEach(function(glob: string) {
       globToValidatorMap.set(glob, validator);
     });
   });
