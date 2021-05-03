@@ -19,13 +19,23 @@ on:
   # - cron: 2 18 * * 5
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run validate-yaml-schema action
+      uses: nwisbeta/validate-yaml-schema@v1.0.3
+      id: validate
+    - name: Display invalid files
+      run: echo "${{ steps.validate.invalidFiles }}"
+      if: ${{ always() }}
   npm:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [15.x]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
