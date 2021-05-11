@@ -154,6 +154,7 @@ class MoleculeScenarioModel(BaseModel):
                 "create",
                 "dependency",
                 "destroy",
+                "idempotence",
                 "lint",
                 "prepare",
                 "side_effect",
