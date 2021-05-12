@@ -8,7 +8,12 @@ import yaml from 'js-yaml';
 
 // https://github.com/ajv-validator/ajv/issues/1373
 // https://ajv.js.org/strict-mode.html#prevent-unexpected-validation
-const ajv = new Ajv({strictTypes: false, strict: false});
+const ajv = new Ajv({
+  strictTypes: false,
+  strict: false,
+  inlineRefs: true,  // https://github.com/ajv-validator/ajv/issues/1581#issuecomment-832211568
+  allErrors: true  // https://github.com/ajv-validator/ajv/issues/1581#issuecomment-832211568
+});
 
 let globToValidatorMap: Map<string, ValidateFunction> = new Map();
 
