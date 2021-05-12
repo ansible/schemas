@@ -12,11 +12,29 @@ log: true
 platforms:
   - name: ubi8
     hostname: ubi8
+    groups:
+      - ubi8
     image: ubi8/ubi-init
     registry:
       url: registry.access.redhat.com
     dockerfile: Dockerfile
     pkg_extras: python*setuptools
+    volumes:
+      - /etc/ci/mirror_info.sh:/etc/ci/mirror_info.sh:ro
+      - /etc/pki/rpm-gpg:/etc/pki/rpm-gpg
+    privileged: true
+    environment: &env
+      http_proxy: "{{ lookup('env', 'http_proxy') }}"
+      https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    ulimits: &ulimit
+      - host
+  - name: ubi7
+    hostname: ubi7
+    groups:
+      - ubi7
+    image: ubi7/ubi-init
+    registry:
+      url: registry.access.redhat.com
     volumes:
       - /etc/ci/mirror_info.sh:/etc/ci/mirror_info.sh:ro
       - /etc/pki/rpm-gpg:/etc/pki/rpm-gpg
@@ -34,6 +52,10 @@ provisioner:
         hosts:
           ubi8:
             ansible_python_interpreter: /usr/bin/python3
+      ubi7:
+        selinux: permissive
+      ubi8:
+        selinux: enforced
   name: ansible
   log: true
   env:
