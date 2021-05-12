@@ -56,6 +56,7 @@ class MoleculePlatformModel(BaseModel):
     name: str
     hostname: Optional[str]
     environment: Optional[Mapping[str, str]]
+    groups: Optional[List[str]]
     # container specific
     image: Optional[str]
     registry: Optional[ContainerRegistryModel]
