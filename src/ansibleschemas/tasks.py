@@ -46,7 +46,7 @@ class _SharedModel(BaseModel):
 
 
 class TaskModel(_SharedModel):
-    action: str
+    action: Optional[str]
     args: Optional[Mapping[str, Any]]
     async_: Optional[int] = Field(alias="async")
     changed_when: Optional[bool]
