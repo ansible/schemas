@@ -1,0 +1,184 @@
+{
+    "community.general.terraform": {
+        "doc": {
+            "author": "Ryan Scott Brown (@ryansb)",
+            "collection": "community.general",
+            "description": [
+                "Provides support for deploying resources with Terraform and pulling resource information back into Ansible."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/terraform.py",
+            "has_action": false,
+            "module": "terraform",
+            "notes": [
+                "To just run a `terraform plan`, use check mode."
+            ],
+            "options": {
+                "backend_config": {
+                    "description": [
+                        "A group of key-values to provide at init stage to the -backend-config parameter."
+                    ],
+                    "type": "dict"
+                },
+                "backend_config_files": {
+                    "description": [
+                        "The path to a configuration file to provide at init state to the -backend-config parameter. This can accept a list of paths to multiple configuration files."
+                    ],
+                    "elements": "path",
+                    "type": "list",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "binary_path": {
+                    "description": [
+                        "The path of a terraform binary to use, relative to the 'service_path' unless you supply an absolute path."
+                    ],
+                    "type": "path"
+                },
+                "force_init": {
+                    "default": false,
+                    "description": [
+                        "To avoid duplicating infra, if a state file can't be found this will force a `terraform init`. Generally, this should be turned off unless you intend to provision an entirely new Terraform deployment."
+                    ],
+                    "type": "bool"
+                },
+                "init_reconfigure": {
+                    "default": false,
+                    "description": [
+                        "Forces backend reconfiguration during init."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "lock": {
+                    "default": true,
+                    "description": [
+                        "Enable statefile locking, if you use a service that accepts locks (such as S3+DynamoDB) to store your statefile."
+                    ],
+                    "type": "bool"
+                },
+                "lock_timeout": {
+                    "description": [
+                        "How long to maintain the lock on the statefile, if you use a service that accepts locks (such as S3+DynamoDB)."
+                    ],
+                    "type": "int"
+                },
+                "plan_file": {
+                    "description": [
+                        "The path to an existing Terraform plan file to apply. If this is not specified, Ansible will build a new TF plan and execute it. Note that this option is required if 'state' has the 'planned' value."
+                    ],
+                    "type": "path"
+                },
+                "project_path": {
+                    "description": [
+                        "The path to the root of the Terraform directory with the vars.tf/main.tf/etc to use."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "purge_workspace": {
+                    "default": false,
+                    "description": [
+                        "Only works with state = absent",
+                        "If true, the workspace will be deleted after the \"terraform destroy\" action.",
+                        "The 'default' workspace will not be deleted."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "planned",
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Goal state of given stage/project"
+                    ],
+                    "type": "str"
+                },
+                "state_file": {
+                    "description": [
+                        "The path to an existing Terraform state file to use when building plan. If this is not specified, the default `terraform.tfstate` will be used.",
+                        "This option is ignored when plan is specified."
+                    ],
+                    "type": "path"
+                },
+                "targets": {
+                    "description": [
+                        "A list of specific resources to target in this plan/application. The resources selected here will also auto-include any dependencies."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "variables": {
+                    "description": [
+                        "A group of key-values to override template variables or those in variables files."
+                    ],
+                    "type": "dict"
+                },
+                "variables_files": {
+                    "aliases": [
+                        "variables_file"
+                    ],
+                    "description": [
+                        "The path to a variables file for Terraform to fill into the TF configurations. This can accept a list of paths to multiple variables files.",
+                        "Up until Ansible 2.9, this option was usable as I(variables_file)."
+                    ],
+                    "elements": "path",
+                    "type": "list"
+                },
+                "workspace": {
+                    "default": "default",
+                    "description": [
+                        "The terraform workspace to work with."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "terraform"
+            ],
+            "short_description": "Manages a Terraform deployment (and plans)"
+        },
+        "examples": "\n- name: Basic deploy of a service\n  community.general.terraform:\n    project_path: '{{ project_dir }}'\n    state: present\n\n- name: Define the backend configuration at init\n  community.general.terraform:\n    project_path: 'project/'\n    state: \"{{ state }}\"\n    force_init: true\n    backend_config:\n      region: \"eu-west-1\"\n      bucket: \"some-bucket\"\n      key: \"random.tfstate\"\n\n- name: Define the backend configuration with one or more files at init\n  community.general.terraform:\n    project_path: 'project/'\n    state: \"{{ state }}\"\n    force_init: true\n    backend_config_files:\n      - /path/to/backend_config_file_1\n      - /path/to/backend_config_file_2\n",
+        "metadata": null,
+        "return": {
+            "command": {
+                "description": "Full `terraform` command built by this module, in case you want to re-run the command outside the module or debug a problem.",
+                "returned": "always",
+                "sample": "terraform apply ...",
+                "type": "str"
+            },
+            "outputs": {
+                "contains": {
+                    "sensitive": {
+                        "description": "Whether Terraform has marked this value as sensitive",
+                        "returned": "always",
+                        "type": "bool"
+                    },
+                    "type": {
+                        "description": "The type of the value (string, int, etc)",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "value": {
+                        "description": "The value of the output as interpolated by Terraform",
+                        "returned": "always",
+                        "type": "str"
+                    }
+                },
+                "description": "A dictionary of all the TF outputs by their assigned name. Use `.outputs.MyOutputName.value` to access the value.",
+                "returned": "on success",
+                "sample": "{\"bukkit_arn\": {\"sensitive\": false, \"type\": \"string\", \"value\": \"arn:aws:s3:::tf-test-bukkit\"}",
+                "type": "complex"
+            },
+            "stdout": {
+                "description": "Full `terraform` command stdout, in case you want to display it or examine the event log",
+                "returned": "always",
+                "sample": "",
+                "type": "str"
+            }
+        }
+    }
+}

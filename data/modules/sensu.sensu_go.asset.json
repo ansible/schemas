@@ -1,0 +1,204 @@
+{
+    "sensu.sensu_go.asset": {
+        "doc": {
+            "author": [
+                "Cameron Hurst (@wakemaster39)",
+                "Aljaz Kosir (@aljazkosir)",
+                "Manca Bizjak (@mancabizjak)",
+                "Miha Plesko (@miha-plesko)",
+                "Tadej Borovsak (@tadeboro)"
+            ],
+            "collection": "sensu.sensu_go",
+            "description": [
+                "Create, update or delete Sensu Go asset.",
+                "For more information, refer to the Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/reference/assets/)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/sensu/sensu_go/plugins/modules/asset.py",
+            "has_action": false,
+            "module": "asset",
+            "options": {
+                "annotations": {
+                    "description": [
+                        "Custom metadata fields with fewer restrictions, as key/value pairs.",
+                        "These are preserved by Sensu but not accessible as tokens or identifiers, and are mainly intended for use with external tools."
+                    ],
+                    "type": "dict"
+                },
+                "auth": {
+                    "description": [
+                        "Authentication parameters. Can define each of them with ENV as well."
+                    ],
+                    "suboptions": {
+                        "api_key": {
+                            "description": [
+                                "The API key that should be used when authenticating. If this is not set, the value of the SENSU_API_KEY environment variable will be checked.",
+                                "This replaces I(auth.user) and I(auth.password) parameters.",
+                                "For more information about the API key, refer to the official Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/guides/use-apikey-feature/)."
+                            ],
+                            "type": "str",
+                            "version_added": "1.3.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "ca_path": {
+                            "description": [
+                                "Path to the CA bundle that should be used to validate the backend certificate.",
+                                "If this parameter is not set, module will use the CA bundle that python is using.",
+                                "It is also possible to set this parameter via the I(SENSU_CA_PATH) environment variable."
+                            ],
+                            "type": "path",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "password": {
+                            "default": "P@ssw0rd!",
+                            "description": [
+                                "The Sensu user's password. If this is not set the value of the SENSU_PASSWORD environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "default": "http://localhost:8080",
+                            "description": [
+                                "Location of the Sensu backend API. If this is not set the value of the SENSU_URL environment variable will be checked."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "default": "admin",
+                            "description": [
+                                "The username to use for connecting to the Sensu API. If this is not set the value of the SENSU_USER environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "verify": {
+                            "default": true,
+                            "description": [
+                                "Flag that controls the certificate validation.",
+                                "If you are using self-signed certificates, you can set this parameter to C(false).",
+                                "ONLY USE THIS PARAMETER IN DEVELOPMENT SCENARIOS! In you use self-signed certificates in production, see the I(auth.ca_path) parameter.",
+                                "It is also possible to set this parameter via the I(SENSU_VERIFY) environment variable."
+                            ],
+                            "type": "bool",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "builds": {
+                    "description": [
+                        "A list of asset builds used to define multiple artefacts which provide the named asset.",
+                        "Required if I(state) is C(present)."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "filters": {
+                            "description": [
+                                "A set of Sensu query expressions used to determine if the asset should be installed."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "headers": {
+                            "description": [
+                                "Additional headers to send when retrieving the asset, e.g. for authorization."
+                            ],
+                            "type": "dict"
+                        },
+                        "sha512": {
+                            "description": [
+                                "The checksum of the asset."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "The URL location of the asset."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "labels": {
+                    "description": [
+                        "Custom metadata fields that can be accessed within Sensu, as key/value pairs."
+                    ],
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "The Sensu resource's name. This name (in combination with the namespace where applicable) uniquely identifies the resource that Ansible operates on.",
+                        "If the resource with selected name already exists, Ansible module will update it to match the specification in the task.",
+                        "Consult the I(name) metadata attribute specification in the upstream docs on U(https://docs.sensu.io/sensu-go/latest/reference/) for more details about valid names and other restrictions."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "namespace": {
+                    "default": "default",
+                    "description": [
+                        "RBAC namespace to operate in. If this is not set the value of the SENSU_NAMESPACE environment variable will be used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Target state of the Sensu object."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7"
+            ],
+            "seealso": [
+                {
+                    "module": "sensu.sensu_go.asset_info"
+                },
+                {
+                    "module": "sensu.sensu_go.bonsai_asset"
+                }
+            ],
+            "short_description": "Manage Sensu assets",
+            "version_added": "1.0.0",
+            "version_added_collection": "sensu.sensu_go"
+        },
+        "examples": "\n- name: Create a multiple-build asset\n  sensu.sensu_go.asset:\n    name: sensu-plugins-cpu-checks\n    builds:\n      - url: https://assets.bonsai.sensu.io/68546e739d96fd695655b77b35b5aabfbabeb056/sensu-plugins-cpu-checks_4.0.0_centos_linux_amd64.tar.gz\n        sha512: 518e7c17cf670393045bff4af318e1d35955bfde166e9ceec2b469109252f79043ed133241c4dc96501b6636a1ec5e008ea9ce055d1609865635d4f004d7187b\n        filters:\n          - entity.system.os == 'linux'\n          - entity.system.arch == 'amd64'\n          - entity.system.platform == 'rhel'\n      - url: https://assets.bonsai.sensu.io/68546e739d96fd695655b77b35b5aabfbabeb056/sensu-plugins-cpu-checks_4.0.0_alpine_linux_amd64.tar.gz\n        sha512: b2da25ecd7642e6de41fde37d674fe19dcb6ee3d680e145e32289f7cfc352e6b5f9413ee9b701d61faeaa47b399aa30b25885dbc1ca432c4061c8823774c28f3\n        filters:\n          - entity.system.os == 'linux'\n          - entity.system.arch == 'amd64'\n          - entity.system.platform == 'alpine'\n\n- name: Delete an asset\n  sensu.sensu_go.asset:\n    name: sensu-plugins-cpu-check\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "object": {
+                "description": "Object representing Sensu asset.",
+                "returned": "success",
+                "sample": {
+                    "builds": [
+                        {
+                            "sha512": "4f926bf4328f...2c58ad9ab40c9e2edc31b288d066b195b21b",
+                            "url": "http://example.com/asset.tar.gz"
+                        }
+                    ],
+                    "metadata": {
+                        "name": "check_script",
+                        "namespace": "default"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

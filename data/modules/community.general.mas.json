@@ -1,0 +1,64 @@
+{
+    "community.general.mas": {
+        "doc": {
+            "author": [
+                "Michael Heap (@mheap)",
+                "Lukas Bestle (@lukasbestle)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Installs, uninstalls and updates macOS applications from the Mac App Store using the C(mas-cli)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/mas.py",
+            "has_action": false,
+            "module": "mas",
+            "notes": [
+                "This module supports C(check_mode)."
+            ],
+            "options": {
+                "id": {
+                    "description": [
+                        "The Mac App Store identifier of the app(s) you want to manage.",
+                        "This can be found by running C(mas search APP_NAME) on your machine."
+                    ],
+                    "elements": "int",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "latest",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired state of the app installation.",
+                        "The C(absent) value requires root permissions, also see the examples."
+                    ],
+                    "type": "str"
+                },
+                "upgrade_all": {
+                    "aliases": [
+                        "upgrade"
+                    ],
+                    "default": "no",
+                    "description": [
+                        "Upgrade all installed Mac App Store apps."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "macOS 10.11+",
+                "mas-cli (U(https://github.com/mas-cli/mas)) 1.5.0+ available as C(mas) in the bin path",
+                "The Apple ID to use already needs to be signed in to the Mac App Store (check with C(mas account))."
+            ],
+            "short_description": "Manage Mac App Store applications with mas-cli",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Install Keynote\n  community.general.mas:\n    id: 409183694\n    state: present\n\n- name: Install Divvy with command mas installed in /usr/local/bin\n  community.general.mas:\n    id: 413857545\n    state: present\n  environment:\n    PATH: /usr/local/bin:{{ ansible_facts.env.PATH }}\n\n- name: Install a list of apps\n  community.general.mas:\n    id:\n      - 409183694 # Keynote\n      - 413857545 # Divvy\n    state: present\n\n- name: Ensure the latest Keynote version is installed\n  community.general.mas:\n    id: 409183694\n    state: latest\n\n- name: Upgrade all installed Mac App Store apps\n  community.general.mas:\n    upgrade_all: yes\n\n- name: Install specific apps and also upgrade all others\n  community.general.mas:\n    id:\n      - 409183694 # Keynote\n      - 413857545 # Divvy\n    state: present\n    upgrade_all: yes\n\n- name: Uninstall Divvy\n  community.general.mas:\n    id: 413857545\n    state: absent\n  become: yes # Uninstallation requires root permissions\n",
+        "metadata": null,
+        "return": null
+    }
+}

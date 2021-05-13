@@ -1,0 +1,141 @@
+{
+    "community.general.yarn": {
+        "doc": {
+            "author": [
+                "David Gunter (@verkaufer)",
+                "Chris Hoffman (@chrishoffman), creator of NPM Ansible module)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manage node.js packages with the Yarn package manager (https://yarnpkg.com/)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/yarn.py",
+            "has_action": false,
+            "module": "yarn",
+            "options": {
+                "executable": {
+                    "description": [
+                        "The executable location for yarn."
+                    ],
+                    "required": false,
+                    "type": "path"
+                },
+                "global": {
+                    "default": false,
+                    "description": [
+                        "Install the node.js library globally"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ignore_scripts": {
+                    "default": false,
+                    "description": [
+                        "Use the --ignore-scripts flag when installing."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of a node.js library to install",
+                        "If omitted all packages in package.json are installed.",
+                        "To globally install from local node.js library. Prepend \"file:\" to the path of the node.js library."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The base path where Node.js libraries will be installed.",
+                        "This is where the node_modules folder lives."
+                    ],
+                    "required": false,
+                    "type": "path"
+                },
+                "production": {
+                    "default": false,
+                    "description": [
+                        "Install dependencies in production mode.",
+                        "Yarn will ignore any dependencies under devDependencies in package.json"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "registry": {
+                    "description": [
+                        "The registry to install modules from."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "latest"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Installation state of the named node.js library",
+                        "If absent is selected, a name option must be provided"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "version": {
+                    "description": [
+                        "The version of the library to be installed.",
+                        "Must be in semver format. If \"latest\" is desired, use \"state\" arg instead"
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "Yarn installed in bin path (typically /usr/local/bin)"
+            ],
+            "short_description": "Manage node.js packages with Yarn"
+        },
+        "examples": "\n- name: Install \"imagemin\" node.js package.\n  community.general.yarn:\n    name: imagemin\n    path: /app/location\n\n- name: Install \"imagemin\" node.js package on version 5.3.1\n  community.general.yarn:\n    name: imagemin\n    version: '5.3.1'\n    path: /app/location\n\n- name: Install \"imagemin\" node.js package globally.\n  community.general.yarn:\n    name: imagemin\n    global: yes\n\n- name: Remove the globally-installed package \"imagemin\".\n  community.general.yarn:\n    name: imagemin\n    global: yes\n    state: absent\n\n- name: Install \"imagemin\" node.js package from custom registry.\n  community.general.yarn:\n    name: imagemin\n    registry: 'http://registry.mysite.com'\n\n- name: Install packages based on package.json.\n  community.general.yarn:\n    path: /app/location\n\n- name: Update all packages in package.json to their latest version.\n  community.general.yarn:\n    path: /app/location\n    state: latest\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Whether Yarn changed any package data",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "invocation": {
+                "description": "Parameters and values used during execution",
+                "returned": "success",
+                "sample": {
+                    "module_args": {
+                        "executable": null,
+                        "globally": false,
+                        "ignore_scripts": false,
+                        "name": null,
+                        "path": "/some/path/folder",
+                        "production": false,
+                        "registry": null,
+                        "state": "present",
+                        "version": null
+                    }
+                },
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Provides an error message if Yarn syntax was incorrect",
+                "returned": "failure",
+                "sample": "Package must be explicitly named when uninstalling.",
+                "type": "str"
+            },
+            "out": {
+                "description": "Output generated from Yarn with emojis removed.",
+                "returned": "always",
+                "sample": "yarn add v0.16.1[1/4] Resolving packages...[2/4] Fetching packages...[3/4] Linking dependencies...[4/4] Building fresh packages...success Saved lockfile.success Saved 1 new dependency..left-pad@1.1.3 Done in 0.59s.",
+                "type": "str"
+            }
+        }
+    }
+}

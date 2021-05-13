@@ -1,0 +1,134 @@
+{
+    "ansible.posix.firewalld": {
+        "doc": {
+            "author": [
+                "Adam Miller (@maxamillion)"
+            ],
+            "collection": "ansible.posix",
+            "description": [
+                "This module allows for addition or deletion of services and ports (either TCP or UDP) in either running or permanent firewalld rules."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/posix/plugins/modules/firewalld.py",
+            "has_action": false,
+            "module": "firewalld",
+            "notes": [
+                "Not tested on any Debian based system.",
+                "Requires the python2 bindings of firewalld, which may not be installed by default.",
+                "For distributions where the python2 firewalld bindings are unavailable (e.g Fedora 28 and later) you will have to set the ansible_python_interpreter for these hosts to the python3 interpreter path and install the python3 bindings.",
+                "Zone transactions (creating, deleting) can be performed by using only the zone and state parameters \"present\" or \"absent\". Note that zone transactions must explicitly be permanent. This is a limitation in firewalld. This also means that you will have to reload firewalld after adding a zone that you wish to perform immediate actions on. The module will not take care of this for you implicitly because that would undo any previously performed immediate actions which were not permanent. Therefore, if you require immediate access to a newly created zone it is recommended you reload firewalld immediately after the zone creation returns with a changed state and before you perform any other immediate, non-permanent actions on that zone."
+            ],
+            "options": {
+                "icmp_block": {
+                    "description": [
+                        "The ICMP block you would like to add/remove to/from a zone in firewalld."
+                    ],
+                    "type": "str"
+                },
+                "icmp_block_inversion": {
+                    "description": [
+                        "Enable/Disable inversion of ICMP blocks for a zone in firewalld."
+                    ],
+                    "type": "str"
+                },
+                "immediate": {
+                    "default": false,
+                    "description": [
+                        "Should this configuration be applied immediately, if set as permanent."
+                    ],
+                    "type": "bool"
+                },
+                "interface": {
+                    "description": [
+                        "The interface you would like to add/remove to/from a zone in firewalld."
+                    ],
+                    "type": "str"
+                },
+                "masquerade": {
+                    "description": [
+                        "The masquerade setting you would like to enable/disable to/from zones within firewalld."
+                    ],
+                    "type": "str"
+                },
+                "offline": {
+                    "description": [
+                        "Whether to run this module even when firewalld is offline."
+                    ],
+                    "type": "bool"
+                },
+                "permanent": {
+                    "description": [
+                        "Should this configuration be in the running firewalld configuration or persist across reboots.",
+                        "As of Ansible 2.3, permanent operations can operate on firewalld configs when it is not running (requires firewalld >= 3.0.9).",
+                        "Note that if this is C(no), immediate is assumed C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "port": {
+                    "description": [
+                        "Name of a port or port range to add/remove to/from firewalld.",
+                        "Must be in the form PORT/PROTOCOL or PORT-PORT/PROTOCOL for port ranges."
+                    ],
+                    "type": "str"
+                },
+                "rich_rule": {
+                    "description": [
+                        "Rich rule to add/remove to/from firewalld.",
+                        "See L(Syntax for firewalld rich language rules,https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html)."
+                    ],
+                    "type": "str"
+                },
+                "service": {
+                    "description": [
+                        "Name of a service to add/remove to/from firewalld.",
+                        "The service must be listed in output of firewall-cmd --get-services."
+                    ],
+                    "type": "str"
+                },
+                "source": {
+                    "description": [
+                        "The source/network you would like to add/remove to/from firewalld."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "disabled",
+                        "enabled",
+                        "present"
+                    ],
+                    "description": [
+                        "Enable or disable a setting.",
+                        "For ports: Should this port accept (enabled) or reject (disabled) connections.",
+                        "The states C(present) and C(absent) can only be used in zone level operations (i.e. when no other parameters but zone and state are set)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 0,
+                    "description": [
+                        "The amount of time the rule should be in effect for when non-permanent."
+                    ],
+                    "type": "int"
+                },
+                "zone": {
+                    "description": [
+                        "The firewalld zone to add/remove to/from.",
+                        "Note that the default zone can be configured per system but C(public) is default from upstream.",
+                        "Available choices can be extended based on per-system configs, listed here are \"out of the box\" defaults.",
+                        "Possible values include C(block), C(dmz), C(drop), C(external), C(home), C(internal), C(public), C(trusted), C(work)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "firewalld >= 0.2.11"
+            ],
+            "short_description": "Manage arbitrary ports/services with firewalld"
+        },
+        "examples": "\n- name: permit traffic in default zone for https service\n  ansible.posix.firewalld:\n    service: https\n    permanent: yes\n    state: enabled\n\n- name: do not permit traffic in default zone on port 8081/tcp\n  ansible.posix.firewalld:\n    port: 8081/tcp\n    permanent: yes\n    state: disabled\n\n- ansible.posix.firewalld:\n    port: 161-162/udp\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    zone: dmz\n    service: http\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    rich_rule: rule service name=\"ftp\" audit limit value=\"1/m\" accept\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    source: 192.0.2.0/24\n    zone: internal\n    state: enabled\n\n- ansible.posix.firewalld:\n    zone: trusted\n    interface: eth2\n    permanent: yes\n    state: enabled\n\n- ansible.posix.firewalld:\n    masquerade: yes\n    state: enabled\n    permanent: yes\n    zone: dmz\n\n- ansible.posix.firewalld:\n    zone: custom\n    state: present\n    permanent: yes\n\n- ansible.posix.firewalld:\n    zone: drop\n    state: enabled\n    permanent: yes\n    icmp_block_inversion: yes\n\n- ansible.posix.firewalld:\n    zone: drop\n    state: enabled\n    permanent: yes\n    icmp_block: echo-request\n\n- name: Redirect port 443 to 8443 with Rich Rule\n  ansible.posix.firewalld:\n    rich_rule: rule family=ipv4 forward-port port=443 protocol=tcp to-port=8443\n    zone: public\n    permanent: yes\n    immediate: yes\n    state: enabled\n",
+        "metadata": null,
+        "return": null
+    }
+}

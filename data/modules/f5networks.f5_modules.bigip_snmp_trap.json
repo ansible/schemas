@@ -1,0 +1,215 @@
+{
+    "f5networks.f5_modules.bigip_snmp_trap": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manipulate SNMP trap information on a BIG-IP system."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_snmp_trap.py",
+            "has_action": false,
+            "module": "bigip_snmp_trap",
+            "notes": [
+                "This module only supports version v1 and v2c of SNMP.",
+                "The C(network) option is not supported on versions of BIG-IP prior to 12.1.0 because the platform did not support that option until 12.1.0. If used on versions prior to 12.1.0, it is simply be ignored.",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "community": {
+                    "description": [
+                        "Specifies the community name for the trap destination."
+                    ],
+                    "type": "str"
+                },
+                "destination": {
+                    "description": [
+                        "Specifies the address for the trap destination. This can be either an IP address or a hostname."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the SNMP configuration endpoint."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "network": {
+                    "choices": [
+                        "other",
+                        "management",
+                        "default"
+                    ],
+                    "description": [
+                        "Specifies the name of the trap network. This option is not supported in versions of BIG-IP prior to 12.1.0, and is simply ignored on those versions.",
+                        "The value C(default) was removed in BIG-IP version 13.1.0. Specifying this value when configuring a BIG-IP causes the module to stop and report an error. In this case, choose one of the other options, such as C(management)."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Specifies the port for the trap destination."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "snmp_version": {
+                    "choices": [
+                        "1",
+                        "2c"
+                    ],
+                    "description": [
+                        "Specifies to which Simple Network Management Protocol (SNMP) version the trap destination applies."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource does not exist."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manipulate SNMP trap information on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create snmp v1 trap\n  bigip_snmp_trap:\n    community: general\n    destination: 1.2.3.4\n    name: my-trap1\n    network: management\n    port: 9000\n    snmp_version: 1\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create snmp v2 trap\n  bigip_snmp_trap:\n    community: general\n    destination: 5.6.7.8\n    name: my-trap2\n    network: default\n    port: 7000\n    snmp_version: 2c\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "community": {
+                "description": "The new C(community) name for the trap destination.",
+                "returned": "changed and success",
+                "sample": "secret",
+                "type": "list"
+            },
+            "destination": {
+                "description": "The new address for the trap destination in either IP or hostname form.",
+                "returned": "changed and success",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "network": {
+                "description": "The new name of the network the SNMP trap is on.",
+                "returned": "changed and success",
+                "sample": "management",
+                "type": "str"
+            },
+            "port": {
+                "description": "The new C(port) of the trap destination.",
+                "returned": "changed and success",
+                "sample": 900,
+                "type": "str"
+            },
+            "snmp_version": {
+                "description": "The new C(snmp_version) configured on the remote device.",
+                "returned": "changed and success",
+                "sample": "2c",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,152 @@
+{
+    "community.aws.elb_instance": {
+        "doc": {
+            "author": "John Jarvis (@jarv)",
+            "collection": "community.aws",
+            "description": [
+                "This module de-registers or registers an AWS EC2 instance from the ELBs that it belongs to.",
+                "Returns fact \"ec2_elbs\" which is a list of elbs attached to the instance if state=absent is passed as an argument.",
+                "Will be marked changed when called only if there are ELBs found to operate on."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/elb_instance.py",
+            "has_action": false,
+            "module": "elb_instance",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_elbs": {
+                    "description": [
+                        "List of ELB names, required for registration. The ec2_elbs fact should be used if there was a previous de-register."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "enable_availability_zone": {
+                    "default": "yes",
+                    "description": [
+                        "Whether to enable the availability zone of the instance on the target ELB if the availability zone has not already been enabled. If set to no, the task will fail if the availability zone is not enabled on the ELB."
+                    ],
+                    "type": "bool"
+                },
+                "instance_id": {
+                    "description": [
+                        "EC2 Instance ID"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "register or deregister the instance"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": "yes",
+                    "description": [
+                        "Wait for instance registration or deregistration to complete successfully before returning."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 0,
+                    "description": [
+                        "Number of seconds to wait for an instance to change state. If 0 then this module may return an error if a transient error occurs. If non-zero then any transient errors are ignored until the timeout is reached. Ignored when wait=no."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "De-registers or registers instances from EC2 ELBs",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# basic pre_task and post_task example\npre_tasks:\n  - name: Instance De-register\n    community.aws.elb_instance:\n      instance_id: \"{{ ansible_ec2_instance_id }}\"\n      state: absent\n    delegate_to: localhost\nroles:\n  - myrole\npost_tasks:\n  - name: Instance Register\n    community.aws.elb_instance:\n      instance_id: \"{{ ansible_ec2_instance_id }}\"\n      ec2_elbs: \"{{ item }}\"\n      state: present\n    delegate_to: localhost\n    loop: \"{{ ec2_elbs }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

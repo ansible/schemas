@@ -1,0 +1,668 @@
+{
+    "community.crypto.openssl_csr": {
+        "doc": {
+            "author": [
+                "Yanis Guenane (@Spredzy)",
+                "Felix Fontein (@felixfontein)"
+            ],
+            "collection": "community.crypto",
+            "description": [
+                "Please note that the module regenerates an existing CSR if it doesn't match the module's options, or if it seems to be corrupt. If you are concerned that this could overwrite your existing CSR, consider using the I(backup) option.",
+                "The module can use the cryptography Python library, or the pyOpenSSL Python library. By default, it tries to detect which one is available. This can be overridden with the I(select_crypto_backend) option. Please note that the PyOpenSSL backend was deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0.",
+                "This module allows one to (re)generate OpenSSL certificate signing requests.",
+                "This module supports the subjectAltName, keyUsage, extendedKeyUsage, basicConstraints and OCSP Must Staple extensions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/openssl_csr.py",
+            "has_action": false,
+            "module": "openssl_csr",
+            "notes": [
+                "If the certificate signing request already exists it will be checked whether subjectAltName, keyUsage, extendedKeyUsage and basicConstraints only contain the requested values, whether OCSP Must Staple is as requested, and if the request was signed by the given private key."
+            ],
+            "options": {
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "authority_cert_issuer": {
+                    "description": [
+                        "Names that will be present in the authority cert issuer field of the certificate signing request.",
+                        "Values must be prefixed by their options. (i.e., C(email), C(URI), C(DNS), C(RID), C(IP), C(dirName), C(otherName) and the ones specific to your CA)",
+                        "Example: C(DNS:ca.example.org)",
+                        "If specified, I(authority_key_identifier) must also be specified.",
+                        "Please note that commercial CAs ignore this value, respectively use a value of their own choice. Specifying this option is mostly useful for self-signed certificates or for own CAs.",
+                        "Note that this is only supported if the C(cryptography) backend is used!",
+                        "The C(AuthorityKeyIdentifier) will only be added if at least one of I(authority_key_identifier), I(authority_cert_issuer) and I(authority_cert_serial_number) is specified."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "authority_cert_serial_number": {
+                    "description": [
+                        "The authority cert serial number.",
+                        "Note that this is only supported if the C(cryptography) backend is used!",
+                        "Please note that commercial CAs ignore this value, respectively use a value of their own choice. Specifying this option is mostly useful for self-signed certificates or for own CAs.",
+                        "The C(AuthorityKeyIdentifier) will only be added if at least one of I(authority_key_identifier), I(authority_cert_issuer) and I(authority_cert_serial_number) is specified."
+                    ],
+                    "type": "int"
+                },
+                "authority_key_identifier": {
+                    "description": [
+                        "The authority key identifier as a hex string, where two bytes are separated by colons.",
+                        "Example: C(00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33)",
+                        "If specified, I(authority_cert_issuer) must also be specified.",
+                        "Please note that commercial CAs ignore this value, respectively use a value of their own choice. Specifying this option is mostly useful for self-signed certificates or for own CAs.",
+                        "Note that this is only supported if the C(cryptography) backend is used!",
+                        "The C(AuthorityKeyIdentifier) will only be added if at least one of I(authority_key_identifier), I(authority_cert_issuer) and I(authority_cert_serial_number) is specified."
+                    ],
+                    "type": "str"
+                },
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "Create a backup file including a timestamp so you can get the original CSR back if you overwrote it with a new one by accident."
+                    ],
+                    "type": "bool"
+                },
+                "basic_constraints": {
+                    "aliases": [
+                        "basicConstraints"
+                    ],
+                    "description": [
+                        "Indicates basic constraints, such as if the certificate is a CA."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "basic_constraints_critical": {
+                    "aliases": [
+                        "basicConstraints_critical"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Should the basicConstraints extension be considered as critical."
+                    ],
+                    "type": "bool"
+                },
+                "common_name": {
+                    "aliases": [
+                        "CN",
+                        "commonName"
+                    ],
+                    "description": [
+                        "The commonName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "country_name": {
+                    "aliases": [
+                        "C",
+                        "countryName"
+                    ],
+                    "description": [
+                        "The countryName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "create_subject_key_identifier": {
+                    "default": false,
+                    "description": [
+                        "Create the Subject Key Identifier from the public key.",
+                        "Please note that commercial CAs can ignore the value, respectively use a value of their own choice instead. Specifying this option is mostly useful for self-signed certificates or for own CAs.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "bool"
+                },
+                "crl_distribution_points": {
+                    "description": [
+                        "Allows to specify one or multiple CRL distribution points.",
+                        "Only supported by the C(cryptography) backend."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "crl_issuer": {
+                            "description": [
+                                "Information about the issuer of the CRL."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "full_name": {
+                            "description": [
+                                "Describes how the CRL can be retrieved.",
+                                "Mutually exclusive with I(relative_name).",
+                                "Example: C(URI:https://ca.example.com/revocations.crl)."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "reasons": {
+                            "choices": [
+                                "key_compromise",
+                                "ca_compromise",
+                                "affiliation_changed",
+                                "superseded",
+                                "cessation_of_operation",
+                                "certificate_hold",
+                                "privilege_withdrawn",
+                                "aa_compromise"
+                            ],
+                            "description": [
+                                "List of reasons that this distribution point can be used for when performing revocation checks."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "relative_name": {
+                            "description": [
+                                "Describes how the CRL can be retrieved relative to the CRL issuer.",
+                                "Mutually exclusive with I(full_name).",
+                                "Example: C(/CN=example.com).",
+                                "Can only be used when cryptography >= 1.6 is installed."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        }
+                    },
+                    "type": "list",
+                    "version_added": "1.4.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "digest": {
+                    "default": "sha256",
+                    "description": [
+                        "The digest used when signing the certificate signing request with the private key."
+                    ],
+                    "type": "str"
+                },
+                "email_address": {
+                    "aliases": [
+                        "E",
+                        "emailAddress"
+                    ],
+                    "description": [
+                        "The emailAddress field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "extended_key_usage": {
+                    "aliases": [
+                        "extKeyUsage",
+                        "extendedKeyUsage"
+                    ],
+                    "description": [
+                        "Additional restrictions (e.g. client authentication, server authentication) on the allowed purposes for which the public key may be used."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "extended_key_usage_critical": {
+                    "aliases": [
+                        "extKeyUsage_critical",
+                        "extendedKeyUsage_critical"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Should the extkeyUsage extension be considered as critical."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Should the certificate signing request be forced regenerated by this ansible module."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "key_usage": {
+                    "aliases": [
+                        "keyUsage"
+                    ],
+                    "description": [
+                        "This defines the purpose (e.g. encipherment, signature, certificate signing) of the key contained in the certificate."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "key_usage_critical": {
+                    "aliases": [
+                        "keyUsage_critical"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Should the keyUsage extension be considered as critical."
+                    ],
+                    "type": "bool"
+                },
+                "locality_name": {
+                    "aliases": [
+                        "L",
+                        "localityName"
+                    ],
+                    "description": [
+                        "The localityName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "name_constraints_critical": {
+                    "default": false,
+                    "description": [
+                        "Should the Name Constraints extension be considered as critical."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "name_constraints_excluded": {
+                    "description": [
+                        "For CA certificates, this specifies a list of identifiers which describe subtrees of names that this CA is B(not) allowed to issue certificates for.",
+                        "Values must be prefixed by their options. (i.e., C(email), C(URI), C(DNS), C(RID), C(IP), C(dirName), C(otherName) and the ones specific to your CA)."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "name_constraints_permitted": {
+                    "description": [
+                        "For CA certificates, this specifies a list of identifiers which describe subtrees of names that this CA is allowed to issue certificates for.",
+                        "Values must be prefixed by their options. (i.e., C(email), C(URI), C(DNS), C(RID), C(IP), C(dirName), C(otherName) and the ones specific to your CA)."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "ocsp_must_staple": {
+                    "aliases": [
+                        "ocspMustStaple"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Indicates that the certificate should contain the OCSP Must Staple extension (U(https://tools.ietf.org/html/rfc7633))."
+                    ],
+                    "type": "bool"
+                },
+                "ocsp_must_staple_critical": {
+                    "aliases": [
+                        "ocspMustStaple_critical"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Should the OCSP Must Staple extension be considered as critical.",
+                        "Note that according to the RFC, this extension should not be marked as critical, as old clients not knowing about OCSP Must Staple are required to reject such certificates (see U(https://tools.ietf.org/html/rfc7633#section-4))."
+                    ],
+                    "type": "bool"
+                },
+                "organization_name": {
+                    "aliases": [
+                        "O",
+                        "organizationName"
+                    ],
+                    "description": [
+                        "The organizationName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "organizational_unit_name": {
+                    "aliases": [
+                        "OU",
+                        "organizationalUnitName"
+                    ],
+                    "description": [
+                        "The organizationalUnitName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The name of the file into which the generated OpenSSL certificate signing request will be written."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "privatekey_content": {
+                    "description": [
+                        "The content of the private key to use when signing the certificate signing request.",
+                        "Either I(privatekey_path) or I(privatekey_content) must be specified if I(state) is C(present), but not both."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "privatekey_passphrase": {
+                    "description": [
+                        "The passphrase for the private key.",
+                        "This is required if the private key is password protected."
+                    ],
+                    "type": "str"
+                },
+                "privatekey_path": {
+                    "description": [
+                        "The path to the private key to use when signing the certificate signing request.",
+                        "Either I(privatekey_path) or I(privatekey_content) must be specified if I(state) is C(present), but not both."
+                    ],
+                    "type": "path"
+                },
+                "return_content": {
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), will return the (current or generated) CSR's content as I(csr)."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "select_crypto_backend": {
+                    "choices": [
+                        "auto",
+                        "cryptography",
+                        "pyopenssl"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Determines which crypto backend to use.",
+                        "The default choice is C(auto), which tries to use C(cryptography) if available, and falls back to C(pyopenssl).",
+                        "If set to C(pyopenssl), will try to use the L(pyOpenSSL,https://pypi.org/project/pyOpenSSL/) library.",
+                        "If set to C(cryptography), will try to use the L(cryptography,https://cryptography.io/) library.",
+                        "Please note that the C(pyopenssl) backend has been deprecated in Ansible 2.9, and will be removed in community.crypto 2.0.0. From that point on, only the C(cryptography) backend will be available."
+                    ],
+                    "type": "str"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the certificate signing request should exist or not, taking action if the state is different from what is stated."
+                    ],
+                    "type": "str"
+                },
+                "state_or_province_name": {
+                    "aliases": [
+                        "ST",
+                        "stateOrProvinceName"
+                    ],
+                    "description": [
+                        "The stateOrProvinceName field of the certificate signing request subject."
+                    ],
+                    "type": "str"
+                },
+                "subject": {
+                    "description": [
+                        "Key/value pairs that will be present in the subject name field of the certificate signing request.",
+                        "If you need to specify more than one value with the same key, use a list as value."
+                    ],
+                    "type": "dict"
+                },
+                "subject_alt_name": {
+                    "aliases": [
+                        "subjectAltName"
+                    ],
+                    "description": [
+                        "Subject Alternative Name (SAN) extension to attach to the certificate signing request.",
+                        "This can either be a 'comma separated string' or a YAML list.",
+                        "Values must be prefixed by their options. (i.e., C(email), C(URI), C(DNS), C(RID), C(IP), C(dirName), C(otherName) and the ones specific to your CA).",
+                        "Note that if no SAN is specified, but a common name, the common name will be added as a SAN except if C(useCommonNameForSAN) is set to I(false).",
+                        "More at U(https://tools.ietf.org/html/rfc5280#section-4.2.1.6)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "subject_alt_name_critical": {
+                    "aliases": [
+                        "subjectAltName_critical"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Should the subjectAltName extension be considered as critical."
+                    ],
+                    "type": "bool"
+                },
+                "subject_key_identifier": {
+                    "description": [
+                        "The subject key identifier as a hex string, where two bytes are separated by colons.",
+                        "Example: C(00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff:00:11:22:33)",
+                        "Please note that commercial CAs ignore this value, respectively use a value of their own choice. Specifying this option is mostly useful for self-signed certificates or for own CAs.",
+                        "Note that this option can only be used if I(create_subject_key_identifier) is C(no).",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "str"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "use_common_name_for_san": {
+                    "aliases": [
+                        "useCommonNameForSAN"
+                    ],
+                    "default": true,
+                    "description": [
+                        "If set to C(yes), the module will fill the common name in for C(subject_alt_name) with C(DNS:) prefix if no SAN is specified."
+                    ],
+                    "type": "bool"
+                },
+                "version": {
+                    "default": 1,
+                    "description": [
+                        "The version of the certificate signing request.",
+                        "The only allowed value according to L(RFC 2986,https://tools.ietf.org/html/rfc2986#section-4.1) is 1.",
+                        "This option will no longer accept unsupported values from community.crypto 2.0.0 on."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "Either cryptography >= 1.3",
+                "Or pyOpenSSL >= 0.15"
+            ],
+            "seealso": [
+                {
+                    "module": "community.crypto.openssl_csr_pipe"
+                },
+                {
+                    "module": "community.crypto.x509_certificate"
+                },
+                {
+                    "module": "community.crypto.x509_certificate_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_dhparam"
+                },
+                {
+                    "module": "community.crypto.openssl_pkcs12"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_publickey"
+                },
+                {
+                    "module": "community.crypto.openssl_csr_info"
+                }
+            ],
+            "short_description": "Generate OpenSSL Certificate Signing Request (CSR)"
+        },
+        "examples": "\n- name: Generate an OpenSSL Certificate Signing Request\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    common_name: www.ansible.com\n\n- name: Generate an OpenSSL Certificate Signing Request with an inline key\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_content: \"{{ private_key_content }}\"\n    common_name: www.ansible.com\n\n- name: Generate an OpenSSL Certificate Signing Request with a passphrase protected private key\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    privatekey_passphrase: ansible\n    common_name: www.ansible.com\n\n- name: Generate an OpenSSL Certificate Signing Request with Subject information\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    country_name: FR\n    organization_name: Ansible\n    email_address: jdoe@ansible.com\n    common_name: www.ansible.com\n\n- name: Generate an OpenSSL Certificate Signing Request with subjectAltName extension\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    subject_alt_name: 'DNS:www.ansible.com,DNS:m.ansible.com'\n\n- name: Generate an OpenSSL CSR with subjectAltName extension with dynamic list\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    subject_alt_name: \"{{ item.value | map('regex_replace', '^', 'DNS:') | list }}\"\n  with_dict:\n    dns_server:\n    - www.ansible.com\n    - m.ansible.com\n\n- name: Force regenerate an OpenSSL Certificate Signing Request\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    force: yes\n    common_name: www.ansible.com\n\n- name: Generate an OpenSSL Certificate Signing Request with special key usages\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    common_name: www.ansible.com\n    key_usage:\n      - digitalSignature\n      - keyAgreement\n    extended_key_usage:\n      - clientAuth\n\n- name: Generate an OpenSSL Certificate Signing Request with OCSP Must Staple\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    common_name: www.ansible.com\n    ocsp_must_staple: yes\n\n- name: Generate an OpenSSL Certificate Signing Request for WinRM Certificate authentication\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/winrm.auth.csr\n    privatekey_path: /etc/ssl/private/winrm.auth.pem\n    common_name: username\n    extended_key_usage:\n    - clientAuth\n    subject_alt_name: otherName:1.3.6.1.4.1.311.20.2.3;UTF8:username@localhost\n\n- name: Generate an OpenSSL Certificate Signing Request with a CRL distribution point\n  community.crypto.openssl_csr:\n    path: /etc/ssl/csr/www.ansible.com.csr\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    common_name: www.ansible.com\n    crl_distribution_points:\n      - full_name:\n          - \"URI:https://ca.example.com/revocations.crl\"\n        crl_issuer:\n          - \"URI:https://ca.example.com/\"\n        reasons:\n          - key_compromise\n          - ca_compromise\n          - cessation_of_operation\n",
+        "metadata": null,
+        "return": {
+            "backup_file": {
+                "description": "Name of backup file created.",
+                "returned": "changed and if I(backup) is C(yes)",
+                "sample": "/path/to/www.ansible.com.csr.2019-03-09@11:22~",
+                "type": "str"
+            },
+            "basicConstraints": {
+                "description": "Indicates if the certificate belongs to a CA",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "CA:TRUE",
+                    "pathLenConstraint:0"
+                ],
+                "type": "list"
+            },
+            "csr": {
+                "description": "The (current or generated) CSR's content.",
+                "returned": "if I(state) is C(present) and I(return_content) is C(yes)",
+                "type": "str",
+                "version_added": "1.0.0",
+                "version_added_collection": "community.crypto"
+            },
+            "extendedKeyUsage": {
+                "description": "Additional restriction on the public key purposes",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "clientAuth"
+                ],
+                "type": "list"
+            },
+            "filename": {
+                "description": "Path to the generated Certificate Signing Request",
+                "returned": "changed or success",
+                "sample": "/etc/ssl/csr/www.ansible.com.csr",
+                "type": "str"
+            },
+            "keyUsage": {
+                "description": "Purpose for which the public key may be used",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "digitalSignature",
+                    "keyAgreement"
+                ],
+                "type": "list"
+            },
+            "name_constraints_excluded": {
+                "description": "List of excluded subtrees the CA cannot sign certificates for.",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "email:.com"
+                ],
+                "type": "list",
+                "version_added": "1.1.0",
+                "version_added_collection": "community.crypto"
+            },
+            "name_constraints_permitted": {
+                "description": "List of permitted subtrees to sign certificates for.",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "email:.somedomain.com"
+                ],
+                "type": "list",
+                "version_added": "1.1.0",
+                "version_added_collection": "community.crypto"
+            },
+            "ocsp_must_staple": {
+                "description": "Indicates whether the certificate has the OCSP Must Staple feature enabled",
+                "returned": "changed or success",
+                "sample": false,
+                "type": "bool"
+            },
+            "privatekey": {
+                "description": [
+                    "Path to the TLS/SSL private key the CSR was generated for",
+                    "Will be C(none) if the private key has been provided in I(privatekey_content)."
+                ],
+                "returned": "changed or success",
+                "sample": "/etc/ssl/private/ansible.com.pem",
+                "type": "str"
+            },
+            "subject": {
+                "description": "A list of the subject tuples attached to the CSR",
+                "elements": "list",
+                "returned": "changed or success",
+                "sample": "[('CN', 'www.ansible.com'), ('O', 'Ansible')]",
+                "type": "list"
+            },
+            "subjectAltName": {
+                "description": "The alternative names this CSR is valid for",
+                "elements": "str",
+                "returned": "changed or success",
+                "sample": [
+                    "DNS:www.ansible.com",
+                    "DNS:m.ansible.com"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

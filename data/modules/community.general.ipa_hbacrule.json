@@ -1,0 +1,230 @@
+{
+    "community.general.ipa_hbacrule": {
+        "doc": {
+            "author": "Thomas Krahn (@Nosmoht)",
+            "collection": "community.general",
+            "description": [
+                "Add, modify or delete an IPA HBAC rule using IPA API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/ipa_hbacrule.py",
+            "has_action": false,
+            "module": "ipa_hbacrule",
+            "options": {
+                "cn": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Canonical name.",
+                        "Can not be changed as it is the unique identifier."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "description": {
+                    "description": "Description",
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "List of host names to assign.",
+                        "If an empty list is passed all hosts will be removed from the rule.",
+                        "If option is omitted hosts will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "hostcategory": {
+                    "choices": [
+                        "all"
+                    ],
+                    "description": "Host category",
+                    "type": "str"
+                },
+                "hostgroup": {
+                    "description": [
+                        "List of hostgroup names to assign.",
+                        "If an empty list is passed all hostgroups will be removed. from the rule",
+                        "If option is omitted hostgroups will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ipa_host": {
+                    "default": "ipa.example.com",
+                    "description": [
+                        "IP or hostname of IPA server.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_HOST) will be used instead.",
+                        "If both the environment variable C(IPA_HOST) and the value are not specified in the task, then DNS will be used to try to discover the FreeIPA server.",
+                        "The relevant entry needed in FreeIPA is the 'ipa-ca' entry.",
+                        "If neither the DNS entry, nor the environment C(IPA_HOST), nor the value are available in the task, then the default value will be used.",
+                        "Environment variable fallback mechanism is added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "ipa_pass": {
+                    "description": [
+                        "Password of administrative user.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_PASS) will be used instead.",
+                        "Note that if the 'urllib_gssapi' library is available, it is possible to use GSSAPI to authenticate to FreeIPA.",
+                        "If the environment variable C(KRB5CCNAME) is available, the module will use this kerberos credentials cache to authenticate to the FreeIPA server.",
+                        "If the environment variable C(KRB5_CLIENT_KTNAME) is available, and C(KRB5CCNAME) is not; the module will use this kerberos keytab to authenticate.",
+                        "If GSSAPI is not available, the usage of 'ipa_pass' is required.",
+                        "Environment variable fallback mechanism is added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "ipa_port": {
+                    "default": 443,
+                    "description": [
+                        "Port of FreeIPA / IPA server.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_PORT) will be used instead.",
+                        "If both the environment variable C(IPA_PORT) and the value are not specified in the task, then default value is set.",
+                        "Environment variable fallback mechanism is added in Ansible 2.5."
+                    ],
+                    "type": "int"
+                },
+                "ipa_prot": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "Protocol used by IPA server.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_PROT) will be used instead.",
+                        "If both the environment variable C(IPA_PROT) and the value are not specified in the task, then default value is set.",
+                        "Environment variable fallback mechanism is added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "ipa_timeout": {
+                    "default": 10,
+                    "description": [
+                        "Specifies idle timeout (in seconds) for the connection.",
+                        "For bulk operations, you may want to increase this in order to avoid timeout from IPA server.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_TIMEOUT) will be used instead.",
+                        "If both the environment variable C(IPA_TIMEOUT) and the value are not specified in the task, then default value is set."
+                    ],
+                    "type": "int"
+                },
+                "ipa_user": {
+                    "default": "admin",
+                    "description": [
+                        "Administrative account used on IPA server.",
+                        "If the value is not specified in the task, the value of environment variable C(IPA_USER) will be used instead.",
+                        "If both the environment variable C(IPA_USER) and the value are not specified in the task, then default value is set.",
+                        "Environment variable fallback mechanism is added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "service": {
+                    "description": [
+                        "List of service names to assign.",
+                        "If an empty list is passed all services will be removed from the rule.",
+                        "If option is omitted services will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "servicecategory": {
+                    "choices": [
+                        "all"
+                    ],
+                    "description": "Service category",
+                    "type": "str"
+                },
+                "servicegroup": {
+                    "description": [
+                        "List of service group names to assign.",
+                        "If an empty list is passed all assigned service groups will be removed from the rule.",
+                        "If option is omitted service groups will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "sourcehost": {
+                    "description": [
+                        "List of source host names to assign.",
+                        "If an empty list if passed all assigned source hosts will be removed from the rule.",
+                        "If option is omitted source hosts will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "sourcehostcategory": {
+                    "choices": [
+                        "all"
+                    ],
+                    "description": "Source host category",
+                    "type": "str"
+                },
+                "sourcehostgroup": {
+                    "description": [
+                        "List of source host group names to assign.",
+                        "If an empty list if passed all assigned source host groups will be removed from the rule.",
+                        "If option is omitted source host groups will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "disabled",
+                        "enabled",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": "State to ensure",
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "List of user names to assign.",
+                        "If an empty list if passed all assigned users will be removed from the rule.",
+                        "If option is omitted users will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "usercategory": {
+                    "choices": [
+                        "all"
+                    ],
+                    "description": "User category",
+                    "type": "str"
+                },
+                "usergroup": {
+                    "description": [
+                        "List of user group names to assign.",
+                        "If an empty list if passed all assigned user groups will be removed from the rule.",
+                        "If option is omitted user groups will not be checked or changed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "This only applies if C(ipa_prot) is I(https).",
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage FreeIPA HBAC rule"
+        },
+        "examples": "\n- name: Ensure rule to allow all users to access any host from any host\n  community.general.ipa_hbacrule:\n    name: allow_all\n    description: Allow all users to access any host from any host\n    hostcategory: all\n    servicecategory: all\n    usercategory: all\n    state: present\n    ipa_host: ipa.example.com\n    ipa_user: admin\n    ipa_pass: topsecret\n\n- name: Ensure rule with certain limitations\n  community.general.ipa_hbacrule:\n    name: allow_all_developers_access_to_db\n    description: Allow all developers to access any database from any host\n    hostgroup:\n    - db-server\n    usergroup:\n    - developers\n    state: present\n    ipa_host: ipa.example.com\n    ipa_user: admin\n    ipa_pass: topsecret\n\n- name: Ensure rule is absent\n  community.general.ipa_hbacrule:\n    name: rule_to_be_deleted\n    state: absent\n    ipa_host: ipa.example.com\n    ipa_user: admin\n    ipa_pass: topsecret\n",
+        "metadata": null,
+        "return": {
+            "hbacrule": {
+                "description": "HBAC rule as returned by IPA API.",
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

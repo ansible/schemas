@@ -1,0 +1,212 @@
+{
+    "community.vmware.vmware_guest_move": {
+        "doc": {
+            "author": [
+                "Jose Angel Munoz (@imjoseangel)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to move virtual machines between folders."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_move.py",
+            "has_action": false,
+            "module": "vmware_guest_move",
+            "notes": [
+                "Tested on vSphere 5.5 and vSphere 6.5"
+            ],
+            "options": {
+                "datacenter": {
+                    "description": [
+                        "Destination datacenter for the move operation"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "dest_folder": {
+                    "description": [
+                        "Absolute path to move an existing guest",
+                        "The dest_folder should include the datacenter. ESX's datacenter is ha-datacenter.",
+                        "This parameter is case sensitive.",
+                        "Examples:",
+                        "   dest_folder: /ha-datacenter/vm",
+                        "   dest_folder: ha-datacenter/vm",
+                        "   dest_folder: /datacenter1/vm",
+                        "   dest_folder: datacenter1/vm",
+                        "   dest_folder: /datacenter1/vm/folder1",
+                        "   dest_folder: datacenter1/vm/folder1",
+                        "   dest_folder: /folder1/datacenter1/vm",
+                        "   dest_folder: folder1/datacenter1/vm",
+                        "   dest_folder: /folder1/datacenter1/vm/folder2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "moid": {
+                    "description": [
+                        "Managed Object ID of the instance to manage if known, this is a unique identifier only within a single vCenter instance.",
+                        "This is required if C(name) or C(uuid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the existing virtual machine to move.",
+                        "This is required if C(uuid) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "name_match": {
+                    "choices": [
+                        "first",
+                        "last"
+                    ],
+                    "default": "first",
+                    "description": [
+                        "If multiple virtual machines matching the name, use the first or last found."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "use_instance_uuid": {
+                    "default": false,
+                    "description": [
+                        "Whether to use the VMware instance UUID rather than the BIOS UUID."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the virtual machine to manage if known, this is VMware's unique identifier.",
+                        "This is required if C(name) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Moves virtual machines in vCenter"
+        },
+        "examples": "\n- name: Move Virtual Machine\n  community.vmware.vmware_guest_move:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: datacenter\n    validate_certs: no\n    name: testvm-1\n    dest_folder: \"/{{ datacenter }}/vm\"\n  delegate_to: localhost\n\n- name: Move Virtual Machine using MoID\n  community.vmware.vmware_guest_move:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: datacenter\n    validate_certs: no\n    moid: vm-42\n    dest_folder: \"/{{ datacenter }}/vm\"\n  delegate_to: localhost\n\n- name: Get VM UUID\n  vmware_guest_facts:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    folder: \"/{{ datacenter }}/vm\"\n    name: \"{{ vm_name }}\"\n  delegate_to: localhost\n  register: vm_facts\n\n- name: Get UUID from previous task and pass it to this task\n  community.vmware.vmware_guest_move:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    uuid: \"{{ vm_facts.instance.hw_product_uuid }}\"\n    dest_folder: \"/DataCenter/vm/path/to/new/folder/where/we/want\"\n  delegate_to: localhost\n  register: facts\n",
+        "metadata": null,
+        "return": {
+            "instance": {
+                "description": "metadata about the virtual machine",
+                "returned": "always",
+                "sample": {
+                    "annotation": null,
+                    "current_snapshot": null,
+                    "customvalues": {},
+                    "guest_consolidation_needed": false,
+                    "guest_question": null,
+                    "guest_tools_status": null,
+                    "guest_tools_version": "0",
+                    "hw_cores_per_socket": 1,
+                    "hw_datastores": [
+                        "LocalDS_0"
+                    ],
+                    "hw_esxi_host": "DC0_H0",
+                    "hw_eth0": {
+                        "addresstype": "generated",
+                        "ipaddresses": null,
+                        "label": "ethernet-0",
+                        "macaddress": "00:0c:29:6b:34:2c",
+                        "macaddress_dash": "00-0c-29-6b-34-2c",
+                        "summary": "DVSwitch: 43cdd1db-1ef7-4016-9bbe-d96395616199"
+                    },
+                    "hw_files": [
+                        "[LocalDS_0] DC0_H0_VM0/DC0_H0_VM0.vmx"
+                    ],
+                    "hw_folder": "/F0/DC0/vm/F0",
+                    "hw_guest_full_name": null,
+                    "hw_guest_ha_state": null,
+                    "hw_guest_id": "otherGuest",
+                    "hw_interfaces": [
+                        "eth0"
+                    ],
+                    "hw_is_template": false,
+                    "hw_memtotal_mb": 32,
+                    "hw_name": "DC0_H0_VM0",
+                    "hw_power_status": "poweredOn",
+                    "hw_processor_count": 1,
+                    "hw_product_uuid": "581c2808-64fb-45ee-871f-6a745525cb29",
+                    "instance_uuid": "8bcb0b6e-3a7d-4513-bf6a-051d15344352",
+                    "ipv4": null,
+                    "ipv6": null,
+                    "module_hw": true,
+                    "snapshots": []
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

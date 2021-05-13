@@ -1,0 +1,136 @@
+{
+    "community.network.ce_vlan": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages VLAN configurations on Huawei CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_vlan.py",
+            "has_action": false,
+            "module": "ce_vlan",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "description": {
+                    "description": [
+                        "Specify VLAN description, minimum of 1 character, maximum of 80 characters."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of VLAN, minimum of 1 character, maximum of 31 characters."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Manage the state of the resource."
+                    ]
+                },
+                "vlan_id": {
+                    "description": [
+                        "Single VLAN ID, in the range from 1 to 4094."
+                    ]
+                },
+                "vlan_range": {
+                    "description": [
+                        "Range of VLANs such as C(2-10) or C(2,5,10-15), etc."
+                    ]
+                }
+            },
+            "short_description": "Manages VLAN resources and attributes on Huawei CloudEngine switches."
+        },
+        "examples": "\n- name: Vlan module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: Ensure a range of VLANs are not present on the switch\n    community.network.ce_vlan:\n      vlan_range: \"2-10,20,50,55-60,100-150\"\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: Ensure VLAN 50 exists with the name WEB\n    community.network.ce_vlan:\n      vlan_id: 50\n      name: WEB\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: Ensure VLAN is NOT on the device\n    community.network.ce_vlan:\n      vlan_id: 50\n      state: absent\n      provider: \"{{ cli }}\"\n\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of the VLAN after executing module or null when using vlan_range",
+                "returned": "always",
+                "sample": {
+                    "description": "vlan for app",
+                    "name": "VLAN_APP",
+                    "vlan_id": "20"
+                },
+                "type": "dict"
+            },
+            "end_state_vlans_list": {
+                "description": "list of VLANs after the module is executed",
+                "returned": "always",
+                "sample": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "20",
+                    "100"
+                ],
+                "type": "list"
+            },
+            "existing": {
+                "description": "k/v pairs of existing vlan or null when using vlan_range",
+                "returned": "always",
+                "sample": {
+                    "description": "",
+                    "name": "VLAN_APP",
+                    "vlan_id": "20"
+                },
+                "type": "dict"
+            },
+            "existing_vlans_list": {
+                "description": "list of existing VLANs on the switch prior to making changes",
+                "returned": "always",
+                "sample": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "20"
+                ],
+                "type": "list"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module (does not include vlan_id or vlan_range)",
+                "returned": "always",
+                "sample": {
+                    "description": "vlan for app",
+                    "name": "VLAN_APP",
+                    "vlan_id": "20"
+                },
+                "type": "dict"
+            },
+            "proposed_vlans_list": {
+                "description": "list of VLANs being proposed",
+                "returned": "always",
+                "sample": [
+                    "100"
+                ],
+                "type": "list"
+            },
+            "updates": {
+                "description": "command string sent to the device",
+                "returned": "always",
+                "sample": [
+                    "vlan 20",
+                    "name VLAN20"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

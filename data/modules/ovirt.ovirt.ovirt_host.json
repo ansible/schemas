@@ -1,0 +1,392 @@
+{
+    "ovirt.ovirt.ovirt_host": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage hosts in oVirt/RHV"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_host.py",
+            "has_action": false,
+            "module": "ovirt_host",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "activate": {
+                    "default": true,
+                    "description": [
+                        "If C(state) is I(present) activate the host.",
+                        "This parameter is good to disable, when you don't want to change the state of host when using I(present) C(state)."
+                    ],
+                    "type": "bool"
+                },
+                "address": {
+                    "description": [
+                        "Host address. It can be either FQDN (preferred) or IP address."
+                    ],
+                    "type": "str"
+                },
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "check_upgrade": {
+                    "default": true,
+                    "description": [
+                        "If I(true) and C(state) is I(upgraded) run check for upgrade action before executing upgrade action."
+                    ],
+                    "type": "bool"
+                },
+                "cluster": {
+                    "description": [
+                        "Name of the cluster, where host should be created."
+                    ],
+                    "type": "str"
+                },
+                "comment": {
+                    "description": [
+                        "Description of the host."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Indicates that the host should be removed even if it is non-responsive, or if it is part of a Gluster Storage cluster and has volume bricks on it.",
+                        "WARNING: It doesn't forcibly remove the host if another host related operation is being executed on the host at the same time."
+                    ],
+                    "type": "bool"
+                },
+                "hosted_engine": {
+                    "choices": [
+                        "deploy",
+                        "undeploy"
+                    ],
+                    "description": [
+                        "If I(deploy) it means this host should deploy also hosted engine components.",
+                        "If I(undeploy) it means this host should un-deploy hosted engine components and this host will not function as part of the High Availability cluster."
+                    ],
+                    "type": "str"
+                },
+                "id": {
+                    "description": [
+                        "ID of the host to manage."
+                    ],
+                    "type": "str"
+                },
+                "iscsi": {
+                    "description": [
+                        "If C(state) is I(iscsidiscover) it means that the iscsi attribute is being used to discover targets",
+                        "If C(state) is I(iscsilogin) it means that the iscsi attribute is being used to login to the specified targets passed as part of the iscsi attribute"
+                    ],
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "Address of the iSCSI storage server."
+                            ]
+                        },
+                        "password": {
+                            "description": [
+                                "A CHAP password for logging into a target."
+                            ]
+                        },
+                        "port": {
+                            "description": [
+                                "The port being used to connect with iscsi."
+                            ]
+                        },
+                        "portal": {
+                            "description": [
+                                "The portal being used to connect with iscsi."
+                            ]
+                        },
+                        "target": {
+                            "description": [
+                                "The target IQN for the storage device."
+                            ]
+                        },
+                        "username": {
+                            "description": [
+                                "A CHAP user name for logging into a target."
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "kdump_integration": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "description": [
+                        "Specify if host will have enabled Kdump integration."
+                    ],
+                    "type": "str"
+                },
+                "kernel_params": {
+                    "description": [
+                        "List of kernel boot parameters.",
+                        "Following are most common kernel parameters used for host:",
+                        "Hostdev Passthrough & SR-IOV: intel_iommu=on",
+                        "Nested Virtualization: kvm-intel.nested=1",
+                        "Unsafe Interrupts: vfio_iommu_type1.allow_unsafe_interrupts=1",
+                        "PCI Reallocation: pci=realloc",
+                        "C(Note:)",
+                        "Modifying kernel boot parameters settings can lead to a host boot failure. Please consult the product documentation before doing any changes.",
+                        "Kernel boot parameters changes require host deploy and restart. The host needs to be I(reinstalled) successfully and then to be I(rebooted) for kernel boot parameters to be applied."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the host to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "override_display": {
+                    "description": [
+                        "Override the display address of all VMs on this host with specified address."
+                    ],
+                    "type": "str"
+                },
+                "override_iptables": {
+                    "description": [
+                        "If True host iptables will be overridden by host deploy script.",
+                        "Note that C(override_iptables) is I(false) by default in oVirt/RHV."
+                    ],
+                    "type": "bool"
+                },
+                "password": {
+                    "description": [
+                        "Password of the root. It's required in case C(public_key) is set to I(False)."
+                    ],
+                    "type": "str"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "power_management_enabled": {
+                    "description": [
+                        "Enable or disable power management of the host.",
+                        "For more comprehensive setup of PM use C(ovirt_host_pm) module."
+                    ],
+                    "type": "bool"
+                },
+                "public_key": {
+                    "aliases": [
+                        "ssh_public_key"
+                    ],
+                    "default": false,
+                    "description": [
+                        "I(True) if the public key should be used to authenticate to host.",
+                        "It's required in case C(password) is not set."
+                    ],
+                    "type": "bool"
+                },
+                "reboot_after_installation": {
+                    "description": [
+                        "If I(true) reboot host after successful installation.",
+                        "Default value on engine is I(true)."
+                    ],
+                    "type": "bool"
+                },
+                "reboot_after_upgrade": {
+                    "default": true,
+                    "description": [
+                        "If I(true) and C(state) is I(upgraded) reboot host after successful upgrade."
+                    ],
+                    "type": "bool"
+                },
+                "spm_priority": {
+                    "description": [
+                        "SPM priority of the host. Integer value from 1 to 10, where higher number means higher priority."
+                    ],
+                    "type": "int"
+                },
+                "ssh_port": {
+                    "description": [
+                        "The host SSH port."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "maintenance",
+                        "upgraded",
+                        "started",
+                        "restarted",
+                        "stopped",
+                        "reinstalled",
+                        "iscsidiscover",
+                        "iscsilogin"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State which should a host to be in after successful completion.",
+                        "I(iscsilogin) and I(iscsidiscover) are supported since version 2.4."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 600,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the host to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "vgpu_placement": {
+                    "choices": [
+                        "consolidated",
+                        "separated"
+                    ],
+                    "description": [
+                        "If I(consolidated), each vGPU is placed on the first physical card with available space. This is the default placement, utilizing all available space on the physical cards.",
+                        "If I(separated), each vGPU is placed on a separate physical card, if possible. This can be useful for improving vGPU performance."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage hosts in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n# Add host with username/password supporting SR-IOV.\n# Note that override_iptables is false by default in oVirt/RHV:\n- ovirt.ovirt.ovirt_host:\n    cluster: Default\n    name: myhost\n    address: 10.34.61.145\n    password: secret\n    override_iptables: true\n    kernel_params:\n      - intel_iommu=on\n\n# Add host using public key\n- ovirt.ovirt.ovirt_host:\n    public_key: true\n    cluster: Default\n    name: myhost2\n    address: 10.34.61.145\n    override_iptables: true\n\n# Deploy hosted engine host\n- ovirt.ovirt.ovirt_host:\n    cluster: Default\n    name: myhost2\n    password: secret\n    address: 10.34.61.145\n    override_iptables: true\n    hosted_engine: deploy\n\n# Maintenance\n- ovirt.ovirt.ovirt_host:\n    state: maintenance\n    name: myhost\n\n# Restart host using power management:\n- ovirt.ovirt.ovirt_host:\n    state: restarted\n    name: myhost\n\n# Upgrade host\n- ovirt.ovirt.ovirt_host:\n    state: upgraded\n    name: myhost\n\n# discover iscsi targets\n- ovirt.ovirt.ovirt_host:\n    state: iscsidiscover\n    name: myhost\n    iscsi:\n      username: iscsi_user\n      password: secret\n      address: 10.34.61.145\n      port: 3260\n\n\n# login to iscsi targets\n- ovirt.ovirt.ovirt_host:\n    state: iscsilogin\n    name: myhost\n    iscsi:\n      username: iscsi_user\n      password: secret\n      address: 10.34.61.145\n      target: \"iqn.2015-07.com.mlipchuk2.redhat:444\"\n      port: 3260\n\n\n# Reinstall host using public key\n- ovirt.ovirt.ovirt_host:\n    state: reinstalled\n    name: myhost\n    public_key: true\n\n# Remove host\n- ovirt.ovirt.ovirt_host:\n    state: absent\n    name: myhost\n    force: True\n\n# Retry removing host when failed (https://bugzilla.redhat.com/show_bug.cgi?id=1719271)\n- ovirt.ovirt.ovirt_host:\n    state: absent\n    name: myhost\n  register: result\n  until: not result.failed\n  retries: 6\n  delay: 20\n\n# Change host Name\n- ovirt.ovirt.ovirt_host:\n    id: 00000000-0000-0000-0000-000000000000\n    name: \"new host name\"\n",
+        "metadata": null,
+        "return": {
+            "host": {
+                "description": "Dictionary of all the host attributes. Host attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/host.",
+                "returned": "On success if host is found.",
+                "type": "dict"
+            },
+            "id": {
+                "description": "ID of the host which is managed",
+                "returned": "On success if host is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            },
+            "iscsi_targets": {
+                "description": "List of host iscsi targets",
+                "returned": "On success if host is found and state is iscsidiscover.",
+                "type": "list"
+            }
+        }
+    }
+}

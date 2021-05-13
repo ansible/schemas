@@ -1,0 +1,506 @@
+{
+    "community.aws.aws_kms": {
+        "doc": {
+            "author": [
+                "Ted Timmons (@tedder)",
+                "Will Thames (@willthames)",
+                "Mark Chappell (@tremble)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Manage role/user access to a KMS key. Not designed for encrypting/decrypting."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_kms.py",
+            "has_action": false,
+            "module": "aws_kms",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "alias": {
+                    "aliases": [
+                        "key_alias"
+                    ],
+                    "description": "An alias for a key. For safety, even though KMS does not require keys to have an alias, this module expects all new keys to be given an alias to make them easier to manage. Existing keys without an alias may be referred to by I(key_id). Use M(community.aws.aws_kms_info) to find key ids. Required if I(key_id) is not given. Note that passing a I(key_id) and I(alias) will only cause a new alias to be added, an alias will never be renamed. The 'alias/' prefix is optional.",
+                    "required": false,
+                    "type": "str"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": "A description of the CMK. Use a description that helps you decide whether the CMK is appropriate for a task.",
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "enable_key_rotation": {
+                    "description": [
+                        "Whether the key should be automatically rotated every year."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "enabled": {
+                    "default": true,
+                    "description": "Whether or not a key is enabled",
+                    "type": "bool"
+                },
+                "grants": {
+                    "description": [
+                        "A list of grants to apply to the key. Each item must contain I(grantee_principal). Each item can optionally contain I(retiring_principal), I(operations), I(constraints), I(name).",
+                        "I(grantee_principal) and I(retiring_principal) must be ARNs",
+                        "For full documentation of suboptions see the boto3 documentation:",
+                        "U(https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kms.html#KMS.Client.create_grant)"
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "constraints": {
+                            "description": [
+                                "Constraints is a dict containing C(encryption_context_subset) or C(encryption_context_equals), either or both being a dict specifying an encryption context match. See U(https://docs.aws.amazon.com/kms/latest/APIReference/API_GrantConstraints.html) or U(https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kms.html#KMS.Client.create_grant)"
+                            ],
+                            "type": "dict"
+                        },
+                        "grantee_principal": {
+                            "description": "The full ARN of the principal being granted permissions.",
+                            "required": true,
+                            "type": "str"
+                        },
+                        "operations": {
+                            "choices": [
+                                "Decrypt",
+                                "Encrypt",
+                                "GenerateDataKey",
+                                "GenerateDataKeyWithoutPlaintext",
+                                "ReEncryptFrom",
+                                "ReEncryptTo",
+                                "CreateGrant",
+                                "RetireGrant",
+                                "DescribeKey",
+                                "Verify",
+                                "Sign"
+                            ],
+                            "description": [
+                                "A list of operations that the grantee may perform using the CMK."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "retiring_principal": {
+                            "description": "The full ARN of the principal permitted to revoke/retire the grant.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "key_id": {
+                    "aliases": [
+                        "key_arn"
+                    ],
+                    "description": [
+                        "Key ID or ARN of the key.",
+                        "One of I(alias) or I(key_id) are required."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "pending_window": {
+                    "aliases": [
+                        "deletion_delay"
+                    ],
+                    "description": [
+                        "The number of days between requesting deletion of the CMK and when it will actually be deleted.",
+                        "Only used when I(state=absent) and the CMK has not yet been deleted.",
+                        "Valid values are between 7 and 30 (inclusive).",
+                        "See also: U(https://docs.aws.amazon.com/kms/latest/APIReference/API_ScheduleKeyDeletion.html#KMS-ScheduleKeyDeletion-request-PendingWindowInDays)"
+                    ],
+                    "type": "int",
+                    "version_added": "1.4.0",
+                    "version_added_collection": "community.aws"
+                },
+                "policy": {
+                    "description": [
+                        "policy to apply to the KMS key.",
+                        "See U(https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)"
+                    ],
+                    "type": "json"
+                },
+                "policy_clean_invalid_entries": {
+                    "aliases": [
+                        "clean_invalid_entries"
+                    ],
+                    "default": true,
+                    "description": [
+                        "(deprecated) If adding/removing a role and invalid grantees are found, remove them. These entries will cause an update to fail in all known cases.",
+                        "Only cleans if changes are being made.",
+                        "Used for modifying the Key Policy rather than modifying a grant and only works on the default policy created through the AWS Console.",
+                        "This option has been deprecated, and will be removed in 2.13. Use I(policy) instead."
+                    ],
+                    "type": "bool"
+                },
+                "policy_grant_types": {
+                    "aliases": [
+                        "grant_types"
+                    ],
+                    "description": [
+                        "(deprecated) List of grants to give to user/role. Likely \"role,role grant\" or \"role,role grant,admin\".",
+                        "Required when I(policy_mode=grant).",
+                        "Used for modifying the Key Policy rather than modifying a grant and only works on the default policy created through the AWS Console.",
+                        "This option has been deprecated, and will be removed in 2.13. Use I(policy) instead."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "policy_mode": {
+                    "aliases": [
+                        "mode"
+                    ],
+                    "choices": [
+                        "grant",
+                        "deny"
+                    ],
+                    "default": "grant",
+                    "description": [
+                        "(deprecated) Grant or deny access.",
+                        "Used for modifying the Key Policy rather than modifying a grant and only works on the default policy created through the AWS Console.",
+                        "This option has been deprecated, and will be removed in 2.13. Use I(policy) instead."
+                    ],
+                    "type": "str"
+                },
+                "policy_role_arn": {
+                    "aliases": [
+                        "role_arn"
+                    ],
+                    "description": [
+                        "(deprecated) ARN of role to allow/deny access.",
+                        "One of I(policy_role_name) or I(policy_role_arn) are required.",
+                        "Used for modifying the Key Policy rather than modifying a grant and only works on the default policy created through the AWS Console.",
+                        "This option has been deprecated, and will be removed in 2.13. Use I(policy) instead."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "policy_role_name": {
+                    "aliases": [
+                        "role_name"
+                    ],
+                    "description": [
+                        "(deprecated) Role to allow/deny access.",
+                        "One of I(policy_role_name) or I(policy_role_arn) are required.",
+                        "Used for modifying the Key Policy rather than modifying a grant and only works on the default policy created through the AWS Console.",
+                        "This option has been deprecated, and will be removed in 2.13. Use I(policy) instead."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_grants": {
+                    "default": false,
+                    "description": "Whether the I(grants) argument should cause grants not in the list to be removed",
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": false,
+                    "description": "Whether the I(tags) argument should cause tags not in the list to be removed",
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "Whether a key should be present or absent. Note that making an existing key absent only schedules a key for deletion.  Passing a key that is scheduled for deletion with state present will cancel key deletion.",
+                    "required": false,
+                    "type": "str"
+                },
+                "tags": {
+                    "description": "A dictionary of tags to apply to a key.",
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Perform various KMS management tasks.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Managing the KMS IAM Policy via policy_mode and policy_grant_types is fragile\n# and has been deprecated in favour of the policy option.\n- name: grant user-style access to production secrets\n  community.aws.aws_kms:\n  args:\n    alias: \"alias/my_production_secrets\"\n    policy_mode: grant\n    policy_role_name: \"prod-appServerRole-1R5AQG2BSEL6L\"\n    policy_grant_types: \"role,role grant\"\n- name: remove access to production secrets from role\n  community.aws.aws_kms:\n  args:\n    alias: \"alias/my_production_secrets\"\n    policy_mode: deny\n    policy_role_name: \"prod-appServerRole-1R5AQG2BSEL6L\"\n\n# Create a new KMS key\n- community.aws.aws_kms:\n    alias: mykey\n    tags:\n      Name: myKey\n      Purpose: protect_stuff\n\n# Update previous key with more tags\n- community.aws.aws_kms:\n    alias: mykey\n    tags:\n      Name: myKey\n      Purpose: protect_stuff\n      Owner: security_team\n\n# Update a known key with grants allowing an instance with the billing-prod IAM profile\n# to decrypt data encrypted with the environment: production, application: billing\n# encryption context\n- community.aws.aws_kms:\n    key_id: abcd1234-abcd-1234-5678-ef1234567890\n    grants:\n      - name: billing_prod\n        grantee_principal: arn:aws:iam::1234567890123:role/billing_prod\n        constraints:\n          encryption_context_equals:\n            environment: production\n            application: billing\n        operations:\n          - Decrypt\n          - RetireGrant\n\n- name: Update IAM policy on an existing KMS key\n  community.aws.aws_kms:\n    alias: my-kms-key\n    policy: '{\"Version\": \"2012-10-17\", \"Id\": \"my-kms-key-permissions\", \"Statement\": [ { <SOME STATEMENT> } ]}'\n    state: present\n\n- name: Example using lookup for policy json\n  community.aws.aws_kms:\n    alias: my-kms-key\n    policy: \"{{ lookup('template', 'kms_iam_policy_template.json.j2') }}\"\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "aliases": {
+                "description": "list of aliases associated with the key",
+                "returned": "always",
+                "sample": [
+                    "aws/acm",
+                    "aws/ebs"
+                ],
+                "type": "list"
+            },
+            "aws_account_id": {
+                "description": "The AWS Account ID that the key belongs to",
+                "returned": "always",
+                "sample": 1234567890123,
+                "type": "str"
+            },
+            "changes_needed": {
+                "description": "grant types that would be changed/were changed.",
+                "returned": "always",
+                "sample": {
+                    "role": "add",
+                    "role grant": "add"
+                },
+                "type": "dict"
+            },
+            "creation_date": {
+                "description": "Date of creation of the key",
+                "returned": "always",
+                "sample": "2017-04-18T15:12:08.551000+10:00",
+                "type": "str"
+            },
+            "description": {
+                "description": "Description of the key",
+                "returned": "always",
+                "sample": "My Key for Protecting important stuff",
+                "type": "str"
+            },
+            "enabled": {
+                "description": "Whether the key is enabled. True if C(KeyState) is true.",
+                "returned": "always",
+                "sample": false,
+                "type": "str"
+            },
+            "grants": {
+                "contains": {
+                    "constraints": {
+                        "description": "Constraints on the encryption context that the grant allows. See U(https://docs.aws.amazon.com/kms/latest/APIReference/API_GrantConstraints.html) for further details",
+                        "returned": "always",
+                        "sample": {
+                            "encryption_context_equals": {
+                                "aws:lambda:_function_arn": "arn:aws:lambda:ap-southeast-2:012345678912:function:xyz"
+                            }
+                        },
+                        "type": "dict"
+                    },
+                    "creation_date": {
+                        "description": "Date of creation of the grant",
+                        "returned": "always",
+                        "sample": "2017-04-18T15:12:08+10:00",
+                        "type": "str"
+                    },
+                    "grant_id": {
+                        "description": "The unique ID for the grant",
+                        "returned": "always",
+                        "sample": "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
+                        "type": "str"
+                    },
+                    "grantee_principal": {
+                        "description": "The principal that receives the grant's permissions",
+                        "returned": "always",
+                        "sample": "arn:aws:sts::0123456789012:assumed-role/lambda_xyz/xyz",
+                        "type": "str"
+                    },
+                    "issuing_account": {
+                        "description": "The AWS account under which the grant was issued",
+                        "returned": "always",
+                        "sample": "arn:aws:iam::01234567890:root",
+                        "type": "str"
+                    },
+                    "key_id": {
+                        "description": "The key ARN to which the grant applies.",
+                        "returned": "always",
+                        "sample": "arn:aws:kms:ap-southeast-2:123456789012:key/abcd1234-abcd-1234-5678-ef1234567890",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "The friendly name that identifies the grant",
+                        "returned": "always",
+                        "sample": "xyz",
+                        "type": "str"
+                    },
+                    "operations": {
+                        "description": "The list of operations permitted by the grant",
+                        "returned": "always",
+                        "sample": [
+                            "Decrypt",
+                            "RetireGrant"
+                        ],
+                        "type": "list"
+                    },
+                    "retiring_principal": {
+                        "description": "The principal that can retire the grant",
+                        "returned": "always",
+                        "sample": "arn:aws:sts::0123456789012:assumed-role/lambda_xyz/xyz",
+                        "type": "str"
+                    }
+                },
+                "description": "list of grants associated with a key",
+                "returned": "always",
+                "type": "complex"
+            },
+            "had_invalid_entries": {
+                "description": "there are invalid (non-ARN) entries in the KMS entry. These don't count as a change, but will be removed if any changes are being made.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "key_arn": {
+                "description": "ARN of key",
+                "returned": "always",
+                "sample": "arn:aws:kms:ap-southeast-2:123456789012:key/abcd1234-abcd-1234-5678-ef1234567890",
+                "type": "str"
+            },
+            "key_id": {
+                "description": "ID of key",
+                "returned": "always",
+                "sample": "abcd1234-abcd-1234-5678-ef1234567890",
+                "type": "str"
+            },
+            "key_state": {
+                "description": "The state of the key",
+                "returned": "always",
+                "sample": "PendingDeletion",
+                "type": "str"
+            },
+            "key_usage": {
+                "description": "The cryptographic operations for which you can use the key.",
+                "returned": "always",
+                "sample": "ENCRYPT_DECRYPT",
+                "type": "str"
+            },
+            "origin": {
+                "description": "The source of the key's key material. When this value is C(AWS_KMS), AWS KMS created the key material. When this value is C(EXTERNAL), the key material was imported or the CMK lacks key material.",
+                "returned": "always",
+                "sample": "AWS_KMS",
+                "type": "str"
+            },
+            "policies": {
+                "description": "list of policy documents for the keys. Empty when access is denied even if there are policies.",
+                "returned": "always",
+                "sample": {
+                    "Id": "auto-ebs-2",
+                    "Statement": [
+                        {
+                            "Action": [
+                                "kms:Encrypt",
+                                "kms:Decrypt",
+                                "kms:ReEncrypt*",
+                                "kms:GenerateDataKey*",
+                                "kms:CreateGrant",
+                                "kms:DescribeKey"
+                            ],
+                            "Condition": {
+                                "StringEquals": {
+                                    "kms:CallerAccount": "111111111111",
+                                    "kms:ViaService": "ec2.ap-southeast-2.amazonaws.com"
+                                }
+                            },
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": "*"
+                            },
+                            "Resource": "*",
+                            "Sid": "Allow access through EBS for all principals in the account that are authorized to use EBS"
+                        },
+                        {
+                            "Action": [
+                                "kms:Describe*",
+                                "kms:Get*",
+                                "kms:List*",
+                                "kms:RevokeGrant"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": "arn:aws:iam::111111111111:root"
+                            },
+                            "Resource": "*",
+                            "Sid": "Allow direct access to key metadata to the account"
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                },
+                "type": "list"
+            },
+            "tags": {
+                "description": "dictionary of tags applied to the key",
+                "returned": "always",
+                "sample": {
+                    "Name": "myKey",
+                    "Purpose": "protecting_stuff"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

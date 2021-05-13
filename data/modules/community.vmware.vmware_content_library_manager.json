@@ -1,0 +1,162 @@
+{
+    "community.vmware.vmware_content_library_manager": {
+        "doc": {
+            "author": [
+                "Pavan Bidkar (@pgbidkar)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Module to manage VMware content Library",
+                "Content Library feature is introduced in vSphere 6.0 version, so this module is not supported in the earlier versions of vSphere.",
+                "All variables and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_content_library_manager.py",
+            "has_action": false,
+            "module": "vmware_content_library_manager",
+            "notes": [
+                "Tested on vSphere 6.5, 6.7"
+            ],
+            "options": {
+                "datastore_name": {
+                    "aliases": [
+                        "datastore"
+                    ],
+                    "description": [
+                        "Name of the datastore on which backing content library is created.",
+                        "This is required only if C(state) is set to C(present).",
+                        "This parameter is ignored, when C(state) is set to C(absent).",
+                        "Currently only datastore backing creation is supported."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "library_description": {
+                    "default": "",
+                    "description": [
+                        "The content library description.",
+                        "This is required only if C(state) is set to C(present).",
+                        "This parameter is ignored, when C(state) is set to C(absent).",
+                        "Process of updating content library only allows description change."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "library_name": {
+                    "description": [
+                        "The name of VMware content library to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "library_type": {
+                    "choices": [
+                        "local",
+                        "subscribed"
+                    ],
+                    "default": "local",
+                    "description": [
+                        "The content library type.",
+                        "This is required only if C(state) is set to C(present).",
+                        "This parameter is ignored, when C(state) is set to C(absent)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead."
+                    ],
+                    "type": "int"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The connection to protocol."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The state of content library.",
+                        "If set to C(present) and library does not exists, then content library is created.",
+                        "If set to C(present) and library exists, then content library is updated.",
+                        "If set to C(absent) and library exists, then content library is deleted.",
+                        "If set to C(absent) and library does not exists, no action is taken."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid.",
+                        "Set to C(no) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi",
+                "vSphere Automation SDK"
+            ],
+            "short_description": "Create, update and delete VMware content library"
+        },
+        "examples": "\n- name: Create Content Library\n  community.vmware.vmware_content_library_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    library_name: test-content-lib\n    library_description: 'Library with Datastore Backing'\n    library_type: local\n    datastore_name: datastore\n    validate_certs: False\n    state: present\n  delegate_to: localhost\n\n- name: Update Content Library\n  community.vmware.vmware_content_library_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    library_name: test-content-lib\n    library_description: 'Library with Datastore Backing'\n    validate_certs: no\n    state: present\n  delegate_to: localhost\n\n- name: Delete Content Library\n  community.vmware.vmware_content_library_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    library_name: test-content-lib\n    validate_certs: no\n    state: absent\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "content_library_info": {
+                "description": "library creation success and library_id",
+                "returned": "on success",
+                "sample": {
+                    "library_description": "Test description",
+                    "library_id": "d0b92fa9-7039-4f29-8e9c-0debfcb22b72",
+                    "library_type": "LOCAL",
+                    "msg": "Content Library 'demo-local-lib-4' created."
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

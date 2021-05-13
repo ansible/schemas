@@ -1,0 +1,212 @@
+{
+    "community.docker.docker_node": {
+        "doc": {
+            "author": [
+                "Piotr Wojciechowski (@WojciechowskiPiotr)",
+                "Thierry Bouvet (@tbouvet)"
+            ],
+            "collection": "community.docker",
+            "description": [
+                "Manages the Docker nodes via Swarm Manager.",
+                "This module allows to change the node's role, its availability, and to modify, add or remove node labels."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/docker/plugins/modules/docker_node.py",
+            "has_action": false,
+            "module": "docker_node",
+            "notes": [
+                "Connect to the Docker daemon by providing parameters with each task or by defining environment variables. You can define C(DOCKER_HOST), C(DOCKER_TLS_HOSTNAME), C(DOCKER_API_VERSION), C(DOCKER_CERT_PATH), C(DOCKER_SSL_VERSION), C(DOCKER_TLS), C(DOCKER_TLS_VERIFY) and C(DOCKER_TIMEOUT). If you are using docker machine, run the script shipped with the product that sets up the environment. It will set these variables for you. See U(https://docs.docker.com/machine/reference/env/) for more details.",
+                "When connecting to Docker daemon with TLS, you might need to install additional Python packages. For the Docker SDK for Python, version 2.4 or newer, this can be done by installing C(docker[tls]) with M(ansible.builtin.pip).",
+                "Note that the Docker SDK for Python only allows to specify the path to the Docker configuration for very few functions. In general, it will use C($HOME/.docker/config.json) if the C(DOCKER_CONFIG) environment variable is not specified, and use C($DOCKER_CONFIG/config.json) otherwise.",
+                "This module uses the L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) to communicate with the Docker daemon."
+            ],
+            "options": {
+                "api_version": {
+                    "aliases": [
+                        "docker_api_version"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "The version of the Docker API running on the Docker Host.",
+                        "Defaults to the latest version of the API supported by Docker SDK for Python and the docker daemon.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_API_VERSION) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "availability": {
+                    "choices": [
+                        "active",
+                        "pause",
+                        "drain"
+                    ],
+                    "description": "Node availability to assign. If not provided then node availability remains unchanged.",
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "tls_ca_cert",
+                        "cacert_path"
+                    ],
+                    "description": [
+                        "Use a CA certificate when performing server verification by providing the path to a CA certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(ca.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "tls_client_cert",
+                        "cert_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(cert.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "tls_client_key",
+                        "key_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS key file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(key.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "debug": {
+                    "default": false,
+                    "description": [
+                        "Debug mode"
+                    ],
+                    "type": "bool"
+                },
+                "docker_host": {
+                    "aliases": [
+                        "docker_url"
+                    ],
+                    "default": "unix://var/run/docker.sock",
+                    "description": [
+                        "The URL or Unix socket path used to connect to the Docker API. To connect to a remote host, provide the TCP connection string. For example, C(tcp://192.0.2.23:2376). If TLS is used to encrypt the connection, the module will automatically replace C(tcp) in the connection URL with C(https).",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_HOST) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or ID of node as registered in Swarm.",
+                        "If more than one node is registered using the same hostname the ID must be used, otherwise module will fail."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "labels": {
+                    "description": [
+                        "User-defined key/value metadata that will be assigned as node attribute.",
+                        "Label operations in this module apply to the docker swarm node specified by I(hostname). Use M(community.docker.docker_swarm) module to add/modify/remove swarm cluster labels.",
+                        "The actual state of labels assigned to the node when module completes its work depends on I(labels_state) and I(labels_to_remove) parameters values. See description below."
+                    ],
+                    "type": "dict"
+                },
+                "labels_state": {
+                    "choices": [
+                        "merge",
+                        "replace"
+                    ],
+                    "default": "merge",
+                    "description": [
+                        "It defines the operation on the labels assigned to node and labels specified in I(labels) option.",
+                        "Set to C(merge) to combine labels provided in I(labels) with those already assigned to the node. If no labels are assigned then it will add listed labels. For labels that are already assigned to the node, it will update their values. The labels not specified in I(labels) will remain unchanged. If I(labels) is empty then no changes will be made.",
+                        "Set to C(replace) to replace all assigned labels with provided ones. If I(labels) is empty then all labels assigned to the node will be removed."
+                    ],
+                    "type": "str"
+                },
+                "labels_to_remove": {
+                    "description": [
+                        "List of labels that will be removed from the node configuration. The list has to contain only label names, not their values.",
+                        "If the label provided on the list is not assigned to the node, the entry is ignored.",
+                        "If the label is both on the I(labels_to_remove) and I(labels), then value provided in I(labels) remains assigned to the node.",
+                        "If I(labels_state) is C(replace) and I(labels) is not provided or empty then all labels assigned to node are removed and I(labels_to_remove) is ignored."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "role": {
+                    "choices": [
+                        "manager",
+                        "worker"
+                    ],
+                    "description": "Node role to assign. If not provided then node role remains unchanged.",
+                    "type": "str"
+                },
+                "ssl_version": {
+                    "description": [
+                        "Provide a valid SSL version number. Default value determined by ssl.py module.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_SSL_VERSION) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 60,
+                    "description": [
+                        "The maximum amount of time in seconds to wait on a response from the API.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TIMEOUT) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "int"
+                },
+                "tls": {
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS without verifying the authenticity of the Docker host server. Note that if I(validate_certs) is set to C(yes) as well, it will take precedence.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                },
+                "tls_hostname": {
+                    "description": [
+                        "When verifying the authenticity of the Docker Host server, provide the expected name of the server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_HOSTNAME) will be used instead. If the environment variable is not set, the default value will be used.",
+                        "The current default value is C(localhost). This default is deprecated and will change in community.docker 2.0.0 to be a value computed from I(docker_host). Explicitly specify C(localhost) to make sure this value will still be used, and to disable the deprecation message which will be shown otherwise."
+                    ],
+                    "type": "str"
+                },
+                "use_ssh_client": {
+                    "default": false,
+                    "description": [
+                        "For SSH transports, use the C(ssh) CLI tool instead of paramiko.",
+                        "Requires Docker SDK for Python 4.4.0 or newer."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.docker"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tls_verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS and verifying the authenticity of the Docker host server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_VERIFY) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "Docker API >= 1.25",
+                "Docker SDK for Python: Please note that the L(docker-py,https://pypi.org/project/docker-py/) Python module has been superseded by L(docker,https://pypi.org/project/docker/) (see L(here,https://github.com/docker/docker-py/issues/1310) for details). For Python 2.6, C(docker-py) must be used. Otherwise, it is recommended to install the C(docker) Python module. Note that both modules should *not* be installed at the same time. Also note that when both modules are installed and one of them is uninstalled, the other might no longer function and a reinstall of it is required.",
+                "L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) >= 2.4.0"
+            ],
+            "short_description": "Manage Docker Swarm node"
+        },
+        "examples": "\n- name: Set node role\n  community.docker.docker_node:\n    hostname: mynode\n    role: manager\n\n- name: Set node availability\n  community.docker.docker_node:\n    hostname: mynode\n    availability: drain\n\n- name: Replace node labels with new labels\n  community.docker.docker_node:\n    hostname: mynode\n    labels:\n      key: value\n    labels_state: replace\n\n- name: Merge node labels and new labels\n  community.docker.docker_node:\n    hostname: mynode\n    labels:\n      key: value\n\n- name: Remove all labels assigned to node\n  community.docker.docker_node:\n    hostname: mynode\n    labels_state: replace\n\n- name: Remove selected labels from the node\n  community.docker.docker_node:\n    hostname: mynode\n    labels_to_remove:\n      - key1\n      - key2\n",
+        "metadata": null,
+        "return": {
+            "node": {
+                "description": "Information about node after 'update' operation",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

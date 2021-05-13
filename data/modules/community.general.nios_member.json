@@ -1,0 +1,645 @@
+{
+    "community.general.nios_member": {
+        "doc": {
+            "author": "Krishna Vasudevan (@krisvasudevan)",
+            "collection": "community.general",
+            "description": [
+                "Adds and/or removes Infoblox NIOS servers.  This module manages NIOS C(member) objects using the Infoblox WAPI interface over REST."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/nios_member.py",
+            "has_action": false,
+            "module": "nios_member",
+            "notes": [
+                "This module must be run locally, which can be achieved by specifying C(connection: local).",
+                "Please read the :ref:`nios_guide` for more detailed information on how to use Infoblox with Ansible."
+            ],
+            "options": {
+                "comment": {
+                    "description": [
+                        "A descriptive comment of the Grid member."
+                    ],
+                    "type": "str"
+                },
+                "config_addr_type": {
+                    "default": "IPV4",
+                    "description": [
+                        "Address configuration type (IPV4/IPV6/BOTH)"
+                    ],
+                    "type": "str"
+                },
+                "create_token": {
+                    "default": false,
+                    "description": [
+                        "Flag for initiating a create token request for pre-provisioned members."
+                    ],
+                    "type": "bool"
+                },
+                "enable_ha": {
+                    "default": false,
+                    "description": [
+                        "If set to True, the member has two physical nodes (HA pair)."
+                    ],
+                    "type": "bool"
+                },
+                "extattrs": {
+                    "description": [
+                        "Extensible attributes associated with the object."
+                    ],
+                    "type": "dict"
+                },
+                "external_syslog_server_enable": {
+                    "description": [
+                        "Determines if external syslog servers should be enabled"
+                    ],
+                    "type": "bool"
+                },
+                "host_name": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Specifies the host name of the member to either add or remove from the NIOS instance."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ipv6_setting": {
+                    "description": [
+                        "Configures the IPv6 settings for the grid member."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "cidr_prefix": {
+                            "description": [
+                                "The IPv6 CIDR prefix for the Grid Member"
+                            ],
+                            "type": "int"
+                        },
+                        "gateway": {
+                            "description": [
+                                "The gateway address for the Grid Member"
+                            ],
+                            "type": "str"
+                        },
+                        "virtual_ip": {
+                            "description": [
+                                "The IPv6 Address of the Grid Member"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "lan2_enabled": {
+                    "default": false,
+                    "description": [
+                        "When set to \"true\", the LAN2 port is enabled as an independent port or as a port for failover purposes."
+                    ],
+                    "type": "bool"
+                },
+                "lan2_port_setting": {
+                    "description": [
+                        "Settings for the Grid member LAN2 port if 'lan2_enabled' is set to \"true\"."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "enabled": {
+                            "description": [
+                                "If set to True, then it has its own IP settings."
+                            ],
+                            "type": "bool"
+                        },
+                        "network_setting": {
+                            "description": [
+                                "If the 'enable' field is set to True, this defines IPv4 network settings for LAN2."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "address": {
+                                    "description": [
+                                        "The IPv4 Address of LAN2"
+                                    ],
+                                    "type": "str"
+                                },
+                                "gateway": {
+                                    "description": [
+                                        "The default gateway of LAN2"
+                                    ],
+                                    "type": "str"
+                                },
+                                "subnet_mask": {
+                                    "description": [
+                                        "The subnet mask of LAN2"
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "v6_network_setting": {
+                            "description": [
+                                "If the 'enable' field is set to True, this defines IPv6 network settings for LAN2."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "cidr_prefix": {
+                                    "description": [
+                                        "The IPv6 CIDR prefix of LAN2"
+                                    ],
+                                    "type": "int"
+                                },
+                                "gateway": {
+                                    "description": [
+                                        "The gateway address of LAN2"
+                                    ],
+                                    "type": "str"
+                                },
+                                "virtual_ip": {
+                                    "description": [
+                                        "The IPv6 Address of LAN2"
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "mgmt_port_setting": {
+                    "description": [
+                        "Settings for the member MGMT port."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "enabled": {
+                            "description": [
+                                "Determines if MGMT port settings should be enabled."
+                            ],
+                            "type": "bool"
+                        },
+                        "security_access_enabled": {
+                            "description": [
+                                "Determines if security access on the MGMT port is enabled or not."
+                            ],
+                            "type": "bool"
+                        },
+                        "vpn_enabled": {
+                            "description": [
+                                "Determines if VPN on the MGMT port is enabled or not."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "list"
+                },
+                "node_info": {
+                    "description": [
+                        "Configures the node information list with detailed status report on the operations of the Grid Member."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "lan2_physical_setting": {
+                            "description": [
+                                "Physical port settings for the LAN2 interface."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "auto_port_setting_enabled": {
+                                    "description": [
+                                        "Enable or disalbe the auto port setting."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "duplex": {
+                                    "description": [
+                                        "The port duplex; if speed is 1000, duplex must be FULL."
+                                    ],
+                                    "type": "str"
+                                },
+                                "speed": {
+                                    "description": [
+                                        "The port speed; if speed is 1000, duplex is FULL."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "lan_ha_port_setting": {
+                            "description": [
+                                "LAN/HA port settings for the node."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "ha_ip_address": {
+                                    "description": [
+                                        "HA IP address."
+                                    ],
+                                    "type": "str"
+                                },
+                                "ha_port_setting": {
+                                    "description": [
+                                        "Physical port settings for the HA interface."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "auto_port_setting_enabled": {
+                                            "description": [
+                                                "Enable or disalbe the auto port setting."
+                                            ],
+                                            "type": "bool"
+                                        },
+                                        "duplex": {
+                                            "description": [
+                                                "The port duplex; if speed is 1000, duplex must be FULL."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "speed": {
+                                            "description": [
+                                                "The port speed; if speed is 1000, duplex is FULL."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "lan_port_setting": {
+                                    "description": [
+                                        "Physical port settings for the LAN interface."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "auto_port_setting_enabled": {
+                                            "description": [
+                                                "Enable or disalbe the auto port setting."
+                                            ],
+                                            "type": "bool"
+                                        },
+                                        "duplex": {
+                                            "description": [
+                                                "The port duplex; if speed is 1000, duplex must be FULL."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "speed": {
+                                            "description": [
+                                                "The port speed; if speed is 1000, duplex is FULL."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "mgmt_ipv6addr": {
+                                    "description": [
+                                        "Public IPv6 address for the LAN1 interface."
+                                    ],
+                                    "type": "str"
+                                },
+                                "mgmt_lan": {
+                                    "description": [
+                                        "Public IPv4 address for the LAN1 interface."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "mgmt_network_setting": {
+                            "description": [
+                                "Network settings for the MGMT port of the node."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "address": {
+                                    "description": [
+                                        "The IPv4 Address of MGMT"
+                                    ],
+                                    "type": "str"
+                                },
+                                "gateway": {
+                                    "description": [
+                                        "The default gateway of MGMT"
+                                    ],
+                                    "type": "str"
+                                },
+                                "subnet_mask": {
+                                    "description": [
+                                        "The subnet mask of MGMT"
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "v6_mgmt_network_setting": {
+                            "description": [
+                                "The network settings for the IPv6 MGMT port of the node."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "cidr_prefix": {
+                                    "description": [
+                                        "The IPv6 CIDR prefix of MGMT"
+                                    ],
+                                    "type": "int"
+                                },
+                                "gateway": {
+                                    "description": [
+                                        "The gateway address of MGMT"
+                                    ],
+                                    "type": "str"
+                                },
+                                "virtual_ip": {
+                                    "description": [
+                                        "The IPv6 Address of MGMT"
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "platform": {
+                    "default": "INFOBLOX",
+                    "description": [
+                        "Configures the Hardware Platform."
+                    ],
+                    "type": "str"
+                },
+                "pre_provisioning": {
+                    "description": [
+                        "Pre-provisioning information."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "hardware_info": {
+                            "description": [
+                                "An array of structures that describe the hardware being pre-provisioned."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "hwmodel": {
+                                    "description": [
+                                        "Hardware model"
+                                    ],
+                                    "type": "str"
+                                },
+                                "hwtype": {
+                                    "description": [
+                                        "Hardware type."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "licenses": {
+                            "description": [
+                                "An array of license types."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote instance of NIOS WAPI over REST",
+                                "Value can also be specified using C(INFOBLOX_HOST) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "http_pool_connections": {
+                            "default": 10,
+                            "description": [
+                                "Number of pools to be used by the C(infoblox_client.Connector) object.",
+                                "This is passed as-is to the underlying C(requests.adapters.HTTPAdapter) class."
+                            ],
+                            "type": "int"
+                        },
+                        "http_pool_maxsize": {
+                            "default": 10,
+                            "description": [
+                                "Maximum number of connections per pool to be used by the C(infoblox_client.Connector) object.",
+                                "This is passed as-is to the underlying C(requests.adapters.HTTPAdapter) class."
+                            ],
+                            "type": "int"
+                        },
+                        "http_request_timeout": {
+                            "default": 10,
+                            "description": [
+                                "The amount of time before to wait before receiving a response",
+                                "Value can also be specified using C(INFOBLOX_HTTP_REQUEST_TIMEOUT) environment variable."
+                            ],
+                            "type": "int"
+                        },
+                        "max_results": {
+                            "default": 1000,
+                            "description": [
+                                "Specifies the maximum number of objects to be returned, if set to a negative number the appliance will return an error when the number of returned objects would exceed the setting.",
+                                "Value can also be specified using C(INFOBLOX_MAX_RESULTS) environment variable."
+                            ],
+                            "type": "int"
+                        },
+                        "max_retries": {
+                            "default": 3,
+                            "description": [
+                                "Configures the number of attempted retries before the connection is declared usable",
+                                "Value can also be specified using C(INFOBLOX_MAX_RETRIES) environment variable."
+                            ],
+                            "type": "int"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote instance of NIOS.",
+                                "Value can also be specified using C(INFOBLOX_PASSWORD) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "silent_ssl_warnings": {
+                            "default": true,
+                            "description": [
+                                "Disable C(urllib3) SSL warnings in the C(infoblox_client.Connector) object.",
+                                "This is passed as-is to the underlying C(requests.adapters.HTTPAdapter) class."
+                            ],
+                            "type": "bool"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote instance of NIOS.",
+                                "Value can also be specified using C(INFOBLOX_USERNAME) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "aliases": [
+                                "ssl_verify"
+                            ],
+                            "default": false,
+                            "description": [
+                                "Boolean value to enable or disable verifying SSL certificates",
+                                "Value can also be specified using C(INFOBLOX_SSL_VERIFY) environment variable."
+                            ],
+                            "type": "bool"
+                        },
+                        "wapi_version": {
+                            "default": "2.1",
+                            "description": [
+                                "Specifies the version of WAPI to use",
+                                "Value can also be specified using C(INFOBLOX_WAP_VERSION) environment variable.",
+                                "Until ansible 2.8 the default WAPI was 1.4"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "router_id": {
+                    "description": [
+                        "Virtual router identifier. Provide this ID if \"ha_enabled\" is set to \"true\". This is a unique VRID number (from 1 to 255) for the local subnet."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Configures the intended state of the instance of the object on the NIOS server.  When this value is set to C(present), the object is configured on the device and when this value is set to C(absent) the value is removed (if necessary) from the device."
+                    ],
+                    "type": "str"
+                },
+                "syslog_servers": {
+                    "description": [
+                        "The list of external syslog servers."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "The server address."
+                            ],
+                            "type": "str"
+                        },
+                        "category_list": {
+                            "description": [
+                                "The list of all syslog logging categories."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "connection_type": {
+                            "default": "UDP",
+                            "description": [
+                                "The connection type for communicating with this server.(STCP/TCP?UDP)"
+                            ],
+                            "type": "str"
+                        },
+                        "local_interface": {
+                            "default": "ANY",
+                            "description": [
+                                "The local interface through which the appliance sends syslog messages to the syslog server.(ANY/LAN/MGMT)"
+                            ],
+                            "type": "str"
+                        },
+                        "message_node_id": {
+                            "default": "LAN",
+                            "description": [
+                                "Identify the node in the syslog message. (HOSTNAME/IP_HOSTNAME/LAN/MGMT)"
+                            ],
+                            "type": "str"
+                        },
+                        "message_source": {
+                            "default": "ANY",
+                            "description": [
+                                "The source of syslog messages to be sent to the external syslog server."
+                            ],
+                            "type": "str"
+                        },
+                        "only_category_list": {
+                            "description": [
+                                "The list of selected syslog logging categories. The appliance forwards syslog messages that belong to the selected categories."
+                            ],
+                            "type": "bool"
+                        },
+                        "port": {
+                            "default": 514,
+                            "description": [
+                                "The port this server listens on."
+                            ],
+                            "type": "int"
+                        },
+                        "severity": {
+                            "default": "DEBUG",
+                            "description": [
+                                "The severity filter. The appliance sends log messages of the specified severity and above to the external syslog server."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "upgrade_group": {
+                    "default": "Default",
+                    "description": [
+                        "The name of the upgrade group to which this Grid member belongs."
+                    ],
+                    "type": "str"
+                },
+                "use_syslog_proxy_setting": {
+                    "description": [
+                        "Use flag for external_syslog_server_enable , syslog_servers, syslog_proxy_setting, syslog_size"
+                    ],
+                    "type": "bool"
+                },
+                "vip_setting": {
+                    "description": [
+                        "Configures the network settings for the grid member."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "The IPv4 Address of the Grid Member"
+                            ],
+                            "type": "str"
+                        },
+                        "gateway": {
+                            "description": [
+                                "The default gateway for the Grid Member"
+                            ],
+                            "type": "str"
+                        },
+                        "subnet_mask": {
+                            "description": [
+                                "The subnet mask for the Grid Member"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "infoblox-client"
+            ],
+            "short_description": "Configure Infoblox NIOS members"
+        },
+        "examples": "\n- name: Add a member to the grid with IPv4 address\n  community.general.nios_member:\n    host_name: member01.localdomain\n    vip_setting:\n      - address: 192.168.1.100\n        subnet_mask: 255.255.255.0\n        gateway: 192.168.1.1\n    config_addr_type: IPV4\n    platform: VNIOS\n    comment: \"Created by Ansible\"\n    state: present\n    provider:\n      host: \"{{ inventory_hostname_short }}\"\n      username: admin\n      password: admin\n  connection: local\n- name: Add a HA member to the grid\n  community.general.nios_member:\n    host_name: memberha.localdomain\n    vip_setting:\n      - address: 192.168.1.100\n        subnet_mask: 255.255.255.0\n        gateway: 192.168.1.1\n    config_addr_type: IPV4\n    platform: VNIOS\n    enable_ha: true\n    router_id: 150\n    node_info:\n      - lan_ha_port_setting:\n         - ha_ip_address: 192.168.1.70\n           mgmt_lan: 192.168.1.80\n      - lan_ha_port_setting:\n         - ha_ip_address: 192.168.1.71\n           mgmt_lan: 192.168.1.81\n    comment: \"Created by Ansible\"\n    state: present\n    provider:\n      host: \"{{ inventory_hostname_short }}\"\n      username: admin\n      password: admin\n  connection: local\n- name: Update the member with pre-provisioning details specified\n  community.general.nios_member:\n    name: member01.localdomain\n    pre_provisioning:\n      - hardware_info:\n         - hwmodel: IB-VM-820\n           hwtype: IB-VNIOS\n        licenses:\n         - dns\n         - dhcp\n         - enterprise\n         - vnios\n    comment: \"Updated by Ansible\"\n    state: present\n    provider:\n      host: \"{{ inventory_hostname_short }}\"\n      username: admin\n      password: admin\n  connection: local\n- name: Remove the member\n  community.general.nios_member:\n    name: member01.localdomain\n    state: absent\n    provider:\n      host: \"{{ inventory_hostname_short }}\"\n      username: admin\n      password: admin\n  connection: local\n",
+        "metadata": null,
+        "return": null
+    }
+}

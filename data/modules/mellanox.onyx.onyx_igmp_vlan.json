@@ -1,0 +1,131 @@
+{
+    "mellanox.onyx.onyx_igmp_vlan": {
+        "doc": {
+            "author": "Anas Badaha (@anasbadaha)",
+            "collection": "mellanox.onyx",
+            "description": [
+                "This module provides declarative management of IGMP vlan configuration on Mellanox ONYX network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/mellanox/onyx/plugins/modules/onyx_igmp_vlan.py",
+            "has_action": false,
+            "module": "onyx_igmp_vlan",
+            "notes": [
+                "Tested on ONYX 3.7.0932-01"
+            ],
+            "options": {
+                "mrouter": {
+                    "description": [
+                        "Configure ip igmp snooping mrouter port on vlan"
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Configure mrouter interface"
+                            ],
+                            "required": true
+                        },
+                        "state": {
+                            "choices": [
+                                "enabled",
+                                "disabled"
+                            ],
+                            "default": "enabled",
+                            "description": [
+                                "Enable IGMP snooping mrouter on vlan interface."
+                            ]
+                        }
+                    }
+                },
+                "querier": {
+                    "description": [
+                        "Configure the IGMP querier parameters"
+                    ],
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "Update IP address for the querier"
+                            ]
+                        },
+                        "interval": {
+                            "description": [
+                                "Update time interval between querier queries, range 60-600"
+                            ]
+                        },
+                        "state": {
+                            "choices": [
+                                "enabled",
+                                "disabled"
+                            ],
+                            "default": "enabled",
+                            "description": [
+                                "Enable IGMP snooping querier on vlan in the switch."
+                            ]
+                        }
+                    }
+                },
+                "state": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "IGMP state."
+                    ]
+                },
+                "static_groups": {
+                    "description": [
+                        "List of IGMP static groups."
+                    ],
+                    "suboptions": {
+                        "multicast_ip_address": {
+                            "description": [
+                                "Configure static IP multicast group, range 224.0.1.0-239.255.255.25."
+                            ],
+                            "required": true
+                        },
+                        "name": {
+                            "description": [
+                                "interface name to configure static groups on it."
+                            ]
+                        },
+                        "sources": {
+                            "description": [
+                                "List of IP sources to be configured"
+                            ]
+                        }
+                    }
+                },
+                "version": {
+                    "choices": [
+                        "V2",
+                        "V3"
+                    ],
+                    "description": [
+                        "IGMP snooping operation version on this vlan"
+                    ]
+                },
+                "vlan_id": {
+                    "description": [
+                        "VLAN ID, vlan should exist."
+                    ],
+                    "required": true
+                }
+            },
+            "short_description": "Configures IGMP Vlan parameters"
+        },
+        "examples": "\n- name: Configure igmp vlan\n  onyx_igmp_vlan:\n    state: enabled\n    vlan_id: 10\n    version:\n      V2\n    querier:\n      state: enabled\n      interval: 70\n      address: 10.11.121.13\n    mrouter:\n      state: disabled\n      name: Eth1/2\n    static_groups:\n      - multicast_ip_address: 224.5.5.8\n        name: Eth1/1\n        sources:\n          - 1.1.1.1\n          - 1.1.1.2\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device.",
+                "returned": "always",
+                "sample": [
+                    "vlan 10 ip igmp snooping",
+                    "vlan 10 ip igmp snooping static-group 224.5.5.5 interface ethernet 1/1"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

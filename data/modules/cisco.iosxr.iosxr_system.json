@@ -1,0 +1,170 @@
+{
+    "cisco.iosxr.iosxr_system": {
+        "doc": {
+            "author": [
+                "Peter Sprygada (@privateip)",
+                "Kedar Kekan (@kedarX)"
+            ],
+            "collection": "cisco.iosxr",
+            "description": [
+                "This module provides declarative management of node system attributes on Cisco IOS XR devices. It provides an option to configure host system parameters or remove those parameters from the device active configuration."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/iosxr/plugins/modules/iosxr_system.py",
+            "has_action": true,
+            "module": "iosxr_system",
+            "notes": [
+                "This module works with connection C(network_cli) and C(netconf). See L(the IOS-XR Platform Options,../network/user_guide/platform_iosxr.html).",
+                "Tested against IOS XRv 6.1.3",
+                "name-servers I(state=absent) operation with C(netconf) transport is a success, but with rpc-error. This is due to XR platform issue. Recommended to use I(ignore_errors) option with the task as a workaround.",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_."
+            ],
+            "options": {
+                "domain_name": {
+                    "description": [
+                        "Configure the IP domain name on the remote device to the provided value. Value should be in the dotted name form and will be appended to the C(hostname) to create a fully-qualified domain name."
+                    ],
+                    "type": "str"
+                },
+                "domain_search": {
+                    "description": [
+                        "Provides the list of domain suffixes to append to the hostname for the purpose of doing name resolution. This argument accepts a list of names and will be reconciled with the current active configuration on the running node."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "hostname": {
+                    "description": [
+                        "Configure the device hostname parameter. This option takes an ASCII string value."
+                    ],
+                    "type": "str"
+                },
+                "lookup_enabled": {
+                    "default": true,
+                    "description": [
+                        "Provides administrative control for enabling or disabling DNS lookups.  When this argument is set to True, lookups are performed and when it is set to False, lookups are not performed."
+                    ],
+                    "type": "bool"
+                },
+                "lookup_source": {
+                    "description": [
+                        "The C(lookup_source) argument provides one or more source interfaces to use for performing DNS lookups.  The interface provided in C(lookup_source) must be a valid interface configured on the device."
+                    ],
+                    "type": "str"
+                },
+                "name_servers": {
+                    "description": [
+                        "The C(name_serves) argument accepts a list of DNS name servers by way of either FQDN or IP address to use to perform name resolution lookups.  This argument accepts wither a list of DNS servers See examples."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(Network Guide, ../network/getting_started/network_differences.html#multiple-communication-protocols).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "netconf"
+                            ],
+                            "default": "cli",
+                            "description": [
+                                "Specifies the type of connection based transport."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the configuration values in the device's current active configuration.  When set to I(present), the values should be configured in the device active configuration and when set to I(absent) the values should not be in the device active configuration"
+                    ],
+                    "type": "str"
+                },
+                "vrf": {
+                    "default": "default",
+                    "description": [
+                        "VRF name for domain services"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "ncclient >= 0.5.3 when using netconf",
+                "lxml >= 4.1.1 when using netconf"
+            ],
+            "short_description": "Manage the system attributes on Cisco IOS XR devices",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.iosxr"
+        },
+        "examples": "\n- name: configure hostname and domain-name (default vrf=default)\n  cisco.iosxr.iosxr_system:\n    hostname: iosxr01\n    domain_name: test.example.com\n    domain_search:\n    - ansible.com\n    - redhat.com\n    - cisco.com\n- name: remove configuration\n  cisco.iosxr.iosxr_system:\n    hostname: iosxr01\n    domain_name: test.example.com\n    domain_search:\n    - ansible.com\n    - redhat.com\n    - cisco.com\n    state: absent\n- name: configure hostname and domain-name with vrf\n  cisco.iosxr.iosxr_system:\n    hostname: iosxr01\n    vrf: nondefault\n    domain_name: test.example.com\n    domain_search:\n    - ansible.com\n    - redhat.com\n    - cisco.com\n- name: configure DNS lookup sources\n  cisco.iosxr.iosxr_system:\n    lookup_source: MgmtEth0/0/CPU0/0\n    lookup_enabled: true\n- name: configure name servers\n  cisco.iosxr.iosxr_system:\n    name_servers:\n    - 8.8.8.8\n    - 8.8.4.4\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always",
+                "sample": [
+                    "hostname iosxr01",
+                    "ip domain-name test.example.com"
+                ],
+                "type": "list"
+            },
+            "xml": {
+                "description": "NetConf rpc xml sent to device with transport C(netconf)",
+                "returned": "always (empty list when no xml rpc to send)",
+                "sample": [
+                    "<config xmlns:xc=\"urn:ietf:params:xml:ns:netconf:base:1.0\"> <ip-domain xmlns=\"http://cisco.com/ns/yang/Cisco-IOS-XR-ip-domain-cfg\"> <vrfs> <vrf> <vrf-name>default</vrf-name> <lists> <list xc:operation=\"merge\"> <order>0</order> <list-name>redhat.com</list-name> </list> </lists> </vrf> </vrfs> </ip-domain> </config>"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

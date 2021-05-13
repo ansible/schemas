@@ -1,0 +1,485 @@
+{
+    "community.grafana.grafana_datasource": {
+        "doc": {
+            "author": [
+                "Thierry Sall\u00e9 (@seuf)",
+                "Martin Wang (@martinwangjian)",
+                "R\u00e9mi REY (@rrey)"
+            ],
+            "collection": "community.grafana",
+            "description": [
+                "Create/update/delete Grafana datasources via API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/grafana/plugins/modules/grafana_datasource.py",
+            "has_action": false,
+            "module": "grafana_datasource",
+            "notes": [
+                "Secure data will get encrypted by the Grafana API, thus it can not be compared on subsequent runs. To workaround this, secure data will not be updated after initial creation! To force the secure data update you have to set I(enforce_secure_data=True).",
+                "Hint, with the C(enforce_secure_data) always reporting changed=True, you might just do one Task updating the datasource without any secure data and make a separate playbook/task also changing the secure data. This way it will not break any workflow."
+            ],
+            "options": {
+                "access": {
+                    "choices": [
+                        "direct",
+                        "proxy"
+                    ],
+                    "default": "proxy",
+                    "description": [
+                        "The access mode for this datasource."
+                    ],
+                    "type": "str"
+                },
+                "additional_json_data": {
+                    "default": {},
+                    "description": [
+                        "Defined data is used for datasource jsonData",
+                        "Data may be overridden by specifically defined parameters (like zabbix_user)"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "additional_secure_json_data": {
+                    "default": {},
+                    "description": [
+                        "Defined data is used for datasource secureJsonData",
+                        "Data may be overridden by specifically defined parameters (like tls_client_cert)",
+                        "Stored as secure data, see C(enforce_secure_data) and notes!"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "aws_access_key": {
+                    "default": "",
+                    "description": [
+                        "AWS access key for CloudWatch datasource type when C(aws_auth_type) is C(keys)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "aws_assume_role_arn": {
+                    "default": "",
+                    "description": [
+                        "AWS IAM role arn to assume for CloudWatch datasource type when C(aws_auth_type) is C(arn)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "aws_auth_type": {
+                    "choices": [
+                        "keys",
+                        "credentials",
+                        "arn"
+                    ],
+                    "default": "keys",
+                    "description": [
+                        "Type for AWS authentication for CloudWatch datasource type (authType of grafana api)"
+                    ],
+                    "type": "str"
+                },
+                "aws_credentials_profile": {
+                    "default": "",
+                    "description": [
+                        "Profile for AWS credentials for CloudWatch datasource type when C(aws_auth_type) is C(credentials)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "aws_custom_metrics_namespaces": {
+                    "default": "",
+                    "description": [
+                        "Namespaces of Custom Metrics for CloudWatch datasource type"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "aws_default_region": {
+                    "choices": [
+                        "ap-northeast-1",
+                        "ap-northeast-2",
+                        "ap-southeast-1",
+                        "ap-southeast-2",
+                        "ap-south-1",
+                        "ca-central-1",
+                        "cn-north-1",
+                        "cn-northwest-1",
+                        "eu-central-1",
+                        "eu-west-1",
+                        "eu-west-2",
+                        "eu-west-3",
+                        "sa-east-1",
+                        "us-east-1",
+                        "us-east-2",
+                        "us-gov-west-1",
+                        "us-west-1",
+                        "us-west-2"
+                    ],
+                    "default": "us-east-1",
+                    "description": [
+                        "AWS default region for CloudWatch datasource type"
+                    ],
+                    "type": "str"
+                },
+                "aws_secret_key": {
+                    "default": "",
+                    "description": [
+                        "AWS secret key for CloudWatch datasource type when C(aws_auth_type) is C(keys)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "basic_auth_password": {
+                    "description": [
+                        "The datasource basic auth password, when C(basic auth) is C(yes)."
+                    ],
+                    "type": "str"
+                },
+                "basic_auth_user": {
+                    "description": [
+                        "The datasource basic auth user.",
+                        "Setting this option with basic_auth_password will enable basic auth."
+                    ],
+                    "type": "str"
+                },
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, I(client_key) is not required"
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If I(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path"
+                },
+                "database": {
+                    "description": [
+                        "Name of the database for the datasource.",
+                        "This options is required when the C(ds_type) is C(influxdb), C(elasticsearch) (index name), C(mysql) or C(postgres)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ds_type": {
+                    "choices": [
+                        "graphite",
+                        "prometheus",
+                        "elasticsearch",
+                        "influxdb",
+                        "opentsdb",
+                        "mysql",
+                        "postgres",
+                        "cloudwatch",
+                        "alexanderzobnin-zabbix-datasource",
+                        "sni-thruk-datasource",
+                        "camptocamp-prometheus-alertmanager-datasource",
+                        "loki"
+                    ],
+                    "description": [
+                        "The type of the datasource."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ds_url": {
+                    "description": [
+                        "The URL of the datasource."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enforce_secure_data": {
+                    "default": false,
+                    "description": [
+                        "Secure data is not updated per default (see notes!)",
+                        "To update secure data you have to enable this option!",
+                        "Enabling this, the task will always report changed=True"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "es_version": {
+                    "choices": [
+                        2,
+                        5,
+                        56,
+                        60,
+                        70
+                    ],
+                    "default": 5,
+                    "description": [
+                        "Elasticsearch version (for C(ds_type = elasticsearch) only)",
+                        "Version 56 is for elasticsearch 5.6+ where you can specify the C(max_concurrent_shard_requests) option."
+                    ],
+                    "type": "int"
+                },
+                "grafana_api_key": {
+                    "description": [
+                        "The Grafana API key.",
+                        "If set, C(url_username) and C(url_password) will be ignored."
+                    ],
+                    "type": "str"
+                },
+                "interval": {
+                    "choices": [
+                        "",
+                        "Hourly",
+                        "Daily",
+                        "Weekly",
+                        "Monthly",
+                        "Yearly"
+                    ],
+                    "description": [
+                        "For elasticsearch C(ds_type), this is the index pattern used."
+                    ],
+                    "type": "str"
+                },
+                "is_default": {
+                    "default": "no",
+                    "description": [
+                        "Make this datasource the default one."
+                    ],
+                    "type": "bool"
+                },
+                "max_concurrent_shard_requests": {
+                    "default": 256,
+                    "description": [
+                        "Starting with elasticsearch 5.6, you can specify the max concurrent shard per requests."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "The name of the datasource."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "org_id": {
+                    "default": 1,
+                    "description": [
+                        "Grafana Organisation ID in which the datasource should be created.",
+                        "Not used when C(grafana_api_key) is set, because the C(grafana_api_key) only belong to one organisation."
+                    ],
+                    "type": "int"
+                },
+                "password": {
+                    "description": [
+                        "The datasource password.",
+                        "For encrypted password use C(additional_secure_json_data.password)."
+                    ],
+                    "type": "str"
+                },
+                "sslmode": {
+                    "choices": [
+                        "disable",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "disable",
+                    "description": [
+                        "SSL mode for C(postgres) datasource type."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Status of the datasource"
+                    ],
+                    "type": "str"
+                },
+                "time_field": {
+                    "default": "@timestamp",
+                    "description": [
+                        "Name of the time field in elasticsearch ds.",
+                        "For example C(@timestamp)."
+                    ],
+                    "type": "str"
+                },
+                "time_interval": {
+                    "description": [
+                        "Minimum group by interval for C(influxdb) or C(elasticsearch) datasources.",
+                        "for example C(>10s)."
+                    ],
+                    "type": "str"
+                },
+                "tls_ca_cert": {
+                    "description": [
+                        "The TLS CA certificate for self signed certificates.",
+                        "Only used when C(tls_client_cert) and C(tls_client_key) are set.",
+                        "Stored as secure data, see C(enforce_secure_data) and notes!"
+                    ],
+                    "type": "str"
+                },
+                "tls_client_cert": {
+                    "description": [
+                        "The client TLS certificate.",
+                        "If C(tls_client_cert) and C(tls_client_key) are set, this will enable TLS authentication.",
+                        "Starts with ----- BEGIN CERTIFICATE -----",
+                        "Stored as secure data, see C(enforce_secure_data) and notes!"
+                    ],
+                    "type": "str"
+                },
+                "tls_client_key": {
+                    "description": [
+                        "The client TLS private key",
+                        "Starts with ----- BEGIN RSA PRIVATE KEY -----",
+                        "Stored as secure data, see C(enforce_secure_data) and notes!"
+                    ],
+                    "type": "str"
+                },
+                "tls_skip_verify": {
+                    "default": false,
+                    "description": [
+                        "Skip the TLS datasource certificate verification."
+                    ],
+                    "type": "bool"
+                },
+                "trends": {
+                    "default": false,
+                    "description": [
+                        "Use trends or not for zabbix datasource type."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "tsdb_resolution": {
+                    "choices": [
+                        "millisecond",
+                        "second"
+                    ],
+                    "default": "second",
+                    "description": [
+                        "The opentsdb time resolution."
+                    ],
+                    "type": "str"
+                },
+                "tsdb_version": {
+                    "choices": [
+                        1,
+                        2,
+                        3
+                    ],
+                    "default": 1,
+                    "description": [
+                        "The opentsdb version.",
+                        "Use C(1) for <=2.1, C(2) for ==2.2, C(3) for ==2.3."
+                    ],
+                    "type": "int"
+                },
+                "url": {
+                    "aliases": [
+                        "grafana_url"
+                    ],
+                    "description": [
+                        "The Grafana URL."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "grafana_password"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana password for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "url_username": {
+                    "aliases": [
+                        "grafana_user"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana user for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "user": {
+                    "description": [
+                        "The datasource login user for influxdb datasources."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "with_credentials": {
+                    "default": "no",
+                    "description": [
+                        "Whether credentials such as cookies or auth headers should be sent with cross-site requests."
+                    ],
+                    "type": "bool"
+                },
+                "zabbix_password": {
+                    "description": [
+                        "Password for Zabbix API"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "zabbix_user": {
+                    "description": [
+                        "User for Zabbix API"
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage Grafana datasources"
+        },
+        "examples": "\n---\n- name: Create elasticsearch datasource\n  community.grafana.grafana_datasource:\n    name: \"datasource-elastic\"\n    grafana_url: \"https://grafana.company.com\"\n    grafana_user: \"admin\"\n    grafana_password: \"xxxxxx\"\n    org_id: \"1\"\n    ds_type: \"elasticsearch\"\n    ds_url: \"https://elastic.company.com:9200\"\n    database: \"[logstash_]YYYY.MM.DD\"\n    basic_auth_user: \"grafana\"\n    basic_auth_password: \"******\"\n    time_field: \"@timestamp\"\n    time_interval: \"1m\"\n    interval: \"Daily\"\n    es_version: 56\n    max_concurrent_shard_requests: 42\n    tls_ca_cert: \"/etc/ssl/certs/ca.pem\"\n\n- name: Create influxdb datasource\n  community.grafana.grafana_datasource:\n    name: \"datasource-influxdb\"\n    grafana_url: \"https://grafana.company.com\"\n    grafana_user: \"admin\"\n    grafana_password: \"xxxxxx\"\n    org_id: \"1\"\n    ds_type: \"influxdb\"\n    ds_url: \"https://influx.company.com:8086\"\n    database: \"telegraf\"\n    time_interval: \">10s\"\n    tls_ca_cert: \"/etc/ssl/certs/ca.pem\"\n\n- name: Create postgres datasource\n  community.grafana.grafana_datasource:\n    name: \"datasource-postgres\"\n    grafana_url: \"https://grafana.company.com\"\n    grafana_user: \"admin\"\n    grafana_password: \"xxxxxx\"\n    org_id: \"1\"\n    ds_type: \"postgres\"\n    ds_url: \"postgres.company.com:5432\"\n    database: \"db\"\n    user: \"postgres\"\n    sslmode: \"verify-full\"\n    additional_json_data:\n      postgresVersion: 12\n      timescaledb: false\n    additional_secure_json_data:\n      password: \"iampgroot\"\n\n- name: Create cloudwatch datasource\n  community.grafana.grafana_datasource:\n    name: \"datasource-cloudwatch\"\n    grafana_url: \"https://grafana.company.com\"\n    grafana_user: \"admin\"\n    grafana_password: \"xxxxxx\"\n    org_id: \"1\"\n    ds_type: \"cloudwatch\"\n    ds_url: \"http://monitoring.us-west-1.amazonaws.com\"\n    aws_auth_type: \"keys\"\n    aws_default_region: \"us-west-1\"\n    aws_access_key: \"speakFriendAndEnter\"\n    aws_secret_key: \"mel10n\"\n    aws_custom_metrics_namespaces: \"n1,n2\"\n\n- name: grafana - add thruk datasource\n  community.grafana.grafana_datasource:\n    name: \"datasource-thruk\"\n    grafana_url: \"https://grafana.company.com\"\n    grafana_user: \"admin\"\n    grafana_password: \"xxxxxx\"\n    org_id: \"1\"\n    ds_type: \"sni-thruk-datasource\"\n    ds_url: \"https://thruk.company.com/sitename/thruk\"\n    basic_auth_user: \"thruk-user\"\n    basic_auth_password: \"******\"\n\n# handle secure data - workflow example\n# this will create/update the datasource but dont update the secure data on updates\n# so you can assert if all tasks are changed=False\n- name: create prometheus datasource\n  community.grafana.grafana_datasource:\n    name: openshift_prometheus\n    ds_type: prometheus\n    ds_url: https://openshift-monitoring.company.com\n    access: proxy\n    tls_skip_verify: true\n    additional_json_data:\n      httpHeaderName1: \"Authorization\"\n    additional_secure_json_data:\n      httpHeaderValue1: \"Bearer ihavenogroot\"\n\n# in a separate task or even play you then can force to update\n# and assert if each datasource is reporting changed=True\n- name: update prometheus datasource\n  community.grafana.grafana_datasource:\n    name: openshift_prometheus\n    ds_type: prometheus\n    ds_url: https://openshift-monitoring.company.com\n    access: proxy\n    tls_skip_verify: true\n    additional_json_data:\n      httpHeaderName1: \"Authorization\"\n    additional_secure_json_data:\n      httpHeaderValue1: \"Bearer ihavenogroot\"\n    enforce_secure_data: true\n",
+        "metadata": null,
+        "return": {
+            "datasource": {
+                "description": "datasource created/updated by module",
+                "returned": "changed",
+                "sample": {
+                    "access": "proxy",
+                    "basicAuth": false,
+                    "database": "test_*",
+                    "id": 1035,
+                    "isDefault": false,
+                    "jsonData": {
+                        "esVersion": 5,
+                        "timeField": "@timestamp",
+                        "timeInterval": "10s"
+                    },
+                    "name": "grafana_datasource_test",
+                    "orgId": 1,
+                    "password": "",
+                    "secureJsonFields": {
+                        "JustASecureTest": true
+                    },
+                    "type": "elasticsearch",
+                    "url": "http://elastic.company.com:9200",
+                    "user": "",
+                    "withCredentials": false
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

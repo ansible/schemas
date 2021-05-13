@@ -1,0 +1,309 @@
+{
+    "f5networks.f5_modules.bigip_node": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages F5 BIG-IP LTM nodes."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_node.py",
+            "has_action": false,
+            "module": "bigip_node",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "address": {
+                    "aliases": [
+                        "ip",
+                        "host"
+                    ],
+                    "description": [
+                        "IP address of the node. This can be either IPv4 or IPv6. When creating a new node, you must provide one of either C(address) or C(fqdn). This parameter cannot be updated after it is set."
+                    ],
+                    "type": "str"
+                },
+                "availability_requirements": {
+                    "description": [
+                        "If you activate more than one health monitor, specifies the number of health monitors that must receive successful responses in order for the link to be considered available."
+                    ],
+                    "suboptions": {
+                        "at_least": {
+                            "description": [
+                                "Specifies the minimum number of active health monitors that must be successful before the link is considered up.",
+                                "This parameter is only relevant when a C(type) of C(at_least) is used.",
+                                "This parameter will be ignored if a type of C(all) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "type": {
+                            "choices": [
+                                "all",
+                                "at_least"
+                            ],
+                            "description": [
+                                "Monitor rule type when C(monitors) is specified.",
+                                "When creating a new pool, if this value is not specified, the default of 'all' will be used."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "connection_limit": {
+                    "description": [
+                        "Node connection limit. Setting this to C(0) disables the limit."
+                    ],
+                    "type": "int"
+                },
+                "description": {
+                    "description": [
+                        "Specifies descriptive text that identifies the node.",
+                        "You can remove a description by either specifying an empty string, or by specifying the special value C(none)."
+                    ],
+                    "type": "str"
+                },
+                "dynamic_ratio": {
+                    "description": [
+                        "The dynamic ratio number for the node. Used for dynamic ratio load balancing.",
+                        "When creating a new node, if this parameter is not specified, the default of C(1) will be used."
+                    ],
+                    "type": "int"
+                },
+                "fqdn": {
+                    "aliases": [
+                        "hostname"
+                    ],
+                    "description": [
+                        "FQDN name of the node. This can be any name that is a valid RFC 1123 DNS name. Therefore, the only characters that can be used are \"A\" to \"Z\", \"a\" to \"z\", \"0\" to \"9\", the hyphen (\"-\") and the period (\".\").",
+                        "FQDN names must include at least one period; delineating the host from the domain. For example, C(host.domain).",
+                        "FQDN names must end with a letter or a number.",
+                        "When creating a new node, you must provide one of either C(address) or C(fqdn) provided. This parameter cannot be updated after it is set."
+                    ],
+                    "type": "str"
+                },
+                "fqdn_address_type": {
+                    "choices": [
+                        "ipv4",
+                        "ipv6",
+                        "all"
+                    ],
+                    "description": [
+                        "Specifies whether the FQDN of the node resolves to an IPv4 or IPv6 address.",
+                        "When creating a new node, if this parameter is not specified and C(fqdn) is specified, this parameter will default to C(ipv4).",
+                        "This parameter cannot be changed after it has been set."
+                    ],
+                    "type": "str"
+                },
+                "fqdn_auto_populate": {
+                    "description": [
+                        "Specifies whether the system automatically creates ephemeral nodes using the IP addresses returned by the resolution of a DNS query for a node defined by an FQDN.",
+                        "When C(yes), the system generates an ephemeral node for each IP address returned in response to a DNS query for the FQDN of the node. Additionally, when a DNS response indicates the IP address of an ephemeral node no longer exists, the system deletes the ephemeral node.",
+                        "When C(no), the system resolves a DNS query for the FQDN of the node with the single IP address associated with the FQDN.",
+                        "When creating a new node, if this parameter is not specified and C(fqdn) is specified, this parameter will default to C(yes).",
+                        "This parameter cannot be changed after it has been set."
+                    ],
+                    "type": "bool"
+                },
+                "fqdn_down_interval": {
+                    "description": [
+                        "Specifies the interval in which a query occurs, when the DNS server is down. The associated monitor continues polling as long as the DNS server is down.",
+                        "When creating a new node, if this parameter is not specified and C(fqdn) is specified, this parameter will default to C(5)."
+                    ],
+                    "type": "int"
+                },
+                "fqdn_up_interval": {
+                    "description": [
+                        "Specifies the interval at which a query occurs, when the DNS server is up. The associated monitor attempts to probe three times, and marks the server down if it there is no response within the span of three times the interval value, in seconds.",
+                        "This parameter accepts a value of C(ttl) to query, based off of the TTL of the FQDN. The default TTL interval is similar to specifying C(3600).",
+                        "When creating a new node, if this parameter is not specified and C(fqdn) is specified, this parameter will default to C(3600)."
+                    ],
+                    "type": "str"
+                },
+                "monitors": {
+                    "description": [
+                        "Specifies the health monitors the system currently uses to monitor this node."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the node."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "rate_limit": {
+                    "description": [
+                        "Node rate limit (connections-per-second). Setting this to C(0) disables the limit."
+                    ],
+                    "type": "int"
+                },
+                "ratio": {
+                    "description": [
+                        "Node ratio weight. Valid values range from 1 through 100.",
+                        "When creating a new node, if this parameter is not specified, the default of C(1) will be used."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "enabled",
+                        "disabled",
+                        "offline"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specifies the current state of the node. C(enabled) (All traffic allowed), specifies the system sends traffic to this node regardless of the node's state. C(disabled) (Only persistent or active connections allowed), specifies the node can handle only persistent or active connections. C(offline) (Only active connections allowed), specifies the node can handle only active connections. In all cases except C(absent), the node will be created if it does not yet exist.",
+                        "Be particularly careful about changing the status of a node whose FQDN cannot be resolved. These situations disable your ability to change their C(state) to C(disabled) or C(offline). They will remain in an *Unavailable - Enabled* state."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP LTM nodes",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Add node\n  bigip_node:\n    host: 10.20.30.40\n    name: 10.20.30.40\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add node with a single 'ping' monitor\n  bigip_node:\n    host: 10.20.30.40\n    name: mytestserver\n    monitors:\n      - /Common/icmp\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Modify node description\n  bigip_node:\n    name: 10.20.30.40\n    description: Our best server yet\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Delete node\n  bigip_node:\n    state: absent\n    name: 10.20.30.40\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Force node offline\n  bigip_node:\n    state: disabled\n    name: 10.20.30.40\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add node by their FQDN\n  bigip_node:\n    fqdn: foo.bar.com\n    name: foobar.net\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "description": {
+                "description": [
+                    "Changed value for the description of the node."
+                ],
+                "returned": "changed and success",
+                "sample": "E-Commerce webserver in ORD",
+                "type": "str"
+            },
+            "monitors": {
+                "description": [
+                    "Changed list of monitors for the node."
+                ],
+                "returned": "changed and success",
+                "sample": [
+                    "icmp",
+                    "tcp_echo"
+                ],
+                "type": "list"
+            },
+            "session": {
+                "description": [
+                    "Changed value for the internal session of the node."
+                ],
+                "returned": "changed and success",
+                "sample": "user-disabled",
+                "type": "str"
+            },
+            "state": {
+                "description": [
+                    "Changed value for the internal state of the node."
+                ],
+                "returned": "changed and success",
+                "sample": "user-down",
+                "type": "str"
+            }
+        }
+    }
+}

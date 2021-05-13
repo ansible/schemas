@@ -1,0 +1,383 @@
+{
+    "uri": {
+        "doc": {
+            "author": [
+                "Romeo Theriault (@romeotheriault)"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "Interacts with HTTP and HTTPS web services and supports Digest, Basic and WSSE HTTP authentication mechanisms.",
+                "For Windows targets, use the M(ansible.windows.win_uri) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/uri.py",
+            "has_action": true,
+            "module": "uri",
+            "notes": [
+                "The dependency on httplib2 was removed in Ansible 2.1.",
+                "The module returns all the HTTP headers in lower-case.",
+                "For Windows targets, use the M(ansible.windows.win_uri) module instead."
+            ],
+            "options": {
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "body": {
+                    "description": [
+                        "The body of the http request/response to the web service. If C(body_format) is set to 'json' it will take an already formatted JSON string or convert a data structure into JSON.",
+                        "If C(body_format) is set to 'form-urlencoded' it will convert a dictionary or list of tuples into an 'application/x-www-form-urlencoded' string. (Added in v2.7)",
+                        "If C(body_format) is set to 'form-multipart' it will convert a dictionary into 'multipart/form-multipart' body. (Added in v2.10)"
+                    ],
+                    "type": "raw"
+                },
+                "body_format": {
+                    "choices": [
+                        "form-urlencoded",
+                        "json",
+                        "raw",
+                        "form-multipart"
+                    ],
+                    "default": "raw",
+                    "description": [
+                        "The serialization format of the body. When set to C(json), C(form-multipart), or C(form-urlencoded), encodes the body argument, if needed, and automatically sets the Content-Type header accordingly.",
+                        "As of C(2.3) it is possible to override the `Content-Type` header, when set to C(json) or C(form-urlencoded) via the I(headers) option.",
+                        "The 'Content-Type' header cannot be overridden when using C(form-multipart)",
+                        "C(form-urlencoded) was added in v2.7.",
+                        "C(form-multipart) was added in v2.10."
+                    ],
+                    "type": "str",
+                    "version_added": "2.0",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, I(client_key) is not required"
+                    ],
+                    "type": "path",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If I(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "creates": {
+                    "description": [
+                        "A filename, when it already exists, this step will not be run."
+                    ],
+                    "type": "path"
+                },
+                "dest": {
+                    "description": [
+                        "A path of where to download the file to (if desired). If I(dest) is a directory, the basename of the file on the remote server will be used."
+                    ],
+                    "type": "path"
+                },
+                "follow_redirects": {
+                    "choices": [
+                        "all",
+                        "no",
+                        "none",
+                        "safe",
+                        "urllib2",
+                        "yes"
+                    ],
+                    "default": "safe",
+                    "description": [
+                        "Whether or not the URI module should follow redirects. C(all) will follow all redirects. C(safe) will follow only \"safe\" redirects, where \"safe\" means that the client is only doing a GET or HEAD on the URI to which it is being redirected. C(none) will not follow any redirects. Note that C(yes) and C(no) choices are accepted for backwards compatibility, where C(yes) is the equivalent of C(all) and C(no) is the equivalent of C(safe). C(yes) and C(no) are deprecated and will be removed in some future version of Ansible."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "aliases": [
+                        "thirsty"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If C(yes) do not get a cached copy.",
+                        "Alias C(thirsty) has been deprecated and will be removed in 2.13."
+                    ],
+                    "type": "bool"
+                },
+                "force_basic_auth": {
+                    "default": false,
+                    "description": [
+                        "Force the sending of the Basic authentication header upon initial request.",
+                        "The library used by the uri module only sends authentication information when a webservice responds to an initial request with a 401 status. Since some basic auth services do not properly send a 401, logins will fail."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "headers": {
+                    "description": [
+                        "Add custom HTTP headers to a request in the format of a YAML hash. As of C(2.3) supplying C(Content-Type) here will override the header generated by supplying C(json) or C(form-urlencoded) for I(body_format)."
+                    ],
+                    "type": "dict",
+                    "version_added": "2.1",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "http_agent": {
+                    "default": "ansible-httpget",
+                    "description": [
+                        "Header to identify as, generally appears in web server logs."
+                    ],
+                    "type": "str"
+                },
+                "method": {
+                    "default": "GET",
+                    "description": [
+                        "The HTTP method of the request or response.",
+                        "In more recent versions we do not restrict the method at the module level anymore but it still must be a valid method accepted by the service handling the request."
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "remote_src": {
+                    "default": false,
+                    "description": [
+                        "If C(no), the module will search for src on originating/master machine.",
+                        "If C(yes) the module will use the C(src) path on the remote/target machine."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.7",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "removes": {
+                    "description": [
+                        "A filename, when it does not exist, this step will not be run."
+                    ],
+                    "type": "path"
+                },
+                "return_content": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to return the body of the response as a \"content\" key in the dictionary result no matter it succeeded or failed.",
+                        "Independently of this option, if the reported Content-type is \"application/json\", then the JSON is always loaded into a key called C(json) in the dictionary results."
+                    ],
+                    "type": "bool"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "Path to file to be submitted to the remote server.",
+                        "Cannot be used with I(body)."
+                    ],
+                    "type": "path",
+                    "version_added": "2.7",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "status_code": {
+                    "default": [
+                        200
+                    ],
+                    "description": [
+                        "A list of valid, numeric, HTTP status codes that signifies success of the request."
+                    ],
+                    "type": "list"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "The socket level timeout in seconds"
+                    ],
+                    "type": "int"
+                },
+                "unix_socket": {
+                    "description": [
+                        "Path to Unix domain socket to use for connection"
+                    ],
+                    "version_added": "2.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "url": {
+                    "description": [
+                        "HTTP or HTTPS URL in the form (http|https)://host.domain[:port]/path"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "A password for the module to use for Digest, Basic or WSSE authentication."
+                    ],
+                    "type": "str"
+                },
+                "url_username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "A username for the module to use for Digest, Basic or WSSE authentication."
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates.",
+                        "Prior to 1.9.2 the code defaulted to C(no)."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.9.2",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.get_url"
+                },
+                {
+                    "module": "ansible.windows.win_uri"
+                }
+            ],
+            "short_description": "Interacts with webservices",
+            "version_added": "1.1",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Check that you can connect (GET) to a page and it returns a status 200\n  uri:\n    url: http://www.example.com\n\n- name: Check that a page returns a status 200 and fail if the word AWESOME is not in the page contents\n  uri:\n    url: http://www.example.com\n    return_content: yes\n  register: this\n  failed_when: \"'AWESOME' not in this.content\"\n\n- name: Create a JIRA issue\n  uri:\n    url: https://your.jira.example.com/rest/api/2/issue/\n    user: your_username\n    password: your_pass\n    method: POST\n    body: \"{{ lookup('file','issue.json') }}\"\n    force_basic_auth: yes\n    status_code: 201\n    body_format: json\n\n- name: Login to a form based webpage, then use the returned cookie to access the app in later tasks\n  uri:\n    url: https://your.form.based.auth.example.com/index.php\n    method: POST\n    body_format: form-urlencoded\n    body:\n      name: your_username\n      password: your_password\n      enter: Sign in\n    status_code: 302\n  register: login\n\n- name: Login to a form based webpage using a list of tuples\n  uri:\n    url: https://your.form.based.auth.example.com/index.php\n    method: POST\n    body_format: form-urlencoded\n    body:\n    - [ name, your_username ]\n    - [ password, your_password ]\n    - [ enter, Sign in ]\n    status_code: 302\n  register: login\n\n- name: Upload a file via multipart/form-multipart\n  uri:\n    url: https://httpbin.org/post\n    method: POST\n    body_format: form-multipart\n    body:\n      file1:\n        filename: /bin/true\n        mime_type: application/octet-stream\n      file2:\n        content: text based file content\n        filename: fake.txt\n        mime_type: text/plain\n      text_form_field: value\n\n- name: Connect to website using a previously stored cookie\n  uri:\n    url: https://your.form.based.auth.example.com/dashboard.php\n    method: GET\n    return_content: yes\n    headers:\n      Cookie: \"{{ login.cookies_string }}\"\n\n- name: Queue build of a project in Jenkins\n  uri:\n    url: http://{{ jenkins.host }}/job/{{ jenkins.job }}/build?token={{ jenkins.token }}\n    user: \"{{ jenkins.user }}\"\n    password: \"{{ jenkins.password }}\"\n    method: GET\n    force_basic_auth: yes\n    status_code: 201\n\n- name: POST from contents of local file\n  uri:\n    url: https://httpbin.org/post\n    method: POST\n    src: file.json\n\n- name: POST from contents of remote file\n  uri:\n    url: https://httpbin.org/post\n    method: POST\n    src: /path/to/my/file.json\n    remote_src: yes\n\n- name: Create workspaces in Log analytics Azure\n  uri:\n    url: https://www.mms.microsoft.com/Embedded/Api/ConfigDataSources/LogManagementData/Save\n    method: POST\n    body_format: json\n    status_code: [200, 202]\n    return_content: true\n    headers:\n      Content-Type: application/json\n      x-ms-client-workspace-path: /subscriptions/{{ sub_id }}/resourcegroups/{{ res_group }}/providers/microsoft.operationalinsights/workspaces/{{ w_spaces }}\n      x-ms-client-platform: ibiza\n      x-ms-client-auth-token: \"{{ token_az }}\"\n    body:\n\n- name: Pause play until a URL is reachable from this host\n  uri:\n    url: \"http://192.0.2.1/some/test\"\n    follow_redirects: none\n    method: GET\n  register: _result\n  until: _result.status == 200\n  retries: 720 # 720 * 5 seconds = 1hour (60*60/5)\n  delay: 5 # Every 5 seconds\n\n# There are issues in a supporting Python library that is discussed in\n# https://github.com/ansible/ansible/issues/52705 where a proxy is defined\n# but you want to bypass proxy use on CIDR masks by using no_proxy\n- name: Work around a python issue that doesn't support no_proxy envvar\n  uri:\n    follow_redirects: none\n    validate_certs: false\n    timeout: 5\n    url: \"http://{{ ip_address }}:{{ port | default(80) }}\"\n  register: uri_data\n  failed_when: false\n  changed_when: false\n  vars:\n    ip_address: 192.0.2.1\n  environment: |\n      {\n        {% for no_proxy in (lookup('env', 'no_proxy') | regex_replace('\\s*,\\s*', ' ') ).split() %}\n          {% if no_proxy | regex_search('\\/') and\n                no_proxy | ipaddr('net') != '' and\n                no_proxy | ipaddr('net') != false and\n                ip_address | ipaddr(no_proxy) is not none and\n                ip_address | ipaddr(no_proxy) != false %}\n            'no_proxy': '{{ ip_address }}'\n          {% elif no_proxy | regex_search(':') != '' and\n                  no_proxy | regex_search(':') != false and\n                  no_proxy == ip_address + ':' + (port | default(80)) %}\n            'no_proxy': '{{ ip_address }}:{{ port | default(80) }}'\n          {% elif no_proxy | ipaddr('host') != '' and\n                  no_proxy | ipaddr('host') != false and\n                  no_proxy == ip_address %}\n            'no_proxy': '{{ ip_address }}'\n          {% elif no_proxy | regex_search('^(\\*|)\\.') != '' and\n                  no_proxy | regex_search('^(\\*|)\\.') != false and\n                  no_proxy | regex_replace('\\*', '') in ip_address %}\n            'no_proxy': '{{ ip_address }}'\n          {% endif %}\n        {% endfor %}\n      }\n",
+        "metadata": null,
+        "return": {
+            "content": {
+                "description": "The response body content.",
+                "returned": "status not in status_code or return_content is true",
+                "sample": "{}",
+                "type": "str"
+            },
+            "cookies": {
+                "description": "The cookie values placed in cookie jar.",
+                "returned": "on success",
+                "sample": {
+                    "SESSIONID": "[SESSIONID]"
+                },
+                "type": "dict",
+                "version_added": "2.4",
+                "version_added_collection": "ansible.builtin"
+            },
+            "cookies_string": {
+                "description": "The value for future request Cookie headers.",
+                "returned": "on success",
+                "sample": "SESSIONID=[SESSIONID]",
+                "type": "str",
+                "version_added": "2.6",
+                "version_added_collection": "ansible.builtin"
+            },
+            "elapsed": {
+                "description": "The number of seconds that elapsed while performing the download.",
+                "returned": "on success",
+                "sample": 23,
+                "type": "int"
+            },
+            "msg": {
+                "description": "The HTTP message from the request.",
+                "returned": "always",
+                "sample": "OK (unknown bytes)",
+                "type": "str"
+            },
+            "redirected": {
+                "description": "Whether the request was redirected.",
+                "returned": "on success",
+                "sample": false,
+                "type": "bool"
+            },
+            "status": {
+                "description": "The HTTP status code from the request.",
+                "returned": "always",
+                "sample": 200,
+                "type": "int"
+            },
+            "url": {
+                "description": "The actual URL used for the request.",
+                "returned": "always",
+                "sample": "https://www.ansible.com/",
+                "type": "str"
+            }
+        }
+    }
+}

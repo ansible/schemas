@@ -1,0 +1,455 @@
+{
+    "netapp_eseries.santricity.netapp_e_facts": {
+        "doc": {
+            "author": [
+                "Kevin Hulquest (@hulquest)",
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "The netapp_e_facts module returns a collection of facts regarding NetApp E-Series storage arrays."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_facts.py",
+            "has_action": false,
+            "module": "netapp_e_facts",
+            "notes": [
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series retrieve facts about NetApp E-Series storage arrays",
+            "version_added": "2.2",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n---\n- name: Get array facts\n  netapp_e_facts:\n    ssid: \"1\"\n    api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n    api_username: \"admin\"\n    api_password: \"adminpass\"\n    validate_certs: true\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": [
+                    "Gathered facts for storage array. Array ID [1].",
+                    "Gathered facts for web services proxy."
+                ],
+                "type": "str"
+            },
+            "storage_array_facts": {
+                "contains": {
+                    "netapp_controllers": {
+                        "description": "storage array controller list that contains basic controller identification and status",
+                        "sample": [
+                            [
+                                {
+                                    "name": "A",
+                                    "serial": "021632007299",
+                                    "status": "optimal"
+                                },
+                                {
+                                    "name": "B",
+                                    "serial": "021632007300",
+                                    "status": "failed"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_disks": {
+                        "description": "drive list that contains identification, type, and status information for each drive",
+                        "sample": [
+                            [
+                                {
+                                    "available": false,
+                                    "firmware_version": "MS02",
+                                    "id": "01000000500003960C8B67880000000000000000",
+                                    "media_type": "ssd",
+                                    "product_id": "PX02SMU080      ",
+                                    "serial_number": "15R0A08LT2BA",
+                                    "status": "optimal",
+                                    "tray_ref": "0E00000000000000000000000000000000000000",
+                                    "usable_bytes": "799629205504"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_driveside_interfaces": {
+                        "description": "drive side interface list that contains identification, type, and speed for each interface",
+                        "sample": [
+                            [
+                                {
+                                    "controller": "A",
+                                    "interface_speed": "12g",
+                                    "interface_type": "sas"
+                                }
+                            ],
+                            [
+                                {
+                                    "controller": "B",
+                                    "interface_speed": "10g",
+                                    "interface_type": "iscsi"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_enabled_features": {
+                        "description": "specifies the enabled features on the storage array.",
+                        "returned": "on success",
+                        "sample": [
+                            [
+                                "flashReadCache",
+                                "performanceTier",
+                                "protectionInformation",
+                                "secureVolume"
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_host_groups": {
+                        "description": "specifies the host groups on the storage arrays.",
+                        "returned": "on success",
+                        "sample": [
+                            [
+                                {
+                                    "id": "85000000600A098000A4B28D003610705C40B964",
+                                    "name": "group1"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_host_types": {
+                        "description": "lists the available host types on the storage array.",
+                        "returned": "on success",
+                        "sample": [
+                            [
+                                {
+                                    "index": 0,
+                                    "type": "FactoryDefault"
+                                },
+                                {
+                                    "index": 1,
+                                    "type": "W2KNETNCL"
+                                },
+                                {
+                                    "index": 2,
+                                    "type": "SOL"
+                                },
+                                {
+                                    "index": 5,
+                                    "type": "AVT_4M"
+                                },
+                                {
+                                    "index": 6,
+                                    "type": "LNX"
+                                },
+                                {
+                                    "index": 7,
+                                    "type": "LnxALUA"
+                                },
+                                {
+                                    "index": 8,
+                                    "type": "W2KNETCL"
+                                },
+                                {
+                                    "index": 9,
+                                    "type": "AIX MPIO"
+                                },
+                                {
+                                    "index": 10,
+                                    "type": "VmwTPGSALUA"
+                                },
+                                {
+                                    "index": 15,
+                                    "type": "HPXTPGS"
+                                },
+                                {
+                                    "index": 17,
+                                    "type": "SolTPGSALUA"
+                                },
+                                {
+                                    "index": 18,
+                                    "type": "SVC"
+                                },
+                                {
+                                    "index": 22,
+                                    "type": "MacTPGSALUA"
+                                },
+                                {
+                                    "index": 23,
+                                    "type": "WinTPGSALUA"
+                                },
+                                {
+                                    "index": 24,
+                                    "type": "LnxTPGSALUA"
+                                },
+                                {
+                                    "index": 25,
+                                    "type": "LnxTPGSALUA_PM"
+                                },
+                                {
+                                    "index": 26,
+                                    "type": "ONTAP_ALUA"
+                                },
+                                {
+                                    "index": 27,
+                                    "type": "LnxTPGSALUA_SF"
+                                },
+                                {
+                                    "index": 28,
+                                    "type": "LnxDHALUA"
+                                },
+                                {
+                                    "index": 29,
+                                    "type": "ATTOClusterAllOS"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_hosts": {
+                        "description": "specifies the hosts on the storage arrays.",
+                        "returned": "on success",
+                        "sample": [
+                            [
+                                {
+                                    "group_id": "85000000600A098000A4B28D003610705C40B964",
+                                    "host_type_index": 28,
+                                    "id": "8203800000000000000000000000000000000000",
+                                    "name": "host1",
+                                    "ports": [
+                                        {
+                                            "address": "1000FF7CFFFFFF01",
+                                            "label": "FC_1",
+                                            "type": "fc"
+                                        },
+                                        {
+                                            "address": "1000FF7CFFFFFF00",
+                                            "label": "FC_2",
+                                            "type": "fc"
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_hostside_interfaces": {
+                        "description": "host side interface list that contains identification, configuration, type, speed, and status information for each interface",
+                        "sample": [
+                            [
+                                {
+                                    "iscsi": [
+                                        {
+                                            "controller": "A",
+                                            "current_interface_speed": "10g",
+                                            "ipv4_address": "10.10.10.1",
+                                            "ipv4_enabled": true,
+                                            "ipv4_gateway": "10.10.10.1",
+                                            "ipv4_subnet_mask": "255.255.255.0",
+                                            "ipv6_enabled": false,
+                                            "iqn": "iqn.1996-03.com.netapp:2806.600a098000a81b6d0000000059d60c76",
+                                            "link_status": "up",
+                                            "mtu": 9000,
+                                            "supported_interface_speeds": [
+                                                "10g"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_management_interfaces": {
+                        "description": "management interface list that contains identification, configuration, and status for each interface",
+                        "sample": [
+                            [
+                                {
+                                    "alias": "ict-2800-A",
+                                    "channel": 1,
+                                    "controller": "A",
+                                    "dns_config_method": "dhcp",
+                                    "dns_servers": [],
+                                    "ipv4_address": "10.1.1.1",
+                                    "ipv4_address_config_method": "static",
+                                    "ipv4_enabled": true,
+                                    "ipv4_gateway": "10.113.1.1",
+                                    "ipv4_subnet_mask": "255.255.255.0",
+                                    "ipv6_enabled": false,
+                                    "link_status": "up",
+                                    "mac_address": "00A098A81B5D",
+                                    "name": "wan0",
+                                    "ntp_config_method": "disabled",
+                                    "ntp_servers": [],
+                                    "remote_ssh_access": false
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_storage_array": {
+                        "description": "provides storage array identification, firmware version, and available capabilities",
+                        "sample": [
+                            {
+                                "cacheBlockSizes": [
+                                    4096,
+                                    8192,
+                                    16384,
+                                    32768
+                                ],
+                                "chassis_serial": "021540006043",
+                                "firmware": "08.40.00.01",
+                                "name": "ict-2800-11_40",
+                                "supportedSegSizes": [
+                                    8192,
+                                    16384,
+                                    32768,
+                                    65536,
+                                    131072,
+                                    262144,
+                                    524288
+                                ],
+                                "wwn": "600A098000A81B5D0000000059D60C76"
+                            }
+                        ],
+                        "type": "dict"
+                    },
+                    "netapp_storage_pools": {
+                        "description": "storage pool list that contains identification and capacity information for each pool",
+                        "sample": [
+                            [
+                                {
+                                    "available_capacity": "3490353782784",
+                                    "id": "04000000600A098000A81B5D000002B45A953A61",
+                                    "name": "Raid6",
+                                    "total_capacity": "5399466745856",
+                                    "used_capacity": "1909112963072"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_volumes": {
+                        "description": "storage volume list that contains identification and capacity information for each volume",
+                        "sample": [
+                            [
+                                {
+                                    "capacity": "5368709120",
+                                    "id": "02000000600A098000AAC0C3000002C45A952BAA",
+                                    "is_thin_provisioned": false,
+                                    "name": "5G",
+                                    "parent_storage_pool_id": "04000000600A098000A81B5D000002B45A953A61"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_volumes_by_initiators": {
+                        "description": "list of available volumes keyed by the mapped initiators.",
+                        "sample": [
+                            {
+                                "192_168_1_1": [
+                                    {
+                                        "id": "02000000600A098000A4B9D1000015FD5C8F7F9E",
+                                        "meta_data": {
+                                            "filetype": "xfs",
+                                            "public": true
+                                        },
+                                        "name": "some_volume",
+                                        "workload_name": "test2_volumes",
+                                        "wwn": "600A098000A4B9D1000015FD5C8F7F9E"
+                                    }
+                                ]
+                            }
+                        ],
+                        "type": "complex"
+                    },
+                    "netapp_workload_tags": {
+                        "description": "workload tag list",
+                        "sample": [
+                            [
+                                {
+                                    "id": "87e19568-43fb-4d8d-99ea-2811daaa2b38",
+                                    "name": "ftp_server",
+                                    "workloadAttributes": [
+                                        {
+                                            "key": "use",
+                                            "value": "general"
+                                        }
+                                    ]
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    },
+                    "snapshot_images": {
+                        "description": "snapshot image list that contains identification, capacity, and status information for each snapshot image",
+                        "sample": [
+                            [
+                                {
+                                    "active_cow": true,
+                                    "creation_method": "user",
+                                    "id": "34000000600A098000A81B5D00630A965B0535AC",
+                                    "pit_capacity": "5368709120",
+                                    "reposity_cap_utilization": "0",
+                                    "rollback_source": false,
+                                    "status": "optimal"
+                                }
+                            ]
+                        ],
+                        "type": "complex"
+                    }
+                },
+                "description": "provides details about the array, controllers, management interfaces, hostside interfaces, driveside interfaces, disks, storage pools, volumes, snapshots, and features.",
+                "returned": "on successful inquiry from from embedded web services rest api",
+                "type": "complex"
+            }
+        }
+    }
+}

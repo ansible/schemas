@@ -1,0 +1,150 @@
+{
+    "community.google.gce_labels": {
+        "doc": {
+            "author": [
+                "Eric Johnson (@erjohnso) <erjohnso@google.com>"
+            ],
+            "collection": "community.google",
+            "description": [
+                "Create, Update or Destroy GCE Labels on instances, disks, snapshots, etc. When specifying the GCE resource, users may specify the full URL for the resource (its 'self_link'), or the individual parameters of the resource (type, location, name). Examples for the two options can be seen in the documentation. See U(https://cloud.google.com/compute/docs/label-or-tag-resources) for more information about GCE Labels. Labels are gradually being added to more GCE resources, so this module will need to be updated as new resources are added to the GCE (v1) API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/google/plugins/modules/gce_labels.py",
+            "has_action": false,
+            "module": "gce_labels",
+            "notes": [
+                "Labels support resources such as  instances, disks, images, etc. See U(https://cloud.google.com/compute/docs/labeling-resources) for the list of resources available in the GCE v1 API (not alpha or beta)."
+            ],
+            "options": {
+                "credentials_file": {
+                    "description": [
+                        "The path to the JSON file associated with the service account email."
+                    ],
+                    "type": "str"
+                },
+                "labels": {
+                    "description": [
+                        "A list of labels (key/value pairs) to add or remove for the resource."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "pem_file": {
+                    "description": [
+                        "The path to the PEM file associated with the service account email.",
+                        "This option is deprecated and may be removed in a future release. Use I(credentials_file) instead."
+                    ],
+                    "type": "str"
+                },
+                "project_id": {
+                    "description": [
+                        "The Google Cloud Platform project ID to use."
+                    ],
+                    "type": "str"
+                },
+                "resource_location": {
+                    "description": [
+                        "The location of resource (global, us-central1-f, etc.)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "resource_name": {
+                    "description": [
+                        "The name of resource."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "resource_type": {
+                    "description": [
+                        "The type of resource (instances, disks, snapshots, images)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "resource_url": {
+                    "description": [
+                        "The 'self_link' for the resource (instance, disk, snapshot, etc)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "service_account_email": {
+                    "description": [
+                        "service account email"
+                    ],
+                    "type": "str"
+                },
+                "service_account_permissions": {
+                    "description": [
+                        "service account email"
+                    ],
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "The state the labels should be in. C(present) or C(absent) are the only valid options.",
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "google-api-python-client >= 1.6.2",
+                "google-auth >= 1.0.0",
+                "google-auth-httplib2 >= 0.0.2"
+            ],
+            "short_description": "Create, Update or Destroy GCE Labels."
+        },
+        "examples": "\n- name: Add labels on an existing instance (using resource_url)\n  community.google.gce_labels:\n    service_account_email: \"{{ service_account_email }}\"\n    credentials_file: \"{{ credentials_file }}\"\n    project_id: \"{{ project_id }}\"\n    labels:\n      webserver-frontend: homepage\n      environment: test\n      experiment-name: kennedy\n    resource_url: https://www.googleapis.com/compute/beta/projects/myproject/zones/us-central1-f/instances/example-instance\n    state: present\n- name: Add labels on an image (using resource params)\n  community.google.gce_labels:\n    service_account_email: \"{{ service_account_email }}\"\n    credentials_file: \"{{ credentials_file }}\"\n    project_id: \"{{ project_id }}\"\n    labels:\n      webserver-frontend: homepage\n      environment: test\n      experiment-name: kennedy\n    resource_type: images\n    resource_location: global\n    resource_name: my-custom-image\n    state: present\n- name: Remove specified labels from the GCE instance\n  community.google.gce_labels:\n    service_account_email: \"{{ service_account_email }}\"\n    credentials_file: \"{{ credentials_file }}\"\n    project_id: \"{{ project_id }}\"\n    labels:\n      environment: prod\n      experiment-name: kennedy\n    resource_url: https://www.googleapis.com/compute/beta/projects/myproject/zones/us-central1-f/instances/example-instance\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "labels": {
+                "description": "List of labels that exist on the resource.",
+                "returned": "Always.",
+                "sample": [
+                    {
+                        "environment": "test",
+                        "environment-name": "kennedy",
+                        "webserver-frontend": "homepage"
+                    }
+                ],
+                "type": "dict"
+            },
+            "resource_location": {
+                "description": "The location of the GCE resource.",
+                "returned": "Always.",
+                "sample": "us-central1-f",
+                "type": "str"
+            },
+            "resource_name": {
+                "description": "The name of the GCE resource.",
+                "returned": "Always.",
+                "sample": "my-happy-little-instance",
+                "type": "str"
+            },
+            "resource_type": {
+                "description": "The type of the GCE resource.",
+                "returned": "Always.",
+                "sample": "instances",
+                "type": "str"
+            },
+            "resource_url": {
+                "description": "The 'self_link' of the GCE resource.",
+                "returned": "Always.",
+                "sample": "https://www.googleapis.com/compute/beta/projects/myproject/zones/us-central1-f/instances/example-instance",
+                "type": "str"
+            },
+            "state": {
+                "description": "state of the labels",
+                "returned": "Always.",
+                "sample": "present",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,284 @@
+{
+    "sensu.sensu_go.event": {
+        "doc": {
+            "author": [
+                "Paul Arthur (@flowerysong)",
+                "Aljaz Kosir (@aljazkosir)",
+                "Manca Bizjak (@mancabizjak)",
+                "Tadej Borovsak (@tadeboro)"
+            ],
+            "collection": "sensu.sensu_go",
+            "description": [
+                "Send a synthetic event to Sensu.",
+                "For more information, refer to the Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/reference/events/)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/sensu/sensu_go/plugins/modules/event.py",
+            "has_action": false,
+            "module": "event",
+            "notes": [
+                "Metric events bypass the store and are sent off to the event pipeline and corresponding event handlers. Read more about this at U(https://docs.sensu.io/sensu-go/latest/reference/events/#metric-only-events)."
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Authentication parameters. Can define each of them with ENV as well."
+                    ],
+                    "suboptions": {
+                        "api_key": {
+                            "description": [
+                                "The API key that should be used when authenticating. If this is not set, the value of the SENSU_API_KEY environment variable will be checked.",
+                                "This replaces I(auth.user) and I(auth.password) parameters.",
+                                "For more information about the API key, refer to the official Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/guides/use-apikey-feature/)."
+                            ],
+                            "type": "str",
+                            "version_added": "1.3.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "ca_path": {
+                            "description": [
+                                "Path to the CA bundle that should be used to validate the backend certificate.",
+                                "If this parameter is not set, module will use the CA bundle that python is using.",
+                                "It is also possible to set this parameter via the I(SENSU_CA_PATH) environment variable."
+                            ],
+                            "type": "path",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "password": {
+                            "default": "P@ssw0rd!",
+                            "description": [
+                                "The Sensu user's password. If this is not set the value of the SENSU_PASSWORD environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "default": "http://localhost:8080",
+                            "description": [
+                                "Location of the Sensu backend API. If this is not set the value of the SENSU_URL environment variable will be checked."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "default": "admin",
+                            "description": [
+                                "The username to use for connecting to the Sensu API. If this is not set the value of the SENSU_USER environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "verify": {
+                            "default": true,
+                            "description": [
+                                "Flag that controls the certificate validation.",
+                                "If you are using self-signed certificates, you can set this parameter to C(false).",
+                                "ONLY USE THIS PARAMETER IN DEVELOPMENT SCENARIOS! In you use self-signed certificates in production, see the I(auth.ca_path) parameter.",
+                                "It is also possible to set this parameter via the I(SENSU_VERIFY) environment variable."
+                            ],
+                            "type": "bool",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "check": {
+                    "description": [
+                        "Name of the check associated with this event. It must exist before event creation."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "check_attributes": {
+                    "description": [
+                        "Additional check parameters. Find out more at U(https://docs.sensu.io/sensu-go/latest/reference/events/#check-attributes)."
+                    ],
+                    "suboptions": {
+                        "duration": {
+                            "description": [
+                                "Command execution time in seconds."
+                            ],
+                            "type": "float"
+                        },
+                        "executed": {
+                            "description": [
+                                "Time that the check request was executed."
+                            ],
+                            "type": "int"
+                        },
+                        "history": {
+                            "description": [
+                                "Check status history for the last 21 check executions."
+                            ],
+                            "elements": "dict",
+                            "type": "list"
+                        },
+                        "issued": {
+                            "description": [
+                                "Time that the check request was issued in seconds since the Unix epoch."
+                            ],
+                            "type": "int"
+                        },
+                        "last_ok": {
+                            "description": [
+                                "The last time that the check returned an OK status (0) in seconds since the Unix epoch."
+                            ],
+                            "type": "int"
+                        },
+                        "output": {
+                            "description": [
+                                "The output from the execution of the check command."
+                            ],
+                            "type": "str"
+                        },
+                        "state": {
+                            "choices": [
+                                "passing",
+                                "failing",
+                                "flapping"
+                            ],
+                            "description": [
+                                "The state of the check."
+                            ],
+                            "type": "str"
+                        },
+                        "status": {
+                            "choices": [
+                                "ok",
+                                "warning",
+                                "critical",
+                                "unknown"
+                            ],
+                            "description": [
+                                "Exit status code produced by the check."
+                            ],
+                            "type": "str"
+                        },
+                        "total_state_change": {
+                            "description": [
+                                "The total state change percentage for the check's history."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "entity": {
+                    "description": [
+                        "Name of the entity associated with this event. It must exist before event creation."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "metric_attributes": {
+                    "description": [
+                        "Metric attributes. Find out more at U(https://docs.sensu.io/sensu-go/latest/reference/events/#metric-attributes)."
+                    ],
+                    "suboptions": {
+                        "handlers": {
+                            "description": [
+                                "An array of Sensu handlers to use for events created by the check. Each array item must be a string."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "points": {
+                            "description": [
+                                "Metric data points including a name, timestamp, value, and tags."
+                            ],
+                            "elements": "dict",
+                            "type": "list"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "namespace": {
+                    "default": "default",
+                    "description": [
+                        "RBAC namespace to operate in. If this is not set the value of the SENSU_NAMESPACE environment variable will be used."
+                    ],
+                    "type": "str"
+                },
+                "timestamp": {
+                    "description": [
+                        "UNIX time at which the event occurred."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.7"
+            ],
+            "seealso": [
+                {
+                    "module": "sensu.sensu_go.event_info"
+                }
+            ],
+            "short_description": "Manage Sensu events",
+            "version_added": "1.0.0",
+            "version_added_collection": "sensu.sensu_go"
+        },
+        "examples": "\n- name: Create an event\n  sensu.sensu_go.event:\n    auth:\n      url: http://localhost:8080\n    entity: awesome_entity\n    check: awesome_check\n    check_attributes:\n      duration: 1.945\n      executed: 1522100915\n      history:\n        - executed: 1552505193\n          status: 1\n      issued: 1552506034\n      last_ok: 1552506033\n      output: '10'\n      state: 'passing'\n      status: 'ok'\n      total_state_change: 0\n    metric_attributes:\n      handlers:\n        - handler1\n        - handler2\n      points:\n        - name: \"sensu-go-sandbox.curl_timings.time_total\"\n          tags:\n            - name: \"response_time_in_ms\"\n              value: 101\n          timestamp: 1552506033\n          value: 0.005\n        - name: \"sensu-go-sandbox.curl_timings.time_namelookup\"\n          tags:\n            - name: \"namelookup_time_in_ms\"\n              value: 57\n          timestamp: 1552506033\n          value: 0.004\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "object": {
+                "description": "Object representing Sensu event (deprecated).",
+                "returned": "success",
+                "sample": {
+                    "check": {
+                        "check_hooks": null,
+                        "command": "check-cpu.sh -w 75 -c 90",
+                        "duration": 1.07055808,
+                        "env_vars": null,
+                        "executed": 1552594757,
+                        "handlers": [],
+                        "high_flap_threshold": 0,
+                        "history": [
+                            {
+                                "executed": 1552594757,
+                                "status": 0
+                            }
+                        ],
+                        "interval": 60,
+                        "metadata": {
+                            "name": "check-cpu",
+                            "namespace": "default"
+                        },
+                        "occurrences": 1,
+                        "occurrences_watermark": 1,
+                        "output": "CPU OK - Usage:3.96",
+                        "subscriptions": [
+                            "linux"
+                        ],
+                        "timeout": 0,
+                        "total_state_change": 0,
+                        "ttl": 0
+                    },
+                    "entity": {
+                        "deregister": false,
+                        "deregistration": {},
+                        "entity_class": "agent",
+                        "last_seen": 1552594641,
+                        "metadata": {
+                            "name": "sensu-centos",
+                            "namespace": "default"
+                        }
+                    },
+                    "id": "3a5948f3-6ffd-4ea2-a41e-334f4a72ca2f",
+                    "metadata": {
+                        "namespace": "default"
+                    },
+                    "sequence": 1,
+                    "timestamp": 1552594758
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,128 @@
+{
+    "community.network.ce_vxlan_tunnel": {
+        "doc": {
+            "author": [
+                "Li Yanfeng (@QijunPan)"
+            ],
+            "collection": "community.network",
+            "description": [
+                "This module offers the ability to set the VNI and mapped to the BD, and configure an ingress replication list on HUAWEI CloudEngine devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_vxlan_tunnel.py",
+            "has_action": false,
+            "module": "ce_vxlan_tunnel",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "bridge_domain_id": {
+                    "description": [
+                        "Specifies a bridge domain ID. The value is an integer ranging from 1 to 16777215."
+                    ]
+                },
+                "nve_mode": {
+                    "choices": [
+                        "mode-l2",
+                        "mode-l3"
+                    ],
+                    "description": [
+                        "Specifies the working mode of an NVE interface."
+                    ]
+                },
+                "nve_name": {
+                    "description": [
+                        "Specifies the number of an NVE interface. The value ranges from 1 to 2."
+                    ]
+                },
+                "peer_list_ip": {
+                    "description": [
+                        "Specifies the IP address of a remote VXLAN tunnel endpoints (VTEP). The value is in dotted decimal notation."
+                    ]
+                },
+                "protocol_type": {
+                    "choices": [
+                        "bgp",
+                        "null"
+                    ],
+                    "description": [
+                        "The operation type of routing protocol."
+                    ]
+                },
+                "source_ip": {
+                    "description": [
+                        "Specifies an IP address for a source VTEP. The value is in dotted decimal notation."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Manage the state of the resource."
+                    ]
+                },
+                "vni_id": {
+                    "description": [
+                        "Specifies a VXLAN network identifier (VNI) ID. The value is an integer ranging from 1 to 16000000."
+                    ]
+                }
+            },
+            "short_description": "Manages VXLAN tunnel configuration on HUAWEI CloudEngine devices."
+        },
+        "examples": "\n- name: Vxlan tunnel module test\n  hosts: ce128\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: Make sure nve_name is exist, ensure vni_id and protocol_type is configured on Nve1 interface.\n    community.network.ce_vxlan_tunnel:\n      nve_name: Nve1\n      vni_id: 100\n      protocol_type: bgp\n      state: present\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "always",
+                "sample": {
+                    "nve_interface_name\"": "Nve1",
+                    "nve_mode\"": "mode-l3",
+                    "source_ip": "0.0.0.0"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": [
+                    "k/v pairs of existing rollback"
+                ],
+                "returned": "always",
+                "sample": {
+                    "nve_interface_name\"": "Nve1",
+                    "nve_mode\"": "mode-l3",
+                    "source_ip": "0.0.0.0"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "nve_interface_name\"": "Nve1",
+                    "nve_mode\"": "mode-l2",
+                    "source_ip": "0.0.0.0"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command sent to the device",
+                "returned": "always",
+                "sample": [
+                    "interface Nve1",
+                    "mode l3"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

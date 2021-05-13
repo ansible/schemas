@@ -1,0 +1,372 @@
+{
+    "community.okd.openshift_process": {
+        "doc": {
+            "author": "Fabian von Feilitzsch (@fabianvf)",
+            "collection": "community.okd",
+            "description": [
+                "Processes a specified OpenShift template with the provided template.",
+                "Templates can be provided inline, from a file, or specified by name and namespace in the cluster.",
+                "Analogous to `oc process`.",
+                "For CRUD operations on Template resources themselves, see the community.okd.k8s module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/okd/plugins/modules/openshift_process.py",
+            "has_action": false,
+            "module": "openshift_process",
+            "notes": [
+                "The OpenShift Python client wraps the K8s Python client, providing full access to all of the APIS and models available on both platforms. For API version details and additional information visit https://github.com/openshift/openshift-restclient-python",
+                "To avoid SSL certificate validation errors when C(validate_certs) is I(True), the full certificate chain for the API server must be provided via C(ca_cert) or in the kubeconfig file."
+            ],
+            "options": {
+                "api_key": {
+                    "description": [
+                        "Token used to authenticate with the API. Can also be specified via K8S_AUTH_API_KEY environment variable."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca_cert"
+                    ],
+                    "description": [
+                        "Path to a CA certificate used to authenticate with the API. The full certificate chain must be provided to avoid certificate validation errors. Can also be specified via K8S_AUTH_SSL_CA_CERT environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert_file"
+                    ],
+                    "description": [
+                        "Path to a certificate used to authenticate with the API. Can also be specified via K8S_AUTH_CERT_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key_file"
+                    ],
+                    "description": [
+                        "Path to a key file used to authenticate with the API. Can also be specified via K8S_AUTH_KEY_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "context": {
+                    "description": [
+                        "The name of a context found in the config file. Can also be specified via K8S_AUTH_CONTEXT environment variable."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Provide a URL for accessing the API. Can also be specified via K8S_AUTH_HOST environment variable."
+                    ],
+                    "type": "str"
+                },
+                "kubeconfig": {
+                    "description": [
+                        "Path to an existing Kubernetes config file. If not provided, and no other connection options are provided, the openshift client will attempt to load the default configuration file from I(~/.kube/config.json). Can also be specified via K8S_AUTH_KUBECONFIG environment variable."
+                    ],
+                    "type": "path"
+                },
+                "name": {
+                    "description": [
+                        "The name of the Template to process.",
+                        "The Template must be present in the cluster.",
+                        "When provided, I(namespace) is required.",
+                        "Mutually exclusive with I(resource_definition) or I(src)"
+                    ],
+                    "type": "str"
+                },
+                "namespace": {
+                    "description": [
+                        "The namespace that the template can be found in."
+                    ],
+                    "type": "str"
+                },
+                "namespace_target": {
+                    "description": [
+                        "The namespace that resources should be created, updated, or deleted in.",
+                        "Only used when I(state) is present or absent."
+                    ]
+                },
+                "parameter_file": {
+                    "description": [
+                        "A path to a file containing template parameter values to override/set values in the Template.",
+                        "Corresponds to the `--param-file` argument to oc process."
+                    ],
+                    "type": "str"
+                },
+                "parameters": {
+                    "description": [
+                        "A set of key: value pairs that will be used to set/override values in the Template.",
+                        "Corresponds to the `--param` argument to oc process."
+                    ],
+                    "type": "dict"
+                },
+                "password": {
+                    "description": [
+                        "Provide a password for authenticating with the API. Can also be specified via K8S_AUTH_PASSWORD environment variable.",
+                        "Please read the description of the C(username) option for a discussion of when this option is applicable."
+                    ],
+                    "type": "str"
+                },
+                "persist_config": {
+                    "description": [
+                        "Whether or not to save the kube config refresh tokens. Can also be specified via K8S_AUTH_PERSIST_CONFIG environment variable.",
+                        "When the k8s context is using a user credentials with refresh tokens (like oidc or gke/gcloud auth), the token is refreshed by the k8s python client library but not saved by default. So the old refresh token can expire and the next auth might fail. Setting this flag to true will tell the k8s python client to save the new refresh token to the kube config file.",
+                        "Default to false.",
+                        "Please note that the current version of the k8s python client library does not support setting this flag to True yet.",
+                        "The fix for this k8s python library is here: https://github.com/kubernetes-client/python-base/pull/169"
+                    ],
+                    "type": "bool"
+                },
+                "proxy": {
+                    "description": [
+                        "The URL of an HTTP proxy to use for the connection. Can also be specified via K8S_AUTH_PROXY environment variable.",
+                        "Please note that this module does not pick up typical proxy settings from the environment (e.g. HTTP_PROXY)."
+                    ],
+                    "type": "str"
+                },
+                "resource_definition": {
+                    "aliases": [
+                        "definition",
+                        "inline"
+                    ],
+                    "description": [
+                        "Provide a valid YAML definition (either as a string, list, or dict) for an object when creating or updating.",
+                        "NOTE: I(kind), I(api_version), I(name), and I(namespace) will be overwritten by corresponding values found in the provided I(resource_definition)."
+                    ]
+                },
+                "src": {
+                    "description": [
+                        "Provide a path to a file containing a valid YAML definition of an object or objects to be created or updated. Mutually exclusive with I(resource_definition). NOTE: I(kind), I(api_version), I(name), and I(namespace) will be overwritten by corresponding values found in the configuration read in from the I(src) file.",
+                        "Reads from the local file system. To read from the Ansible controller's file system, including vaulted files, use the file lookup plugin or template lookup plugin, combined with the from_yaml filter, and pass the result to I(resource_definition). See Examples below.",
+                        "Mutually exclusive with I(template) in case of M(k8s) module."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "rendered"
+                    ],
+                    "default": "rendered",
+                    "description": [
+                        "Determines what to do with the rendered Template.",
+                        "The state I(rendered) will render the Template based on the provided parameters, and return the rendered objects in the I(resources) field. These can then be referenced in future tasks.",
+                        "The state I(present) will cause the resources in the rendered Template to be created if they do not already exist, and patched if they do.",
+                        "The state I(absent) will delete the resources in the rendered Template."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Provide a username for authenticating with the API. Can also be specified via K8S_AUTH_USERNAME environment variable.",
+                        "Please note that this only works with clusters configured to use HTTP Basic Auth. If your cluster has a different form of authentication (e.g. OAuth2 in OpenShift), this option will not work as expected and you should look into the C(k8s_auth) module, as that might do what you need."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to verify the API server's SSL certificates. Can also be specified via K8S_AUTH_VERIFY_SSL environment variable."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Whether to wait for certain resource kinds to end up in the desired state.",
+                        "By default the module exits once Kubernetes has received the request.",
+                        "Implemented for C(state=present) for C(Deployment), C(DaemonSet) and C(Pod), and for C(state=absent) for all resource kinds.",
+                        "For resource kinds without an implementation, C(wait) returns immediately unless C(wait_condition) is set."
+                    ],
+                    "type": "bool"
+                },
+                "wait_condition": {
+                    "description": [
+                        "Specifies a custom condition on the status to wait for.",
+                        "Ignored if C(wait) is not set or is set to False."
+                    ],
+                    "suboptions": {
+                        "reason": {
+                            "description": [
+                                "The value of the reason field in your desired condition",
+                                "For example, if a C(Deployment) is paused, The C(Progressing) C(type) will have the C(DeploymentPaused) reason.",
+                                "The possible reasons in a condition are specific to each resource type in Kubernetes.",
+                                "See the API documentation of the status field for a given resource to see possible choices."
+                            ],
+                            "type": "str"
+                        },
+                        "status": {
+                            "choices": [
+                                "True",
+                                "False",
+                                "Unknown"
+                            ],
+                            "default": "True",
+                            "description": [
+                                "The value of the status field in your desired condition.",
+                                "For example, if a C(Deployment) is paused, the C(Progressing) C(type) will have the C(Unknown) status."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "The type of condition to wait for.",
+                                "For example, the C(Pod) resource will set the C(Ready) condition (among others).",
+                                "Required if you are specifying a C(wait_condition).",
+                                "If left empty, the C(wait_condition) field will be ignored.",
+                                "The possible types for a condition are specific to each resource type in Kubernetes.",
+                                "See the API documentation of the status field for a given resource to see possible choices."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "wait_sleep": {
+                    "default": 5,
+                    "description": [
+                        "Number of seconds to sleep between checks."
+                    ],
+                    "type": "int"
+                },
+                "wait_timeout": {
+                    "default": 120,
+                    "description": [
+                        "How long in seconds to wait for the resource to end up in the desired state.",
+                        "Ignored if C(wait) is not set."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "openshift >= 0.11.0",
+                "PyYAML >= 3.11"
+            ],
+            "short_description": "Process an OpenShift template.openshift.io/v1 Template",
+            "version_added": "0.3.0",
+            "version_added_collection": "community.okd"
+        },
+        "examples": "\n- name: Process a template in the cluster\n  community.okd.openshift_process:\n    name: nginx-example\n    namespace: openshift # only needed if using a template already on the server\n    parameters:\n      NAMESPACE: openshift\n      NAME: test123\n    state: rendered\n  register: result\n\n- name: Create the rendered resources using apply\n  community.okd.k8s:\n    namespace: default\n    definition: '{{ item }}'\n    wait: yes\n    apply: yes\n  loop: '{{ result.resources }}'\n\n- name: Process a template with parameters from an env file and create the resources\n  community.okd.openshift_process:\n    name: nginx-example\n    namespace: openshift\n    namespace_target: default\n    parameter_file: 'files/nginx.env'\n    state: present\n    wait: yes\n\n- name: Process a local template and create the resources\n  community.okd.openshift_process:\n    src: files/example-template.yaml\n    parameter_file: files/example.env\n    namespace_target: default\n    state: present\n\n- name: Process a local template, delete the resources, and wait for them to terminate\n  community.okd.openshift_process:\n    src: files/example-template.yaml\n    parameter_file: files/example.env\n    namespace_target: default\n    state: absent\n    wait: yes\n",
+        "metadata": null,
+        "return": {
+            "resources": {
+                "contains": {
+                    "apiVersion": {
+                        "description": "The versioned schema of this representation of an object.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "kind": {
+                        "description": "Represents the REST resource this object represents.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "metadata": {
+                        "contains": {
+                            "name": {
+                                "description": "The name of the resource",
+                                "type": "str"
+                            },
+                            "namespace": {
+                                "description": "The namespace of the resource",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Standard object metadata. Includes name, namespace, annotations, labels, etc.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "spec": {
+                        "description": "Specific attributes of the object. Will vary based on the I(api_version) and I(kind).",
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "status": {
+                        "contains": {
+                            "conditions": {
+                                "description": "Array of status conditions for the object. Not guaranteed to be present",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Current status details for the object.",
+                        "returned": "success",
+                        "type": "dict"
+                    }
+                },
+                "description": [
+                    "The rendered resources defined in the Template"
+                ],
+                "returned": "on success when state is rendered",
+                "type": "complex"
+            },
+            "result": {
+                "contains": {
+                    "apiVersion": {
+                        "description": "The versioned schema of this representation of an object.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "duration": {
+                        "description": "elapsed time of task in seconds",
+                        "returned": "when C(wait) is true",
+                        "sample": 48,
+                        "type": "int"
+                    },
+                    "items": {
+                        "description": "Returned only when multiple yaml documents are passed to src or resource_definition",
+                        "returned": "when resource_definition or src contains list of objects",
+                        "type": "list"
+                    },
+                    "kind": {
+                        "description": "Represents the REST resource this object represents.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "metadata": {
+                        "contains": {
+                            "name": {
+                                "description": "The name of the resource",
+                                "type": "str"
+                            },
+                            "namespace": {
+                                "description": "The namespace of the resource",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Standard object metadata. Includes name, namespace, annotations, labels, etc.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "spec": {
+                        "description": "Specific attributes of the object. Will vary based on the I(api_version) and I(kind).",
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "status": {
+                        "contains": {
+                            "conditions": {
+                                "description": "Array of status conditions for the object. Not guaranteed to be present",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Current status details for the object.",
+                        "returned": "success",
+                        "type": "complex"
+                    }
+                },
+                "description": [
+                    "The created, patched, or otherwise present object. Will be empty in the case of a deletion."
+                ],
+                "returned": "on success when state is present or absent",
+                "type": "complex"
+            }
+        }
+    }
+}

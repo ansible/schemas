@@ -1,0 +1,243 @@
+{
+    "community.aws.aws_glue_connection": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "community.aws",
+            "description": [
+                "Manage an AWS Glue connection. See U(https://aws.amazon.com/glue/) for details."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_glue_connection.py",
+            "has_action": false,
+            "module": "aws_glue_connection",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "availability_zone": {
+                    "description": [
+                        "Availability Zone used by the connection",
+                        "Required when I(connection_type=NETWORK)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.aws"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "catalog_id": {
+                    "description": [
+                        "The ID of the Data Catalog in which to create the connection. If none is supplied, the AWS account ID is used by default."
+                    ],
+                    "type": "str"
+                },
+                "connection_properties": {
+                    "description": [
+                        "A dict of key-value pairs used as parameters for this connection.",
+                        "Required when I(state=present)."
+                    ],
+                    "type": "dict"
+                },
+                "connection_type": {
+                    "choices": [
+                        "CUSTOM",
+                        "JDBC",
+                        "KAFKA",
+                        "MARKETPLACE",
+                        "MONGODB",
+                        "NETWORK"
+                    ],
+                    "default": "JDBC",
+                    "description": [
+                        "The type of the connection. Currently, SFTP is not supported."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "The description of the connection."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "match_criteria": {
+                    "description": [
+                        "A list of UTF-8 strings that specify the criteria that you can use in selecting this connection."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "The name of the connection."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_groups": {
+                    "description": [
+                        "A list of security groups to be used by the connection. Use either security group name or ID.",
+                        "Required when I(connection_type=NETWORK)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Create or delete the AWS Glue connection."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "subnet_id": {
+                    "description": [
+                        "The subnet ID used by the connection.",
+                        "Required when I(connection_type=NETWORK)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage an AWS Glue connection",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Create an AWS Glue connection\n- community.aws.aws_glue_connection:\n    name: my-glue-connection\n    connection_properties:\n      JDBC_CONNECTION_URL: jdbc:mysql://mydb:3306/databasename\n      USERNAME: my-username\n      PASSWORD: my-password\n    state: present\n\n# Create an AWS Glue network connection\n- community.aws.aws_glue_connection:\n    name: my-glue-network-connection\n    availability_zone: us-east-1a\n    connection_properties:\n      JDBC_ENFORCE_SSL: \"false\"\n    connection_type: NETWORK\n    description: Test connection\n    security_groups:\n      - sg-glue\n    subnet_id: subnet-123abc\n    state: present\n\n# Delete an AWS Glue connection\n- community.aws.aws_glue_connection:\n    name: my-glue-connection\n    state: absent\n\n",
+        "metadata": null,
+        "return": {
+            "connection_properties": {
+                "description": "A dict of key-value pairs used as parameters for this connection.",
+                "returned": "when state is present",
+                "sample": {
+                    "JDBC_CONNECTION_URL": "jdbc:mysql://mydb:3306/databasename",
+                    "PASSWORD": "y",
+                    "USERNAME": "x"
+                },
+                "type": "dict"
+            },
+            "connection_type": {
+                "description": "The type of the connection.",
+                "returned": "when state is present",
+                "sample": "JDBC",
+                "type": "str"
+            },
+            "creation_time": {
+                "description": "The time this connection definition was created.",
+                "returned": "when state is present",
+                "sample": "2018-04-21T05:19:58.326000+00:00",
+                "type": "str"
+            },
+            "description": {
+                "description": "Description of the job being defined.",
+                "returned": "when state is present",
+                "sample": "My first Glue job",
+                "type": "str"
+            },
+            "last_updated_time": {
+                "description": "The last time this connection definition was updated.",
+                "returned": "when state is present",
+                "sample": "2018-04-21T05:19:58.326000+00:00",
+                "type": "str"
+            },
+            "match_criteria": {
+                "description": "A list of criteria that can be used in selecting this connection.",
+                "returned": "when state is present",
+                "sample": [],
+                "type": "list"
+            },
+            "name": {
+                "description": "The name of the connection definition.",
+                "returned": "when state is present",
+                "sample": "my-glue-connection",
+                "type": "str"
+            },
+            "physical_connection_requirements": {
+                "description": "A dict of physical connection requirements, such as VPC and SecurityGroup, needed for making this connection successfully.",
+                "returned": "when state is present",
+                "sample": {
+                    "subnet-id": "subnet-aabbccddee"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,120 @@
+{
+    "community.general.consul_kv": {
+        "doc": {
+            "author": [
+                "Steve Gargan (@sgargan)",
+                "Colin Nolan (@colin-nolan)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Allows the retrieval, addition, modification and deletion of key/value entries in a consul cluster via the agent. The entire contents of the record, including the indices, flags and session are returned as C(value).",
+                "If the C(key) represents a prefix then note that when a value is removed, the existing value if any is returned as part of the results.",
+                "See http://www.consul.io/docs/agent/http.html#kv for more details."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/consul_kv.py",
+            "has_action": false,
+            "module": "consul_kv",
+            "options": {
+                "cas": {
+                    "description": [
+                        "Used when acquiring a lock with a session. If the C(cas) is C(0), then Consul will only put the key if it does not already exist. If the C(cas) value is non-zero, then the key is only set if the index matches the ModifyIndex of that key."
+                    ],
+                    "type": "str"
+                },
+                "flags": {
+                    "description": [
+                        "Opaque positive integer value that can be passed when setting a value."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "default": "localhost",
+                    "description": [
+                        "Host of the consul agent."
+                    ],
+                    "type": "str"
+                },
+                "key": {
+                    "description": [
+                        "The key at which the value should be stored."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 8500,
+                    "description": [
+                        "The port on which the consul agent is running."
+                    ],
+                    "type": "int"
+                },
+                "recurse": {
+                    "description": [
+                        "If the key represents a prefix, each entry with the prefix can be retrieved by setting this to C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "retrieve": {
+                    "default": true,
+                    "description": [
+                        "If the I(state) is C(present) and I(value) is set, perform a read after setting the value and return this value."
+                    ],
+                    "type": "bool"
+                },
+                "scheme": {
+                    "default": "http",
+                    "description": [
+                        "The protocol scheme on which the consul agent is running."
+                    ],
+                    "type": "str"
+                },
+                "session": {
+                    "description": [
+                        "The session that should be used to acquire or release a lock associated with a key/value pair."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "acquire",
+                        "present",
+                        "release"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The action to take with the supplied key and value. If the state is 'present' and `value` is set, the key contents will be set to the value supplied and `changed` will be set to `true` only if the value was different to the current contents. If the state is 'present' and `value` is not set, the existing value associated to the key will be returned. The state 'absent' will remove the key/value pair, again 'changed' will be set to true only if the key actually existed prior to the removal. An attempt can be made to obtain or free the lock associated with a key/value pair with the states 'acquire' or 'release' respectively. a valid session must be supplied to make the attempt changed will be true if the attempt is successful, false otherwise."
+                    ],
+                    "type": "str"
+                },
+                "token": {
+                    "description": [
+                        "The token key identifying an ACL rule set that controls access to the key value pair"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "Whether to verify the tls certificate of the consul agent."
+                    ],
+                    "type": "bool"
+                },
+                "value": {
+                    "description": [
+                        "The value should be associated with the given key, required if C(state) is C(present)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python-consul",
+                "requests"
+            ],
+            "short_description": "Manipulate entries in the key/value store of a consul cluster"
+        },
+        "examples": "\n# If the key does not exist, the value associated to the \"data\" property in `retrieved_key` will be `None`\n# If the key value is empty string, `retrieved_key[\"data\"][\"Value\"]` will be `None`\n- name: Retrieve a value from the key/value store\n  community.general.consul_kv:\n    key: somekey\n  register: retrieved_key\n\n- name: Add or update the value associated with a key in the key/value store\n  community.general.consul_kv:\n    key: somekey\n    value: somevalue\n\n- name: Remove a key from the store\n  community.general.consul_kv:\n    key: somekey\n    state: absent\n\n- name: Add a node to an arbitrary group via consul inventory (see consul.ini)\n  community.general.consul_kv:\n    key: ansible/groups/dc1/somenode\n    value: top_secret\n\n- name: Register a key/value pair with an associated session\n  community.general.consul_kv:\n    key: stg/node/server_birthday\n    value: 20160509\n    session: \"{{ sessionid }}\"\n    state: acquire\n",
+        "metadata": null,
+        "return": null
+    }
+}

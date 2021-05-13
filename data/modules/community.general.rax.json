@@ -1,0 +1,284 @@
+{
+    "community.general.rax": {
+        "doc": {
+            "author": [
+                "Jesse Keating (@omgjlk)",
+                "Matt Martz (@sivel)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "creates / deletes a Rackspace Public Cloud instance and optionally waits for it to be 'running'."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/rax.py",
+            "has_action": false,
+            "module": "rax",
+            "notes": [
+                "I(exact_count) can be \"destructive\" if the number of running servers in the I(group) is larger than that specified in I(count). In such a case, the I(state) is effectively set to C(absent) and the extra servers are deleted. In the case of deletion, the returned data structure will have C(action) set to C(delete), and the oldest servers in the group will be deleted.",
+                "The following environment variables can be used, C(RAX_USERNAME), C(RAX_API_KEY), C(RAX_CREDS_FILE), C(RAX_CREDENTIALS), C(RAX_REGION).",
+                "C(RAX_CREDENTIALS) and C(RAX_CREDS_FILE) points to a credentials file appropriate for pyrax. See U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)",
+                "C(RAX_USERNAME) and C(RAX_API_KEY) obviate the use of a credentials file",
+                "C(RAX_REGION) defines a Rackspace Public Cloud region (DFW, ORD, LON, ...)"
+            ],
+            "options": {
+                "api_key": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "Rackspace API key, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "auth_endpoint": {
+                    "description": [
+                        "The URI of the authentication service.",
+                        "If not specified will be set to U(https://identity.api.rackspacecloud.com/v2.0/)"
+                    ],
+                    "type": "str"
+                },
+                "auto_increment": {
+                    "default": "yes",
+                    "description": [
+                        "Whether or not to increment a single number with the name of the created servers. Only applicable when used with the I(group) attribute or meta key."
+                    ],
+                    "type": "bool"
+                },
+                "boot_from_volume": {
+                    "default": "no",
+                    "description": [
+                        "Whether or not to boot the instance from a Cloud Block Storage volume. If C(yes) and I(image) is specified a new volume will be created at boot time. I(boot_volume_size) is required with I(image) to create a new volume at boot time."
+                    ],
+                    "type": "bool"
+                },
+                "boot_volume": {
+                    "description": [
+                        "Cloud Block Storage ID or Name to use as the boot volume of the instance"
+                    ],
+                    "type": "str"
+                },
+                "boot_volume_size": {
+                    "default": 100,
+                    "description": [
+                        "Size of the volume to create in Gigabytes. This is only required with I(image) and I(boot_from_volume)."
+                    ],
+                    "type": "int"
+                },
+                "boot_volume_terminate": {
+                    "default": "no",
+                    "description": [
+                        "Whether the I(boot_volume) or newly created volume from I(image) will be terminated when the server is terminated"
+                    ],
+                    "type": "bool"
+                },
+                "config_drive": {
+                    "default": "no",
+                    "description": [
+                        "Attach read-only configuration drive to server as label config-2"
+                    ],
+                    "type": "bool"
+                },
+                "count": {
+                    "default": 1,
+                    "description": [
+                        "number of instances to launch"
+                    ],
+                    "type": "int"
+                },
+                "count_offset": {
+                    "default": 1,
+                    "description": [
+                        "number count to start at"
+                    ],
+                    "type": "int"
+                },
+                "credentials": {
+                    "aliases": [
+                        "creds_file"
+                    ],
+                    "description": [
+                        "File to find the Rackspace credentials in. Ignored if I(api_key) and I(username) are provided."
+                    ],
+                    "type": "path"
+                },
+                "disk_config": {
+                    "choices": [
+                        "auto",
+                        "manual"
+                    ],
+                    "description": [
+                        "Disk partitioning strategy",
+                        "If not specified it will assume the value C(auto)."
+                    ],
+                    "type": "str"
+                },
+                "env": {
+                    "description": [
+                        "Environment as configured in I(~/.pyrax.cfg), see U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#pyrax-configuration)."
+                    ],
+                    "type": "str"
+                },
+                "exact_count": {
+                    "default": "no",
+                    "description": [
+                        "Explicitly ensure an exact count of instances, used with state=active/present. If specified as C(yes) and I(count) is less than the servers matched, servers will be deleted to match the count. If the number of matched servers is fewer than specified in I(count) additional servers will be added."
+                    ],
+                    "type": "bool"
+                },
+                "extra_client_args": {
+                    "description": [
+                        "A hash of key/value pairs to be used when creating the cloudservers client. This is considered an advanced option, use it wisely and with caution."
+                    ],
+                    "type": "dict"
+                },
+                "extra_create_args": {
+                    "description": [
+                        "A hash of key/value pairs to be used when creating a new server. This is considered an advanced option, use it wisely and with caution."
+                    ],
+                    "type": "dict"
+                },
+                "files": {
+                    "description": [
+                        "Files to insert into the instance. remotefilename:localcontent"
+                    ],
+                    "type": "dict"
+                },
+                "flavor": {
+                    "description": [
+                        "flavor to use for the instance"
+                    ],
+                    "type": "str"
+                },
+                "group": {
+                    "description": [
+                        "host group to assign to server, is also used for idempotent operations to ensure a specific number of instances"
+                    ],
+                    "type": "str"
+                },
+                "identity_type": {
+                    "default": "rackspace",
+                    "description": [
+                        "Authentication mechanism to use, such as rackspace or keystone."
+                    ],
+                    "type": "str"
+                },
+                "image": {
+                    "description": [
+                        "image to use for the instance. Can be an C(id), C(human_id) or C(name). With I(boot_from_volume), a Cloud Block Storage volume will be created with this image"
+                    ],
+                    "type": "str"
+                },
+                "instance_ids": {
+                    "description": [
+                        "list of instance ids, currently only used when state='absent' to remove instances"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "key_name": {
+                    "aliases": [
+                        "keypair"
+                    ],
+                    "description": [
+                        "key pair to use on the instance"
+                    ],
+                    "type": "str"
+                },
+                "meta": {
+                    "description": [
+                        "A hash of metadata to associate with the instance"
+                    ],
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "Name to give the instance"
+                    ],
+                    "type": "str"
+                },
+                "networks": {
+                    "default": [
+                        "public",
+                        "private"
+                    ],
+                    "description": [
+                        "The network to attach to the instances. If specified, you must include ALL networks including the public and private interfaces. Can be C(id) or C(label)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "region": {
+                    "description": [
+                        "Region to create an instance in."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the resource"
+                    ],
+                    "type": "str"
+                },
+                "tenant_id": {
+                    "description": [
+                        "The tenant ID used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "tenant_name": {
+                    "description": [
+                        "The tenant name used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "user_data": {
+                    "description": [
+                        "Data to be uploaded to the servers config drive. This option implies I(config_drive). Can be a file path or a string"
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Rackspace username, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to require SSL validation of API endpoints."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": "no",
+                    "description": [
+                        "wait for the instance to be in state 'running' before returning"
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "how long before wait gives up, in seconds"
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "pyrax"
+            ],
+            "short_description": "create / delete an instance in Rackspace Public Cloud"
+        },
+        "examples": "\n- name: Build a Cloud Server\n  gather_facts: False\n  tasks:\n    - name: Server build request\n      local_action:\n        module: rax\n        credentials: ~/.raxpub\n        name: rax-test1\n        flavor: 5\n        image: b11d9567-e412-4255-96b9-bd63ab23bcfe\n        key_name: my_rackspace_key\n        files:\n          /root/test.txt: /home/localuser/test.txt\n        wait: yes\n        state: present\n        networks:\n          - private\n          - public\n      register: rax\n\n- name: Build an exact count of cloud servers with incremented names\n  hosts: local\n  gather_facts: False\n  tasks:\n    - name: Server build requests\n      local_action:\n        module: rax\n        credentials: ~/.raxpub\n        name: test%03d.example.org\n        flavor: performance1-1\n        image: ubuntu-1204-lts-precise-pangolin\n        state: present\n        count: 10\n        count_offset: 10\n        exact_count: yes\n        group: test\n        wait: yes\n      register: rax\n",
+        "metadata": null,
+        "return": null
+    }
+}

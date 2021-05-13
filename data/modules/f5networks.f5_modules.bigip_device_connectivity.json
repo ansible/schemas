@@ -1,0 +1,249 @@
+{
+    "f5networks.f5_modules.bigip_device_connectivity": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages device IP configuration settings for High Availability (HA) on a BIG-IP. Each BIG-IP device has synchronization and failover connectivity information (IP addresses) that you define as part of HA pairing or clustering. This module allows you to configure that information."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_device_connectivity.py",
+            "has_action": false,
+            "module": "bigip_device_connectivity",
+            "notes": [
+                "This module is primarily used as a component of configuring HA pairs of BIG-IP devices.",
+                "Requires BIG-IP >= 12.0.0",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "cluster_mirroring": {
+                    "choices": [
+                        "between-clusters",
+                        "within-cluster"
+                    ],
+                    "description": [
+                        "Specifies whether mirroring occurs within the same cluster or between different clusters on a multi-bladed system.",
+                        "This parameter is only supported on platforms that have multiple blades, such as Viprion hardware. It is not supported on Virtual Editions (VEs)."
+                    ],
+                    "type": "str"
+                },
+                "config_sync_ip": {
+                    "description": [
+                        "Local IP address the system uses for ConfigSync operations."
+                    ],
+                    "type": "str"
+                },
+                "failover_multicast": {
+                    "description": [
+                        "When C(yes), ensures the Failover Multicast configuration is enabled and, if no further multicast configuration is provided, ensures that C(multicast_interface), C(multicast_address) and C(multicast_port) are the defaults specified in the description of each option.",
+                        "When C(no), ensures that Failover Multicast configuration is disabled."
+                    ],
+                    "type": "bool"
+                },
+                "mirror_primary_address": {
+                    "description": [
+                        "Specifies the primary IP address for the system to use to mirror connections."
+                    ],
+                    "type": "str"
+                },
+                "mirror_secondary_address": {
+                    "description": [
+                        "Specifies the secondary IP address for the system to use to mirror connections."
+                    ],
+                    "type": "str"
+                },
+                "multicast_address": {
+                    "description": [
+                        "IP address for the system to send multicast messages associated with failover.",
+                        "When C(failover_multicast) is C(yes) and this option is not provided, a default of C(224.0.0.245) will be used."
+                    ],
+                    "type": "str"
+                },
+                "multicast_interface": {
+                    "description": [
+                        "Interface over which the system sends multicast messages associated with failover.",
+                        "When C(failover_multicast) is C(yes) and this option is not provided, a default of C(eth0) will be used."
+                    ],
+                    "type": "str"
+                },
+                "multicast_port": {
+                    "description": [
+                        "Port for the system to send multicast messages associated with failover.",
+                        "When C(failover_multicast) is C(yes) and this option is not provided, a default of C(62960) will be used. This value must be between 0 and 65535."
+                    ],
+                    "type": "int"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "unicast_failover": {
+                    "description": [
+                        "Addresses to use for failover operations. Options C(address) and C(port) are supported with dictionary structure, where C(address) is the local IP address the system uses for failover operations.",
+                        "Port specifies the port the system uses for failover operations. If C(port) is not specified, the default value C(1026) will be used.",
+                        "If you are specifying the (recommended) management IP address, use 'management-ip' in the address field.",
+                        "When the value is set to empty list, the parameter value is removed from device."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                }
+            },
+            "short_description": "Manages device IP configuration settings for HA on a BIG-IP.",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Configure device connectivity for standard HA pair\n  bigip_device_connectivity:\n    config_sync_ip: 10.1.30.1\n    mirror_primary_address: 10.1.30.1\n    unicast_failover:\n      - address: management-ip\n      - address: 10.1.30.1\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Denotes if the F5 configuration was updated.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "cluster_mirroring": {
+                "description": "The current cluster-mirroring setting.",
+                "returned": "changed",
+                "sample": "between-clusters",
+                "type": "str"
+            },
+            "config_sync_ip": {
+                "description": "The new value of the C(config_sync_ip) setting.",
+                "returned": "changed",
+                "sample": "10.1.1.1",
+                "type": "str"
+            },
+            "failover_multicast": {
+                "description": "Whether a failover multicast attribute has been changed or not.",
+                "returned": "changed",
+                "type": "bool"
+            },
+            "mirror_primary_address": {
+                "description": "The new value of the C(mirror_primary_address) setting.",
+                "returned": "changed",
+                "sample": "10.1.1.2",
+                "type": "str"
+            },
+            "mirror_secondary_address": {
+                "description": "The new value of the C(mirror_secondary_address) setting.",
+                "returned": "changed",
+                "sample": "10.1.1.3",
+                "type": "str"
+            },
+            "multicast_address": {
+                "description": "The new value of the C(multicast_address) setting.",
+                "returned": "changed",
+                "sample": "224.0.0.245",
+                "type": "str"
+            },
+            "multicast_interface": {
+                "description": "The new value of the C(multicast_interface) setting.",
+                "returned": "changed",
+                "sample": "eth0",
+                "type": "str"
+            },
+            "multicast_port": {
+                "description": "The new value of the C(multicast_port) setting.",
+                "returned": "changed",
+                "sample": 1026,
+                "type": "int"
+            },
+            "unicast_failover": {
+                "description": "The new value of the C(unicast_failover) setting.",
+                "returned": "changed",
+                "sample": [
+                    {
+                        "address": "10.1.1.2",
+                        "port": 1026
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,145 @@
+{
+    "community.crypto.x509_crl_info": {
+        "doc": {
+            "author": [
+                "Felix Fontein (@felixfontein)"
+            ],
+            "collection": "community.crypto",
+            "description": [
+                "This module allows one to retrieve information on Certificate Revocation Lists (CRLs)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/x509_crl_info.py",
+            "has_action": false,
+            "module": "x509_crl_info",
+            "notes": [
+                "All timestamp values are provided in ASN.1 TIME format, in other words, following the C(YYYYMMDDHHMMSSZ) pattern. They are all in UTC.",
+                "Supports C(check_mode)."
+            ],
+            "options": {
+                "content": {
+                    "description": [
+                        "Content of the X.509 CRL in PEM format, or Base64-encoded X.509 CRL.",
+                        "Either I(path) or I(content) must be specified, but not both."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Remote absolute path where the generated CRL file should be created or is already located.",
+                        "Either I(path) or I(content) must be specified, but not both."
+                    ],
+                    "type": "path"
+                }
+            },
+            "requirements": [
+                "cryptography >= 1.2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.crypto.x509_crl"
+                }
+            ],
+            "short_description": "Retrieve information on Certificate Revocation Lists (CRLs)",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.crypto"
+        },
+        "examples": "\n- name: Get information on CRL\n  community.crypto.x509_crl_info:\n    path: /etc/ssl/my-ca.crl\n  register: result\n\n- name: Print the information\n  ansible.builtin.debug:\n    msg: \"{{ result }}\"\n",
+        "metadata": null,
+        "return": {
+            "digest": {
+                "description": "The signature algorithm used to sign the CRL.",
+                "returned": "success",
+                "sample": "sha256WithRSAEncryption",
+                "type": "str"
+            },
+            "format": {
+                "description": [
+                    "Whether the CRL is in PEM format (C(pem)) or in DER format (C(der))."
+                ],
+                "returned": "success",
+                "sample": "pem",
+                "type": "str"
+            },
+            "issuer": {
+                "description": [
+                    "The CRL's issuer.",
+                    "Note that for repeated values, only the last one will be returned."
+                ],
+                "returned": "success",
+                "sample": "{\"organizationName\": \"Ansible\", \"commonName\": \"ca.example.com\"}",
+                "type": "dict"
+            },
+            "issuer_ordered": {
+                "description": "The CRL's issuer as an ordered list of tuples.",
+                "elements": "list",
+                "returned": "success",
+                "sample": "[[\"organizationName\", \"Ansible\"], [\"commonName\": \"ca.example.com\"]]",
+                "type": "list"
+            },
+            "last_update": {
+                "description": "The point in time from which this CRL can be trusted as ASN.1 TIME.",
+                "returned": "success",
+                "sample": "20190413202428Z",
+                "type": "str"
+            },
+            "next_update": {
+                "description": "The point in time from which a new CRL will be issued and the client has to check for it as ASN.1 TIME.",
+                "returned": "success",
+                "sample": "20190413202428Z",
+                "type": "str"
+            },
+            "revoked_certificates": {
+                "contains": {
+                    "invalidity_date": {
+                        "description": "The point in time it was known/suspected that the private key was compromised\nor that the certificate otherwise became invalid as ASN.1 TIME.\n",
+                        "sample": "20190413202428Z",
+                        "type": "str"
+                    },
+                    "invalidity_date_critical": {
+                        "description": "Whether the invalidity date extension is critical.",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "issuer": {
+                        "description": "The certificate's issuer.",
+                        "elements": "str",
+                        "sample": "[\"DNS:ca.example.org\"]",
+                        "type": "list"
+                    },
+                    "issuer_critical": {
+                        "description": "Whether the certificate issuer extension is critical.",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "reason": {
+                        "description": [
+                            "The value for the revocation reason extension.",
+                            "One of C(unspecified), C(key_compromise), C(ca_compromise), C(affiliation_changed), C(superseded), C(cessation_of_operation), C(certificate_hold), C(privilege_withdrawn), C(aa_compromise), and C(remove_from_crl)."
+                        ],
+                        "sample": "key_compromise",
+                        "type": "str"
+                    },
+                    "reason_critical": {
+                        "description": "Whether the revocation reason extension is critical.",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "revocation_date": {
+                        "description": "The point in time the certificate was revoked as ASN.1 TIME.",
+                        "sample": "20190413202428Z",
+                        "type": "str"
+                    },
+                    "serial_number": {
+                        "description": "Serial number of the certificate.",
+                        "sample": 1234,
+                        "type": "int"
+                    }
+                },
+                "description": "List of certificates to be revoked.",
+                "elements": "dict",
+                "returned": "success",
+                "type": "list"
+            }
+        }
+    }
+}

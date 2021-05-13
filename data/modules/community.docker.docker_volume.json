@@ -1,0 +1,214 @@
+{
+    "community.docker.docker_volume": {
+        "doc": {
+            "author": [
+                "Alex Gr\u00f6nholm (@agronholm)"
+            ],
+            "collection": "community.docker",
+            "description": [
+                "Create/remove Docker volumes.",
+                "Performs largely the same function as the \"docker volume\" CLI subcommand."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/docker/plugins/modules/docker_volume.py",
+            "has_action": false,
+            "module": "docker_volume",
+            "notes": [
+                "Connect to the Docker daemon by providing parameters with each task or by defining environment variables. You can define C(DOCKER_HOST), C(DOCKER_TLS_HOSTNAME), C(DOCKER_API_VERSION), C(DOCKER_CERT_PATH), C(DOCKER_SSL_VERSION), C(DOCKER_TLS), C(DOCKER_TLS_VERIFY) and C(DOCKER_TIMEOUT). If you are using docker machine, run the script shipped with the product that sets up the environment. It will set these variables for you. See U(https://docs.docker.com/machine/reference/env/) for more details.",
+                "When connecting to Docker daemon with TLS, you might need to install additional Python packages. For the Docker SDK for Python, version 2.4 or newer, this can be done by installing C(docker[tls]) with M(ansible.builtin.pip).",
+                "Note that the Docker SDK for Python only allows to specify the path to the Docker configuration for very few functions. In general, it will use C($HOME/.docker/config.json) if the C(DOCKER_CONFIG) environment variable is not specified, and use C($DOCKER_CONFIG/config.json) otherwise.",
+                "This module uses the L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) to communicate with the Docker daemon."
+            ],
+            "options": {
+                "api_version": {
+                    "aliases": [
+                        "docker_api_version"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "The version of the Docker API running on the Docker Host.",
+                        "Defaults to the latest version of the API supported by Docker SDK for Python and the docker daemon.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_API_VERSION) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "tls_ca_cert",
+                        "cacert_path"
+                    ],
+                    "description": [
+                        "Use a CA certificate when performing server verification by providing the path to a CA certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(ca.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "tls_client_cert",
+                        "cert_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(cert.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "tls_client_key",
+                        "key_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS key file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(key.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "debug": {
+                    "default": false,
+                    "description": [
+                        "Debug mode"
+                    ],
+                    "type": "bool"
+                },
+                "docker_host": {
+                    "aliases": [
+                        "docker_url"
+                    ],
+                    "default": "unix://var/run/docker.sock",
+                    "description": [
+                        "The URL or Unix socket path used to connect to the Docker API. To connect to a remote host, provide the TCP connection string. For example, C(tcp://192.0.2.23:2376). If TLS is used to encrypt the connection, the module will automatically replace C(tcp) in the connection URL with C(https).",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_HOST) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "driver": {
+                    "default": "local",
+                    "description": [
+                        "Specify the type of volume. Docker provides the C(local) driver, but 3rd party drivers can also be used."
+                    ],
+                    "type": "str"
+                },
+                "driver_options": {
+                    "description": [
+                        "Dictionary of volume settings. Consult docker docs for valid options and values: U(https://docs.docker.com/engine/reference/commandline/volume_create/#driver-specific-options)"
+                    ],
+                    "type": "dict"
+                },
+                "labels": {
+                    "description": [
+                        "Dictionary of label key/values to set for the volume"
+                    ],
+                    "type": "dict"
+                },
+                "recreate": {
+                    "choices": [
+                        "always",
+                        "never",
+                        "options-changed"
+                    ],
+                    "default": "never",
+                    "description": [
+                        "Controls when a volume will be recreated when I(state) is C(present). Please note that recreating an existing volume will cause **any data in the existing volume to be lost!** The volume will be deleted and a new volume with the same name will be created.",
+                        "The value C(always) forces the volume to be always recreated.",
+                        "The value C(never) makes sure the volume will not be recreated.",
+                        "The value C(options-changed) makes sure the volume will be recreated if the volume already exist and the driver, driver options or labels differ."
+                    ],
+                    "type": "str"
+                },
+                "ssl_version": {
+                    "description": [
+                        "Provide a valid SSL version number. Default value determined by ssl.py module.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_SSL_VERSION) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "C(absent) deletes the volume.",
+                        "C(present) creates the volume, if it does not already exist."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 60,
+                    "description": [
+                        "The maximum amount of time in seconds to wait on a response from the API.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TIMEOUT) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "int"
+                },
+                "tls": {
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS without verifying the authenticity of the Docker host server. Note that if I(validate_certs) is set to C(yes) as well, it will take precedence.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                },
+                "tls_hostname": {
+                    "description": [
+                        "When verifying the authenticity of the Docker Host server, provide the expected name of the server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_HOSTNAME) will be used instead. If the environment variable is not set, the default value will be used.",
+                        "The current default value is C(localhost). This default is deprecated and will change in community.docker 2.0.0 to be a value computed from I(docker_host). Explicitly specify C(localhost) to make sure this value will still be used, and to disable the deprecation message which will be shown otherwise."
+                    ],
+                    "type": "str"
+                },
+                "use_ssh_client": {
+                    "default": false,
+                    "description": [
+                        "For SSH transports, use the C(ssh) CLI tool instead of paramiko.",
+                        "Requires Docker SDK for Python 4.4.0 or newer."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.docker"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tls_verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS and verifying the authenticity of the Docker host server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_VERIFY) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                },
+                "volume_name": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Name of the volume to operate on."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "Docker SDK for Python: Please note that the L(docker-py,https://pypi.org/project/docker-py/) Python module has been superseded by L(docker,https://pypi.org/project/docker/) (see L(here,https://github.com/docker/docker-py/issues/1310) for details). For Python 2.6, C(docker-py) must be used. Otherwise, it is recommended to install the C(docker) Python module. Note that both modules should *not* be installed at the same time. Also note that when both modules are installed and one of them is uninstalled, the other might no longer function and a reinstall of it is required.",
+                "L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) >= 1.10.0 (use L(docker-py,https://pypi.org/project/docker-py/) for Python 2.6)",
+                "The docker server >= 1.9.0"
+            ],
+            "short_description": "Manage Docker volumes"
+        },
+        "examples": "\n- name: Create a volume\n  community.docker.docker_volume:\n    name: volume_one\n\n- name: Remove a volume\n  community.docker.docker_volume:\n    name: volume_one\n    state: absent\n\n- name: Create a volume with options\n  community.docker.docker_volume:\n    name: volume_two\n    driver_options:\n      type: btrfs\n      device: /dev/sda2\n",
+        "metadata": null,
+        "return": {
+            "volume": {
+                "description": [
+                    "Volume inspection results for the affected volume."
+                ],
+                "returned": "success",
+                "sample": {},
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,147 @@
+{
+    "community.general.clc_firewall_policy": {
+        "doc": {
+            "author": "CLC Runner (@clc-runner)",
+            "collection": "community.general",
+            "description": [
+                "Create or delete or update firewall policies on Centurylink Cloud"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/clc_firewall_policy.py",
+            "has_action": false,
+            "module": "clc_firewall_policy",
+            "notes": [
+                "To use this module, it is required to set the below environment variables which enables access to the Centurylink Cloud - CLC_V2_API_USERNAME, the account login id for the centurylink cloud - CLC_V2_API_PASSWORD, the account password for the centurylink cloud",
+                "Alternatively, the module accepts the API token and account alias. The API token can be generated using the CLC account login and password via the HTTP api call @ https://api.ctl.io/v2/authentication/login - CLC_V2_API_TOKEN, the API token generated from https://api.ctl.io/v2/authentication/login - CLC_ACCT_ALIAS, the account alias associated with the centurylink cloud",
+                "Users can set CLC_V2_API_URL to specify an endpoint for pointing to a different CLC environment."
+            ],
+            "options": {
+                "destination": {
+                    "description": [
+                        "The list of destination addresses for traffic on the terminating firewall. This is required when state is 'present'"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "destination_account_alias": {
+                    "description": [
+                        "CLC alias for the destination account"
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "choices": [
+                        true,
+                        false
+                    ],
+                    "default": true,
+                    "description": [
+                        "Whether the firewall policy is enabled or disabled"
+                    ],
+                    "type": "str"
+                },
+                "firewall_policy_id": {
+                    "description": [
+                        "Id of the firewall policy. This is required to update or delete an existing firewall policy"
+                    ],
+                    "type": "str"
+                },
+                "location": {
+                    "description": [
+                        "Target datacenter for the firewall policy"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ports": {
+                    "description": [
+                        "The list of ports associated with the policy. TCP and UDP can take in single ports or port ranges.",
+                        "Example: C(['any', 'icmp', 'TCP/123', 'UDP/123', 'TCP/123-456', 'UDP/123-456'])."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "source": {
+                    "description": [
+                        "The list  of source addresses for traffic on the originating firewall. This is required when state is 'present'"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "source_account_alias": {
+                    "description": [
+                        "CLC alias for the source account"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether to create or delete the firewall policy"
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": "True",
+                    "description": [
+                        "Whether to wait for the provisioning tasks to finish before returning."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python = 2.7",
+                "requests >= 2.5.0",
+                "clc-sdk"
+            ],
+            "short_description": "Create/delete/update firewall policies"
+        },
+        "examples": "\n---\n- name: Create Firewall Policy\n  hosts: localhost\n  gather_facts: False\n  connection: local\n  tasks:\n    - name: Create / Verify an Firewall Policy at CenturyLink Cloud\n      clc_firewall:\n        source_account_alias: WFAD\n        location: VA1\n        state: present\n        source: 10.128.216.0/24\n        destination: 10.128.216.0/24\n        ports: Any\n        destination_account_alias: WFAD\n\n- name: Delete Firewall Policy\n  hosts: localhost\n  gather_facts: False\n  connection: local\n  tasks:\n    - name: Delete an Firewall Policy at CenturyLink Cloud\n      clc_firewall:\n        source_account_alias: WFAD\n        location: VA1\n        state: absent\n        firewall_policy_id: c62105233d7a4231bd2e91b9c791e43e1\n",
+        "metadata": null,
+        "return": {
+            "firewall_policy": {
+                "description": "The fire wall policy information",
+                "returned": "success",
+                "sample": {
+                    "destination": [
+                        "10.1.1.0/24",
+                        "10.2.2.0/24"
+                    ],
+                    "destinationAccount": "wfad",
+                    "enabled": true,
+                    "id": "fc36f1bfd47242e488a9c44346438c05",
+                    "links": [
+                        {
+                            "href": "http://api.ctl.io/v2-experimental/firewallPolicies/wfad/uc1/fc36f1bfd47242e488a9c44346438c05",
+                            "rel": "self",
+                            "verbs": [
+                                "GET",
+                                "PUT",
+                                "DELETE"
+                            ]
+                        }
+                    ],
+                    "ports": [
+                        "any"
+                    ],
+                    "source": [
+                        "10.1.1.0/24",
+                        "10.2.2.0/24"
+                    ],
+                    "status": "active"
+                },
+                "type": "dict"
+            },
+            "firewall_policy_id": {
+                "description": "The fire wall policy id",
+                "returned": "success",
+                "sample": "fc36f1bfd47242e488a9c44346438c05",
+                "type": "str"
+            }
+        }
+    }
+}

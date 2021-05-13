@@ -1,0 +1,213 @@
+{
+    "f5networks.f5_modules.bigip_user": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage user accounts and user attributes on a BIG-IP system. Typically this module operates only on REST API users and not CLI users. When specifying C(root), you may only change the password. Your other parameters are ignored in this case. Changing the C(root) password is not an idempotent operation. Therefore, it changes the password every time this module attempts to change it."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_user.py",
+            "has_action": false,
+            "module": "bigip_user",
+            "notes": [
+                "Requires BIG-IP versions >= 12.0.0",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "full_name": {
+                    "description": [
+                        "Full name of the user."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "partition_access": {
+                    "description": [
+                        "Specifies the administrative partition to which the user has access. C(partition_access) is required when creating a new account, and should be in the form \"partition:role\".",
+                        "Valid roles include C(acceleration-policy-editor), C(admin), C(application-editor), C(auditor), C(certificate-manager), C(guest), C(irule-manager), C(manager), C(no-access), C(operator), C(resource-admin), C(user-manager), C(web-application-security-administrator), and C(web-application-security-editor).",
+                        "The partition portion the of tuple should be an existing partition or the value 'all'."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "password_credential": {
+                    "description": [
+                        "Set the users password to this unencrypted value. C(password_credential) is required when creating a new account."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "shell": {
+                    "choices": [
+                        "bash",
+                        "none",
+                        "tmsh"
+                    ],
+                    "description": [
+                        "Optionally set the users shell."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the account should exist or not, taking action if the state is different from what is stated."
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "always",
+                        "on_create"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "C(always) allows the user to update passwords. C(on_create) only sets the password for newly created users.",
+                        "When C(username_credential) is C(root), this value is forced to C(always)."
+                    ],
+                    "type": "str"
+                },
+                "username_credential": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Name of the user to create, remove, or modify.",
+                        "The C(root) user may not be removed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage user accounts and user attributes on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Add the user 'johnd' as an admin\n  bigip_user:\n    username_credential: johnd\n    password_credential: password\n    full_name: John Doe\n    partition_access:\n      - all:admin\n    update_password: on_create\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Change the user \"johnd's\" role and shell\n  bigip_user:\n    username_credential: johnd\n    partition_access:\n      - NewPartition:manager\n    shell: tmsh\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Make the user 'johnd' an admin and set to advanced shell\n  bigip_user:\n    name: johnd\n    partition_access:\n      - all:admin\n    shell: bash\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Remove the user 'johnd'\n  bigip_user:\n    name: johnd\n    state: absent\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Update password\n  bigip_user:\n    state: present\n    username_credential: johnd\n    password_credential: newsupersecretpassword\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n# Note that the second time this task runs, it would fail because\n# The password has been changed. Therefore, it is recommended that\n# you either,\n#\n#   * Put this in its own playbook that you run when you need to\n#   * Put this task in a `block`\n#   * Include `ignore_errors` on this task\n- name: Change the Admin password\n  bigip_user:\n    state: present\n    username_credential: admin\n    password_credential: NewSecretPassword\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Change the root user's password\n  bigip_user:\n    username_credential: root\n    password_credential: secret\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "full_name": {
+                "description": "Full name of the user.",
+                "returned": "changed and success",
+                "sample": "John Doe",
+                "type": "str"
+            },
+            "partition_access": {
+                "description": [
+                    "List of strings containing the user's roles and which partitions they are applied to. They are specified in the form \"partition:role\"."
+                ],
+                "returned": "changed and success",
+                "sample": [
+                    "all:admin"
+                ],
+                "type": "list"
+            },
+            "shell": {
+                "description": "The shell assigned to the user account.",
+                "returned": "changed and success",
+                "sample": "tmsh",
+                "type": "str"
+            }
+        }
+    }
+}

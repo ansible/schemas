@@ -1,0 +1,141 @@
+{
+    "cisco.nxos.nxos_interfaces": {
+        "doc": {
+            "author": "Trishna Guha (@trishnaguha)",
+            "collection": "cisco.nxos",
+            "description": "This module manages the interface attributes of NX-OS interfaces.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/nxos/plugins/modules/nxos_interfaces.py",
+            "has_action": true,
+            "module": "nxos_interfaces",
+            "notes": [
+                "Tested against NXOS 7.3.(0)D1(1) on VIRL"
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of interface options",
+                    "elements": "dict",
+                    "suboptions": {
+                        "description": {
+                            "description": [
+                                "Interface description."
+                            ],
+                            "type": "str"
+                        },
+                        "duplex": {
+                            "choices": [
+                                "full",
+                                "half",
+                                "auto"
+                            ],
+                            "description": [
+                                "Interface link status. Applicable for Ethernet interfaces only."
+                            ],
+                            "type": "str"
+                        },
+                        "enabled": {
+                            "description": [
+                                "Administrative state of the interface. Set the value to C(true) to administratively enable the interface or C(false) to disable it"
+                            ],
+                            "type": "bool"
+                        },
+                        "fabric_forwarding_anycast_gateway": {
+                            "description": [
+                                "Associate SVI with anycast gateway under VLAN configuration mode. Applicable for SVI interfaces only."
+                            ],
+                            "type": "bool"
+                        },
+                        "ip_forward": {
+                            "description": [
+                                "Enable or disable IP forward feature on SVIs. Set the value to C(true) to enable  or C(false) to disable."
+                            ],
+                            "type": "bool"
+                        },
+                        "mode": {
+                            "choices": [
+                                "layer2",
+                                "layer3"
+                            ],
+                            "description": [
+                                "Manage Layer2 or Layer3 state of the interface. Applicable for Ethernet and port channel interfaces only."
+                            ],
+                            "type": "str"
+                        },
+                        "mtu": {
+                            "description": [
+                                "MTU for a specific interface. Must be an even number between 576 and 9216. Applicable for Ethernet interfaces only."
+                            ],
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "Full name of interface, e.g. Ethernet1/1, port-channel10."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "speed": {
+                            "description": [
+                                "Interface link speed. Applicable for Ethernet interfaces only."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the NX-OS device by executing the command B(show running-config | section ^interface)",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion",
+                        "The state I(rendered) considers the system default mode for interfaces to be \"Layer 3\" and the system default state for interfaces to be shutdown."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.nxos"
+        },
+        "examples": "\n# Using merged\n\n# Before state:\n# -------------\n#\n# interface Ethernet1/1\n#   description testing\n#   mtu 1800\n\n- name: Merge provided configuration with device configuration\n  cisco.nxos.nxos_interfaces:\n    config:\n    - name: Ethernet1/1\n      description: Configured by Ansible\n      enabled: true\n    - name: Ethernet1/2\n      description: Configured by Ansible Network\n      enabled: false\n    state: merged\n\n# After state:\n# ------------\n#\n# interface Ethernet1/1\n#    description Configured by Ansible\n#    no shutdown\n#    mtu 1800\n# interface Ethernet2\n#    description Configured by Ansible Network\n#    shutdown\n\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# interface Ethernet1/1\n#    description Interface 1/1\n# interface Ethernet1/2\n\n- name: Replaces device configuration of listed interfaces with provided configuration\n  cisco.nxos.nxos_interfaces:\n    config:\n    - name: Ethernet1/1\n      description: Configured by Ansible\n      enabled: true\n      mtu: 2000\n    - name: Ethernet1/2\n      description: Configured by Ansible Network\n      enabled: false\n      mode: layer2\n    state: replaced\n\n# After state:\n# ------------\n#\n# interface Ethernet1/1\n#   description Configured by Ansible\n#   no shutdown\n#   mtu 1500\n# interface Ethernet2/2\n#    description Configured by Ansible Network\n#    shutdown\n#    switchport\n\n\n# Using overridden\n\n# Before state:\n# -------------\n#\n# interface Ethernet1/1\n#    description Interface Ethernet1/1\n# interface Ethernet1/2\n# interface mgmt0\n#    description Management interface\n#    ip address dhcp\n\n- name: Override device configuration of all interfaces with provided configuration\n  cisco.nxos.nxos_interfaces:\n    config:\n    - name: Ethernet1/1\n      enabled: true\n    - name: Ethernet1/2\n      description: Configured by Ansible Network\n      enabled: false\n    state: overridden\n\n# After state:\n# ------------\n#\n# interface Ethernet1/1\n# interface Ethernet1/2\n#    description Configured by Ansible Network\n#    shutdown\n# interface mgmt0\n#    ip address dhcp\n\n\n# Using deleted\n\n# Before state:\n# -------------\n#\n# interface Ethernet1/1\n#    description Interface Ethernet1/1\n# interface Ethernet1/2\n# interface mgmt0\n#    description Management interface\n#    ip address dhcp\n\n- name: Delete or return interface parameters to default settings\n  cisco.nxos.nxos_interfaces:\n    config:\n    - name: Ethernet1/1\n    state: deleted\n\n# After state:\n# ------------\n#\n# interface Ethernet1/1\n# interface Ethernet1/2\n# interface mgmt0\n#    description Management interface\n#    ip address dhcp\n\n# Using rendered\n\n- name: Use rendered state to convert task input to device specific commands\n  cisco.nxos.nxos_interfaces:\n    config:\n    - name: Ethernet1/1\n      description: outbound-intf\n      mode: layer3\n      speed: 100\n    - name: Ethernet1/2\n      mode: layer2\n      enabled: true\n      duplex: full\n    state: rendered\n\n# Task Output (redacted)\n# -----------------------\n\n# rendered:\n#   - \"interface Ethernet1/1\"\n#   - \"description outbound-intf\"\n#   - \"speed 100\"\n#   - \"interface Ethernet1/2\"\n#   - \"switchport\"\n#   - \"duplex full\"\n#   - \"no shutdown\"\n\n# Using parsed\n\n# parsed.cfg\n# ------------\n# interface Ethernet1/800\n#   description test-1\n#   speed 1000\n#   shutdown\n#   no switchport\n#   duplex half\n# interface Ethernet1/801\n#   description test-2\n#   switchport\n#   no shutdown\n#   mtu 1800\n\n- name: Use parsed state to convert externally supplied config to structured format\n  cisco.nxos.nxos_interfaces:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# Task output (redacted)\n# -----------------------\n#  parsed:\n#    - description: \"test-1\"\n#      duplex: \"half\"\n#      enabled: false\n#      mode: \"layer3\"\n#      name: \"Ethernet1/800\"\n#      speed: \"1000\"\n#\n#    - description: \"test-2\"\n#      enabled: true\n#      mode: \"layer2\"\n#      mtu: \"1800\"\n#      name: \"Ethernet1/801\"\n\n# Using gathered\n\n# Existing device config state\n# -----------------------------\n# interface Ethernet1/1\n#   description outbound-intf\n#   switchport\n#   no shutdown\n# interface Ethernet1/2\n#   description intf-l3\n#   speed 1000\n# interface Ethernet1/3\n# interface Ethernet1/4\n# interface Ethernet1/5\n\n- name: Gather interfaces facts from the device using nxos_interfaces\n  cisco.nxos.nxos_interfaces:\n    state: gathered\n\n# Task output (redacted)\n# -----------------------\n# - name: Ethernet1/1\n#   description: outbound-intf\n#   mode: layer2\n#   enabled: True\n# - name: Ethernet1/2\n#   description: intf-l3\n#   speed: \"1000\"\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "interface Ethernet1/1",
+                    "mtu 1800"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

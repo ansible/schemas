@@ -1,0 +1,188 @@
+{
+    "f5networks.f5_modules.bigip_apm_policy_fetch": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Exports the APM policy or APM access profile from remote nodes."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_apm_policy_fetch.py",
+            "has_action": false,
+            "module": "bigip_apm_policy_fetch",
+            "notes": [
+                "Due to ID685681 it is not possible to execute ng_* tools via REST API on v12.x and 13.x, once this is fixed this restriction will be removed.",
+                "Requires BIG-IP >= 14.0.0",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "dest": {
+                    "description": [
+                        "A directory to save the file into."
+                    ],
+                    "type": "path"
+                },
+                "file": {
+                    "description": [
+                        "The name of the file to be created on the remote device for downloading."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": true,
+                    "description": [
+                        "If C(no), the file will only be transferred if it does not exist in the the destination."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the APM policy or APM access profile exported to create a file on the remote device for downloading."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition which contains the APM policy or APM access profile to export."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "type": {
+                    "choices": [
+                        "profile_access",
+                        "access_policy"
+                    ],
+                    "default": "profile_access",
+                    "description": [
+                        "Specifies the type of item to export from the device."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Exports the APM policy or APM access profile from remote nodes.",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Export APM access profile\n  bigip_apm_policy_fetch:\n    name: foobar\n    file: export_foo\n    dest: /root/download\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Export APM access policy\n  bigip_apm_policy_fetch:\n    name: foobar\n    file: export_foo\n    dest: /root/download\n    type: access_policy\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Export APM access profile, autogenerate name\n  bigip_apm_policy_fetch:\n    name: foobar\n    dest: /root/download\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "dest": {
+                "description": "Local path to download the exported APM policy.",
+                "returned": "changed",
+                "sample": "/root/downloads/profile-foobar_file.conf.tar.gz",
+                "type": "str"
+            },
+            "file": {
+                "description": [
+                    "Name of the exported file on the remote BIG-IP to download. If not specified, then this will be a randomly generated filename."
+                ],
+                "returned": "changed",
+                "sample": "foobar_file",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the APM policy or APM access profile to be exported.",
+                "returned": "changed",
+                "sample": "APM_policy_global",
+                "type": "str"
+            },
+            "type": {
+                "description": "Set to specify the type of item to export.",
+                "returned": "changed",
+                "sample": "access_policy",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,235 @@
+{
+    "ngine_io.vultr.vultr_user": {
+        "doc": {
+            "author": "Ren\u00e9 Moser (@resmo)",
+            "collection": "ngine_io.vultr",
+            "description": [
+                "Create, update and remove users."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/vultr/plugins/modules/vultr_user.py",
+            "has_action": false,
+            "module": "vultr_user",
+            "notes": [
+                "Also see the API documentation on https://www.vultr.com/api/."
+            ],
+            "options": {
+                "acls": {
+                    "aliases": [
+                        "acl"
+                    ],
+                    "choices": [
+                        "manage_users",
+                        "subscriptions",
+                        "provisioning",
+                        "billing",
+                        "support",
+                        "abuse",
+                        "dns",
+                        "upgrade"
+                    ],
+                    "description": [
+                        "List of ACLs this users should have, see U(https://www.vultr.com/api/#user_user_list).",
+                        "Required if C(state=present).",
+                        "One or more of the choices list, some depend on each other."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "api_account": {
+                    "default": "default",
+                    "description": [
+                        "Name of the ini section in the C(vultr.ini) file.",
+                        "The ENV variable C(VULTR_API_ACCOUNT) is used as default, when defined."
+                    ],
+                    "type": "str"
+                },
+                "api_enabled": {
+                    "default": true,
+                    "description": [
+                        "Whether the API is enabled or not."
+                    ],
+                    "type": "bool"
+                },
+                "api_endpoint": {
+                    "description": [
+                        "URL to API endpint (without trailing slash).",
+                        "The ENV variable C(VULTR_API_ENDPOINT) is used as default, when defined.",
+                        "Fallback value is U(https://api.vultr.com) if not specified."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the Vultr API.",
+                        "The ENV variable C(VULTR_API_KEY) is used as default, when defined."
+                    ],
+                    "type": "str"
+                },
+                "api_retries": {
+                    "description": [
+                        "Amount of retries in case of the Vultr API retuns an HTTP 503 code.",
+                        "The ENV variable C(VULTR_API_RETRIES) is used as default, when defined.",
+                        "Fallback value is 5 retries if not specified."
+                    ],
+                    "type": "int"
+                },
+                "api_retry_max_delay": {
+                    "description": [
+                        "Retry backoff delay in seconds is exponential up to this max. value, in seconds.",
+                        "The ENV variable C(VULTR_API_RETRY_MAX_DELAY) is used as default, when defined.",
+                        "Fallback value is 12 seconds."
+                    ],
+                    "type": "int"
+                },
+                "api_timeout": {
+                    "description": [
+                        "HTTP timeout to Vultr API.",
+                        "The ENV variable C(VULTR_API_TIMEOUT) is used as default, when defined.",
+                        "Fallback value is 60 seconds if not specified."
+                    ],
+                    "type": "int"
+                },
+                "email": {
+                    "description": [
+                        "Email of the user.",
+                        "Required if C(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Password will only be changed with enforcement."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Name of the user"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user.",
+                        "Only considered while creating a user or when C(force=yes)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the user."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Validate SSL certs of the Vultr API."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6"
+            ],
+            "short_description": "Manages users on Vultr.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.vultr"
+        },
+        "examples": "\n- name: Ensure a user exists\n  ngine_io.vultr.vultr_user:\n    name: john\n    email: john.doe@example.com\n    password: s3cr3t\n    acls:\n      - upgrade\n      - dns\n      - manage_users\n      - subscriptions\n      - upgrade\n\n- name: Remove a user\n  ngine_io.vultr.vultr_user:\n    name: john\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "vultr_api": {
+                "contains": {
+                    "api_account": {
+                        "description": "Account used in the ini file to select the key",
+                        "returned": "success",
+                        "sample": "default",
+                        "type": "str"
+                    },
+                    "api_endpoint": {
+                        "description": "Endpoint used for the API requests",
+                        "returned": "success",
+                        "sample": "https://api.vultr.com",
+                        "type": "str"
+                    },
+                    "api_retries": {
+                        "description": "Amount of max retries for the API requests",
+                        "returned": "success",
+                        "sample": 5,
+                        "type": "int"
+                    },
+                    "api_retry_max_delay": {
+                        "description": "Exponential backoff delay in seconds between retries up to this max delay value.",
+                        "returned": "success",
+                        "sample": 12,
+                        "type": "int"
+                    },
+                    "api_timeout": {
+                        "description": "Timeout used for the API requests",
+                        "returned": "success",
+                        "sample": 60,
+                        "type": "int"
+                    }
+                },
+                "description": "Response from Vultr API with a few additions/modification",
+                "returned": "success",
+                "type": "complex"
+            },
+            "vultr_user": {
+                "contains": {
+                    "acls": {
+                        "description": "List of ACLs of the user.",
+                        "returned": "success",
+                        "sample": [
+                            "manage_users",
+                            "support",
+                            "upgrade"
+                        ],
+                        "type": "list"
+                    },
+                    "api_enabled": {
+                        "description": "Whether the API is enabled or not.",
+                        "returned": "success",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "api_key": {
+                        "description": "API key of the user.",
+                        "returned": "only after resource was created",
+                        "sample": "567E6K567E6K567E6K567E6K567E6K",
+                        "type": "str"
+                    },
+                    "email": {
+                        "description": "Email of the user.",
+                        "returned": "success",
+                        "sample": "john@example.com",
+                        "type": "str"
+                    },
+                    "id": {
+                        "description": "ID of the user.",
+                        "returned": "success",
+                        "sample": "5904bc6ed9234",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "Name of the user.",
+                        "returned": "success",
+                        "sample": "john",
+                        "type": "str"
+                    }
+                },
+                "description": "Response from Vultr API",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

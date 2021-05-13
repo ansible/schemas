@@ -1,0 +1,193 @@
+{
+    "community.aws.ec2_customer_gateway": {
+        "doc": {
+            "author": "Michael Baydoun (@MichaelBaydoun)",
+            "collection": "community.aws",
+            "description": [
+                "Manage an AWS customer gateway."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_customer_gateway.py",
+            "has_action": false,
+            "module": "ec2_customer_gateway",
+            "notes": [
+                "You cannot create more than one customer gateway with the same IP address. If you run an identical request more than one time, the first request creates the customer gateway, and subsequent requests return information about the existing customer gateway. The subsequent requests do not create new customer gateway resources.",
+                "Return values contain customer_gateway and customer_gateways keys which are identical dicts. You should use customer_gateway. See U(https://github.com/ansible/ansible-modules-extras/issues/2773) for details.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "bgp_asn": {
+                    "description": [
+                        "Border Gateway Protocol (BGP) Autonomous System Number (ASN), required when I(state=present)."
+                    ],
+                    "type": "int"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "ip_address": {
+                    "description": [
+                        "Internet-routable IP address for customers gateway, must be a static address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the customer gateway."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "routing": {
+                    "choices": [
+                        "static",
+                        "dynamic"
+                    ],
+                    "default": "dynamic",
+                    "description": [
+                        "The type of routing."
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or terminate the Customer Gateway."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage an AWS customer gateway",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Create Customer Gateway\n  community.aws.ec2_customer_gateway:\n    bgp_asn: 12345\n    ip_address: 1.2.3.4\n    name: IndianapolisOffice\n    region: us-east-1\n  register: cgw\n\n- name: Delete Customer Gateway\n  community.aws.ec2_customer_gateway:\n    ip_address: 1.2.3.4\n    name: IndianapolisOffice\n    state: absent\n    region: us-east-1\n  register: cgw\n",
+        "metadata": null,
+        "return": {
+            "gateway.customer_gateways": {
+                "contains": {
+                    "bgp_asn": {
+                        "description": "The Border Gateway Autonomous System Number.",
+                        "returned": "when exists and gateway is available.",
+                        "sample": 65123,
+                        "type": "str"
+                    },
+                    "customer_gateway_id": {
+                        "description": "gateway id assigned by amazon.",
+                        "returned": "when exists and gateway is available.",
+                        "sample": "cgw-cb6386a2",
+                        "type": "str"
+                    },
+                    "ip_address": {
+                        "description": "ip address of your gateway device.",
+                        "returned": "when exists and gateway is available.",
+                        "sample": "1.2.3.4",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "state of gateway.",
+                        "returned": "when gateway exists and is available.",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": "Any tags on the gateway.",
+                        "returned": "when gateway exists and is available, and when tags exist.",
+                        "type": "list"
+                    },
+                    "type": {
+                        "description": "encryption type.",
+                        "returned": "when gateway exists and is available.",
+                        "sample": "ipsec.1",
+                        "type": "str"
+                    }
+                },
+                "description": "details about the gateway that was created.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

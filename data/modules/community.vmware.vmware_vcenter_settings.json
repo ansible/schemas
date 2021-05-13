@@ -1,0 +1,257 @@
+{
+    "community.vmware.vmware_vcenter_settings": {
+        "doc": {
+            "author": [
+                "Christian Kotte (@ckotte)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to configure the vCenter server general settings (except the statistics).",
+                "The statistics can be configured with the module C(vmware_vcenter_statistics)."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_vcenter_settings.py",
+            "has_action": false,
+            "module": "vmware_vcenter_settings",
+            "notes": [
+                "Tested with vCenter Server Appliance (vCSA) 6.5 and 6.7"
+            ],
+            "options": {
+                "database": {
+                    "default": {
+                        "event_cleanup": true,
+                        "event_retention": 30,
+                        "max_connections": 50,
+                        "task_cleanup": true,
+                        "task_retention": 30
+                    },
+                    "description": [
+                        "The database settings for vCenter server.",
+                        "Valid attributes are:",
+                        "- C(max_connections) (int): Maximum connections. (default: 50)",
+                        "- C(task_cleanup) (bool): Task cleanup. (default: true)",
+                        "- C(task_retention) (int): Task retention (days). (default: 30)",
+                        "- C(event_cleanup) (bool): Event cleanup. (default: true)",
+                        "- C(event_retention) (int): Event retention (days). (default: 30)"
+                    ],
+                    "type": "dict"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "logging_options": {
+                    "choices": [
+                        "none",
+                        "error",
+                        "warning",
+                        "info",
+                        "verbose",
+                        "trivia"
+                    ],
+                    "default": "info",
+                    "description": [
+                        "The level of detail that vCenter server usesfor log files."
+                    ],
+                    "type": "str"
+                },
+                "mail": {
+                    "default": {
+                        "sender": "",
+                        "server": ""
+                    },
+                    "description": [
+                        "The settings vCenter server uses to send email alerts.",
+                        "Valid attributes are:",
+                        "- C(server) (str): Mail server",
+                        "- C(sender) (str): Mail sender address"
+                    ],
+                    "type": "dict"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "runtime_settings": {
+                    "description": [
+                        "The unique runtime settings for vCenter server.",
+                        "Valid attributes are:",
+                        "- C(unique_id) (int): vCenter server unique ID.",
+                        "- C(managed_address) (str): vCenter server managed address.",
+                        "- C(vcenter_server_name) (str): vCenter server name. (default: FQDN)"
+                    ],
+                    "type": "dict"
+                },
+                "snmp_receivers": {
+                    "default": {
+                        "snmp_receiver_1_community": "public",
+                        "snmp_receiver_1_enabled": true,
+                        "snmp_receiver_1_port": 162,
+                        "snmp_receiver_1_url": "localhost",
+                        "snmp_receiver_2_community": "",
+                        "snmp_receiver_2_enabled": false,
+                        "snmp_receiver_2_port": 162,
+                        "snmp_receiver_2_url": "",
+                        "snmp_receiver_3_community": "",
+                        "snmp_receiver_3_enabled": false,
+                        "snmp_receiver_3_port": 162,
+                        "snmp_receiver_3_url": "",
+                        "snmp_receiver_4_community": "",
+                        "snmp_receiver_4_enabled": false,
+                        "snmp_receiver_4_port": 162,
+                        "snmp_receiver_4_url": ""
+                    },
+                    "description": [
+                        "SNMP trap destinations for vCenter server alerts.",
+                        "Valid attributes are:",
+                        "- C(snmp_receiver_1_url) (str): Primary Receiver ULR. (default: \"localhost\")",
+                        "- C(snmp_receiver_1_enabled) (bool): Enable receiver. (default: True)",
+                        "- C(snmp_receiver_1_port) (int): Receiver port. (default: 162)",
+                        "- C(snmp_receiver_1_community) (str): Community string. (default: \"public\")",
+                        "- C(snmp_receiver_2_url) (str): Receiver 2 ULR. (default: \"\")",
+                        "- C(snmp_receiver_2_enabled) (bool): Enable receiver. (default: False)",
+                        "- C(snmp_receiver_2_port) (int): Receiver port. (default: 162)",
+                        "- C(snmp_receiver_2_community) (str): Community string. (default: \"\")",
+                        "- C(snmp_receiver_3_url) (str): Receiver 3 ULR. (default: \"\")",
+                        "- C(snmp_receiver_3_enabled) (bool): Enable receiver. (default: False)",
+                        "- C(snmp_receiver_3_port) (int): Receiver port. (default: 162)",
+                        "- C(snmp_receiver_3_community) (str): Community string. (default: \"\")",
+                        "- C(snmp_receiver_4_url) (str): Receiver 4 ULR. (default: \"\")",
+                        "- C(snmp_receiver_4_enabled) (bool): Enable receiver. (default: False)",
+                        "- C(snmp_receiver_4_port) (int): Receiver port. (default: 162)",
+                        "- C(snmp_receiver_4_community) (str): Community string. (default: \"\")"
+                    ],
+                    "type": "dict"
+                },
+                "timeout_settings": {
+                    "default": {
+                        "long_operations": 120,
+                        "normal_operations": 30
+                    },
+                    "description": [
+                        "The vCenter server connection timeout for normal and long operations.",
+                        "Valid attributes are:",
+                        "- C(normal_operations) (int) (default: 30)",
+                        "- C(long_operations) (int) (default: 120)"
+                    ],
+                    "type": "dict"
+                },
+                "user_directory": {
+                    "default": {
+                        "query_limit": true,
+                        "query_limit_size": 5000,
+                        "timeout": 60,
+                        "validation": true,
+                        "validation_period": 1440
+                    },
+                    "description": [
+                        "The user directory settings for the vCenter server installation.",
+                        "Valid attributes are:",
+                        "- C(timeout) (int): User directory timeout. (default: 60)",
+                        "- C(query_limit) (bool): Query limit. (default: true)",
+                        "- C(query_limit_size) (int): Query limit size. (default: 5000)",
+                        "- C(validation) (bool): Mail Validation. (default: true)",
+                        "- C(validation_period) (int): Validation period. (default: 1440)"
+                    ],
+                    "type": "dict"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Configures general settings on a vCenter server"
+        },
+        "examples": "\n- name: Configure vCenter general settings\n  community.vmware.vmware_vcenter_settings:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    database:\n      max_connections: 50\n      task_cleanup: true\n      task_retention: 30\n      event_cleanup: true\n      event_retention: 30\n    runtime_settings:\n      unique_id: 1\n      managed_address: \"{{ lookup('dig', inventory_hostname) }}\"\n      vcenter_server_name: \"{{ inventory_hostname }}\"\n    user_directory:\n      timeout: 60\n      query_limit: true\n      query_limit_size: 5000\n      validation: true\n      validation_period: 1440\n    mail:\n      server: mail.example.com\n      sender: vcenter@{{ inventory_hostname }}\n    snmp_receivers:\n      snmp_receiver_1_url: localhost\n      snmp_receiver_1_enabled: true\n      snmp_receiver_1_port: 162\n      snmp_receiver_1_community: public\n    timeout_settings:\n      normal_operations: 30\n      long_operations: 120\n    logging_options: info\n    validate_certs: no\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "results": {
+                "description": "metadata about vCenter settings",
+                "returned": "always",
+                "sample": {
+                    "changed": false,
+                    "db_event_cleanup": true,
+                    "db_event_retention": 30,
+                    "db_max_connections": 50,
+                    "db_task_cleanup": true,
+                    "db_task_retention": 30,
+                    "directory_query_limit": true,
+                    "directory_query_limit_size": 5000,
+                    "directory_timeout": 60,
+                    "directory_validation": true,
+                    "directory_validation_period": 1440,
+                    "logging_options": "info",
+                    "mail_sender": "vcenter@vcenter01.example.com",
+                    "mail_server": "mail.example.com",
+                    "msg": "vCenter settings already configured properly",
+                    "runtime_managed_address": "192.168.1.10",
+                    "runtime_server_name": "vcenter01.example.com",
+                    "runtime_unique_id": 1,
+                    "timeout_long_operations": 120,
+                    "timeout_normal_operations": 30
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

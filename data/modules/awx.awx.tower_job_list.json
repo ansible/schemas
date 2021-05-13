@@ -1,0 +1,161 @@
+{
+    "awx.awx.tower_job_list": {
+        "doc": {
+            "author": "Wayne Witzel III (@wwitzel3)",
+            "collection": "awx.awx",
+            "description": [
+                "List Ansible Tower jobs. See U(https://www.ansible.com/tower) for an overview."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/awx/awx/plugins/modules/tower_job_list.py",
+            "has_action": false,
+            "module": "tower_job_list",
+            "notes": [
+                "If no I(config_file) is provided we will attempt to use the tower-cli library defaults to find your Tower host information.",
+                "I(config_file) should contain Tower configuration in the following format host=hostname username=username password=password"
+            ],
+            "options": {
+                "all_pages": {
+                    "default": "no",
+                    "description": [
+                        "Fetch all the pages and return a single result."
+                    ],
+                    "type": "bool"
+                },
+                "page": {
+                    "description": [
+                        "Page number of the results to fetch."
+                    ],
+                    "type": "int"
+                },
+                "query": {
+                    "description": [
+                        "Query used to further filter the list of jobs. C({\"foo\":\"bar\"}) will be passed at C(?foo=bar)"
+                    ],
+                    "type": "dict"
+                },
+                "status": {
+                    "choices": [
+                        "pending",
+                        "waiting",
+                        "running",
+                        "error",
+                        "failed",
+                        "canceled",
+                        "successful"
+                    ],
+                    "description": [
+                        "Only list jobs with this status."
+                    ],
+                    "type": "str"
+                },
+                "tower_config_file": {
+                    "description": [
+                        "Path to the Tower or AWX config file.",
+                        "If provided, the other locations for config files will not be considered."
+                    ],
+                    "type": "path"
+                },
+                "tower_host": {
+                    "description": [
+                        "URL to your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_HOST) and then config files",
+                        "If value not specified by any means, the value of C(127.0.0.1) will be used"
+                    ],
+                    "type": "str"
+                },
+                "tower_oauthtoken": {
+                    "description": [
+                        "The Tower OAuth token to use.",
+                        "This value can be in one of two formats.",
+                        "A string which is the token itself. (i.e. bqV5txm97wqJqtkxlMkhQz0pKhRMMX)",
+                        "A dictionary structure as returned by the tower_token module.",
+                        "If value not set, will try environment variable C(TOWER_OAUTH_TOKEN) and then config files"
+                    ],
+                    "type": "raw",
+                    "version_added": "3.7",
+                    "version_added_collection": "awx.awx"
+                },
+                "tower_password": {
+                    "description": [
+                        "Password for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_PASSWORD) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "tower_username": {
+                    "description": [
+                        "Username for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_USERNAME) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tower_verify_ssl"
+                    ],
+                    "description": [
+                        "Whether to allow insecure connections to Tower or AWX.",
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates.",
+                        "If value not set, will try environment variable C(TOWER_VERIFY_SSL) and then config files"
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "List Ansible Tower jobs."
+        },
+        "examples": "\n- name: List running jobs for the testing.yml playbook\n  tower_job_list:\n    status: running\n    query: {\"playbook\": \"testing.yml\"}\n    tower_config_file: \"~/tower_cli.cfg\"\n  register: testing_jobs\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "count": {
+                "description": "Total count of objects return",
+                "returned": "success",
+                "sample": 51,
+                "type": "int"
+            },
+            "next": {
+                "description": "next page available for the listing",
+                "returned": "success",
+                "sample": 3,
+                "type": "int"
+            },
+            "previous": {
+                "description": "previous page available for the listing",
+                "returned": "success",
+                "sample": 1,
+                "type": "int"
+            },
+            "results": {
+                "description": "a list of job objects represented as dictionaries",
+                "returned": "success",
+                "sample": [
+                    {
+                        "allow_simultaneous": false,
+                        "artifacts": {},
+                        "ask_credential_on_launch": false,
+                        "ask_inventory_on_launch": false,
+                        "ask_job_type_on_launch": false,
+                        "failed": false,
+                        "finished": "2017-02-22T15:09:05.633942Z",
+                        "force_handlers": false,
+                        "forks": 0,
+                        "id": 2,
+                        "inventory": 1,
+                        "job_explanation": "",
+                        "job_tags": "",
+                        "job_template": 5,
+                        "job_type": "run"
+                    },
+                    "..."
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

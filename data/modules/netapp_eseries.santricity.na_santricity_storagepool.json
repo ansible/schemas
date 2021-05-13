@@ -1,0 +1,271 @@
+{
+    "netapp_eseries.santricity.na_santricity_storagepool": {
+        "doc": {
+            "author": [
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": "Create or remove volume groups and disk pools for NetApp E-series storage arrays.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/na_santricity_storagepool.py",
+            "has_action": false,
+            "module": "na_santricity_storagepool",
+            "notes": [
+                "The expansion operations are non-blocking due to the time consuming nature of expanding volume groups",
+                "Traditional volume groups (raid0, raid1, raid5, raid6) are performed in steps dictated by the storage array. Each required step will be attempted until the request fails which is likely because of the required expansion time.",
+                "raidUnsupported will be treated as raid0, raidAll as raidDiskPool and raid3 as raid5.",
+                "Tray loss protection and drawer loss protection will be chosen if at all possible.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API.",
+                        "Example https://prod-1.wahoo.acme.com:8443/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "criteria_drive_count": {
+                    "description": [
+                        "The number of disks to use for building the storage pool.",
+                        "When I(state==\"present\") then I(criteria_drive_count) or I(criteria_min_usable_capacity) must be specified.",
+                        "The pool will be expanded if this number exceeds the number of disks already in place (See expansion note below)"
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "criteria_drive_interface_type": {
+                    "choices": [
+                        "scsi",
+                        "fibre",
+                        "sata",
+                        "pata",
+                        "fibre520b",
+                        "sas",
+                        "sas4k",
+                        "nvme4k"
+                    ],
+                    "description": [
+                        "The interface type to use when selecting drives for the storage pool",
+                        "If not provided then all interface types will be considered."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "criteria_drive_max_size": {
+                    "description": [
+                        "The maximum individual drive size (in size_unit) to consider when choosing drives for the storage pool."
+                    ],
+                    "required": false,
+                    "type": "float"
+                },
+                "criteria_drive_min_size": {
+                    "description": [
+                        "The minimum individual drive size (in size_unit) to consider when choosing drives for the storage pool."
+                    ],
+                    "required": false,
+                    "type": "float"
+                },
+                "criteria_drive_require_da": {
+                    "default": false,
+                    "description": [
+                        "Ensures the storage pool will be created with only data assurance (DA) capable drives.",
+                        "Only available for new storage pools; existing storage pools cannot be converted."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "criteria_drive_require_fde": {
+                    "default": false,
+                    "description": [
+                        "Whether full disk encryption ability is required for drives to be added to the storage pool"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "criteria_drive_type": {
+                    "choices": [
+                        "hdd",
+                        "ssd"
+                    ],
+                    "description": [
+                        "The type of disk (hdd or ssd) to use when searching for candidates to use.",
+                        "When not specified each drive type will be evaluated until successful drive candidates are found starting with the most prevalent drive type."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "criteria_min_usable_capacity": {
+                    "description": [
+                        "The minimum size of the storage pool (in size_unit).",
+                        "When I(state==\"present\") then I(criteria_drive_count) or I(criteria_min_usable_capacity) must be specified.",
+                        "The pool will be expanded if this value exceeds its current size. (See expansion note below)"
+                    ],
+                    "required": false,
+                    "type": "float"
+                },
+                "criteria_size_unit": {
+                    "choices": [
+                        "bytes",
+                        "b",
+                        "kb",
+                        "mb",
+                        "gb",
+                        "tb",
+                        "pb",
+                        "eb",
+                        "zb",
+                        "yb"
+                    ],
+                    "default": "gb",
+                    "description": [
+                        "The unit used to interpret size parameters"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ddp_critical_threshold_pct": {
+                    "default": 85,
+                    "description": [
+                        "Issues a critical alert when threshold of storage has been allocated.",
+                        "Only applicable when I(raid_level==\"raidDiskPool\").",
+                        "Set I(ddp_critical_threshold_pct==0) to disable alert."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "ddp_warning_threshold_pct": {
+                    "default": 85,
+                    "description": [
+                        "Issues a warning alert when threshold of storage has been allocated.",
+                        "Only applicable when I(raid_level==\"raidDiskPool\").",
+                        "Set I(ddp_warning_threshold_pct==0) to disable alert."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "erase_secured_drives": {
+                    "default": true,
+                    "description": [
+                        "If I(state==\"absent\") then all storage pool drives will be erase",
+                        "If I(state==\"present\") then delete all available storage array drives that have security enabled."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the storage pool to manage"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "raid_level": {
+                    "choices": [
+                        "raidAll",
+                        "raid0",
+                        "raid1",
+                        "raid3",
+                        "raid5",
+                        "raid6",
+                        "raidDiskPool"
+                    ],
+                    "default": "raidDiskPool",
+                    "description": [
+                        "The RAID level of the storage pool to be created.",
+                        "Required only when I(state==\"present\").",
+                        "When I(raid_level==\"raidDiskPool\") then I(criteria_drive_count >= 10 or criteria_drive_count >= 11) is required depending on the storage array specifications.",
+                        "When I(raid_level==\"raid0\") then I(1<=criteria_drive_count) is required.",
+                        "When I(raid_level==\"raid1\") then I(2<=criteria_drive_count) is required.",
+                        "When I(raid_level==\"raid3\") then I(3<=criteria_drive_count<=30) is required.",
+                        "When I(raid_level==\"raid5\") then I(3<=criteria_drive_count<=30) is required.",
+                        "When I(raid_level==\"raid6\") then I(5<=criteria_drive_count<=30) is required.",
+                        "Note that raidAll will be treated as raidDiskPool and raid3 as raid5."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "remove_volumes": {
+                    "default": true,
+                    "description": [
+                        "Prior to removing a storage pool, delete all volumes in the pool."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "reserve_drive_count": {
+                    "description": [
+                        "Set the number of drives reserved by the storage pool for reconstruction operations.",
+                        "Only valid on raid disk pools."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "secure_pool": {
+                    "description": [
+                        "Enables security at rest feature on the storage pool.",
+                        "Will only work if all drives in the pool are security capable (FDE, FIPS, or mix)",
+                        "Warning, once security is enabled it is impossible to disable without erasing the drives."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the specified storage pool should exist or not.",
+                        "Note that removing a storage pool currently requires the removal of all defined volumes first."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage volume groups and disk pools"
+        },
+        "examples": "\n- name: No disk groups\n  na_santricity_storagepool:\n    ssid: \"{{ ssid }}\"\n    name: \"{{ item }}\"\n    state: absent\n    api_url: \"{{ netapp_api_url }}\"\n    api_username: \"{{ netapp_api_username }}\"\n    api_password: \"{{ netapp_api_password }}\"\n    validate_certs: \"{{ netapp_api_validate_certs }}\"\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Success message",
+                "returned": "success",
+                "sample": "Json facts for the pool that was created.",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,108 @@
+{
+    "cisco.iosxr.iosxr_lacp": {
+        "doc": {
+            "author": [
+                "Nilashish Chakraborty (@nilashishc)",
+                "Rohit Thakur (@rohitthakur2590)"
+            ],
+            "collection": "cisco.iosxr",
+            "description": [
+                "This module manages Global Link Aggregation Control Protocol (LACP) on IOS-XR devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/iosxr/plugins/modules/iosxr_lacp.py",
+            "has_action": true,
+            "module": "iosxr_lacp",
+            "notes": [
+                "Tested against IOS-XR 6.1.3.",
+                "This module works with connection C(network_cli). See L(the IOS-XR Platform Options,../network/user_guide/platform_iosxr.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "The provided configurations.",
+                    "suboptions": {
+                        "system": {
+                            "description": "This option sets the default system parameters for LACP bundles.",
+                            "suboptions": {
+                                "mac": {
+                                    "description": [
+                                        "The system MAC related configuration for LACP."
+                                    ],
+                                    "suboptions": {
+                                        "address": {
+                                            "description": [
+                                                "The system ID to use in LACP negotiations."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "priority": {
+                                    "description": [
+                                        "The system priority to use in LACP negotiations.",
+                                        "Lower value is higher priority.",
+                                        "Refer to vendor documentation for valid values."
+                                    ],
+                                    "type": "int"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS-XR device by executing the command B(show running-config lacp).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "deleted",
+                        "parsed",
+                        "rendered",
+                        "gathered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LACP resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.iosxr"
+        },
+        "examples": "\n# Using merged\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# RP/0/0/CPU0:iosxr01#show running-config lacp\n# Tue Jul 16 17:46:08.147 UTC\n# % No such configuration item(s)\n#\n#\n\n- name: Merge provided configuration with device configuration\n  cisco.iosxr.iosxr_lacp:\n    config:\n      system:\n        priority: 10\n        mac:\n          address: 00c1.4c00.bd15\n    state: merged\n\n#\n#\n# -----------------------\n# Module Execution Result\n# -----------------------\n#\n# \"before\": {}\n#\n#\n# \"commands\": [\n#    \"lacp system priority 10\",\n#    \"lacp system mac 00c1.4c00.bd15\"\n#  ]\n#\n#\n# \"after\": {\n#    \"system\": {\n#       \"mac\": {\n#          \"address\": \"00c1.4c00.bd15\"\n#       },\n#       \"priority\": 10\n#     }\n#  }\n#\n# -----------\n# After state\n# -----------\n#\n#\n# RP/0/0/CPU0:iosxr01#sh run lacp\n# Tue Jul 16 17:51:29.365 UTC\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority 10\n#\n#\n\n# Using replaced\n#\n#\n# -------------\n# Before state\n# -------------\n#\n#\n# RP/0/0/CPU0:iosxr01#sh run lacp\n# Tue Jul 16 17:53:59.904 UTC\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority 10\n#\n\n- name: Replace device global lacp configuration with the given configuration\n  cisco.iosxr.iosxr_lacp:\n    config:\n      system:\n        priority: 11\n    state: replaced\n#\n#\n# -----------------------\n# Module Execution Result\n# -----------------------\n# \"before\": {\n#    \"system\": {\n#       \"mac\": {\n#         \"address\": \"00c1.4c00.bd15\"\n#       },\n#       \"priority\": 10\n#    }\n#  }\n#\n#\n# \"commands\": [\n#    \"no lacp system mac\",\n#    \"lacp system priority 11\"\n#  ]\n#\n#\n# \"after\": {\n#    \"system\": {\n#       \"priority\": 11\n#    }\n# }\n#\n# -----------\n# After state\n# -----------\n#\n#\n# RP/0/0/CPU0:iosxr01#sh run lacp\n# Tue Jul 16 18:02:40.379 UTC\n# lacp system priority 11\n#\n#\n\n# Using deleted\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# RP/0/0/CPU0:iosxr01#sh run lacp\n# Tue Jul 16 18:37:09.727 UTC\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority 11\n#\n#\n\n- name: Delete global LACP configurations from the device\n  cisco.iosxr.iosxr_lacp:\n    state: deleted\n\n#\n#\n# -----------------------\n# Module Execution Result\n# -----------------------\n# \"before\": {\n#    \"system\": {\n#       \"mac\": {\n#         \"address\": \"00c1.4c00.bd15\"\n#       },\n#       \"priority\": 11\n#    }\n# }\n#\n#\n# \"commands\": [\n#     \"no lacp system mac\",\n#     \"no lacp system priority\"\n# ]\n#\n#\n# \"after\": {}\n#\n# ------------\n# After state\n# ------------\n#\n#\n# RP/0/0/CPU0:iosxr01#sh run lacp\n# Tue Jul 16 18:39:44.116 UTC\n# % No such configuration item(s)\n#\n#\n\n\n# Using parsed\n# parsed.cfg\n# ------------\n#\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority 11\n# - name: Convert LACP config to argspec without connecting to the appliance\n#   cisco.iosxr.iosxr_lacp:\n#     running_config: \"{{ lookup('file', './parsed.cfg') }}\"\n#     state: parsed\n# Task Output (redacted)\n# -----------------------\n# \"parsed\": {\n#         \"system\": {\n#             \"mac\": {\n#                 \"address\": \"00c1.4c00.bd15\"\n#             },\n#             \"priority\": 11\n#         }\n#     }\n\n\n# Using rendered\n- name: Render platform specific commands from task input using rendered state\n  cisco.iosxr.iosxr_lacp:\n    config:\n      system:\n        priority: 11\n        mac:\n          address: 00c1.4c00.bd15\n    state: rendered\n# Task Output (redacted)\n# -----------------------\n# \"rendered\": [\n#         \"lacp system priority 11\",\n#         \"lacp system mac 00c1.4c00.bd15\"\n#     ]\n\n\n# Using gathered\n# Before state:\n# ------------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config lacp\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority 11\n- name: Gather IOSXR LACP configuration\n  cisco.iosxr.iosxr_lacp:\n    config:\n    state: gathered\n# Task Output (redacted)\n# -----------------------\n#\n# \"gathered\": {\n#         \"system\": {\n#             \"mac\": {\n#                 \"address\": \"00c1.4c00.bd15\"\n#             },\n#             \"priority\": 11\n#         }\n#     }\n# After state:\n# ------------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config lacp\n# lacp system mac 00c1.4c00.bd15\n# lacp system priority\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "lacp system priority 10",
+                    "lacp system mac 00c1.4c00.bd15"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

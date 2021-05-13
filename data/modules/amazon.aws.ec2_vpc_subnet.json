@@ -1,0 +1,306 @@
+{
+    "amazon.aws.ec2_vpc_subnet": {
+        "doc": {
+            "author": [
+                "Robert Estelle (@erydo)",
+                "Brad Davidson (@brandond)"
+            ],
+            "collection": "amazon.aws",
+            "description": [
+                "Manage subnets in AWS virtual private clouds."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2_vpc_subnet.py",
+            "has_action": false,
+            "module": "ec2_vpc_subnet",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "assign_instances_ipv6": {
+                    "default": false,
+                    "description": [
+                        "Specify C(yes) to indicate that instances launched into the subnet should be automatically assigned an IPv6 address."
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "az": {
+                    "description": [
+                        "The availability zone for the subnet."
+                    ],
+                    "type": "str"
+                },
+                "cidr": {
+                    "description": [
+                        "The CIDR block for the subnet. E.g. 192.0.2.0/24."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "ipv6_cidr": {
+                    "description": [
+                        "The IPv6 CIDR block for the subnet. The VPC must have a /56 block assigned and this value must be a valid IPv6 /64 that falls in the VPC range.",
+                        "Required if I(assign_instances_ipv6=true)"
+                    ],
+                    "type": "str"
+                },
+                "map_public": {
+                    "default": "no",
+                    "description": [
+                        "Specify C(yes) to indicate that instances launched into the subnet should be assigned public IP address by default."
+                    ],
+                    "type": "bool"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_tags": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to remove tags that do not appear in the I(tags) list."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or remove the subnet."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "aliases": [
+                        "resource_tags"
+                    ],
+                    "description": [
+                        "A dict of tags to apply to the subnet. Any tags currently applied to the subnet and not present here will be removed."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_id": {
+                    "description": [
+                        "VPC ID of the VPC in which to create or delete the subnet."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "When I(wait=true) and I(state=present), module will wait for subnet to be in available state before continuing."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "Number of seconds to wait for subnet to become available I(wait=True)."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage subnets in AWS virtual private clouds"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Create subnet for database servers\n  ec2_vpc_subnet:\n    state: present\n    vpc_id: vpc-123456\n    cidr: 10.0.1.16/28\n    tags:\n      Name: Database Subnet\n  register: database_subnet\n\n- name: Remove subnet for database servers\n  ec2_vpc_subnet:\n    state: absent\n    vpc_id: vpc-123456\n    cidr: 10.0.1.16/28\n\n- name: Create subnet with IPv6 block assigned\n  ec2_vpc_subnet:\n    state: present\n    vpc_id: vpc-123456\n    cidr: 10.1.100.0/24\n    ipv6_cidr: 2001:db8:0:102::/64\n\n- name: Remove IPv6 block assigned to subnet\n  ec2_vpc_subnet:\n    state: present\n    vpc_id: vpc-123456\n    cidr: 10.1.100.0/24\n    ipv6_cidr: ''\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "core"
+        },
+        "return": {
+            "subnet": {
+                "contains": {
+                    "assign_ipv6_address_on_creation": {
+                        "description": "whether IPv6 address is auto-assigned to new instances",
+                        "returned": "I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "availability_zone": {
+                        "description": "Availability zone of the Subnet",
+                        "returned": "I(state=present)",
+                        "sample": "us-east-1a",
+                        "type": "str"
+                    },
+                    "available_ip_address_count": {
+                        "description": "number of available IPv4 addresses",
+                        "returned": "I(state=present)",
+                        "sample": 251,
+                        "type": "str"
+                    },
+                    "cidr_block": {
+                        "description": "The IPv4 CIDR of the Subnet",
+                        "returned": "I(state=present)",
+                        "sample": "10.0.0.0/16",
+                        "type": "str"
+                    },
+                    "default_for_az": {
+                        "description": "indicates whether this is the default Subnet for this Availability Zone",
+                        "returned": "I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "id": {
+                        "description": "Subnet resource id",
+                        "returned": "I(state=present)",
+                        "sample": "subnet-b883b2c4",
+                        "type": "str"
+                    },
+                    "ipv6_association_id": {
+                        "description": "The IPv6 association ID for the currently associated CIDR",
+                        "returned": "I(state=present)",
+                        "sample": "subnet-cidr-assoc-b85c74d2",
+                        "type": "str"
+                    },
+                    "ipv6_cidr_block": {
+                        "description": "The IPv6 CIDR block actively associated with the Subnet",
+                        "returned": "I(state=present)",
+                        "sample": "2001:db8:0:102::/64",
+                        "type": "str"
+                    },
+                    "ipv6_cidr_block_association_set": {
+                        "contains": {
+                            "association_id": {
+                                "description": "The association ID",
+                                "returned": "always",
+                                "type": "str"
+                            },
+                            "ipv6_cidr_block": {
+                                "description": "The IPv6 CIDR block that is associated with the subnet.",
+                                "returned": "always",
+                                "type": "str"
+                            },
+                            "ipv6_cidr_block_state": {
+                                "contains": {
+                                    "state": {
+                                        "description": "The CIDR block association state.",
+                                        "returned": "always",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "A hash/dict that contains a single item. The state of the cidr block association.",
+                                "returned": "always",
+                                "type": "dict"
+                            }
+                        },
+                        "description": "An array of IPv6 cidr block association set information.",
+                        "returned": "I(state=present)",
+                        "type": "complex"
+                    },
+                    "map_public_ip_on_launch": {
+                        "description": "whether public IP is auto-assigned to new instances",
+                        "returned": "I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "state": {
+                        "description": "state of the Subnet",
+                        "returned": "I(state=present)",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": "tags attached to the Subnet, includes name",
+                        "returned": "I(state=present)",
+                        "sample": {
+                            "Name": "My Subnet",
+                            "env": "staging"
+                        },
+                        "type": "dict"
+                    },
+                    "vpc_id": {
+                        "description": "the id of the VPC where this Subnet exists",
+                        "returned": "I(state=present)",
+                        "sample": "vpc-67236184",
+                        "type": "str"
+                    }
+                },
+                "description": "Dictionary of subnet values",
+                "returned": "I(state=present)",
+                "type": "complex"
+            }
+        }
+    }
+}

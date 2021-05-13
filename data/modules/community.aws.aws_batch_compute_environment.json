@@ -1,0 +1,327 @@
+{
+    "community.aws.aws_batch_compute_environment": {
+        "doc": {
+            "author": "Jon Meran (@jonmer85)",
+            "collection": "community.aws",
+            "description": [
+                "This module allows the management of AWS Batch Compute Environments.",
+                "It is idempotent and supports \"Check\" mode.",
+                "Use module M(community.aws.aws_batch_compute_environment) to manage the compute environment, M(community.aws.aws_batch_job_queue) to manage job queues, M(community.aws.aws_batch_job_definition) to manage job definitions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_batch_compute_environment.py",
+            "has_action": false,
+            "module": "aws_batch_compute_environment",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "bid_percentage": {
+                    "description": [
+                        "The minimum percentage that a Spot Instance price must be when compared with the On-Demand price for that instance type before instances are launched.",
+                        "For example, if your bid percentage is 20%, then the Spot price must be below 20% of the current On-Demand price for that EC2 instance."
+                    ],
+                    "type": "int"
+                },
+                "compute_environment_name": {
+                    "description": [
+                        "The name for your compute environment.",
+                        "Up to 128 letters (uppercase and lowercase), numbers, and underscores are allowed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "compute_environment_state": {
+                    "choices": [
+                        "ENABLED",
+                        "DISABLED"
+                    ],
+                    "default": "ENABLED",
+                    "description": [
+                        "The state of the compute environment.",
+                        "If the state is C(ENABLED), then the compute environment accepts jobs from a queue and can scale out automatically based on queues."
+                    ],
+                    "type": "str"
+                },
+                "compute_resource_type": {
+                    "choices": [
+                        "EC2",
+                        "SPOT"
+                    ],
+                    "description": [
+                        "The type of compute resource."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "desiredv_cpus": {
+                    "description": [
+                        "The desired number of EC2 vCPUS in the compute environment."
+                    ],
+                    "type": "int"
+                },
+                "ec2_key_pair": {
+                    "description": [
+                        "The EC2 key pair that is used for instances launched in the compute environment."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "image_id": {
+                    "description": [
+                        "The Amazon Machine Image (AMI) ID used for instances launched in the compute environment."
+                    ],
+                    "type": "str"
+                },
+                "instance_role": {
+                    "description": [
+                        "The Amazon ECS instance role applied to Amazon EC2 instances in a compute environment."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "instance_types": {
+                    "description": [
+                        "The instance types that may be launched."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "maxv_cpus": {
+                    "description": [
+                        "The maximum number of EC2 vCPUs that an environment can reach."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "minv_cpus": {
+                    "description": [
+                        "The minimum number of EC2 vCPUs that an environment should maintain."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_group_ids": {
+                    "description": [
+                        "The EC2 security groups that are associated with instances launched in the compute environment."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "service_role": {
+                    "description": [
+                        "The full Amazon Resource Name (ARN) of the IAM role that allows AWS Batch to make calls to other AWS services on your behalf."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "spot_iam_fleet_role": {
+                    "description": [
+                        "The Amazon Resource Name (ARN) of the Amazon EC2 Spot Fleet IAM role applied to a SPOT compute environment."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Describes the desired state."
+                    ],
+                    "type": "str"
+                },
+                "subnets": {
+                    "description": [
+                        "The VPC subnets into which the compute resources are launched."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "tags": {
+                    "description": [
+                        "Key-value pair tags to be applied to resources that are launched in the compute environment."
+                    ],
+                    "type": "dict"
+                },
+                "type": {
+                    "choices": [
+                        "MANAGED",
+                        "UNMANAGED"
+                    ],
+                    "description": [
+                        "The type of the compute environment."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage AWS Batch Compute Environments",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: My Batch Compute Environment\n  community.aws.aws_batch_compute_environment:\n    compute_environment_name: computeEnvironmentName\n    state: present\n    region: us-east-1\n    compute_environment_state: ENABLED\n    type: MANAGED\n    compute_resource_type: EC2\n    minv_cpus: 0\n    maxv_cpus: 2\n    desiredv_cpus: 1\n    instance_types:\n      - optimal\n    subnets:\n      - my-subnet1\n      - my-subnet2\n    security_group_ids:\n      - my-sg1\n      - my-sg2\n    instance_role: arn:aws:iam::<account>:instance-profile/<role>\n    tags:\n      tag1: value1\n      tag2: value2\n    service_role: arn:aws:iam::<account>:role/service-role/<role>\n  register: aws_batch_compute_environment_action\n\n- name: show results\n  ansible.builtin.debug:\n    var: aws_batch_compute_environment_action\n",
+        "metadata": null,
+        "return": {
+            "output": {
+                "description": "returns what action was taken, whether something was changed, invocation and response",
+                "returned": "always",
+                "sample": {
+                    "batch_compute_environment_action": "none",
+                    "changed": false,
+                    "invocation": {
+                        "module_args": {
+                            "aws_access_key": null,
+                            "aws_secret_key": null,
+                            "bid_percentage": null,
+                            "compute_environment_name": "<name>",
+                            "compute_environment_state": "ENABLED",
+                            "compute_resource_type": "EC2",
+                            "desiredv_cpus": 0,
+                            "ec2_key_pair": null,
+                            "ec2_url": null,
+                            "image_id": null,
+                            "instance_role": "arn:aws:iam::...",
+                            "instance_types": [
+                                "optimal"
+                            ],
+                            "maxv_cpus": 8,
+                            "minv_cpus": 0,
+                            "profile": null,
+                            "region": "us-east-1",
+                            "security_group_ids": [
+                                "*******"
+                            ],
+                            "security_token": null,
+                            "service_role": "arn:aws:iam::....",
+                            "spot_iam_fleet_role": null,
+                            "state": "present",
+                            "subnets": [
+                                "******"
+                            ],
+                            "tags": {
+                                "Environment": "<name>",
+                                "Name": "<name>"
+                            },
+                            "type": "MANAGED",
+                            "validate_certs": true
+                        }
+                    },
+                    "response": {
+                        "computeEnvironmentArn": "arn:aws:batch:....",
+                        "computeEnvironmentName": "<name>",
+                        "computeResources": {
+                            "desiredvCpus": 0,
+                            "instanceRole": "arn:aws:iam::...",
+                            "instanceTypes": [
+                                "optimal"
+                            ],
+                            "maxvCpus": 8,
+                            "minvCpus": 0,
+                            "securityGroupIds": [
+                                "******"
+                            ],
+                            "subnets": [
+                                "*******"
+                            ],
+                            "tags": {
+                                "Environment": "<name>",
+                                "Name": "<name>"
+                            },
+                            "type": "EC2"
+                        },
+                        "ecsClusterArn": "arn:aws:ecs:.....",
+                        "serviceRole": "arn:aws:iam::...",
+                        "state": "ENABLED",
+                        "status": "VALID",
+                        "statusReason": "ComputeEnvironment Healthy",
+                        "type": "MANAGED"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

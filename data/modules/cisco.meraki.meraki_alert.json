@@ -1,0 +1,342 @@
+{
+    "cisco.meraki.meraki_alert": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Allows for creation, management, and visibility into alert settings within Meraki."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_alert.py",
+            "has_action": false,
+            "module": "meraki_alert",
+            "notes": [
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "alerts": {
+                    "description": [
+                        "Alert-specific configuration for each type."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "alert_destinations": {
+                            "description": [
+                                "A hash of destinations for this specific alert."
+                            ],
+                            "suboptions": {
+                                "all_admins": {
+                                    "description": [
+                                        "If true, all network admins will receive emails."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "emails": {
+                                    "description": [
+                                        "A list of emails that will recieve the alert(s)."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "http_server_ids": {
+                                    "description": [
+                                        "A list of HTTP server IDs to send a Webhook to."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "snmp": {
+                                    "description": [
+                                        "If true, then an SNMP trap will be sent if there is an SNMP trap server configured for this network."
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "alert_type": {
+                            "description": [
+                                "The type of alert."
+                            ],
+                            "type": "str"
+                        },
+                        "enabled": {
+                            "description": [
+                                "A boolean depicting if the alert is turned on or off."
+                            ],
+                            "type": "bool"
+                        },
+                        "filters": {
+                            "description": [
+                                "A hash of specific configuration data for the alert. Only filters specific to the alert will be updated.",
+                                "No validation checks occur against C(filters)."
+                            ],
+                            "type": "raw"
+                        }
+                    },
+                    "type": "list"
+                },
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "default_destinations": {
+                    "description": [
+                        "Properties for destinations when alert specific destinations aren't specified."
+                    ],
+                    "suboptions": {
+                        "all_admins": {
+                            "description": [
+                                "If true, all network admins will receive emails."
+                            ],
+                            "type": "bool"
+                        },
+                        "emails": {
+                            "description": [
+                                "A list of emails that will recieve the alert(s)."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "http_server_ids": {
+                            "description": [
+                                "A list of HTTP server IDs to send a Webhook to."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "snmp": {
+                            "description": [
+                                "If true, then an SNMP trap will be sent if there is an SNMP trap server configured for this network."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "net_id": {
+                    "description": [
+                        "ID number of a network."
+                    ],
+                    "type": "str"
+                },
+                "net_name": {
+                    "aliases": [
+                        "name",
+                        "network"
+                    ],
+                    "description": [
+                        "Name of a network."
+                    ],
+                    "type": "str"
+                },
+                "org_id": {
+                    "description": [
+                        "ID of organization."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "query"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or modify an alert."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage alerts in the Meraki cloud",
+            "version_added": "2.1.0",
+            "version_added_collection": "cisco.meraki"
+        },
+        "examples": "\n- name: Update settings\n  meraki_alert:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    default_destinations:\n      emails:\n      - 'youremail@yourcorp'\n      - 'youremail2@yourcorp'\n      all_admins: yes\n      snmp: no\n    alerts:\n      - type: \"gatewayDown\"\n        enabled: yes\n        filters:\n          timeout: 60\n        alert_destinations:\n          emails:\n          - 'youremail@yourcorp'\n          - 'youremail2@yourcorp'\n          all_admins: yes\n          snmp: no\n      - type: \"usageAlert\"\n        enabled: yes\n        filters:\n          period: 1200\n          threshold: 104857600\n        alert_destinations:\n          emails:\n          - 'youremail@yourcorp'\n          - 'youremail2@yourcorp'\n          all_admins: yes\n          snmp: no\n\n- name: Query all settings\n  meraki_alert:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: query\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "data": {
+                "contains": {
+                    "alerts": {
+                        "contains": {
+                            "alert_destinations": {
+                                "contains": {
+                                    "all_admins": {
+                                        "description": "If true, all network admins will receive emails.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "emails": {
+                                        "description": "A list of emails that will recieve the alert(s).",
+                                        "returned": "success",
+                                        "type": "list"
+                                    },
+                                    "http_server_ids": {
+                                        "description": "A list of HTTP server IDs to send a Webhook to.",
+                                        "returned": "success",
+                                        "type": "list"
+                                    },
+                                    "snmp": {
+                                        "description": "If true, then an SNMP trap will be sent if there is an SNMP trap server configured for this network.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    }
+                                },
+                                "description": "A hash of destinations for this specific alert.",
+                                "type": "complex"
+                            },
+                            "enabled": {
+                                "description": "A boolean depicting if the alert is turned on or off.",
+                                "returned": "success",
+                                "type": "bool"
+                            },
+                            "filters": {
+                                "description": [
+                                    "A hash of specific configuration data for the alert. Only filters specific to the alert will be updated.",
+                                    "No validation checks occur against C(filters)."
+                                ],
+                                "returned": "success",
+                                "type": "complex"
+                            },
+                            "type": {
+                                "description": "The type of alert.",
+                                "returned": "success",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Alert-specific configuration for each type.",
+                        "type": "complex"
+                    },
+                    "default_destinations": {
+                        "contains": {
+                            "all_admins": {
+                                "description": "If true, all network admins will receive emails.",
+                                "returned": "success",
+                                "sample": true,
+                                "type": "bool"
+                            },
+                            "emails": {
+                                "description": "A list of emails that will recieve the alert(s).",
+                                "returned": "success",
+                                "type": "list"
+                            },
+                            "http_server_ids": {
+                                "description": "A list of HTTP server IDs to send a Webhook to.",
+                                "returned": "success",
+                                "type": "list"
+                            },
+                            "snmp": {
+                                "description": "If true, then an SNMP trap will be sent if there is an SNMP trap server configured for this network.",
+                                "returned": "success",
+                                "sample": true,
+                                "type": "bool"
+                            }
+                        },
+                        "description": "Properties for destinations when alert specific destinations aren't specified.",
+                        "returned": "success",
+                        "type": "complex"
+                    }
+                },
+                "description": "Information about the created or manipulated object.",
+                "returned": "info",
+                "type": "complex"
+            }
+        }
+    }
+}

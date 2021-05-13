@@ -1,0 +1,176 @@
+{
+    "f5networks.f5_modules.bigip_file_copy": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages files on a variety of datastores on a BIG-IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_file_copy.py",
+            "has_action": false,
+            "module": "bigip_file_copy",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "datastore": {
+                    "choices": [
+                        "external-monitor",
+                        "ifile",
+                        "lw4o6-table"
+                    ],
+                    "default": "ifile",
+                    "description": [
+                        "Specifies the datastore to put the file in.",
+                        "There are several different datastores and each of them allows files to be exposed in different ways.",
+                        "When C(external-monitor), the specified file will be stored as an external monitor file and be available for use in external monitors.",
+                        "When C(ifile), the specified file will be stored as an iFile.",
+                        "When C(lw4o6-table), the specified file will be stored as a Lightweight 4 over 6 (lw4o6) tunnel binding table, which includes an IPv6 address for the lwB4, public IPv4 address, and restricted port set."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Force overwriting a file.",
+                        "By default, files will only be overwritten if the SHA of the file is different for the given filename. This parameter can be used to force overwriting the file even if it already exists and its SHA matches.",
+                        "The C(lw4o6-table) datastore does not keep checksums of its file. Therefore, you would need to provide this argument to update any of these files."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the file as it should reside on the BIG-IP.",
+                        "If this is not specified, then the filename provided in the C(source) parameter is used instead."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "source": {
+                    "aliases": [
+                        "src"
+                    ],
+                    "description": [
+                        "Specifies the path of the file to upload.",
+                        "This parameter is required if C(state) is C(present)."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage files in datastores on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Upload a file as an iFile\n  bigip_file_copy:\n    name: foo\n    source: /path/to/file.txt\n    datastore: ifile\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n# Upload a directory of files\n- name: Recursively upload web related files in /var/tmp/project\n  find:\n    paths: /var/tmp/project\n    patterns: \"^.*?\\\\.(?:html|?:css|?:js)$\"\n    use_regex: yes\n  register: f\n\n- name: Upload a directory of files as a set of iFiles\n  bigip_file_copy:\n    source: \"{{ item.path }}\"\n    datastore: ifile\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n    loop: f\n  delegate_to: localhost\n# End upload a directory of files\n\n- name: Upload a file to use in an external monitor\n  bigip_file_copy:\n    source: /path/to/files/external.sh\n    datastore: external-monitor\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": null
+    }
+}

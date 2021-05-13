@@ -1,0 +1,172 @@
+{
+    "community.general.ssh_config": {
+        "doc": {
+            "author": [
+                "Bj\u00f6rn Andersson (@gaqzi)",
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Configures SSH hosts with special C(IdentityFile)s and hostnames."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/ssh_config.py",
+            "has_action": false,
+            "module": "ssh_config",
+            "notes": [
+                "Supports check mode."
+            ],
+            "options": {
+                "group": {
+                    "description": [
+                        "Which group this configuration file belongs to.",
+                        "If none given, I(user) is used."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "The endpoint this configuration is valid for.",
+                        "Can be an actual address on the internet or an alias that will connect to the value of I(hostname)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The actual host to connect to when connecting to the host defined."
+                    ],
+                    "type": "str"
+                },
+                "identity_file": {
+                    "description": [
+                        "The path to an identity file (SSH private key) that will be used when connecting to this host.",
+                        "File need to exist and have mode C(0600) to be valid."
+                    ],
+                    "type": "path"
+                },
+                "port": {
+                    "description": [
+                        "The actual port to connect to when connecting to the host defined."
+                    ],
+                    "type": "str"
+                },
+                "proxycommand": {
+                    "description": [
+                        "Sets the C(ProxyCommand) option."
+                    ],
+                    "type": "str"
+                },
+                "remote_user": {
+                    "description": [
+                        "Specifies the user to log in as."
+                    ],
+                    "type": "str"
+                },
+                "ssh_config_file": {
+                    "description": [
+                        "SSH config file.",
+                        "If I(user) and this option are not specified, C(/etc/ssh/ssh_config) is used.",
+                        "Mutually exclusive with I(user)."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether a host entry should exist or not."
+                    ],
+                    "type": "str"
+                },
+                "strict_host_key_checking": {
+                    "choices": [
+                        "yes",
+                        "no",
+                        "ask"
+                    ],
+                    "description": [
+                        "Whether to strictly check the host key when doing connections to the remote host."
+                    ],
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "Which user account this configuration file belongs to.",
+                        "If none given and I(ssh_config_file) is not specified, C(/etc/ssh/ssh_config) is used.",
+                        "If a user is given, C(~/.ssh/config) is used.",
+                        "Mutually exclusive with I(ssh_config_file)."
+                    ],
+                    "type": "str"
+                },
+                "user_known_hosts_file": {
+                    "description": [
+                        "Sets the user known hosts file option."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "StormSSH"
+            ],
+            "short_description": "Manage SSH config for user",
+            "version_added": "2.0.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Add a host in the configuration\n  community.general.ssh_config:\n    user: akasurde\n    host: \"example.com\"\n    hostname: \"github.com\"\n    identity_file: \"/home/akasurde/.ssh/id_rsa\"\n    port: '2223'\n    state: present\n\n- name: Delete a host from the configuration\n  community.general.ssh_config:\n    ssh_config_file: \"{{ ssh_config_test }}\"\n    host: \"example.com\"\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "hosts_added": {
+                "description": "A list of host added.",
+                "returned": "success",
+                "sample": [
+                    "example.com"
+                ],
+                "type": "list"
+            },
+            "hosts_change_diff": {
+                "description": "A list of host diff changes.",
+                "returned": "on change",
+                "sample": [
+                    {
+                        "example.com": {
+                            "new": {
+                                "hostname": "github.com",
+                                "identityfile": [
+                                    "/tmp/test_ssh_config/fake_id_rsa"
+                                ],
+                                "port": "2224"
+                            },
+                            "old": {
+                                "hostname": "github.com",
+                                "identityfile": [
+                                    "/tmp/test_ssh_config/fake_id_rsa"
+                                ],
+                                "port": "2224"
+                            }
+                        }
+                    }
+                ],
+                "type": "list"
+            },
+            "hosts_changed": {
+                "description": "A list of host changed.",
+                "returned": "success",
+                "sample": [
+                    "example.com"
+                ],
+                "type": "list"
+            },
+            "hosts_removed": {
+                "description": "A list of host removed.",
+                "returned": "success",
+                "sample": [
+                    "example.com"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

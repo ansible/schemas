@@ -1,0 +1,197 @@
+{
+    "f5networks.f5_modules.bigip_apm_policy_import": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage BIG-IP APM policy or APM access profile imports."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_apm_policy_import.py",
+            "has_action": false,
+            "module": "bigip_apm_policy_import",
+            "notes": [
+                "Due to ID685681 it is not possible to execute ng_* tools via REST API on v12.x and 13.x, once this is fixed this restriction will be removed.",
+                "Requires BIG-IP >= 14.0.0",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "When set to C(yes) any existing policy with the same name will be overwritten by the new import.",
+                        "If a policy does not exist, this setting is ignored."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the APM policy or APM access profile to create or override."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "reuse_objects": {
+                    "default": true,
+                    "description": [
+                        "When set to C(yes) and objects referred within the policy exist on the BIG-IP, those will be used instead of the objects defined in the policy.",
+                        "Reusing existing objects reduces configuration size.",
+                        "The configuration of existing objects might differ to the configuration of the objects defined in the policy!"
+                    ],
+                    "type": "bool"
+                },
+                "source": {
+                    "description": [
+                        "Full path to a file to be imported into the BIG-IP APM."
+                    ],
+                    "type": "path"
+                },
+                "type": {
+                    "choices": [
+                        "profile_access",
+                        "access_policy",
+                        "profile_api_protection"
+                    ],
+                    "default": "profile_access",
+                    "description": [
+                        "Specifies the type of item to export from the device."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage BIG-IP APM policy or APM access profile imports",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Import APM profile\n  bigip_apm_policy_import:\n    name: new_apm_profile\n    source: /root/apm_profile.tar.gz\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Import APM policy\n  bigip_apm_policy_import:\n    name: new_apm_policy\n    source: /root/apm_policy.tar.gz\n    type: access_policy\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Override existing APM policy\n  bigip_asm_policy:\n    name: new_apm_policy\n    source: /root/apm_policy.tar.gz\n    force: yes\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Import APM profile without re-using existing configuration objects\n  bigip_apm_policy_import:\n    name: new_apm_profile\n    source: /root/apm_profile.tar.gz\n    reuse_objects: false\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "force": {
+                "description": "Set when overwriting an existing policy or profile.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "name": {
+                "description": "Name of the APM policy or APM access profile to be created/overwritten.",
+                "returned": "changed",
+                "sample": "APM_policy_global",
+                "type": "str"
+            },
+            "reuse_objects": {
+                "description": "Set when reusing existing objects on the BIG-IP.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "source": {
+                "description": "Local path to APM policy file.",
+                "returned": "changed",
+                "sample": "/root/some_policy.tar.gz",
+                "type": "str"
+            },
+            "type": {
+                "description": "Set to specify type of item to export.",
+                "returned": "changed",
+                "sample": "access_policy",
+                "type": "str"
+            }
+        }
+    }
+}

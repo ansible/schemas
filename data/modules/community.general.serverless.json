@@ -1,0 +1,117 @@
+{
+    "community.general.serverless": {
+        "doc": {
+            "author": [
+                "Ryan Scott Brown (@ryansb)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Provides support for managing Serverless Framework (https://serverless.com/) project deployments and stacks."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/serverless.py",
+            "has_action": false,
+            "module": "serverless",
+            "notes": [
+                "Currently, the C(serverless) command must be in the path of the node executing the task. In the future this may be a flag."
+            ],
+            "options": {
+                "deploy": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to deploy artifacts after building them.",
+                        "When this option is C(false) all the functions will be built, but no stack update will be run to send them out.",
+                        "This is mostly useful for generating artifacts to be stored/deployed elsewhere."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to force full deployment, equivalent to serverless C(--force) option."
+                    ],
+                    "type": "bool"
+                },
+                "functions": {
+                    "default": [],
+                    "description": [
+                        "A list of specific functions to deploy.",
+                        "If this is not provided, all functions in the service will be deployed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "region": {
+                    "description": [
+                        "AWS region to deploy the service to.",
+                        "This parameter defaults to C(us-east-1)."
+                    ],
+                    "type": "str"
+                },
+                "serverless_bin_path": {
+                    "description": [
+                        "The path of a serverless framework binary relative to the 'service_path' eg. node_module/.bin/serverless"
+                    ],
+                    "type": "path"
+                },
+                "service_path": {
+                    "description": [
+                        "The path to the root of the Serverless Service to be operated on."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "stage": {
+                    "description": [
+                        "The name of the serverless framework project stage to deploy to.",
+                        "This uses the serverless framework default \"dev\"."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Goal state of given stage/project."
+                    ],
+                    "type": "str"
+                },
+                "verbose": {
+                    "default": false,
+                    "description": [
+                        "Shows all stack events during deployment, and display any Stack Output."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "serverless",
+                "yaml"
+            ],
+            "short_description": "Manages a Serverless Framework project"
+        },
+        "examples": "\n- name: Basic deploy of a service\n  community.general.serverless:\n    service_path: '{{ project_dir }}'\n    state: present\n\n- name: Deploy specific functions\n  community.general.serverless:\n    service_path: '{{ project_dir }}'\n    functions:\n      - my_func_one\n      - my_func_two\n\n- name: Deploy a project, then pull its resource list back into Ansible\n  community.general.serverless:\n    stage: dev\n    region: us-east-1\n    service_path: '{{ project_dir }}'\n  register: sls\n\n# The cloudformation stack is always named the same as the full service, so the\n# cloudformation_info module can get a full list of the stack resources, as\n# well as stack events and outputs\n- cloudformation_info:\n    region: us-east-1\n    stack_name: '{{ sls.service_name }}'\n    stack_resources: true\n\n- name: Deploy a project using a locally installed serverless binary\n  community.general.serverless:\n    stage: dev\n    region: us-east-1\n    service_path: '{{ project_dir }}'\n    serverless_bin_path: node_modules/.bin/serverless\n",
+        "metadata": null,
+        "return": {
+            "command": {
+                "description": "Full `serverless` command run by this module, in case you want to re-run the command outside the module.",
+                "returned": "always",
+                "sample": "serverless deploy --stage production",
+                "type": "str"
+            },
+            "service_name": {
+                "description": "The service name specified in the serverless.yml that was just deployed.",
+                "returned": "always",
+                "sample": "my-fancy-service-dev",
+                "type": "str"
+            },
+            "state": {
+                "description": "Whether the stack for the serverless project is present/absent.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

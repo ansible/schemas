@@ -1,0 +1,657 @@
+{
+    "community.aws.ec2_instance_info": {
+        "doc": {
+            "author": [
+                "Michael Schuett (@michaeljs1990)",
+                "Rob White (@wimnat)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Gather information about ec2 instances in AWS",
+                "This module was called C(ec2_instance_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_instance_info.py",
+            "has_action": false,
+            "module": "ec2_instance_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "default": {},
+                    "description": [
+                        "A dict of filters to apply. Each dict item consists of a filter key and a filter value. See U(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html) for possible filters. Filter names and values are case sensitive."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "instance_ids": {
+                    "description": [
+                        "If you specify one or more instance IDs, only instances that have the specified IDs are returned."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "minimum_uptime": {
+                    "aliases": [
+                        "uptime"
+                    ],
+                    "description": [
+                        "Minimum running uptime in minutes of instances.  For example if I(uptime) is C(60) return all instances that have run more than 60 minutes."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about ec2 instances in AWS",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Gather information about all instances\n  community.aws.ec2_instance_info:\n\n- name: Gather information about all instances in AZ ap-southeast-2a\n  community.aws.ec2_instance_info:\n    filters:\n      availability-zone: ap-southeast-2a\n\n- name: Gather information about a particular instance using ID\n  community.aws.ec2_instance_info:\n    instance_ids:\n      - i-12345678\n\n- name: Gather information about any instance with a tag key Name and value Example\n  community.aws.ec2_instance_info:\n    filters:\n      \"tag:Name\": Example\n\n- name: Gather information about any instance in states \"shutting-down\", \"stopping\", \"stopped\"\n  community.aws.ec2_instance_info:\n    filters:\n      instance-state-name: [ \"shutting-down\", \"stopping\", \"stopped\" ]\n\n- name: Gather information about any instance with Name beginning with RHEL and an uptime of at least 60 minutes\n  community.aws.ec2_instance_info:\n    region: \"{{ ec2_region }}\"\n    uptime: 60\n    filters:\n      \"tag:Name\": \"RHEL-*\"\n      instance-state-name: [ \"running\"]\n  register: ec2_node_info\n\n",
+        "metadata": null,
+        "return": {
+            "instances": {
+                "contains": {
+                    "ami_launch_index": {
+                        "description": "The AMI launch index, which can be used to find this instance in the launch group.",
+                        "returned": "always",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "architecture": {
+                        "description": "The architecture of the image",
+                        "returned": "always",
+                        "sample": "x86_64",
+                        "type": "str"
+                    },
+                    "block_device_mappings": {
+                        "contains": {
+                            "device_name": {
+                                "description": "The device name exposed to the instance (for example, /dev/sdh or xvdh).",
+                                "returned": "always",
+                                "sample": "/dev/sdh",
+                                "type": "str"
+                            },
+                            "ebs": {
+                                "contains": {
+                                    "attach_time": {
+                                        "description": "The time stamp when the attachment initiated.",
+                                        "returned": "always",
+                                        "sample": "2017-03-23T22:51:24+00:00",
+                                        "type": "str"
+                                    },
+                                    "delete_on_termination": {
+                                        "description": "Indicates whether the volume is deleted on instance termination.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "status": {
+                                        "description": "The attachment state.",
+                                        "returned": "always",
+                                        "sample": "attached",
+                                        "type": "str"
+                                    },
+                                    "volume_id": {
+                                        "description": "The ID of the EBS volume",
+                                        "returned": "always",
+                                        "sample": "vol-12345678",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Parameters used to automatically set up EBS volumes when the instance is launched.",
+                                "returned": "always",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Any block device mapping entries for the instance.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "client_token": {
+                        "description": "The idempotency token you provided when you launched the instance, if applicable.",
+                        "returned": "always",
+                        "sample": "mytoken",
+                        "type": "str"
+                    },
+                    "cpu_options": {
+                        "contains": {
+                            "core_count": {
+                                "description": "The number of CPU cores for the instance.",
+                                "returned": "always",
+                                "sample": 1,
+                                "type": "int"
+                            },
+                            "threads_per_core": {
+                                "description": "The number of threads per CPU core. On supported instance, a value of 1 means Intel Hyper-Threading Technology is disabled.",
+                                "returned": "always",
+                                "sample": 1,
+                                "type": "int"
+                            }
+                        },
+                        "description": "The CPU options set for the instance.",
+                        "returned": "always if botocore version >= 1.10.16",
+                        "type": "complex"
+                    },
+                    "ebs_optimized": {
+                        "description": "Indicates whether the instance is optimized for EBS I/O.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "hypervisor": {
+                        "description": "The hypervisor type of the instance.",
+                        "returned": "always",
+                        "sample": "xen",
+                        "type": "str"
+                    },
+                    "iam_instance_profile": {
+                        "contains": {
+                            "arn": {
+                                "description": "The Amazon Resource Name (ARN) of the instance profile.",
+                                "returned": "always",
+                                "sample": "arn:aws:iam::000012345678:instance-profile/myprofile",
+                                "type": "str"
+                            },
+                            "id": {
+                                "description": "The ID of the instance profile",
+                                "returned": "always",
+                                "sample": "JFJ397FDG400FG9FD1N",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The IAM instance profile associated with the instance, if applicable.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "image_id": {
+                        "description": "The ID of the AMI used to launch the instance.",
+                        "returned": "always",
+                        "sample": "ami-0011223344",
+                        "type": "str"
+                    },
+                    "instance_id": {
+                        "description": "The ID of the instance.",
+                        "returned": "always",
+                        "sample": "i-012345678",
+                        "type": "str"
+                    },
+                    "instance_type": {
+                        "description": "The instance type size of the running instance.",
+                        "returned": "always",
+                        "sample": "t2.micro",
+                        "type": "str"
+                    },
+                    "key_name": {
+                        "description": "The name of the key pair, if this instance was launched with an associated key pair.",
+                        "returned": "always",
+                        "sample": "my-key",
+                        "type": "str"
+                    },
+                    "launch_time": {
+                        "description": "The time the instance was launched.",
+                        "returned": "always",
+                        "sample": "2017-03-23T22:51:24+00:00",
+                        "type": "str"
+                    },
+                    "monitoring": {
+                        "contains": {
+                            "state": {
+                                "description": "Indicates whether detailed monitoring is enabled. Otherwise, basic monitoring is enabled.",
+                                "returned": "always",
+                                "sample": "disabled",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The monitoring for the instance.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "network_interfaces": {
+                        "contains": {
+                            "association": {
+                                "contains": {
+                                    "ip_owner_id": {
+                                        "description": "The ID of the owner of the Elastic IP address.",
+                                        "returned": "always",
+                                        "sample": "amazon",
+                                        "type": "str"
+                                    },
+                                    "public_dns_name": {
+                                        "description": "The public DNS name.",
+                                        "returned": "always",
+                                        "sample": "",
+                                        "type": "str"
+                                    },
+                                    "public_ip": {
+                                        "description": "The public IP address or Elastic IP address bound to the network interface.",
+                                        "returned": "always",
+                                        "sample": "1.2.3.4",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "The association information for an Elastic IPv4 associated with the network interface.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "attachment": {
+                                "contains": {
+                                    "attach_time": {
+                                        "description": "The time stamp when the attachment initiated.",
+                                        "returned": "always",
+                                        "sample": "2017-03-23T22:51:24+00:00",
+                                        "type": "str"
+                                    },
+                                    "attachment_id": {
+                                        "description": "The ID of the network interface attachment.",
+                                        "returned": "always",
+                                        "sample": "eni-attach-3aff3f",
+                                        "type": "str"
+                                    },
+                                    "delete_on_termination": {
+                                        "description": "Indicates whether the network interface is deleted when the instance is terminated.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "device_index": {
+                                        "description": "The index of the device on the instance for the network interface attachment.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "status": {
+                                        "description": "The attachment state.",
+                                        "returned": "always",
+                                        "sample": "attached",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "The network interface attachment.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "description": {
+                                "description": "The description.",
+                                "returned": "always",
+                                "sample": "My interface",
+                                "type": "str"
+                            },
+                            "groups": {
+                                "contains": {
+                                    "group_id": {
+                                        "description": "The ID of the security group.",
+                                        "returned": "always",
+                                        "sample": "sg-abcdef12",
+                                        "type": "str"
+                                    },
+                                    "group_name": {
+                                        "description": "The name of the security group.",
+                                        "returned": "always",
+                                        "sample": "mygroup",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "One or more security groups.",
+                                "elements": "dict",
+                                "returned": "always",
+                                "type": "list"
+                            },
+                            "ipv6_addresses": {
+                                "contains": {
+                                    "ipv6_address": {
+                                        "description": "The IPv6 address.",
+                                        "returned": "always",
+                                        "sample": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "One or more IPv6 addresses associated with the network interface.",
+                                "elements": "dict",
+                                "returned": "always",
+                                "type": "list"
+                            },
+                            "mac_address": {
+                                "description": "The MAC address.",
+                                "returned": "always",
+                                "sample": "00:11:22:33:44:55",
+                                "type": "str"
+                            },
+                            "network_interface_id": {
+                                "description": "The ID of the network interface.",
+                                "returned": "always",
+                                "sample": "eni-01234567",
+                                "type": "str"
+                            },
+                            "owner_id": {
+                                "description": "The AWS account ID of the owner of the network interface.",
+                                "returned": "always",
+                                "sample": "01234567890",
+                                "type": "str"
+                            },
+                            "private_ip_address": {
+                                "description": "The IPv4 address of the network interface within the subnet.",
+                                "returned": "always",
+                                "sample": "10.0.0.1",
+                                "type": "str"
+                            },
+                            "private_ip_addresses": {
+                                "contains": {
+                                    "association": {
+                                        "contains": {
+                                            "ip_owner_id": {
+                                                "description": "The ID of the owner of the Elastic IP address.",
+                                                "returned": "always",
+                                                "sample": "amazon",
+                                                "type": "str"
+                                            },
+                                            "public_dns_name": {
+                                                "description": "The public DNS name.",
+                                                "returned": "always",
+                                                "sample": "",
+                                                "type": "str"
+                                            },
+                                            "public_ip": {
+                                                "description": "The public IP address or Elastic IP address bound to the network interface.",
+                                                "returned": "always",
+                                                "sample": "1.2.3.4",
+                                                "type": "str"
+                                            }
+                                        },
+                                        "description": "The association information for an Elastic IP address (IPv4) associated with the network interface.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    },
+                                    "primary": {
+                                        "description": "Indicates whether this IPv4 address is the primary private IP address of the network interface.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "private_ip_address": {
+                                        "description": "The private IPv4 address of the network interface.",
+                                        "returned": "always",
+                                        "sample": "10.0.0.1",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "The private IPv4 addresses associated with the network interface.",
+                                "elements": "dict",
+                                "returned": "always",
+                                "type": "list"
+                            },
+                            "source_dest_check": {
+                                "description": "Indicates whether source/destination checking is enabled.",
+                                "returned": "always",
+                                "sample": true,
+                                "type": "bool"
+                            },
+                            "status": {
+                                "description": "The status of the network interface.",
+                                "returned": "always",
+                                "sample": "in-use",
+                                "type": "str"
+                            },
+                            "subnet_id": {
+                                "description": "The ID of the subnet for the network interface.",
+                                "returned": "always",
+                                "sample": "subnet-0123456",
+                                "type": "str"
+                            },
+                            "vpc_id": {
+                                "description": "The ID of the VPC for the network interface.",
+                                "returned": "always",
+                                "sample": "vpc-0123456",
+                                "type": "str"
+                            }
+                        },
+                        "description": "One or more network interfaces for the instance.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "placement": {
+                        "contains": {
+                            "availability_zone": {
+                                "description": "The Availability Zone of the instance.",
+                                "returned": "always",
+                                "sample": "ap-southeast-2a",
+                                "type": "str"
+                            },
+                            "group_name": {
+                                "description": "The name of the placement group the instance is in (for cluster compute instances).",
+                                "returned": "always",
+                                "sample": "",
+                                "type": "str"
+                            },
+                            "tenancy": {
+                                "description": "The tenancy of the instance (if the instance is running in a VPC).",
+                                "returned": "always",
+                                "sample": "default",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The location where the instance launched, if applicable.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "private_dns_name": {
+                        "description": "The private DNS name.",
+                        "returned": "always",
+                        "sample": "ip-10-0-0-1.ap-southeast-2.compute.internal",
+                        "type": "str"
+                    },
+                    "private_ip_address": {
+                        "description": "The IPv4 address of the network interface within the subnet.",
+                        "returned": "always",
+                        "sample": "10.0.0.1",
+                        "type": "str"
+                    },
+                    "product_codes": {
+                        "contains": {
+                            "product_code_id": {
+                                "description": "The product code.",
+                                "returned": "always",
+                                "sample": "aw0evgkw8ef3n2498gndfgasdfsd5cce",
+                                "type": "str"
+                            },
+                            "product_code_type": {
+                                "description": "The type of product code.",
+                                "returned": "always",
+                                "sample": "marketplace",
+                                "type": "str"
+                            }
+                        },
+                        "description": "One or more product codes.",
+                        "elements": "dict",
+                        "returned": "always",
+                        "type": "list"
+                    },
+                    "public_dns_name": {
+                        "description": "The public DNS name assigned to the instance.",
+                        "returned": "always",
+                        "sample": null,
+                        "type": "str"
+                    },
+                    "public_ip_address": {
+                        "description": "The public IPv4 address assigned to the instance",
+                        "returned": "always",
+                        "sample": "52.0.0.1",
+                        "type": "str"
+                    },
+                    "root_device_name": {
+                        "description": "The device name of the root device",
+                        "returned": "always",
+                        "sample": "/dev/sda1",
+                        "type": "str"
+                    },
+                    "root_device_type": {
+                        "description": "The type of root device used by the AMI.",
+                        "returned": "always",
+                        "sample": "ebs",
+                        "type": "str"
+                    },
+                    "security_groups": {
+                        "contains": {
+                            "group_id": {
+                                "description": "The ID of the security group.",
+                                "returned": "always",
+                                "sample": "sg-0123456",
+                                "type": "str"
+                            },
+                            "group_name": {
+                                "description": "The name of the security group.",
+                                "returned": "always",
+                                "sample": "my-security-group",
+                                "type": "str"
+                            }
+                        },
+                        "description": "One or more security groups for the instance.",
+                        "elements": "dict",
+                        "returned": "always",
+                        "type": "list"
+                    },
+                    "source_dest_check": {
+                        "description": "Indicates whether source/destination checking is enabled.",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "state": {
+                        "contains": {
+                            "code": {
+                                "description": "The low byte represents the state.",
+                                "returned": "always",
+                                "sample": 16,
+                                "type": "int"
+                            },
+                            "name": {
+                                "description": "The name of the state.",
+                                "returned": "always",
+                                "sample": "running",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The current state of the instance.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "state_transition_reason": {
+                        "description": "The reason for the most recent state transition.",
+                        "returned": "always",
+                        "sample": null,
+                        "type": "str"
+                    },
+                    "subnet_id": {
+                        "description": "The ID of the subnet in which the instance is running.",
+                        "returned": "always",
+                        "sample": "subnet-00abcdef",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": "Any tags assigned to the instance.",
+                        "returned": "always",
+                        "sample": null,
+                        "type": "dict"
+                    },
+                    "virtualization_type": {
+                        "description": "The type of virtualization of the AMI.",
+                        "returned": "always",
+                        "sample": "hvm",
+                        "type": "str"
+                    },
+                    "vpc_id": {
+                        "description": "The ID of the VPC the instance is in.",
+                        "returned": "always",
+                        "sample": "vpc-0011223344",
+                        "type": "dict"
+                    }
+                },
+                "description": "a list of ec2 instances",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

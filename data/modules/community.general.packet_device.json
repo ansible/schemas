@@ -1,0 +1,193 @@
+{
+    "community.general.packet_device": {
+        "doc": {
+            "author": [
+                "Tomas Karasek (@t0mk) <tom.to.the.k@gmail.com>",
+                "Matt Baldwin (@baldwinSPC) <baldwin@stackpointcloud.com>",
+                "Thibaud Morel l'Horset (@teebes) <teebes@gmail.com>"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manage a bare metal server in the Packet Host (a \"device\" in the API terms).",
+                "When the machine is created it can optionally wait for public IP address, or for active state.",
+                "This module has a dependency on packet >= 1.0.",
+                "API is documented at U(https://www.packet.net/developers/api/devices)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/packet_device.py",
+            "has_action": false,
+            "module": "packet_device",
+            "notes": [
+                "Doesn't support check mode."
+            ],
+            "options": {
+                "always_pxe": {
+                    "default": false,
+                    "description": [
+                        "Persist PXE as the first boot option.",
+                        "Normally, the PXE process happens only on the first boot. Set this arg to have your device continuously boot to iPXE."
+                    ],
+                    "type": "bool"
+                },
+                "auth_token": {
+                    "description": [
+                        "Packet API token. You can also supply it in env var C(PACKET_API_TOKEN)."
+                    ],
+                    "type": "str"
+                },
+                "count": {
+                    "default": 1,
+                    "description": [
+                        "The number of devices to create. Count number can be included in hostname via the %d string formatter."
+                    ],
+                    "type": "int"
+                },
+                "count_offset": {
+                    "default": 1,
+                    "description": [
+                        "From which number to start the count."
+                    ],
+                    "type": "int"
+                },
+                "device_ids": {
+                    "description": [
+                        "List of device IDs on which to operate."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "facility": {
+                    "description": [
+                        "Facility slug for device creation. See Packet API for current list - U(https://www.packet.net/developers/api/facilities/)."
+                    ],
+                    "type": "str"
+                },
+                "features": {
+                    "description": [
+                        "Dict with \"features\" for device creation. See Packet API docs for details."
+                    ],
+                    "type": "dict"
+                },
+                "hostnames": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "A hostname of a device, or a list of hostnames.",
+                        "If given string or one-item list, you can use the C(\"%d\") Python string format to expand numbers from I(count).",
+                        "If only one hostname, it might be expanded to list if I(count)>1."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ipxe_script_url": {
+                    "description": [
+                        "URL of custom iPXE script for provisioning.",
+                        "More about custom iPXE for Packet devices at U(https://help.packet.net/technical/infrastructure/custom-ipxe)."
+                    ],
+                    "type": "str"
+                },
+                "locked": {
+                    "aliases": [
+                        "lock"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Whether to lock a created device."
+                    ],
+                    "type": "bool"
+                },
+                "operating_system": {
+                    "description": [
+                        "OS slug for device creation. See Packet API for current list - U(https://www.packet.net/developers/api/operatingsystems/)."
+                    ],
+                    "type": "str"
+                },
+                "plan": {
+                    "description": [
+                        "Plan slug for device creation. See Packet API for current list - U(https://www.packet.net/developers/api/plans/)."
+                    ],
+                    "type": "str"
+                },
+                "project_id": {
+                    "description": [
+                        "ID of project of the device."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "active",
+                        "inactive",
+                        "rebooted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired state of the device.",
+                        "If set to C(present) (the default), the module call will return immediately after the device-creating HTTP request successfully returns.",
+                        "If set to C(active), the module call will block until all the specified devices are in state active due to the Packet API, or until I(wait_timeout)."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "List of device tags.",
+                        "Currently implemented only for device creation."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "user_data": {
+                    "description": [
+                        "Userdata blob made available to the machine"
+                    ],
+                    "type": "str"
+                },
+                "wait_for_public_IPv": {
+                    "choices": [
+                        4,
+                        6
+                    ],
+                    "description": [
+                        "Whether to wait for the instance to be assigned a public IPv4/IPv6 address.",
+                        "If set to 4, it will wait until IPv4 is assigned to the instance.",
+                        "If set to 6, wait until public IPv6 is assigned to the instance."
+                    ],
+                    "type": "int"
+                },
+                "wait_timeout": {
+                    "default": 900,
+                    "description": [
+                        "How long (seconds) to wait either for automatic IP address assignment, or for the device to reach the C(active) I(state).",
+                        "If I(wait_for_public_IPv) is set and I(state) is C(active), the module will wait for both events consequently, applying the timeout twice."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "packet-python >= 1.35"
+            ],
+            "short_description": "Manage a bare metal server in the Packet Host."
+        },
+        "examples": "\n# All the examples assume that you have your Packet API token in env var PACKET_API_TOKEN.\n# You can also pass it to the auth_token parameter of the module instead.\n\n# Creating devices\n\n- name: Create 1 device\n  hosts: localhost\n  tasks:\n  - community.general.packet_device:\n      project_id: 89b497ee-5afc-420a-8fb5-56984898f4df\n      hostnames: myserver\n      tags: ci-xyz\n      operating_system: ubuntu_16_04\n      plan: baremetal_0\n      facility: sjc1\n\n# Create the same device and wait until it is in state \"active\", (when it's\n# ready for other API operations). Fail if the device is not \"active\" in\n# 10 minutes.\n\n- name: Create device and wait up to 10 minutes for active state\n  hosts: localhost\n  tasks:\n  - community.general.packet_device:\n      project_id: 89b497ee-5afc-420a-8fb5-56984898f4df\n      hostnames: myserver\n      operating_system: ubuntu_16_04\n      plan: baremetal_0\n      facility: sjc1\n      state: active\n      wait_timeout: 600\n\n- name: Create 3 ubuntu devices called server-01, server-02 and server-03\n  hosts: localhost\n  tasks:\n  - community.general.packet_device:\n      project_id: 89b497ee-5afc-420a-8fb5-56984898f4df\n      hostnames: server-%02d\n      count: 3\n      operating_system: ubuntu_16_04\n      plan: baremetal_0\n      facility: sjc1\n\n- name: Create 3 coreos devices with userdata, wait until they get IPs and then wait for SSH\n  hosts: localhost\n  tasks:\n  - name: Create 3 devices and register their facts\n    community.general.packet_device:\n      hostnames: [coreos-one, coreos-two, coreos-three]\n      operating_system: coreos_stable\n      plan: baremetal_0\n      facility: ewr1\n      locked: true\n      project_id: 89b497ee-5afc-420a-8fb5-56984898f4df\n      wait_for_public_IPv: 4\n      user_data: |\n        #cloud-config\n        ssh_authorized_keys:\n          - {{ lookup('file', 'my_packet_sshkey') }}\n        coreos:\n          etcd:\n            discovery: https://discovery.etcd.io/6a28e078895c5ec737174db2419bb2f3\n            addr: $private_ipv4:4001\n            peer-addr: $private_ipv4:7001\n          fleet:\n            public-ip: $private_ipv4\n          units:\n            - name: etcd.service\n              command: start\n            - name: fleet.service\n              command: start\n    register: newhosts\n\n  - name: Wait for ssh\n    ansible.builtin.wait_for:\n      delay: 1\n      host: \"{{ item.public_ipv4 }}\"\n      port: 22\n      state: started\n      timeout: 500\n    with_items: \"{{ newhosts.devices }}\"\n\n\n# Other states of devices\n\n- name: Remove 3 devices by uuid\n  hosts: localhost\n  tasks:\n  - community.general.packet_device:\n      project_id: 89b497ee-5afc-420a-8fb5-56984898f4df\n      state: absent\n      device_ids:\n        - 1fb4faf8-a638-4ac7-8f47-86fe514c30d8\n        - 2eb4faf8-a638-4ac7-8f47-86fe514c3043\n        - 6bb4faf8-a638-4ac7-8f47-86fe514c301f\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "True if a device was altered in any way (created, modified or removed)",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "devices": {
+                "description": "Information about each device that was processed",
+                "returned": "success",
+                "sample": "[{\"hostname\": \"my-server.com\", \"id\": \"2a5122b9-c323-4d5c-b53c-9ad3f54273e7\", \"public_ipv4\": \"147.229.15.12\", \"private-ipv4\": \"10.0.15.12\", \"tags\": [], \"locked\": false, \"state\": \"provisioning\", \"public_ipv6\": \"\"2604:1380:2:5200::3\"}]",
+                "type": "list"
+            }
+        }
+    }
+}

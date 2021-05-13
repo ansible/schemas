@@ -1,0 +1,185 @@
+{
+    "community.aws.ec2_ami_copy": {
+        "doc": {
+            "author": [
+                "Amir Moulavi (@amir343) <amir.moulavi@gmail.com>",
+                "Tim C (@defunctio) <defunct@defunct.io>"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Copies AMI from a source region to a destination region. B(Since version 2.3 this module depends on boto3.)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_ami_copy.py",
+            "has_action": false,
+            "module": "ec2_ami_copy",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "An optional human-readable string describing the contents and purpose of the new AMI."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "encrypted": {
+                    "default": false,
+                    "description": [
+                        "Whether or not the destination snapshots of the copied AMI should be encrypted."
+                    ],
+                    "type": "bool"
+                },
+                "kms_key_id": {
+                    "description": [
+                        "KMS key id used to encrypt the image. If not specified, uses default EBS Customer Master Key (CMK) for your account."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "default": "default",
+                    "description": [
+                        "The name of the new AMI to copy. (As of 2.3 the default is C(default), in prior versions it was C(null).)"
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "source_image_id": {
+                    "description": [
+                        "The ID of the AMI in source region that should be copied."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "source_region": {
+                    "description": [
+                        "The source region the AMI should be copied from."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "tag_equality": {
+                    "default": false,
+                    "description": [
+                        "Whether to use tags if the source AMI already exists in the target region. If this is set, and all tags match in an existing AMI, the AMI will not be copied again."
+                    ],
+                    "type": "bool"
+                },
+                "tags": {
+                    "description": [
+                        "A hash/dictionary of tags to add to the new copied AMI: C({\"key\":\"value\"}) and C({\"key\":\"value\",\"key\":\"value\"})"
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": "no",
+                    "description": [
+                        "Wait for the copied AMI to be in state C(available) before returning."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 600,
+                    "description": [
+                        "How long before wait gives up, in seconds.",
+                        "Prior to 2.3 the default was C(1200).",
+                        "From 2.3-2.5 this option was deprecated in favor of boto3 waiter defaults.",
+                        "This was reenabled in 2.6 to allow timeouts greater than 10 minutes."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "copies AMI between AWS regions, return new image id",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Basic AMI Copy\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n\n- name: AMI copy wait until available\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n    wait: yes\n    wait_timeout: 1200  # Default timeout is 600\n  register: image_id\n\n- name: Named AMI copy\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n    name: My-Awesome-AMI\n    description: latest patch\n\n- name: Tagged AMI copy (will not copy the same AMI twice)\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n    tags:\n        Name: My-Super-AMI\n        Patch: 1.2.3\n    tag_equality: yes\n\n- name: Encrypted AMI copy\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n    encrypted: yes\n\n- name: Encrypted AMI copy with specified key\n  community.aws.ec2_ami_copy:\n    source_region: us-east-1\n    region: eu-west-1\n    source_image_id: ami-xxxxxxx\n    encrypted: yes\n    kms_key_id: arn:aws:kms:us-east-1:XXXXXXXXXXXX:key/746de6ea-50a4-4bcb-8fbc-e3b29f2d367b\n",
+        "metadata": null,
+        "return": {
+            "image_id": {
+                "description": "AMI ID of the copied AMI",
+                "returned": "always",
+                "sample": "ami-e689729e",
+                "type": "str"
+            }
+        }
+    }
+}

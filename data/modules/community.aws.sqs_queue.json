@@ -1,0 +1,307 @@
+{
+    "community.aws.sqs_queue": {
+        "doc": {
+            "author": [
+                "Alan Loi (@loia)",
+                "Fernando Jose Pando (@nand0p)",
+                "Nadir Lloret (@nadirollo)",
+                "Dennis Podkovyrin (@sbj-ss)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Create or delete AWS SQS queues.",
+                "Update attributes on existing queues."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/sqs_queue.py",
+            "has_action": false,
+            "module": "sqs_queue",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "content_based_deduplication": {
+                    "description": [
+                        "Enables content-based deduplication. Used for FIFOs only.",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "delay_seconds": {
+                    "aliases": [
+                        "delivery_delay"
+                    ],
+                    "description": [
+                        "The delivery delay in seconds."
+                    ],
+                    "type": "int"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "kms_data_key_reuse_period_seconds": {
+                    "aliases": [
+                        "kms_data_key_reuse_period"
+                    ],
+                    "description": [
+                        "The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again."
+                    ],
+                    "type": "int"
+                },
+                "kms_master_key_id": {
+                    "description": [
+                        "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK."
+                    ],
+                    "type": "str"
+                },
+                "maximum_message_size": {
+                    "description": [
+                        "The maximum message size in bytes."
+                    ],
+                    "type": "int"
+                },
+                "message_retention_period": {
+                    "description": [
+                        "The message retention period in seconds."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of the queue."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "policy": {
+                    "description": [
+                        "The JSON dict policy to attach to queue."
+                    ],
+                    "type": "dict"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_tags": {
+                    "default": false,
+                    "description": [
+                        "Remove tags not listed in I(tags)."
+                    ],
+                    "type": "bool"
+                },
+                "queue_type": {
+                    "choices": [
+                        "standard",
+                        "fifo"
+                    ],
+                    "default": "standard",
+                    "description": [
+                        "Standard or FIFO queue.",
+                        "I(queue_type) can only be set at queue creation and will otherwise be ignored."
+                    ],
+                    "type": "str"
+                },
+                "receive_message_wait_time_seconds": {
+                    "aliases": [
+                        "receive_message_wait_time"
+                    ],
+                    "description": [
+                        "The receive message wait time in seconds."
+                    ],
+                    "type": "int"
+                },
+                "redrive_policy": {
+                    "description": [
+                        "JSON dict with the redrive_policy (see example)."
+                    ],
+                    "type": "dict"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete the queue."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tag dict to apply to the queue (requires botocore 1.5.40 or above).",
+                        "To remove all tags set I(tags={}) and I(purge_tags=true)."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "visibility_timeout": {
+                    "aliases": [
+                        "default_visibility_timeout"
+                    ],
+                    "description": [
+                        "The default visibility timeout in seconds."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Creates or deletes AWS SQS queues",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Create SQS queue with redrive policy\n  community.aws.sqs_queue:\n    name: my-queue\n    region: ap-southeast-2\n    default_visibility_timeout: 120\n    message_retention_period: 86400\n    maximum_message_size: 1024\n    delivery_delay: 30\n    receive_message_wait_time: 20\n    policy: \"{{ json_dict }}\"\n    redrive_policy:\n      maxReceiveCount: 5\n      deadLetterTargetArn: arn:aws:sqs:eu-west-1:123456789012:my-dead-queue\n\n- name: Drop redrive policy\n  community.aws.sqs_queue:\n    name: my-queue\n    region: ap-southeast-2\n    redrive_policy: {}\n\n- name: Create FIFO queue\n  community.aws.sqs_queue:\n    name: fifo-queue\n    region: ap-southeast-2\n    queue_type: fifo\n    content_based_deduplication: yes\n\n- name: Tag queue\n  community.aws.sqs_queue:\n    name: fifo-queue\n    region: ap-southeast-2\n    tags:\n      example: SomeValue\n\n- name: Configure Encryption, automatically uses a new data key every hour\n  community.aws.sqs_queue:\n    name: fifo-queue\n    region: ap-southeast-2\n    kms_master_key_id: alias/MyQueueKey\n    kms_data_key_reuse_period_seconds: 3600\n\n- name: Delete SQS queue\n  community.aws.sqs_queue:\n    name: my-queue\n    region: ap-southeast-2\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "content_based_deduplication": {
+                "description": "Enables content-based deduplication. Used for FIFOs only.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "delay_seconds": {
+                "description": "The delivery delay in seconds.",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "kms_data_key_reuse_period_seconds": {
+                "description": "The length of time, in seconds, for which Amazon SQS can reuse a data key to encrypt or decrypt messages before calling AWS KMS again.",
+                "returned": "always",
+                "sample": 300,
+                "type": "int"
+            },
+            "kms_master_key_id": {
+                "description": "The ID of an AWS-managed customer master key (CMK) for Amazon SQS or a custom CMK.",
+                "returned": "always",
+                "sample": "alias/MyAlias",
+                "type": "str"
+            },
+            "maximum_message_size": {
+                "description": "The maximum message size in bytes.",
+                "returned": "always",
+                "sample": 262144,
+                "type": "int"
+            },
+            "message_retention_period": {
+                "description": "The message retention period in seconds.",
+                "returned": "always",
+                "sample": 345600,
+                "type": "int"
+            },
+            "name": {
+                "description": "Name of the SQS Queue",
+                "returned": "always",
+                "sample": "queuename-987d2de0",
+                "type": "str"
+            },
+            "queue_arn": {
+                "description": "The queue's Amazon resource name (ARN).",
+                "returned": "on success",
+                "sample": "arn:aws:sqs:us-east-1:199999999999:queuename-987d2de0",
+                "type": "str"
+            },
+            "queue_url": {
+                "description": "URL to access the queue",
+                "returned": "on success",
+                "sample": "https://queue.amazonaws.com/123456789012/MyQueue",
+                "type": "str"
+            },
+            "receive_message_wait_time_seconds": {
+                "description": "The receive message wait time in seconds.",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "region": {
+                "description": "Region that the queue was created within",
+                "returned": "always",
+                "sample": "us-east-1",
+                "type": "str"
+            },
+            "tags": {
+                "description": "List of queue tags",
+                "returned": "always",
+                "sample": "{\"Env\": \"prod\"}",
+                "type": "dict"
+            },
+            "visibility_timeout": {
+                "description": "The default visibility timeout in seconds.",
+                "returned": "always",
+                "sample": 30,
+                "type": "int"
+            }
+        }
+    }
+}

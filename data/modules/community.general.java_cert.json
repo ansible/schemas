@@ -1,0 +1,147 @@
+{
+    "community.general.java_cert": {
+        "doc": {
+            "author": [
+                "Adam Hamsik (@haad)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This is a wrapper module around keytool, which can be used to import/remove certificates from a given java keystore."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/java_cert.py",
+            "has_action": false,
+            "module": "java_cert",
+            "options": {
+                "cert_alias": {
+                    "description": [
+                        "Imported certificate alias.",
+                        "The alias is used when checking for the presence of a certificate in the keystore."
+                    ],
+                    "type": "str"
+                },
+                "cert_path": {
+                    "description": [
+                        "Local path to load certificate from.",
+                        "One of C(cert_url) or C(cert_path) is required to load certificate."
+                    ],
+                    "type": "path"
+                },
+                "cert_port": {
+                    "default": 443,
+                    "description": [
+                        "Port to connect to URL.",
+                        "This will be used to create server URL:PORT."
+                    ],
+                    "type": "int"
+                },
+                "cert_url": {
+                    "description": [
+                        "Basic URL to fetch SSL certificate from.",
+                        "One of C(cert_url) or C(cert_path) is required to load certificate."
+                    ],
+                    "type": "str"
+                },
+                "executable": {
+                    "default": "keytool",
+                    "description": [
+                        "Path to keytool binary if not used we search in PATH for it."
+                    ],
+                    "type": "str"
+                },
+                "keystore_create": {
+                    "default": false,
+                    "description": [
+                        "Create keystore if it does not exist."
+                    ],
+                    "type": "bool"
+                },
+                "keystore_pass": {
+                    "description": [
+                        "Keystore password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "keystore_path": {
+                    "description": [
+                        "Path to keystore."
+                    ],
+                    "type": "path"
+                },
+                "keystore_type": {
+                    "description": [
+                        "Keystore type (JCEKS, JKS)."
+                    ],
+                    "type": "str"
+                },
+                "pkcs12_alias": {
+                    "description": [
+                        "Alias in the PKCS12 keystore."
+                    ],
+                    "type": "str"
+                },
+                "pkcs12_password": {
+                    "default": "",
+                    "description": [
+                        "Password for importing from PKCS12 keystore."
+                    ],
+                    "type": "str"
+                },
+                "pkcs12_path": {
+                    "description": [
+                        "Local path to load PKCS12 keystore from."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Defines action which can be either certificate import or removal.",
+                        "When state is present, the certificate will always idempotently be inserted into the keystore, even if there already exists a cert alias that is different."
+                    ],
+                    "type": "str"
+                },
+                "trust_cacert": {
+                    "default": false,
+                    "description": [
+                        "Trust imported cert as CAcert."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                }
+            },
+            "requirements": [
+                "openssl",
+                "keytool"
+            ],
+            "short_description": "Uses keytool to import/remove key from java keystore (cacerts)"
+        },
+        "examples": "\n- name: Import SSL certificate from google.com to a given cacerts keystore\n  community.general.java_cert:\n    cert_url: google.com\n    cert_port: 443\n    keystore_path: /usr/lib/jvm/jre7/lib/security/cacerts\n    keystore_pass: changeit\n    state: present\n\n- name: Remove certificate with given alias from a keystore\n  community.general.java_cert:\n    cert_url: google.com\n    keystore_path: /usr/lib/jvm/jre7/lib/security/cacerts\n    keystore_pass: changeit\n    executable: /usr/lib/jvm/jre7/bin/keytool\n    state: absent\n\n- name: Import trusted CA from SSL certificate\n  community.general.java_cert:\n    cert_path: /opt/certs/rootca.crt\n    keystore_path: /tmp/cacerts\n    keystore_pass: changeit\n    keystore_create: yes\n    state: present\n    cert_alias: LE_RootCA\n    trust_cacert: True\n\n- name: Import SSL certificate from google.com to a keystore, create it if it doesn't exist\n  community.general.java_cert:\n    cert_url: google.com\n    keystore_path: /tmp/cacerts\n    keystore_pass: changeit\n    keystore_create: yes\n    state: present\n\n- name: Import a pkcs12 keystore with a specified alias, create it if it doesn't exist\n  community.general.java_cert:\n    pkcs12_path: \"/tmp/importkeystore.p12\"\n    cert_alias: default\n    keystore_path: /opt/wildfly/standalone/configuration/defaultkeystore.jks\n    keystore_pass: changeit\n    keystore_create: yes\n    state: present\n\n- name: Import SSL certificate to JCEKS keystore\n  community.general.java_cert:\n    pkcs12_path: \"/tmp/importkeystore.p12\"\n    pkcs12_alias: default\n    pkcs12_password: somepass\n    cert_alias: default\n    keystore_path: /opt/someapp/security/keystore.jceks\n    keystore_type: \"JCEKS\"\n    keystore_pass: changeit\n    keystore_create: yes\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "cmd": {
+                "description": "Executed command to get action done.",
+                "returned": "success",
+                "sample": "keytool -importcert -noprompt -keystore",
+                "type": "str"
+            },
+            "msg": {
+                "description": "Output from stdout of keytool command after execution of given command.",
+                "returned": "success",
+                "sample": "Module require existing keystore at keystore_path '/tmp/test/cacerts'",
+                "type": "str"
+            },
+            "rc": {
+                "description": "Keytool command execution return value.",
+                "returned": "success",
+                "sample": "0",
+                "type": "int"
+            }
+        }
+    }
+}

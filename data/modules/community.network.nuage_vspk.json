@@ -1,0 +1,158 @@
+{
+    "community.network.nuage_vspk": {
+        "doc": {
+            "author": "Philippe Dellaert (@pdellaert)",
+            "collection": "community.network",
+            "description": [
+                "Manage or find Nuage VSP entities, this includes create, update, delete, assign, unassign and find, with all supported properties."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/nuage_vspk.py",
+            "has_action": false,
+            "module": "nuage_vspk",
+            "notes": [
+                "Check mode is supported, but with some caveats. It will not do any changes, and if possible try to determine if it is able do what is requested.",
+                "In case a parent id is provided from a previous task, it might be empty and if a search is possible on root, it will do so, which can impact performance."
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dict with the authentication information required to connect to a Nuage VSP environment.",
+                        "Requires a I(api_username) parameter (example csproot).",
+                        "Requires either a I(api_password) parameter (example csproot) or a I(api_certificate) and I(api_key) parameters, which point to the certificate and key files for certificate based authentication.",
+                        "Requires a I(api_enterprise) parameter (example csp).",
+                        "Requires a I(api_url) parameter (example https://10.0.0.10:8443).",
+                        "Requires a I(api_version) parameter (example v4_0)."
+                    ],
+                    "required": true
+                },
+                "children": {
+                    "description": [
+                        "Can be used to specify a set of child entities.",
+                        "A mandatory property of each child is the I(type).",
+                        "Supported optional properties of each child are I(id), I(properties) and I(match_filter).",
+                        "The function of each of these properties is the same as in the general task definition.",
+                        "This can be used recursively",
+                        "Only useable in case I(state=present)."
+                    ]
+                },
+                "command": {
+                    "choices": [
+                        "find",
+                        "change_password",
+                        "wait_for_job",
+                        "get_csp_enterprise"
+                    ],
+                    "description": [
+                        "Specifies a command to be executed.",
+                        "With I(command=find), if I(parent_id) and I(parent_type) are defined, it will only search within the parent. Otherwise, if allowed, will search in the root object.",
+                        "With I(command=find), if I(id) is specified, it will only return the single entity matching the id.",
+                        "With I(command=find), otherwise, if I(match_filter) is define, it will use that filter to search.",
+                        "With I(command=find), otherwise, if I(properties) are defined, it will do an AND search using all properties.",
+                        "With I(command=change_password), a password of a user can be changed. Warning - In case the password is the same as the existing, it will throw an error.",
+                        "With I(command=wait_for_job), the module will wait for a job to either have a status of SUCCESS or ERROR. In case an ERROR status is found, the module will exit with an error.",
+                        "With I(command=wait_for_job), the job will always be returned, even if the state is ERROR situation.",
+                        "Either I(state) or I(command) needs to be defined, both can not be defined at the same time."
+                    ]
+                },
+                "id": {
+                    "description": [
+                        "The ID of the entity you want to work on.",
+                        "In combination with I(command=find), it will only return the single entity.",
+                        "In combination with I(state), it will either update or delete this entity.",
+                        "Will take precedence over I(match_filter) and I(properties) whenever an entity needs to be found."
+                    ]
+                },
+                "match_filter": {
+                    "description": [
+                        "A filter used when looking (both in I(command) and I(state) for entities, in the format the Nuage VSP API expects.",
+                        "If I(match_filter) is defined, it will take precedence over the I(properties), but not on the I(id)"
+                    ]
+                },
+                "parent_id": {
+                    "description": [
+                        "The ID of the parent of the entity you want to work on.",
+                        "When I(state) is specified, the entity will be gathered from this parent, if it exists, unless an I(id) is specified.",
+                        "When I(command=find) is specified, the entity will be searched for in this parent, unless an I(id) is specified.",
+                        "If specified, I(parent_type) also needs to be specified."
+                    ]
+                },
+                "parent_type": {
+                    "description": [
+                        "The type of parent the ID is specified for (example Enterprise).",
+                        "This should match the objects CamelCase class name in VSPK-Python.",
+                        "This Class name can be found on U(https://nuagenetworks.github.io/vspkdoc/index.html).",
+                        "If specified, I(parent_id) also needs to be specified."
+                    ]
+                },
+                "properties": {
+                    "description": [
+                        "Properties are the key, value pairs of the different properties an entity has.",
+                        "If no I(id) and no I(match_filter) is specified, these are used to find or determine if the entity exists."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Specifies the desired state of the entity.",
+                        "If I(state=present), in case the entity already exists, will update the entity if it is needed.",
+                        "If I(state=present), in case the relationship with the parent is a member relationship, will assign the entity as a member of the parent.",
+                        "If I(state=absent), in case the relationship with the parent is a member relationship, will unassign the entity as a member of the parent.",
+                        "Either I(state) or I(command) needs to be defined, both can not be defined at the same time."
+                    ]
+                },
+                "type": {
+                    "description": [
+                        "The type of entity you want to work on (example Enterprise).",
+                        "This should match the objects CamelCase class name in VSPK-Python.",
+                        "This Class name can be found on U(https://nuagenetworks.github.io/vspkdoc/index.html)."
+                    ],
+                    "required": true
+                }
+            },
+            "requirements": [
+                "Python 2.7",
+                "Supports Nuage VSP 4.0Rx & 5.x.y",
+                "Proper VSPK-Python installed for your Nuage version",
+                "Tested with NuageX U(https://nuagex.io)"
+            ],
+            "short_description": "Manage Nuage VSP environments"
+        },
+        "examples": "\n# This can be executed as a single role, with the following vars\n# vars:\n#   auth:\n#     api_username: csproot\n#     api_password: csproot\n#     api_enterprise: csp\n#     api_url: https://10.0.0.10:8443\n#     api_version: v5_0\n#   enterprise_name: Ansible-Enterprise\n#   enterprise_new_name: Ansible-Updated-Enterprise\n#\n# or, for certificate based authentication\n# vars:\n#   auth:\n#     api_username: csproot\n#     api_certificate: /path/to/user-certificate.pem\n#     api_key: /path/to/user-Key.pem\n#     api_enterprise: csp\n#     api_url: https://10.0.0.10:8443\n#     api_version: v5_0\n#   enterprise_name: Ansible-Enterprise\n#   enterprise_new_name: Ansible-Updated-Enterprise\n\n# Creating a new enterprise\n- name: Create Enterprise\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Enterprise\n    state: present\n    properties:\n      name: \"{{ enterprise_name }}-basic\"\n  register: nuage_enterprise\n\n# Checking if an Enterprise with the new name already exists\n- name: Check if an Enterprise exists with the new name\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Enterprise\n    command: find\n    properties:\n      name: \"{{ enterprise_new_name }}-basic\"\n  ignore_errors: yes\n  register: nuage_check_enterprise\n\n# Updating an enterprise's name\n- name: Update Enterprise name\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Enterprise\n    id: \"{{ nuage_enterprise.id }}\"\n    state: present\n    properties:\n      name: \"{{ enterprise_new_name }}-basic\"\n  when: nuage_check_enterprise is failed\n\n# Creating a User in an Enterprise\n- name: Create admin user\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: User\n    parent_id: \"{{ nuage_enterprise.id }}\"\n    parent_type: Enterprise\n    state: present\n    match_filter: \"userName == 'ansible-admin'\"\n    properties:\n      email: \"ansible@localhost.local\"\n      first_name: \"Ansible\"\n      last_name: \"Admin\"\n      password: \"ansible-password\"\n      user_name: \"ansible-admin\"\n  register: nuage_user\n\n# Updating password for User\n- name: Update admin password\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: User\n    id: \"{{ nuage_user.id }}\"\n    command: change_password\n    properties:\n      password: \"ansible-new-password\"\n  ignore_errors: yes\n\n# Finding a group in an enterprise\n- name: Find Administrators group in Enterprise\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Group\n    parent_id: \"{{ nuage_enterprise.id }}\"\n    parent_type: Enterprise\n    command: find\n    properties:\n      name: \"Administrators\"\n  register: nuage_group\n\n# Assign the user to the group\n- name: Assign admin user to administrators\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: User\n    id: \"{{ nuage_user.id }}\"\n    parent_id: \"{{ nuage_group.id }}\"\n    parent_type: Group\n    state: present\n\n# Creating multiple DomainTemplates\n- name: Create multiple DomainTemplates\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: DomainTemplate\n    parent_id: \"{{ nuage_enterprise.id }}\"\n    parent_type: Enterprise\n    state: present\n    properties:\n      name: \"{{ item }}\"\n      description: \"Created by Ansible\"\n  with_items:\n    - \"Template-1\"\n    - \"Template-2\"\n\n# Finding all DomainTemplates\n- name: Fetching all DomainTemplates\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: DomainTemplate\n    parent_id: \"{{ nuage_enterprise.id }}\"\n    parent_type: Enterprise\n    command: find\n  register: nuage_domain_templates\n\n# Deleting all DomainTemplates\n- name: Deleting all found DomainTemplates\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: DomainTemplate\n    state: absent\n    id: \"{{ item.ID }}\"\n  with_items: \"{{ nuage_domain_templates.entities }}\"\n  when: nuage_domain_templates.entities is defined\n\n# Unassign user from group\n- name: Unassign admin user to administrators\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: User\n    id: \"{{ nuage_user.id }}\"\n    parent_id: \"{{ nuage_group.id }}\"\n    parent_type: Group\n    state: absent\n\n# Deleting an enterprise\n- name: Delete Enterprise\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Enterprise\n    id: \"{{ nuage_enterprise.id }}\"\n    state: absent\n\n# Setup an enterprise with Children\n- name: Setup Enterprise and domain structure\n  connection: local\n  community.network.nuage_vspk:\n    auth: \"{{ nuage_auth }}\"\n    type: Enterprise\n    state: present\n    properties:\n      name: \"Child-based-Enterprise\"\n    children:\n    - type: L2DomainTemplate\n      properties:\n        name: \"Unmanaged-Template\"\n      children:\n      - type: EgressACLTemplate\n        match_filter: \"name == 'Allow All'\"\n        properties:\n          name: \"Allow All\"\n          active: true\n          default_allow_ip: true\n          default_allow_non_ip: true\n          default_install_acl_implicit_rules: true\n          description: \"Created by Ansible\"\n          priority_type: \"TOP\"\n      - type: IngressACLTemplate\n        match_filter: \"name == 'Allow All'\"\n        properties:\n          name: \"Allow All\"\n          active: true\n          default_allow_ip: true\n          default_allow_non_ip: true\n          description: \"Created by Ansible\"\n          priority_type: \"TOP\"\n",
+        "metadata": null,
+        "return": {
+            "entities": {
+                "description": "A list of entities handled. Each element is the to_dict() of the entity.",
+                "returned": "On state=present and find, with only one element in case of state=present or find=one.",
+                "sample": [
+                    {
+                        "ID": "acabc435-3946-4117-a719-b8895a335830\"",
+                        "assocEntityType": "DOMAIN",
+                        "command": "BEGIN_POLICY_CHANGES",
+                        "creationDate": 1487515656000,
+                        "entityScope": "ENTERPRISE",
+                        "externalID": null,
+                        "lastUpdatedBy": "8a6f0e20-a4db-4878-ad84-9cc61756cd5e",
+                        "lastUpdatedDate": 1487515656000,
+                        "owner": "8a6f0e20-a4db-4878-ad84-9cc61756cd5e",
+                        "parameters": null,
+                        "parentID": "a22fddb9-3da4-4945-bd2e-9d27fe3d62e0",
+                        "parentType": "domain",
+                        "progress": 0.0,
+                        "result": null,
+                        "status": "RUNNING"
+                    }
+                ],
+                "type": "list"
+            },
+            "id": {
+                "description": "The id of the entity that was found, created, updated or assigned.",
+                "returned": "On state=present and command=find in case one entity was found.",
+                "sample": "bae07d8d-d29c-4e2b-b6ba-621b4807a333",
+                "type": "str"
+            }
+        }
+    }
+}

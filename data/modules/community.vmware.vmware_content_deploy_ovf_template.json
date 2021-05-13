@@ -1,0 +1,172 @@
+{
+    "community.vmware.vmware_content_deploy_ovf_template": {
+        "doc": {
+            "author": [
+                "Lev Goncharv (@ultral)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Module to deploy virtual machine from ovf template in content library.",
+                "All variables and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_content_deploy_ovf_template.py",
+            "has_action": false,
+            "module": "vmware_content_deploy_ovf_template",
+            "notes": [
+                "Tested on vSphere 6.7"
+            ],
+            "options": {
+                "cluster": {
+                    "description": [
+                        "Name of the cluster in datacenter in which to place deployed VM."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "datacenter": {
+                    "description": [
+                        "Name of the datacenter, where VM to be deployed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "datastore": {
+                    "description": [
+                        "Name of the datastore to store deployed VM and disk."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Name of the folder in datacenter in which to place deployed VM."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Name of the ESX Host in datacenter in which to place deployed VM."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "vm_name"
+                    ],
+                    "description": [
+                        "The name of the VM to be deployed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ovf_template": {
+                    "aliases": [
+                        "ovf",
+                        "template_src"
+                    ],
+                    "description": [
+                        "The name of OVF template from which VM to be deployed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead."
+                    ],
+                    "type": "int"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The connection to protocol."
+                    ],
+                    "type": "str"
+                },
+                "resource_pool": {
+                    "description": [
+                        "Name of the resourcepool in datacenter in which to place deployed VM."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "storage_provisioning": {
+                    "choices": [
+                        "thin",
+                        "thick",
+                        "eagerZeroedThick"
+                    ],
+                    "description": [
+                        "Default storage provisioning type to use for all sections of type vmw:StorageSection in the OVF descriptor."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid.",
+                        "Set to C(no) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi",
+                "vSphere Automation SDK"
+            ],
+            "short_description": "Deploy Virtual Machine from ovf template stored in content library."
+        },
+        "examples": "\n- name: Deploy Virtual Machine from OVF template in content library\n  community.vmware.vmware_content_deploy_ovf_template:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    ovf_template: rhel_test_template\n    datastore: Shared_NFS_Volume\n    folder: vm\n    datacenter: Sample_DC_1\n    name: Sample_VM\n    resource_pool: test_rp\n    validate_certs: False\n  delegate_to: localhost\n\n- name: Deploy Virtual Machine from OVF template in content library with eagerZeroedThick storage\n  vmware_content_deploy_ovf_template:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    ovf_template: rhel_test_template\n    datastore: Shared_NFS_Volume\n    folder: vm\n    datacenter: Sample_DC_1\n    name: Sample_VM\n    resource_pool: test_rp\n    validate_certs: False\n    storage_provisioning: eagerZeroedThick\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "vm_deploy_info": {
+                "description": "Virtual machine deployment message and vm_id",
+                "returned": "on success",
+                "sample": {
+                    "msg": "Deployed Virtual Machine 'Sample_VM'.",
+                    "vm_id": "vm-1009"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

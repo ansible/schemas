@@ -1,0 +1,198 @@
+{
+    "sensu.sensu_go.silence": {
+        "doc": {
+            "author": [
+                "Paul Arthur (@flowerysong)",
+                "Aljaz Kosir (@aljazkosir)",
+                "Manca Bizjak (@mancabizjak)",
+                "Tadej Borovsak (@tadeboro)"
+            ],
+            "collection": "sensu.sensu_go",
+            "description": [
+                "Create, update or delete Sensu silence.",
+                "For more information, refer to the Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/reference/silencing/)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/sensu/sensu_go/plugins/modules/silence.py",
+            "has_action": false,
+            "module": "silence",
+            "options": {
+                "annotations": {
+                    "description": [
+                        "Custom metadata fields with fewer restrictions, as key/value pairs.",
+                        "These are preserved by Sensu but not accessible as tokens or identifiers, and are mainly intended for use with external tools."
+                    ],
+                    "type": "dict"
+                },
+                "auth": {
+                    "description": [
+                        "Authentication parameters. Can define each of them with ENV as well."
+                    ],
+                    "suboptions": {
+                        "api_key": {
+                            "description": [
+                                "The API key that should be used when authenticating. If this is not set, the value of the SENSU_API_KEY environment variable will be checked.",
+                                "This replaces I(auth.user) and I(auth.password) parameters.",
+                                "For more information about the API key, refer to the official Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/guides/use-apikey-feature/)."
+                            ],
+                            "type": "str",
+                            "version_added": "1.3.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "ca_path": {
+                            "description": [
+                                "Path to the CA bundle that should be used to validate the backend certificate.",
+                                "If this parameter is not set, module will use the CA bundle that python is using.",
+                                "It is also possible to set this parameter via the I(SENSU_CA_PATH) environment variable."
+                            ],
+                            "type": "path",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "password": {
+                            "default": "P@ssw0rd!",
+                            "description": [
+                                "The Sensu user's password. If this is not set the value of the SENSU_PASSWORD environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "default": "http://localhost:8080",
+                            "description": [
+                                "Location of the Sensu backend API. If this is not set the value of the SENSU_URL environment variable will be checked."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "default": "admin",
+                            "description": [
+                                "The username to use for connecting to the Sensu API. If this is not set the value of the SENSU_USER environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "verify": {
+                            "default": true,
+                            "description": [
+                                "Flag that controls the certificate validation.",
+                                "If you are using self-signed certificates, you can set this parameter to C(false).",
+                                "ONLY USE THIS PARAMETER IN DEVELOPMENT SCENARIOS! In you use self-signed certificates in production, see the I(auth.ca_path) parameter.",
+                                "It is also possible to set this parameter via the I(SENSU_VERIFY) environment variable."
+                            ],
+                            "type": "bool",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "begin": {
+                    "description": [
+                        "UNIX time at which silence entry goes into effect."
+                    ],
+                    "type": "int"
+                },
+                "check": {
+                    "description": [
+                        "The name of the check the entry should match.",
+                        "If left empty a silencing entry will contain an asterisk in the check position. This indicates that any event where the originating entities subscriptions match the subscription specified in the entry will be marked as silenced, regardless of the check name.",
+                        "This parameter is required if the I(subscription) parameter is absent."
+                    ],
+                    "type": "str"
+                },
+                "expire": {
+                    "description": [
+                        "Number of seconds until the silence expires."
+                    ],
+                    "type": "int"
+                },
+                "expire_on_resolve": {
+                    "description": [
+                        "If the entry should be deleted when a check begins return OK status (resolves)."
+                    ],
+                    "type": "bool"
+                },
+                "labels": {
+                    "description": [
+                        "Custom metadata fields that can be accessed within Sensu, as key/value pairs."
+                    ],
+                    "type": "dict"
+                },
+                "namespace": {
+                    "default": "default",
+                    "description": [
+                        "RBAC namespace to operate in. If this is not set the value of the SENSU_NAMESPACE environment variable will be used."
+                    ],
+                    "type": "str"
+                },
+                "reason": {
+                    "description": [
+                        "Reason for silencing."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Target state of the Sensu object."
+                    ],
+                    "type": "str"
+                },
+                "subscription": {
+                    "description": [
+                        "The name of the subscription the entry should match.",
+                        "If left empty a silencing entry will contain an asterisk in the subscription position. This indicates that any event with a matching check name will be marked as silenced, regardless of the originating entities subscriptions.",
+                        "Specific entity can also be targeted by taking advantage of per-entity subscription (entity:<entity_name>).",
+                        "This parameter is required if the I(check) parameter is absent."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7"
+            ],
+            "seealso": [
+                {
+                    "module": "sensu.sensu_go.silence_info"
+                }
+            ],
+            "short_description": "Manage Sensu silences",
+            "version_added": "1.0.0",
+            "version_added_collection": "sensu.sensu_go"
+        },
+        "examples": "\n- name: Silence a specific check\n  sensu.sensu_go.silence:\n    subscription: proxy\n    check: check-disk\n\n- name: Silence specific check regardless of the originating entities subscription\n  sensu.sensu_go.silence:\n    check: check-cpu\n\n- name: Silence all checks on a specific entity\n  sensu.sensu_go.silence:\n    subscription: entity:important-entity\n    expire: 120\n    reason: rebooting the world\n\n- name: Delete a silencing entry\n  sensu.sensu_go.silence:\n    subscription: entity:important-entity\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "object": {
+                "description": "Object representing Sensu silence.",
+                "returned": "success",
+                "sample": {
+                    "begin": 1542671205,
+                    "check": null,
+                    "creator": "admin",
+                    "expire": -1,
+                    "expire_on_resolve": false,
+                    "metadata": {
+                        "annotations": null,
+                        "labels": null,
+                        "name": "entity:i-424242:*",
+                        "namespace": "default"
+                    },
+                    "reason": null,
+                    "subscription": "entity:i-424242"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

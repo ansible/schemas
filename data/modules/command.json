@@ -1,0 +1,201 @@
+{
+    "command": {
+        "doc": {
+            "author": [
+                "Ansible Core Team",
+                "Michael DeHaan"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "The C(command) module takes the command name followed by a list of space-delimited arguments.",
+                "The given command will be executed on all selected nodes.",
+                "The command(s) will not be processed through the shell, so variables like C($HOSTNAME) and operations like C(\"*\"), C(\"<\"), C(\">\"), C(\"|\"), C(\";\") and C(\"&\") will not work. Use the M(ansible.builtin.shell) module if you need these features.",
+                "To create C(command) tasks that are easier to read than the ones using space-delimited arguments, pass parameters using the C(args) L(task keyword,../reference_appendices/playbooks_keywords.html#task) or use C(cmd) parameter.",
+                "Either a free form command or C(cmd) parameter is required, see the examples.",
+                "For Windows targets, use the M(ansible.windows.win_command) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/command.py",
+            "has_action": true,
+            "module": "command",
+            "notes": [
+                "If you want to run a command through the shell (say you are using C(<), C(>), C(|), and so on), you actually want the M(ansible.builtin.shell) module instead. Parsing shell metacharacters can lead to unexpected commands being executed if quoting is not done correctly so it is more secure to use the C(command) module when possible.",
+                "C(creates), C(removes), and C(chdir) can be specified after the command. For instance, if you only want to run a command if a certain file does not exist, use this.",
+                "Check mode is supported when passing C(creates) or C(removes). If running in check mode and either of these are specified, the module will check for the existence of the file and report the correct changed status. If these are not supplied, the task will be skipped.",
+                "The C(executable) parameter is removed since version 2.4. If you have a need for this parameter, use the M(ansible.builtin.shell) module instead.",
+                "For Windows targets, use the M(ansible.windows.win_command) module instead.",
+                "For rebooting systems, use the M(ansible.builtin.reboot) or M(ansible.windows.win_reboot) module."
+            ],
+            "options": {
+                "argv": {
+                    "description": [
+                        "Passes the command as a list rather than a string.",
+                        "Use C(argv) to avoid quoting values that would otherwise be interpreted incorrectly (for example \"user name\").",
+                        "Only the string (free form) or the list (argv) form can be provided, not both.  One or the other must be provided."
+                    ],
+                    "type": "list",
+                    "version_added": "2.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "chdir": {
+                    "description": [
+                        "Change into this directory before running the command."
+                    ],
+                    "type": "path",
+                    "version_added": "0.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "cmd": {
+                    "description": [
+                        "The command to run."
+                    ],
+                    "type": "str"
+                },
+                "creates": {
+                    "description": [
+                        "A filename or (since 2.0) glob pattern. If a matching file already exists, this step B(will not) be run."
+                    ],
+                    "type": "path"
+                },
+                "free_form": {
+                    "description": [
+                        "The command module takes a free form string as a command to run.",
+                        "There is no actual parameter named 'free form'."
+                    ]
+                },
+                "removes": {
+                    "description": [
+                        "A filename or (since 2.0) glob pattern. If a matching file exists, this step B(will) be run."
+                    ],
+                    "type": "path",
+                    "version_added": "0.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "stdin": {
+                    "description": [
+                        "Set the stdin of the command directly to the specified value."
+                    ],
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "stdin_add_newline": {
+                    "default": true,
+                    "description": [
+                        "If set to C(yes), append a newline to stdin data."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "strip_empty_ends": {
+                    "default": true,
+                    "description": [
+                        "Strip empty lines from the end of stdout/stderr in result."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "warn": {
+                    "default": true,
+                    "description": [
+                        "Enable or disable task warnings."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.8",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.raw"
+                },
+                {
+                    "module": "ansible.builtin.script"
+                },
+                {
+                    "module": "ansible.builtin.shell"
+                },
+                {
+                    "module": "ansible.windows.win_command"
+                }
+            ],
+            "short_description": "Execute commands on targets",
+            "version_added": "historical",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Return motd to registered var\n  ansible.builtin.command: cat /etc/motd\n  register: mymotd\n\n# free-form (string) arguments, all arguments on one line\n- name: Run command if /path/to/database does not exist (without 'args')\n  ansible.builtin.command: /usr/bin/make_database.sh db_user db_name creates=/path/to/database\n\n# free-form (string) arguments, some arguments on separate lines with the 'args' keyword\n# 'args' is a task keyword, passed at the same level as the module\n- name: Run command if /path/to/database does not exist (with 'args' keyword)\n  ansible.builtin.command: /usr/bin/make_database.sh db_user db_name\n  args:\n    creates: /path/to/database\n\n# 'cmd' is module parameter\n- name: Run command if /path/to/database does not exist (with 'cmd' parameter)\n  ansible.builtin.command:\n    cmd: /usr/bin/make_database.sh db_user db_name\n    creates: /path/to/database\n\n- name: Change the working directory to somedir/ and run the command as db_owner if /path/to/database does not exist\n  ansible.builtin.command: /usr/bin/make_database.sh db_user db_name\n  become: yes\n  become_user: db_owner\n  args:\n    chdir: somedir/\n    creates: /path/to/database\n\n# argv (list) arguments, each argument on a separate line, 'args' keyword not necessary\n# 'argv' is a parameter, indented one level from the module\n- name: Use 'argv' to send a command as a list - leave 'command' empty\n  ansible.builtin.command:\n    argv:\n      - /usr/bin/make_database.sh\n      - Username with whitespace\n      - dbname with whitespace\n    creates: /path/to/database\n\n- name: Safely use templated variable to run command. Always use the quote filter to avoid injection issues\n  ansible.builtin.command: cat {{ myfile|quote }}\n  register: myoutput\n",
+        "metadata": null,
+        "return": {
+            "cmd": {
+                "description": "The command executed by the task.",
+                "returned": "always",
+                "sample": [
+                    "echo",
+                    "hello"
+                ],
+                "type": "list"
+            },
+            "delta": {
+                "description": "The command execution delta time.",
+                "returned": "always",
+                "sample": "0:00:00.001529",
+                "type": "str"
+            },
+            "end": {
+                "description": "The command execution end time.",
+                "returned": "always",
+                "sample": "2017-09-29 22:03:48.084657",
+                "type": "str"
+            },
+            "msg": {
+                "description": "changed",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "rc": {
+                "description": "The command return code (0 means success).",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "start": {
+                "description": "The command execution start time.",
+                "returned": "always",
+                "sample": "2017-09-29 22:03:48.083128",
+                "type": "str"
+            },
+            "stderr": {
+                "description": "The command standard error.",
+                "returned": "always",
+                "sample": "ls cannot access foo: No such file or directory",
+                "type": "str"
+            },
+            "stderr_lines": {
+                "description": "The command standard error split in lines.",
+                "returned": "always",
+                "sample": [
+                    {
+                        "u'ls cannot access foo": "No such file or directory'"
+                    },
+                    "u'ls \u2026'"
+                ],
+                "type": "list"
+            },
+            "stdout": {
+                "description": "The command standard output.",
+                "returned": "always",
+                "sample": "Clustering node rabbit@slave1 with rabbit@master \u2026",
+                "type": "str"
+            },
+            "stdout_lines": {
+                "description": "The command standard output split in lines.",
+                "returned": "always",
+                "sample": [
+                    "u'Clustering node rabbit@slave1 with rabbit@master \u2026'"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

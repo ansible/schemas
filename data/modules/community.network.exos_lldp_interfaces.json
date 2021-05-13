@@ -1,0 +1,90 @@
+{
+    "community.network.exos_lldp_interfaces": {
+        "doc": {
+            "author": "Jayalakshmi Viswanathan (@JayalakshmiV)",
+            "collection": "community.network",
+            "description": [
+                "This module manages link layer discovery protocol (LLDP) attributes of interfaces on Extreme Networks EXOS platforms."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/exos_lldp_interfaces.py",
+            "has_action": false,
+            "module": "exos_lldp_interfaces",
+            "options": {
+                "config": {
+                    "description": "The list of link layer discovery protocol interface attribute configurations",
+                    "elements": "dict",
+                    "suboptions": {
+                        "enabled": {
+                            "description": [
+                                "This is a boolean value to control disabling of LLDP on the interface C(name)"
+                            ],
+                            "type": "bool"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the interface LLDP needs to be configured on."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage link layer discovery protocol (LLDP) attributes of interfaces on EXOS platforms.",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.network"
+        },
+        "examples": "\n# Using merged\n\n# Before state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n- name: Merge provided configuration with device configuration\n  community.network.exos_lldp_interfaces:\n    config:\n      - name: '2'\n        enabled: false\n      - name: '5'\n        enabled: true\n    state: merged\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: True\n#    - name: '3'\n#      enabled: False\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: False\n#\n# \"requests\": [\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": false,\n#             \"name\": \"2\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=2/config\"\n#     },\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"5\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=5/config\"\n#     }\n# ]\n#\n# \"after\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: False\n#    - name: '3'\n#      enabled: False\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: True\n\n# After state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n- name: Replaces device configuration of listed lldp_interfaces with provided configuration\n  community.network.exos_lldp_interfaces:\n    config:\n      - name: '1'\n        enabled: false\n      - name: '3'\n        enabled: true\n    state: merged\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: True\n#    - name: '3'\n#      enabled: False\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: False\n#\n# \"requests\": [\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": false,\n#             \"name\": \"1\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=1/config\"\n#     },\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"3\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=3/config\"\n#     }\n# ]\n#\n# \"after\":\n#    - name: '1'\n#      enabled: False\n#    - name: '2'\n#      enabled: True\n#    - name: '3'\n#      enabled: True\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: False\n\n# After state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n\n# Using deleted\n\n# Before state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"1\"\n#         },\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"2\"\n#         },\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"3\"\n#         },\n#       }\n#     ]\n#   }\n# }\n\n- name: Delete lldp interface configuration (this will not delete other lldp configuration)\n  community.network.exos_lldp_interfaces:\n    config:\n      - name: '1'\n      - name: '3'\n    state: deleted\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\":\n#    - name: '1'\n#      enabled: False\n#    - name: '2'\n#      enabled: False\n#    - name: '3'\n#      enabled: False\n#\n# \"requests\": [\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"1\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=1/config\"\n#     },\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"3\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=3/config\"\n#     }\n# ]\n#\n# \"after\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: False\n#    - name: '3'\n#      enabled: True\n#\n#  After state:\n# -------------\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         },\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"2\"\n#         },\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"3\"\n#         },\n#       }\n#     ]\n#   }\n# }\n\n\n# Using overridden\n\n# Before state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": false,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n- name: Override device configuration of all lldp_interfaces with provided configuration\n  community.network.exos_lldp_interfaces:\n    config:\n      - name: '3'\n        enabled: true\n    state: overridden\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: True\n#    - name: '3'\n#      enabled: False\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: False\n#\n# \"requests\": [\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"5\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=5/config\"\n#     },\n#     {\n#         \"data\": |\n#         {\n#           \"openconfig-lldp:config\": {\n#             \"enabled\": true,\n#             \"name\": \"3\"\n#           }\n#         }\n#         \"method\": \"PATCH\",\n#         \"path\": \"/rest/restconf/data/openconfig-lldp:lldp/interfaces/interface=3/config\"\n#     }\n# ]\n#\n# \"after\":\n#    - name: '1'\n#      enabled: True\n#    - name: '2'\n#      enabled: True\n#    - name: '3'\n#      enabled: True\n#    - name: '4'\n#      enabled: True\n#    - name: '5'\n#      enabled: True\n\n# After state:\n# -------------\n#\n# path: /rest/restconf/data/openconfig-lldp:lldp/interfaces?depth=4\n# method: GET\n# data:\n# {\n#   \"openconfig-lldp:interfaces\": {\n#     \"interface\": [\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"1\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"2\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"3\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"4\"\n#         }\n#       },\n#       {\n#         \"config\": {\n#           \"enabled\": true,\n#           \"name\": \"5\"\n#         }\n#       }\n#     ]\n#   }\n# }\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The resulting configuration model invocation.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration prior to the model invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "requests": {
+                "description": "The set of requests pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    },
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    },
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

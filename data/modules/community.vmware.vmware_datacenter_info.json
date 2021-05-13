@@ -1,0 +1,155 @@
+{
+    "community.vmware.vmware_datacenter_info": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to gather information VMware vSphere Datacenters."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_datacenter_info.py",
+            "has_action": false,
+            "module": "vmware_datacenter_info",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "datacenter": {
+                    "aliases": [
+                        "datacenter_name"
+                    ],
+                    "description": [
+                        "The name of the datacenter to gather information for.",
+                        "If not provided, will gather information about all datacenters from the VMware infra."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "properties": {
+                    "description": [
+                        "Specify the properties to retrieve.",
+                        "If not specified, all properties are retrieved (deeply).",
+                        "Results are returned in a structure identical to the vSphere API.",
+                        "Example:",
+                        "   properties: [",
+                        "      \"overallStatus\"",
+                        "   ]",
+                        "Only valid when C(schema) is C(vsphere)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "schema": {
+                    "choices": [
+                        "summary",
+                        "vsphere"
+                    ],
+                    "default": "summary",
+                    "description": [
+                        "Specify the output schema desired.",
+                        "The 'summary' output schema is the legacy output from the module.",
+                        "The 'vsphere' output schema is the vSphere API class definition which requires pyvmomi>6.7.1."
+                    ],
+                    "type": "str"
+                },
+                "show_tag": {
+                    "default": false,
+                    "description": [
+                        "Tags related to Datacenter are shown if set to C(True)."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi"
+            ],
+            "short_description": "Gather information about VMware vSphere Datacenters"
+        },
+        "examples": "\n- name: Gather information about all datacenters\n  community.vmware.vmware_datacenter_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n  delegate_to: localhost\n\n- name: Gather information about a particular datacenter\n  community.vmware.vmware_datacenter_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter_name }}'\n  delegate_to: localhost\n\n- name: Gather information about a particular datacenter\n  community.vmware.vmware_datacenter_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter_name }}'\n    show_tag: True\n  delegate_to: localhost\n\n- name: Gather vSphere schema information\n  community.vmware.vmware_datacenter_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter_name }}'\n    schema: vsphere\n    properties:\n    - configStatus\n    - overallStatus\n",
+        "metadata": null,
+        "return": {
+            "datacenter_info": {
+                "description": "Information about datacenter",
+                "returned": "always",
+                "sample": [
+                    {
+                        "configStatus": "gray",
+                        "moid": "datacenter-2",
+                        "name": "Asia-Datacenter1"
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

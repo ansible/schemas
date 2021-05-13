@@ -1,0 +1,136 @@
+{
+    "community.vmware.vmware_host_scanhba": {
+        "doc": {
+            "author": [
+                "Michael Eaton (@michaeldeaton)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can force a rescan of the hosts HBA subsystem which is needed when wanting to mount a new datastore.",
+                "You could use this before using M(vmware_host_datastore) to mount a new datastore to ensure your device/volume is ready.",
+                "You can also optionally force a Refresh of the Storage System in vCenter/ESXi Web Client.",
+                "All parameters and VMware object names are case sensitive.",
+                "You can supply an esxi_hostname or a cluster_name"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_host_scanhba.py",
+            "has_action": false,
+            "module": "vmware_host_scanhba",
+            "notes": [
+                "Tested on vSphere 6.0"
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Cluster name to Rescan the storage subsystem on (this will run the rescan task on each host in the cluster)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "ESXi hostname to Rescan the storage subsystem on."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "refresh_storage": {
+                    "default": false,
+                    "description": [
+                        "Refresh the storage system in vCenter/ESXi Web Client for each host found"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Rescan host HBA's and optionally refresh the storage system"
+        },
+        "examples": "\n- name: Recan HBA's for a given ESXi host and refresh storage system objects\n  community.vmware.vmware_host_scanhba:\n      hostname: '{{ vcenter_hostname }}'\n      username: '{{ vcenter_username }}'\n      password: '{{ vcenter_password }}'\n      esxi_hostname: '{{ inventory_hostname }}'\n      refresh_storage: true\n  delegate_to: localhost\n\n- name: Rescan HBA's for a given cluster - all found hosts will be scanned\n  community.vmware.vmware_host_scanhba:\n      hostname: '{{ vcenter_hostname }}'\n      username: '{{ vcenter_username }}'\n      password: '{{ vcenter_password }}'\n      esxi_hostname: '{{ inventory_hostname }}'\n      refresh_storage: true\n  delegate_to: localhost\n\n- name: Recan HBA's for a given ESXi host and don't refresh storage system objects\n  community.vmware.vmware_host_scanhba:\n      hostname: '{{ vcenter_hostname }}'\n      username: '{{ vcenter_username }}'\n      password: '{{ vcenter_password }}'\n      esxi_hostname: '{{ inventory_hostname }}'\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "description": "return confirmation of requested host and updated / refreshed storage system",
+                "returned": "always",
+                "sample": {
+                    "esxi01.example.com": {
+                        "refreshed_storage": "true",
+                        "rescaned_hba": "true"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

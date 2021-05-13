@@ -1,0 +1,86 @@
+{
+    "expect": {
+        "doc": {
+            "author": "Matt Martz (@sivel)",
+            "collection": "ansible.builtin",
+            "description": [
+                "The C(expect) module executes a command and responds to prompts.",
+                "The given command will be executed on all selected nodes. It will not be processed through the shell, so variables like C($HOME) and operations like C(\"<\"), C(\">\"), C(\"|\"), and C(\"&\") will not work."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/expect.py",
+            "has_action": false,
+            "module": "expect",
+            "notes": [
+                "If you want to run a command through the shell (say you are using C(<), C(>), C(|), and so on), you must specify a shell in the command such as C(/bin/bash -c \"/path/to/something | grep else\").",
+                "The question, or key, under I(responses) is a python regex match. Case insensitive searches are indicated with a prefix of C(?i).",
+                "By default, if a question is encountered multiple times, its string response will be repeated. If you need different responses for successive question matches, instead of a string response, use a list of strings as the response. The list functionality is new in 2.1.",
+                "The M(ansible.builtin.expect) module is designed for simple scenarios. For more complex needs, consider the use of expect code with the M(ansible.builtin.shell) or M(ansible.builtin.script) modules. (An example is part of the M(ansible.builtin.shell) module documentation)."
+            ],
+            "options": {
+                "chdir": {
+                    "description": [
+                        "Change into this directory before running the command."
+                    ],
+                    "type": "path"
+                },
+                "command": {
+                    "description": [
+                        "The command module takes command to run."
+                    ],
+                    "required": true
+                },
+                "creates": {
+                    "description": [
+                        "A filename, when it already exists, this step will B(not) be run."
+                    ],
+                    "type": "path"
+                },
+                "echo": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to echo out your response strings."
+                    ],
+                    "type": "bool"
+                },
+                "removes": {
+                    "description": [
+                        "A filename, when it does not exist, this step will B(not) be run."
+                    ],
+                    "type": "path"
+                },
+                "responses": {
+                    "description": [
+                        "Mapping of expected string/regex and string to respond with. If the response is a list, successive matches return successive responses. List functionality is new in 2.1."
+                    ],
+                    "required": true,
+                    "type": "dict"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Amount of time in seconds to wait for the expected strings. Use C(null) to disable timeout."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "pexpect >= 3.3"
+            ],
+            "seealso": [
+                {
+                    "module": "ansible.builtin.script"
+                },
+                {
+                    "module": "ansible.builtin.shell"
+                }
+            ],
+            "short_description": "Executes a command and responds to prompts",
+            "version_added": "2.0",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Case insensitive password string match\n  ansible.builtin.expect:\n    command: passwd username\n    responses:\n      (?i)password: \"MySekretPa$$word\"\n  # you don't want to show passwords in your logs\n  no_log: true\n\n- name: Generic question with multiple different responses\n  ansible.builtin.expect:\n    command: /path/to/custom/command\n    responses:\n      Question:\n        - response1\n        - response2\n        - response3\n",
+        "metadata": null,
+        "return": null
+    }
+}

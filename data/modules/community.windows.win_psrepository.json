@@ -1,0 +1,122 @@
+{
+    "community.windows.win_psrepository": {
+        "doc": {
+            "author": [
+                "Wojciech Sciesinski (@it-praktyk)",
+                "Brian Scholer (@briantist)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "This module helps to add, remove and update Windows PowerShell repository on Windows-based systems."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_psrepository.py",
+            "has_action": false,
+            "module": "win_psrepository",
+            "notes": [
+                "See the examples on how to update the NuGet package provider.",
+                "You can not use C(win_psrepository) to re-register (add) removed PSGallery, use the command C(Register-PSRepository -Default) instead.",
+                "When registering or setting I(source_location), PowerShellGet will transform the location according to internal rules, such as following HTTP/S redirects.",
+                "This can result in a C(CHANGED) status on each run as the values will never match and will be \"reset\" each time.",
+                "To work around that, find the true destination value with M(community.windows.win_psrepository_info) or C(Get-PSRepository) and update the playbook to match.",
+                "When updating an existing repository, all options except I(name) are optional. Only supplied options will be updated. Use I(force=True) to exactly match.",
+                "I(script_location), I(publish_location), and I(script_publish_location) are optional but once set can only be cleared with I(force=True).",
+                "Using I(force=True) will unregister and re-register the repository if there are any changes, so that it exactly matches the options specified."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "If C(True), any differences from the desired state will result in the repository being unregistered, and then re-registered.",
+                        "I(force) has no effect when I(state=absent). See notes for additional context."
+                    ],
+                    "type": "bool"
+                },
+                "installation_policy": {
+                    "choices": [
+                        "trusted",
+                        "untrusted"
+                    ],
+                    "description": [
+                        "Sets the C(InstallationPolicy) of a repository.",
+                        "Will default to C(trusted) when creating a new repository or used with I(force=True)."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the repository to work with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "proxy": {
+                    "description": [
+                        "Proxy to use for repository."
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.windows"
+                },
+                "publish_location": {
+                    "description": [
+                        "Specifies the URI for publishing modules to this repository."
+                    ],
+                    "type": "str"
+                },
+                "script_publish_location": {
+                    "description": [
+                        "Specifies the URI for publishing scripts to this repository."
+                    ],
+                    "type": "str"
+                },
+                "script_source_location": {
+                    "description": [
+                        "Specifies the URI for discovering and installing scripts from this repository."
+                    ],
+                    "type": "str"
+                },
+                "source_location": {
+                    "aliases": [
+                        "source"
+                    ],
+                    "description": [
+                        "Specifies the URI for discovering and installing modules from this repository.",
+                        "A URI can be a NuGet server feed (most common situation), HTTP, HTTPS, FTP or file location.",
+                        "Required when registering a new repository or using I(force=True)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(present) a new repository is added or updated.",
+                        "If C(absent) a repository is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "PowerShell Module L(PowerShellGet >= 1.6.0,https://www.powershellgallery.com/packages/PowerShellGet/)",
+                "PowerShell Module L(PackageManagement >= 1.1.7,https://www.powershellgallery.com/packages/PackageManagement/)",
+                "PowerShell Package Provider C(NuGet) >= 2.8.5.201"
+            ],
+            "seealso": [
+                {
+                    "module": "community.windows.win_psrepository_info"
+                },
+                {
+                    "module": "community.windows.win_psmodule"
+                }
+            ],
+            "short_description": "Adds, removes or updates a Windows PowerShell repository."
+        },
+        "examples": "\n---\n- name: Ensure the required NuGet package provider version is installed\n  ansible.windows.win_shell: Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force\n\n- name: Register a PowerShell repository\n  community.windows.win_psrepository:\n    name: MyRepository\n    source_location: https://myrepo.com\n    state: present\n\n- name: Remove a PowerShell repository\n  community.windows.win_psrepository:\n    name: MyRepository\n    state: absent\n\n- name: Add an untrusted repository\n  community.windows.win_psrepository:\n    name: MyRepository\n    installation_policy: untrusted\n\n- name: Add a repository with different locations\n  community.windows.win_psrepository:\n    name: NewRepo\n    source_location: https://myrepo.example/module/feed\n    script_source_location: https://myrepo.example/script/feed\n    publish_location: https://myrepo.example/api/module/publish\n    script_publish_location: https://myrepo.example/api/script/publish\n\n- name: Update only two properties on the above repository\n  community.windows.win_psrepository:\n    name: NewRepo\n    installation_policy: untrusted\n    script_publish_location: https://scriptprocessor.example/publish\n\n- name: Clear script locations from the above repository by re-registering it\n  community.windows.win_psrepository:\n    name: NewRepo\n    installation_policy: untrusted\n    source_location: https://myrepo.example/module/feed\n    publish_location: https://myrepo.example/api/module/publish\n    force: True\n",
+        "metadata": null,
+        "return": null
+    }
+}

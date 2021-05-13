@@ -1,0 +1,205 @@
+{
+    "cisco.meraki.meraki_ms_stack": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Allows for modification of Meraki MS switch stacks."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_ms_stack.py",
+            "has_action": false,
+            "module": "meraki_ms_stack",
+            "notes": [
+                "Not all actions are idempotent. Specifically, creating a new stack will error if any switch is already in a stack.",
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of stack."
+                    ],
+                    "type": "str"
+                },
+                "net_id": {
+                    "description": [
+                        "ID of network which MX firewall is in."
+                    ],
+                    "type": "str"
+                },
+                "net_name": {
+                    "description": [
+                        "Name of network which MX firewall is in."
+                    ],
+                    "type": "str"
+                },
+                "org_id": {
+                    "description": [
+                        "ID of organization."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "serials": {
+                    "description": [
+                        "List of switch serial numbers which should be included or removed from a stack."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "stack_id": {
+                    "description": [
+                        "ID of stack which is to be modified or deleted."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "query",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or modify an organization."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Modify switch stacking configuration in Meraki.",
+            "version_added": "1.3.0",
+            "version_added_collection": "cisco.meraki"
+        },
+        "examples": "\n- name: Create new stack\n  meraki_switch_stack:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: YourNet\n    name: Test stack\n    serials:\n    - \"ABCD-1231-4579\"\n    - \"ASDF-4321-0987\"\n\n- name: Add switch to stack\n  meraki_switch_stack:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: YourNet\n    stack_id: ABC12340987\n    serials:\n    - \"ABCD-1231-4579\"\n\n- name: Remove switch from stack\n  meraki_switch_stack:\n    auth_key: abc123\n    state: absent\n    org_name: YourOrg\n    net_name: YourNet\n    stack_id: ABC12340987\n    serials:\n    - \"ABCD-1231-4579\"\n\n- name: Query one stack\n  meraki_switch_stack:\n    auth_key: abc123\n    state: query\n    org_name: YourOrg\n    net_name: YourNet\n    stack_id: ABC12340987\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "data": {
+                "contains": {
+                    "id": {
+                        "description": "ID of switch stack.",
+                        "returned": "always",
+                        "sample": 7636,
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "Descriptive name of switch stack.",
+                        "returned": "always",
+                        "sample": "MyStack",
+                        "type": "str"
+                    },
+                    "serials": {
+                        "description": "List of serial numbers in switch stack.",
+                        "returned": "always",
+                        "sample": [
+                            "QBZY-XWVU-TSRQ",
+                            "QBAB-CDEF-GHIJ"
+                        ],
+                        "type": "list"
+                    }
+                },
+                "description": "VPN settings.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

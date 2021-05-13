@@ -1,0 +1,347 @@
+{
+    "community.aws.ec2_vpc_peer": {
+        "doc": {
+            "author": "Mike Mochan (@mmochan)",
+            "collection": "community.aws",
+            "description": [
+                "Read the AWS documentation for VPC Peering Connections U(https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-peering.html)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_vpc_peer.py",
+            "has_action": false,
+            "module": "ec2_vpc_peer",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "peer_owner_id": {
+                    "description": [
+                        "The AWS account number for cross account peering."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "peer_region": {
+                    "description": [
+                        "Region of the accepting VPC."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "peer_vpc_id": {
+                    "description": [
+                        "VPC id of the accepting VPC."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "peering_id": {
+                    "description": [
+                        "Peering connection id."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "accept",
+                        "reject"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create, delete, accept, reject a peering connection."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of tags to look for and apply when creating a Peering Connection."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_id": {
+                    "description": [
+                        "VPC id of the requesting VPC."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Wait for peering state changes to complete."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "json",
+                "python >= 2.6"
+            ],
+            "short_description": "create, delete, accept, and reject VPC peering connections between two VPCs.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Complete example to create and accept a local peering connection.\n- name: Create local account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-87654321\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Accept local VPC peering request\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    state: accept\n  register: action_peer\n\n# Complete example to delete a local peering connection.\n- name: Create local account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-87654321\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: delete a local VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    state: absent\n  register: vpc_peer\n\n  # Complete example to create and accept a cross account peering connection.\n- name: Create cross account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-12345678\n    peer_owner_id: 123456789102\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Accept peering connection from remote account\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    profile: bot03_profile_for_cross_account\n    state: accept\n  register: vpc_peer\n\n# Complete example to create and accept an intra-region peering connection.\n- name: Create intra-region VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: us-east-1\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-87654321\n    peer_region: us-west-2\n    state: present\n    tags:\n      Name: Peering connection for us-east-1 VPC to us-west-2 VPC\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Accept peering connection from peer region\n  community.aws.ec2_vpc_peer:\n    region: us-west-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    state: accept\n  register: vpc_peer\n\n# Complete example to create and reject a local peering connection.\n- name: Create local account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-87654321\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Reject a local VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    state: reject\n\n# Complete example to create and accept a cross account peering connection.\n- name: Create cross account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-12345678\n    peer_owner_id: 123456789102\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Accept a cross account VPC peering connection request\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    profile: bot03_profile_for_cross_account\n    state: accept\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n\n# Complete example to create and reject a cross account peering connection.\n- name: Create cross account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    vpc_id: vpc-12345678\n    peer_vpc_id: vpc-12345678\n    peer_owner_id: 123456789102\n    state: present\n    tags:\n      Name: Peering connection for VPC 21 to VPC 22\n      CostCode: CC1234\n      Project: phoenix\n  register: vpc_peer\n\n- name: Reject a cross account VPC peering Connection\n  community.aws.ec2_vpc_peer:\n    region: ap-southeast-2\n    peering_id: \"{{ vpc_peer.peering_id }}\"\n    profile: bot03_profile_for_cross_account\n    state: reject\n\n",
+        "metadata": null,
+        "return": {
+            "peering_id": {
+                "description": "The id of the VPC peering connection created/deleted.",
+                "returned": "always",
+                "sample": "pcx-034223d7c0aec3cde",
+                "type": "str"
+            },
+            "vpc_peering_connection": {
+                "contains": {
+                    "accepter_vpc_info": {
+                        "contains": {
+                            "cidr_block": {
+                                "description": "The primary CIDR for the VPC.",
+                                "example": "10.10.10.0/23",
+                                "returned": "when connection is in the accepted state.",
+                                "type": "str"
+                            },
+                            "cidr_block_set": {
+                                "contains": {
+                                    "cidr_block": {
+                                        "description": "A CIDR block used by the VPC.",
+                                        "example": "10.10.10.0/23",
+                                        "returned": "success",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "A list of all CIDRs for the VPC.",
+                                "returned": "when connection is in the accepted state.",
+                                "type": "complex"
+                            },
+                            "owner_id": {
+                                "description": "The AWS account that owns the VPC.",
+                                "example": "012345678901",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "peering_options": {
+                                "contains": {
+                                    "allow_dns_resolution_from_remote_vpc": {
+                                        "description": "Indicates whether a VPC can resolve public DNS hostnames to private IP addresses when queried from instances in a peer VPC.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "allow_egress_from_local_classic_link_to_remote_vpc": {
+                                        "description": "Indicates whether a local ClassicLink connection can communicate with the peer VPC over the VPC peering connection.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "allow_egress_from_local_vpc_to_remote_classic_link": {
+                                        "description": "Indicates whether a local VPC can communicate with a ClassicLink connection in the peer VPC over the VPC peering connection.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    }
+                                },
+                                "description": "Additional peering configuration.",
+                                "returned": "when connection is in the accepted state.",
+                                "type": "dict"
+                            },
+                            "region": {
+                                "description": "The AWS region that the VPC is in.",
+                                "example": "us-east-1",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "vpc_id": {
+                                "description": "The ID of the VPC",
+                                "example": "vpc-0123456789abcdef0",
+                                "returned": "success",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about the VPC which accepted the connection.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "requester_vpc_info": {
+                        "contains": {
+                            "cidr_block": {
+                                "description": "The primary CIDR for the VPC.",
+                                "example": "10.10.10.0/23",
+                                "returned": "when connection is not in the deleted state.",
+                                "type": "str"
+                            },
+                            "cidr_block_set": {
+                                "contains": {
+                                    "cidr_block": {
+                                        "description": "A CIDR block used by the VPC",
+                                        "example": "10.10.10.0/23",
+                                        "returned": "success",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "A list of all CIDRs for the VPC.",
+                                "returned": "when connection is not in the deleted state.",
+                                "type": "complex"
+                            },
+                            "owner_id": {
+                                "description": "The AWS account that owns the VPC.",
+                                "example": "012345678901",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "peering_options": {
+                                "contains": {
+                                    "allow_dns_resolution_from_remote_vpc": {
+                                        "description": "Indicates whether a VPC can resolve public DNS hostnames to private IP addresses when queried from instances in a peer VPC.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "allow_egress_from_local_classic_link_to_remote_vpc": {
+                                        "description": "Indicates whether a local ClassicLink connection can communicate with the peer VPC over the VPC peering connection.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "allow_egress_from_local_vpc_to_remote_classic_link": {
+                                        "description": "Indicates whether a local VPC can communicate with a ClassicLink connection in the peer VPC over the VPC peering connection.",
+                                        "returned": "success",
+                                        "type": "bool"
+                                    }
+                                },
+                                "description": "Additional peering configuration.",
+                                "returned": "when connection is not in the deleted state.",
+                                "type": "dict"
+                            },
+                            "region": {
+                                "description": "The AWS region that the VPC is in.",
+                                "example": "us-east-1",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "vpc_id": {
+                                "description": "The ID of the VPC",
+                                "example": "vpc-0123456789abcdef0",
+                                "returned": "success",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about the VPC which requested the connection.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "status": {
+                        "contains": {
+                            "code": {
+                                "description": "A short code describing the status of the connection.",
+                                "example": "active",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "message": {
+                                "description": "Additional information about the status of the connection.",
+                                "example": "Pending Acceptance by 012345678901",
+                                "returned": "success",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Details of the current status of the connection.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "tags": {
+                        "description": "Tags applied to the connection.",
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "vpc_peering_connection_id": {
+                        "description": "The ID of the VPC peering connection.",
+                        "example": "pcx-0123456789abcdef0",
+                        "returned": "success",
+                        "type": "str"
+                    }
+                },
+                "description": "The details of the VPC peering connection as returned by Boto3 (snake cased).",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

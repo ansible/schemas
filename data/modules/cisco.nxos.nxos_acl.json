@@ -1,0 +1,390 @@
+{
+    "cisco.nxos.nxos_acl": {
+        "doc": {
+            "author": [
+                "Jason Edelman (@jedelman8)",
+                "Gabriele Gerbino (@GGabriele)"
+            ],
+            "collection": "cisco.nxos",
+            "deprecated": {
+                "alternative": "nxos_acls",
+                "removed_at_date": "2022-06-01",
+                "removed_from_collection": "cisco.nxos",
+                "why": "Updated modules released with more functionality"
+            },
+            "description": [
+                "Manages access list entries for ACLs."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/nxos/plugins/modules/nxos_acl.py",
+            "has_action": true,
+            "module": "nxos_acl",
+            "notes": [
+                "Tested against NXOSv 7.3.(0)D1(1) on VIRL",
+                "C(state=absent) removes the ACE if it exists.",
+                "C(state=delete_acl) deletes the ACL if it exists.",
+                "For idempotency, use port numbers for the src/dest port params like I(src_port1) and names for the well defined protocols for the I(proto) param.",
+                "Although this module is idempotent in that if the ace as presented in the task is identical to the one on the switch, no changes will be made. If there is any difference, what is in Ansible will be pushed (configured options will be overridden).  This is to improve security, but at the same time remember an ACE is removed, then re-added, so if there is a change, the new ACE will be exactly what parameters you are sending to the module.",
+                "For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_."
+            ],
+            "options": {
+                "ack": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the ACK bit."
+                    ],
+                    "type": "str"
+                },
+                "action": {
+                    "choices": [
+                        "permit",
+                        "deny",
+                        "remark"
+                    ],
+                    "description": [
+                        "Action of the ACE."
+                    ],
+                    "type": "str"
+                },
+                "dest": {
+                    "description": [
+                        "Destination ip and mask using IP/MASK notation and supports the keyword 'any'."
+                    ],
+                    "type": "str"
+                },
+                "dest_port1": {
+                    "description": [
+                        "Port/protocol and also first (lower) port when using range operand."
+                    ],
+                    "type": "str"
+                },
+                "dest_port2": {
+                    "description": [
+                        "Second (end) port when using range operand."
+                    ],
+                    "type": "str"
+                },
+                "dest_port_op": {
+                    "choices": [
+                        "any",
+                        "eq",
+                        "gt",
+                        "lt",
+                        "neq",
+                        "range"
+                    ],
+                    "description": [
+                        "Destination port operands such as eq, neq, gt, lt, range."
+                    ],
+                    "type": "str"
+                },
+                "dscp": {
+                    "choices": [
+                        "af11",
+                        "af12",
+                        "af13",
+                        "af21",
+                        "af22",
+                        "af23",
+                        "af31",
+                        "af32",
+                        "af33",
+                        "af41",
+                        "af42",
+                        "af43",
+                        "cs1",
+                        "cs2",
+                        "cs3",
+                        "cs4",
+                        "cs5",
+                        "cs6",
+                        "cs7",
+                        "default",
+                        "ef"
+                    ],
+                    "description": [
+                        "Match packets with given dscp value."
+                    ],
+                    "type": "str"
+                },
+                "established": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match established connections."
+                    ],
+                    "type": "str"
+                },
+                "fin": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the FIN bit."
+                    ],
+                    "type": "str"
+                },
+                "fragments": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Check non-initial fragments."
+                    ],
+                    "type": "str"
+                },
+                "log": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Log matches against this entry."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Case sensitive name of the access list (ACL)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "precedence": {
+                    "choices": [
+                        "critical",
+                        "flash",
+                        "flash-override",
+                        "immediate",
+                        "internet",
+                        "network",
+                        "priority",
+                        "routine"
+                    ],
+                    "description": [
+                        "Match packets with given precedence."
+                    ],
+                    "type": "str"
+                },
+                "proto": {
+                    "description": [
+                        "Port number or protocol (as supported by the switch)."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "Starting with Ansible 2.6 we recommend using C(connection: httpapi) for NX-API.",
+                        "This option will be removed in a release after 2022-06-01.",
+                        "For more information please see the L(NXOS Platform Options guide, ../network/user_guide/platform_nxos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "authorize": {
+                            "default": false,
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.  This is a common argument used for either I(cli) or I(nxapi) transports. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device.  This value applies to either I(cli) or I(nxapi).  The port value will default to the appropriate transport common port if none is provided in the task.  (cli=22, http=80, https=443)."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.  This argument is only used for the I(cli) transport. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error. NX-API can be slow to return on long-running commands (sh mac, sh bgp, etc)."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "nxapi"
+                            ],
+                            "default": "cli",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device.  The transport argument supports connectivity to the device over cli (ssh) or nxapi."
+                            ],
+                            "type": "str"
+                        },
+                        "use_proxy": {
+                            "default": true,
+                            "description": [
+                                "If C(no), the environment variables C(http_proxy) and C(https_proxy) will be ignored."
+                            ],
+                            "type": "bool"
+                        },
+                        "use_ssl": {
+                            "default": false,
+                            "description": [
+                                "Configures the I(transport) to use SSL if set to C(yes) only when the C(transport=nxapi), otherwise this value is ignored."
+                            ],
+                            "type": "bool"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate either the CLI login or the nxapi authentication depending on which transport is used. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": false,
+                            "description": [
+                                "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates.  If the transport argument is not nxapi, this value is ignored."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "psh": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the PSH bit."
+                    ],
+                    "type": "str"
+                },
+                "remark": {
+                    "description": [
+                        "If action is set to remark, this is the description."
+                    ],
+                    "type": "str"
+                },
+                "rst": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the RST bit."
+                    ],
+                    "type": "str"
+                },
+                "seq": {
+                    "description": [
+                        "Sequence number of the entry (ACE)."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "Source ip and mask using IP/MASK notation and supports keyword 'any'."
+                    ],
+                    "type": "str"
+                },
+                "src_port1": {
+                    "description": [
+                        "Port/protocol and also first (lower) port when using range operand."
+                    ],
+                    "type": "str"
+                },
+                "src_port2": {
+                    "description": [
+                        "Second (end) port when using range operand."
+                    ],
+                    "type": "str"
+                },
+                "src_port_op": {
+                    "choices": [
+                        "any",
+                        "eq",
+                        "gt",
+                        "lt",
+                        "neq",
+                        "range"
+                    ],
+                    "description": [
+                        "Source port operands such as eq, neq, gt, lt, range."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "delete_acl"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify desired state of the resource."
+                    ],
+                    "type": "str"
+                },
+                "syn": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the SYN bit."
+                    ],
+                    "type": "str"
+                },
+                "time_range": {
+                    "description": [
+                        "Name of time-range to apply."
+                    ],
+                    "type": "str"
+                },
+                "urg": {
+                    "choices": [
+                        "enable"
+                    ],
+                    "description": [
+                        "Match on the URG bit."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "(deprecated, removed after 2022-06-01) Manages access list entries for ACLs.",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.nxos"
+        },
+        "examples": "\n# configure ACL ANSIBLE\n- cisco.nxos.nxos_acl:\n    name: ANSIBLE\n    seq: 10\n    action: permit\n    proto: tcp\n    src: 192.0.2.1/24\n    dest: any\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "ip access-list ANSIBLE",
+                    "10 permit tcp 192.0.2.1/24 any"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

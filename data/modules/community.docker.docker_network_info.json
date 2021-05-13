@@ -1,0 +1,175 @@
+{
+    "community.docker.docker_network_info": {
+        "doc": {
+            "author": [
+                "Dave Bendit (@DBendit)"
+            ],
+            "collection": "community.docker",
+            "description": [
+                "Retrieves facts about a docker network.",
+                "Essentially returns the output of C(docker network inspect <name>), similar to what M(community.docker.docker_network) returns for a non-absent network."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/docker/plugins/modules/docker_network_info.py",
+            "has_action": false,
+            "module": "docker_network_info",
+            "notes": [
+                "Connect to the Docker daemon by providing parameters with each task or by defining environment variables. You can define C(DOCKER_HOST), C(DOCKER_TLS_HOSTNAME), C(DOCKER_API_VERSION), C(DOCKER_CERT_PATH), C(DOCKER_SSL_VERSION), C(DOCKER_TLS), C(DOCKER_TLS_VERIFY) and C(DOCKER_TIMEOUT). If you are using docker machine, run the script shipped with the product that sets up the environment. It will set these variables for you. See U(https://docs.docker.com/machine/reference/env/) for more details.",
+                "When connecting to Docker daemon with TLS, you might need to install additional Python packages. For the Docker SDK for Python, version 2.4 or newer, this can be done by installing C(docker[tls]) with M(ansible.builtin.pip).",
+                "Note that the Docker SDK for Python only allows to specify the path to the Docker configuration for very few functions. In general, it will use C($HOME/.docker/config.json) if the C(DOCKER_CONFIG) environment variable is not specified, and use C($DOCKER_CONFIG/config.json) otherwise.",
+                "This module uses the L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) to communicate with the Docker daemon."
+            ],
+            "options": {
+                "api_version": {
+                    "aliases": [
+                        "docker_api_version"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "The version of the Docker API running on the Docker Host.",
+                        "Defaults to the latest version of the API supported by Docker SDK for Python and the docker daemon.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_API_VERSION) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "tls_ca_cert",
+                        "cacert_path"
+                    ],
+                    "description": [
+                        "Use a CA certificate when performing server verification by providing the path to a CA certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(ca.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "tls_client_cert",
+                        "cert_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(cert.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "tls_client_key",
+                        "key_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS key file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(key.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "debug": {
+                    "default": false,
+                    "description": [
+                        "Debug mode"
+                    ],
+                    "type": "bool"
+                },
+                "docker_host": {
+                    "aliases": [
+                        "docker_url"
+                    ],
+                    "default": "unix://var/run/docker.sock",
+                    "description": [
+                        "The URL or Unix socket path used to connect to the Docker API. To connect to a remote host, provide the TCP connection string. For example, C(tcp://192.0.2.23:2376). If TLS is used to encrypt the connection, the module will automatically replace C(tcp) in the connection URL with C(https).",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_HOST) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the network to inspect.",
+                        "When identifying an existing network name may be a name or a long or short network ID."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ssl_version": {
+                    "description": [
+                        "Provide a valid SSL version number. Default value determined by ssl.py module.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_SSL_VERSION) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 60,
+                    "description": [
+                        "The maximum amount of time in seconds to wait on a response from the API.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TIMEOUT) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "int"
+                },
+                "tls": {
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS without verifying the authenticity of the Docker host server. Note that if I(validate_certs) is set to C(yes) as well, it will take precedence.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                },
+                "tls_hostname": {
+                    "description": [
+                        "When verifying the authenticity of the Docker Host server, provide the expected name of the server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_HOSTNAME) will be used instead. If the environment variable is not set, the default value will be used.",
+                        "The current default value is C(localhost). This default is deprecated and will change in community.docker 2.0.0 to be a value computed from I(docker_host). Explicitly specify C(localhost) to make sure this value will still be used, and to disable the deprecation message which will be shown otherwise."
+                    ],
+                    "type": "str"
+                },
+                "use_ssh_client": {
+                    "default": false,
+                    "description": [
+                        "For SSH transports, use the C(ssh) CLI tool instead of paramiko.",
+                        "Requires Docker SDK for Python 4.4.0 or newer."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.docker"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tls_verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS and verifying the authenticity of the Docker host server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_VERIFY) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "Docker API >= 1.21",
+                "Docker SDK for Python: Please note that the L(docker-py,https://pypi.org/project/docker-py/) Python module has been superseded by L(docker,https://pypi.org/project/docker/) (see L(here,https://github.com/docker/docker-py/issues/1310) for details). For Python 2.6, C(docker-py) must be used. Otherwise, it is recommended to install the C(docker) Python module. Note that both modules should *not* be installed at the same time. Also note that when both modules are installed and one of them is uninstalled, the other might no longer function and a reinstall of it is required.",
+                "L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) >= 1.8.0 (use L(docker-py,https://pypi.org/project/docker-py/) for Python 2.6)"
+            ],
+            "short_description": "Retrieves facts about docker network"
+        },
+        "examples": "\n- name: Get infos on network\n  community.docker.docker_network_info:\n    name: mydata\n  register: result\n\n- name: Does network exist?\n  ansible.builtin.debug:\n    msg: \"The network {{ 'exists' if result.exists else 'does not exist' }}\"\n\n- name: Print information about network\n  ansible.builtin.debug:\n    var: result.network\n  when: result.exists\n",
+        "metadata": null,
+        "return": {
+            "exists": {
+                "description": [
+                    "Returns whether the network exists."
+                ],
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "network": {
+                "description": [
+                    "Facts representing the current state of the network. Matches the docker inspection output.",
+                    "Will be C(none) if network does not exist."
+                ],
+                "returned": "always",
+                "sample": "{ \"Attachable\": false, \"ConfigFrom\": { \"Network\": \"\" }, \"ConfigOnly\": false, \"Containers\": {}, \"Created\": \"2018-12-07T01:47:51.250835114-06:00\", \"Driver\": \"bridge\", \"EnableIPv6\": false, \"IPAM\": { \"Config\": [ { \"Gateway\": \"192.168.96.1\", \"Subnet\": \"192.168.96.0/20\" } ], \"Driver\": \"default\", \"Options\": null }, \"Id\": \"0856968545f22026c41c2c7c3d448319d3b4a6a03a40b148b3ac4031696d1c0a\", \"Ingress\": false, \"Internal\": false, \"Labels\": {}, \"Name\": \"ansible-test-f2700bba\", \"Options\": {}, \"Scope\": \"local\" }",
+                "type": "dict"
+            }
+        }
+    }
+}

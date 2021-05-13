@@ -1,0 +1,227 @@
+{
+    "community.aws.aws_codecommit": {
+        "doc": {
+            "author": "Shuang Wang (@ptux)",
+            "collection": "community.aws",
+            "description": [
+                "Supports creation and deletion of CodeCommit repositories.",
+                "See U(https://aws.amazon.com/codecommit/) for more information about CodeCommit."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_codecommit.py",
+            "has_action": false,
+            "module": "aws_codecommit",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "aliases": [
+                        "comment"
+                    ],
+                    "description": [
+                        "description or comment of repository."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "name of repository."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Specifies the state of repository."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage repositories in AWS CodeCommit",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Create a new repository\n- community.aws.aws_codecommit:\n    name: repo\n    state: present\n\n# Delete a repository\n- community.aws.aws_codecommit:\n    name: repo\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "repository_metadata": {
+                "contains": {
+                    "account_id": {
+                        "description": "The ID of the AWS account associated with the repository.",
+                        "returned": "when state is present",
+                        "sample": "268342293637",
+                        "type": "str"
+                    },
+                    "arn": {
+                        "description": "The Amazon Resource Name (ARN) of the repository.",
+                        "returned": "when state is present",
+                        "sample": "arn:aws:codecommit:ap-northeast-1:268342293637:username",
+                        "type": "str"
+                    },
+                    "clone_url_http": {
+                        "description": "The URL to use for cloning the repository over HTTPS.",
+                        "returned": "when state is present",
+                        "sample": "https://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/reponame",
+                        "type": "str"
+                    },
+                    "clone_url_ssh": {
+                        "description": "The URL to use for cloning the repository over SSH.",
+                        "returned": "when state is present",
+                        "sample": "ssh://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/reponame",
+                        "type": "str"
+                    },
+                    "creation_date": {
+                        "description": "The date and time the repository was created, in timestamp format.",
+                        "returned": "when state is present",
+                        "sample": "2018-10-16T13:21:41.261000+09:00",
+                        "type": "str"
+                    },
+                    "last_modified_date": {
+                        "description": "The date and time the repository was last modified, in timestamp format.",
+                        "returned": "when state is present",
+                        "sample": "2018-10-16T13:21:41.261000+09:00",
+                        "type": "str"
+                    },
+                    "repository_description": {
+                        "description": "A comment or description about the repository.",
+                        "returned": "when state is present",
+                        "sample": "test from ptux",
+                        "type": "str"
+                    },
+                    "repository_id": {
+                        "description": "The ID of the repository that was created or deleted",
+                        "returned": "always",
+                        "sample": "e62a5c54-i879-497b-b62f-9f99e4ebfk8e",
+                        "type": "str"
+                    },
+                    "repository_name": {
+                        "description": "The repository's name.",
+                        "returned": "when state is present",
+                        "sample": "reponame",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the repository.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "response_metadata": {
+                "contains": {
+                    "http_headers": {
+                        "description": "http headers of http response",
+                        "returned": "always",
+                        "type": "dict"
+                    },
+                    "http_status_code": {
+                        "description": "http status code of http response",
+                        "returned": "always",
+                        "sample": "200",
+                        "type": "str"
+                    },
+                    "request_id": {
+                        "description": "http request id",
+                        "returned": "always",
+                        "sample": "fb49cfca-d0fa-11e8-85cb-b3cc4b5045ef",
+                        "type": "str"
+                    },
+                    "retry_attempts": {
+                        "description": "numbers of retry attempts",
+                        "returned": "always",
+                        "sample": "0",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the response.",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

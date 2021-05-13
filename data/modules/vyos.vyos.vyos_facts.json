@@ -1,0 +1,152 @@
+{
+    "vyos.vyos.vyos_facts": {
+        "doc": {
+            "author": [
+                "Nathaniel Case (@qalthos)",
+                "Nilashish Chakraborty (@Nilashishc)",
+                "Rohit Thakur (@rohitthakur2590)"
+            ],
+            "collection": "vyos.vyos",
+            "description": [
+                "Collects facts from network devices running the vyos operating system. This module places the facts gathered in the fact tree keyed by the respective resource name.  The facts module will always collect a base set of facts from the device and can enable or disable collection of additional facts."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/vyos/vyos/plugins/modules/vyos_facts.py",
+            "has_action": true,
+            "module": "vyos_facts",
+            "notes": [
+                "Tested against VyOS 1.1.8 (helium).",
+                "This module works with connection C(network_cli). See L(the VyOS OS Platform Options,../network/user_guide/platform_vyos.html).",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`"
+            ],
+            "options": {
+                "gather_network_resources": {
+                    "description": [
+                        "When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces. Can specify a list of values to include a larger subset. Values can also be used with an initial C(M(!)) to specify that a specific subset should not be collected. Valid subsets are 'all', 'interfaces', 'l3_interfaces', 'lag_interfaces', 'lldp_global', 'lldp_interfaces', 'static_routes', 'firewall_rules', 'firewall_global', 'firewall_interfaces', 'ospfv3', 'ospfv2'."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "gather_subset": {
+                    "default": "!config",
+                    "description": [
+                        "When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include all, default, config, and neighbors. Can specify a list of values to include a larger subset. Values can also be used with an initial C(M(!)) to specify that a specific subset should not be collected."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(Network Guide, ../network/getting_started/network_differences.html#multiple-communication-protocols).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                }
+            },
+            "short_description": "Get facts about vyos devices.",
+            "version_added": "1.0.0",
+            "version_added_collection": "vyos.vyos"
+        },
+        "examples": "\n# Gather all facts\n- vyos.vyos.vyos_facts:\n    gather_subset: all\n    gather_network_resources: all\n\n# collect only the config and default facts\n- vyos.vyos.vyos_facts:\n    gather_subset: config\n\n# collect everything exception the config\n- vyos.vyos.vyos_facts:\n    gather_subset: '!config'\n\n# Collect only the interfaces facts\n- vyos.vyos.vyos_facts:\n    gather_subset:\n    - '!all'\n    - '!min'\n    gather_network_resources:\n    - interfaces\n\n# Do not collect interfaces facts\n- vyos.vyos.vyos_facts:\n    gather_network_resources:\n    - '!interfaces'\n\n# Collect interfaces and minimal default facts\n- vyos.vyos.vyos_facts:\n    gather_subset: min\n    gather_network_resources: interfaces\n",
+        "metadata": null,
+        "return": {
+            "ansible_net_api": {
+                "description": "The name of the transport",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_commits": {
+                "description": "The set of available configuration revisions",
+                "returned": "when present",
+                "type": "list"
+            },
+            "ansible_net_config": {
+                "description": "The running-config from the device",
+                "returned": "when config is configured",
+                "type": "str"
+            },
+            "ansible_net_gather_network_resources": {
+                "description": "The list of fact resource subsets collected from the device",
+                "returned": "always",
+                "type": "list"
+            },
+            "ansible_net_gather_subset": {
+                "description": "The list of subsets gathered by the module",
+                "returned": "always",
+                "type": "list"
+            },
+            "ansible_net_hostname": {
+                "description": "The configured system hostname",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_model": {
+                "description": "The device model string",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_neighbors": {
+                "description": "The set of LLDP neighbors",
+                "returned": "when interface is configured",
+                "type": "list"
+            },
+            "ansible_net_python_version": {
+                "description": "The Python version Ansible controller is using",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_serialnum": {
+                "description": "The serial number of the device",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_version": {
+                "description": "The version of the software running",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

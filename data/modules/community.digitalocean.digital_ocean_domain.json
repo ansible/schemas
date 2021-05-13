@@ -1,0 +1,86 @@
+{
+    "community.digitalocean.digital_ocean_domain": {
+        "doc": {
+            "author": "Michael Gregson (@mgregson)",
+            "collection": "community.digitalocean",
+            "description": [
+                "Create/delete a DNS domain in DigitalOcean."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/digitalocean/plugins/modules/digital_ocean_domain.py",
+            "has_action": false,
+            "module": "digital_ocean_domain",
+            "notes": [
+                "Environment variables DO_OAUTH_TOKEN can be used for the oauth_token.",
+                "As of Ansible 1.9.5 and 2.0, Version 2 of the DigitalOcean API is used, this removes C(client_id) and C(api_key) options in favor of C(oauth_token).",
+                "If you are running Ansible 1.9.4 or earlier you might not be able to use the included version of this module as the API version used has been retired."
+            ],
+            "options": {
+                "id": {
+                    "aliases": [
+                        "droplet_id"
+                    ],
+                    "description": [
+                        "The droplet id you want to operate on."
+                    ],
+                    "type": "int"
+                },
+                "ip": {
+                    "description": [
+                        "An 'A' record for '@' ($ORIGIN) will be created with the value 'ip'.  'ip' is an IP version 4 address."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the droplet - must be formatted by hostname rules, or the name of a SSH key, or the name of a domain."
+                    ],
+                    "type": "str"
+                },
+                "oauth_token": {
+                    "aliases": [
+                        "api_token"
+                    ],
+                    "description": [
+                        "DigitalOcean OAuth token.",
+                        "There are several other environment variables which can be used to provide this value.",
+                        "i.e., - 'DO_API_TOKEN', 'DO_API_KEY', 'DO_OAUTH_TOKEN' and 'OAUTH_TOKEN'"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the target."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "The timeout in seconds used for polling DigitalOcean's API."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6"
+            ],
+            "short_description": "Create/delete a DNS domain in DigitalOcean"
+        },
+        "examples": "\n- name: Create a domain\n  community.digitalocean.digital_ocean_domain:\n    state: present\n    name: my.digitalocean.domain\n    ip: 127.0.0.1\n\n# Create a droplet and corresponding domain\n- name: Create a droplet\n  community.digitalocean.digital_ocean:\n    state: present\n    name: test_droplet\n    size_id: 1gb\n    region_id: sgp1\n    image_id: ubuntu-14-04-x64\n  register: test_droplet\n\n- name: Create a corresponding domain\n  community.digitalocean.digital_ocean_domain:\n    state: present\n    name: \"{{ test_droplet.droplet.name }}.my.domain\"\n    ip: \"{{ test_droplet.droplet.ip_address }}\"\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

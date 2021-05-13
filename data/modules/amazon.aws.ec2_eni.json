@@ -1,0 +1,299 @@
+{
+    "amazon.aws.ec2_eni": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "amazon.aws",
+            "description": [
+                "Create and optionally attach an Elastic Network Interface (ENI) to an instance. If an ENI ID or private_ip is provided, the existing ENI (if any) will be modified. The 'attached' parameter controls the attachment status of the network interface."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2_eni.py",
+            "has_action": false,
+            "module": "ec2_eni",
+            "notes": [
+                "This module identifies and ENI based on either the I(eni_id), a combination of I(private_ip_address) and I(subnet_id), or a combination of I(instance_id) and I(device_id). Any of these options will let you specify a particular ENI.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "allow_reassignment": {
+                    "default": false,
+                    "description": [
+                        "Indicates whether to allow an IP address that is already assigned to another network interface or instance to be reassigned to the specified network interface."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "attached": {
+                    "description": [
+                        "Specifies if network interface should be attached or detached from instance. If omitted, attachment status won't change"
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "delete_on_termination": {
+                    "description": [
+                        "Delete the interface when the instance it is attached to is terminated. You can only specify this flag when the interface is being modified, not on creation."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "Optional description of the ENI."
+                    ],
+                    "type": "str"
+                },
+                "device_index": {
+                    "default": 0,
+                    "description": [
+                        "The index of the device for the network interface attachment on the instance."
+                    ],
+                    "type": "int"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "eni_id": {
+                    "description": [
+                        "The ID of the ENI (to modify).",
+                        "If I(eni_id=None) and I(state=present), a new eni will be created."
+                    ],
+                    "type": "str"
+                },
+                "force_detach": {
+                    "default": false,
+                    "description": [
+                        "Force detachment of the interface. This applies either when explicitly detaching the interface by setting I(instance_id=None) or when deleting an interface with I(state=absent)."
+                    ],
+                    "type": "bool"
+                },
+                "instance_id": {
+                    "description": [
+                        "Instance ID that you wish to attach ENI to.",
+                        "Since version 2.2, use the I(attached) parameter to attach or detach an ENI. Prior to 2.2, to detach an ENI from an instance, use C(None)."
+                    ],
+                    "type": "str"
+                },
+                "private_ip_address": {
+                    "description": [
+                        "Private IP address."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_secondary_private_ip_addresses": {
+                    "default": false,
+                    "description": [
+                        "To be used with I(secondary_private_ip_addresses) to determine whether or not to remove any secondary IP addresses other than those specified.",
+                        "Set I(secondary_private_ip_addresses=[]) to purge all secondary addresses."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "secondary_private_ip_address_count": {
+                    "description": [
+                        "The number of secondary IP addresses to assign to the network interface. This option is mutually exclusive of I(secondary_private_ip_addresses)"
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "secondary_private_ip_addresses": {
+                    "description": [
+                        "A list of IP addresses to assign as secondary IP addresses to the network interface. This option is mutually exclusive of I(secondary_private_ip_address_count)"
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "security_groups": {
+                    "description": [
+                        "List of security groups associated with the interface. Only used when I(state=present).",
+                        "Since version 2.2, you can specify security groups by ID or by name or a combination of both. Prior to 2.2, you can specify only by ID."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "source_dest_check": {
+                    "description": [
+                        "By default, interfaces perform source/destination checks. NAT instances however need this check to be disabled. You can only specify this flag when the interface is being modified, not on creation."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete ENI."
+                    ],
+                    "type": "str"
+                },
+                "subnet_id": {
+                    "description": [
+                        "ID of subnet in which to create the ENI."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Create and optionally attach an Elastic Network Interface (ENI) to an instance"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Create an ENI. As no security group is defined, ENI will be created in default security group\n- ec2_eni:\n    private_ip_address: 172.31.0.20\n    subnet_id: subnet-xxxxxxxx\n    state: present\n\n# Create an ENI and attach it to an instance\n- ec2_eni:\n    instance_id: i-xxxxxxx\n    device_index: 1\n    private_ip_address: 172.31.0.20\n    subnet_id: subnet-xxxxxxxx\n    state: present\n\n# Create an ENI with two secondary addresses\n- ec2_eni:\n    subnet_id: subnet-xxxxxxxx\n    state: present\n    secondary_private_ip_address_count: 2\n\n# Assign a secondary IP address to an existing ENI\n# This will purge any existing IPs\n- ec2_eni:\n    subnet_id: subnet-xxxxxxxx\n    eni_id: eni-yyyyyyyy\n    state: present\n    secondary_private_ip_addresses:\n      - 172.16.1.1\n\n# Remove any secondary IP addresses from an existing ENI\n- ec2_eni:\n    subnet_id: subnet-xxxxxxxx\n    eni_id: eni-yyyyyyyy\n    state: present\n    secondary_private_ip_address_count: 0\n\n# Destroy an ENI, detaching it from any instance if necessary\n- ec2_eni:\n    eni_id: eni-xxxxxxx\n    force_detach: true\n    state: absent\n\n# Update an ENI\n- ec2_eni:\n    eni_id: eni-xxxxxxx\n    description: \"My new description\"\n    state: present\n\n# Update an ENI identifying it by private_ip_address and subnet_id\n- ec2_eni:\n    subnet_id: subnet-xxxxxxx\n    private_ip_address: 172.16.1.1\n    description: \"My new description\"\n\n# Detach an ENI from an instance\n- ec2_eni:\n    eni_id: eni-xxxxxxx\n    instance_id: None\n    state: present\n\n### Delete an interface on termination\n# First create the interface\n- ec2_eni:\n    instance_id: i-xxxxxxx\n    device_index: 1\n    private_ip_address: 172.31.0.20\n    subnet_id: subnet-xxxxxxxx\n    state: present\n  register: eni\n\n# Modify the interface to enable the delete_on_terminaton flag\n- ec2_eni:\n    eni_id: \"{{ eni.interface.id }}\"\n    delete_on_termination: true\n\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "interface": {
+                "contains": {
+                    "description": {
+                        "description": "interface description",
+                        "sample": "Firewall network interface",
+                        "type": "str"
+                    },
+                    "groups": {
+                        "description": "list of security groups",
+                        "elements": "dict",
+                        "sample": [
+                            {
+                                "sg-f8a8a9da": "default"
+                            }
+                        ],
+                        "type": "list"
+                    },
+                    "id": {
+                        "description": "network interface id",
+                        "sample": "eni-1d889198",
+                        "type": "str"
+                    },
+                    "mac_address": {
+                        "description": "interface's physical address",
+                        "sample": "00:00:5E:00:53:23",
+                        "type": "str"
+                    },
+                    "owner_id": {
+                        "description": "aws account id",
+                        "sample": 812381371,
+                        "type": "str"
+                    },
+                    "private_ip_address": {
+                        "description": "primary ip address of this interface",
+                        "sample": "10.20.30.40",
+                        "type": "str"
+                    },
+                    "private_ip_addresses": {
+                        "description": "list of all private ip addresses associated to this interface",
+                        "elements": "dict",
+                        "sample": [
+                            {
+                                "primary_address": true,
+                                "private_ip_address": "10.20.30.40"
+                            }
+                        ],
+                        "type": "list"
+                    },
+                    "source_dest_check": {
+                        "description": "value of source/dest check flag",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "status": {
+                        "description": "network interface status",
+                        "sample": "pending",
+                        "type": "str"
+                    },
+                    "subnet_id": {
+                        "description": "which vpc subnet the interface is bound",
+                        "sample": "subnet-b0a0393c",
+                        "type": "str"
+                    },
+                    "vpc_id": {
+                        "description": "which vpc this network interface is bound",
+                        "sample": "vpc-9a9a9da",
+                        "type": "str"
+                    }
+                },
+                "description": "Network interface attributes",
+                "returned": "when state != absent",
+                "type": "complex"
+            }
+        }
+    }
+}

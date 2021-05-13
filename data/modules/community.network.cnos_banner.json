@@ -1,0 +1,116 @@
+{
+    "community.network.cnos_banner": {
+        "doc": {
+            "author": "Anil Kumar Muraleedharan (@amuraleedhar)",
+            "collection": "community.network",
+            "description": [
+                "This will configure both login and motd banners on remote devices running Lenovo CNOS.  It allows playbooks to add or remote banner text from the active running configuration."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/cnos_banner.py",
+            "has_action": false,
+            "module": "cnos_banner",
+            "notes": [
+                "Tested against CNOS 10.8.1"
+            ],
+            "options": {
+                "banner": {
+                    "choices": [
+                        "login",
+                        "motd"
+                    ],
+                    "description": [
+                        "Specifies which banner should be configured on the remote device. In Ansible 2.8 and earlier only I(login) and I(motd) were supported."
+                    ],
+                    "required": true
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(CNOS Platform Options guide, ../network/user_guide/platform_cnos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ]
+                        },
+                        "authorize": {
+                            "default": "no",
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "required": true
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ]
+                        },
+                        "port": {
+                            "default": 22,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ]
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE)will be used instead."
+                            ]
+                        },
+                        "timeout": {
+                            "default": 10,
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ]
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ]
+                        }
+                    }
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specifies whether or not the configuration is present in the current devices active running configuration."
+                    ]
+                },
+                "text": {
+                    "description": [
+                        "The banner text that should be present in the remote device running configuration.  This argument accepts a multiline string, with no empty lines. Requires I(state=present)."
+                    ]
+                }
+            },
+            "short_description": "Manage multiline banners on Lenovo CNOS devices"
+        },
+        "examples": "\n- name: Configure the login banner\n  community.network.cnos_banner:\n    banner: login\n    text: |\n      this is my login banner\n      that contains a multiline\n      string\n    state: present\n\n- name: Remove the motd banner\n  community.network.cnos_banner:\n    banner: motd\n    state: absent\n\n- name: Configure banner from file\n  community.network.cnos_banner:\n    banner:  motd\n    text: \"{{ lookup('file', './config_partial/raw_banner.cfg') }}\"\n    state: present\n\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always",
+                "sample": [
+                    "banner login",
+                    "this is my login banner",
+                    "that contains a multiline",
+                    "string"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,157 @@
+{
+    "community.vmware.vmware_dvswitch_nioc": {
+        "doc": {
+            "author": [
+                "Joseph Andreatta (@vmwjoseph)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to manage distributed switch Network IO Control configurations."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_dvswitch_nioc.py",
+            "has_action": false,
+            "module": "vmware_dvswitch_nioc",
+            "notes": [
+                "Tested on vSphere 6.7"
+            ],
+            "options": {
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "resources": {
+                    "description": [
+                        "List of dicts containing { name: Resource name is one of the following: \"faultTolerance\", \"hbr\", \"iSCSI\", \"management\", \"nfs\", \"vdp\", \"virtualMachine\", \"vmotion\", \"vsan\" limit: The maximum allowed usage for a traffic class belonging to this resource pool per host physical NIC. reservation: (Ignored if NIOC version is set to version2) Amount of bandwidth resource that is guaranteed available to the host infrastructure traffic class. If the utilization is less than the reservation, the extra bandwidth is used for other host infrastructure traffic class types. Reservation is not allowed to exceed the value of limit, if limit is set. Unit is Mbits/sec. shares_level: The allocation level (\"low\", \"normal\", \"high\", \"custom\"). The level is a simplified view of shares. Levels map to a pre-determined set of numeric values for shares. shares: Ignored unless shares_level is \"custom\".  The number of shares allocated. reservation: Ignored unless version is \"version3\". Amount of bandwidth resource that is guaranteed available to the host infrastructure traffic class. }"
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Enable or disable NIOC on the distributed switch."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "switch": {
+                    "aliases": [
+                        "dvswitch"
+                    ],
+                    "description": [
+                        "The name of the distributed switch."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "version": {
+                    "choices": [
+                        "version2",
+                        "version3"
+                    ],
+                    "description": [
+                        "Network IO control version."
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Manage distributed switch Network IO Control"
+        },
+        "examples": "\n- name: Enable NIOC\n  community.vmware.vmware_dvswitch_nioc:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    switch: dvSwitch\n    version: version3\n    resources:\n        - name: vmotion\n          limit: -1\n          reservation: 128\n          shares_level: normal\n        - name: vsan\n          limit: -1\n          shares_level: custom\n          shares: 99\n          reservation: 256\n    state: present\n  delegate_to: localhost\n\n- name: Disable NIOC\n  community.vmware.vmware_dvswitch_nioc:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    switch: dvSwitch\n    state: absent\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "dvswitch_nioc_status": {
+                "description": [
+                    "result of the changes"
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "resources_changed": {
+                "description": [
+                    "list of resources which were changed"
+                ],
+                "returned": "success",
+                "sample": [
+                    "vmotion",
+                    "vsan"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

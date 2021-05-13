@@ -1,0 +1,150 @@
+{
+    "community.network.ce_ospf": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages configuration of an OSPF instance on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_ospf.py",
+            "has_action": false,
+            "module": "ce_ospf",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "addr": {
+                    "description": [
+                        "Specifies the address of the network segment where the interface resides. The value is in dotted decimal notation."
+                    ]
+                },
+                "area": {
+                    "description": [
+                        "Specifies the area ID. The area with the area-id being 0 is a backbone area. Valid values are a string, formatted as an IP address (i.e. \"0.0.0.0\") or as an integer between 1 and 4294967295."
+                    ]
+                },
+                "auth_key_id": {
+                    "description": [
+                        "Authentication key id when C(auth_mode) is 'hmac-sha256', 'md5' or 'hmac-md5. Valid value is an integer is in the range from 1 to 255."
+                    ]
+                },
+                "auth_mode": {
+                    "choices": [
+                        "none",
+                        "hmac-sha256",
+                        "md5",
+                        "hmac-md5",
+                        "simple"
+                    ],
+                    "description": [
+                        "Specifies the authentication type."
+                    ]
+                },
+                "auth_text_md5": {
+                    "description": [
+                        "Specifies a password for MD5, HMAC-MD5, or HMAC-SHA256 authentication. The value is a string of 1 to 255 case-sensitive characters, spaces not supported."
+                    ]
+                },
+                "auth_text_simple": {
+                    "description": [
+                        "Specifies a password for simple authentication. The value is a string of 1 to 8 characters."
+                    ]
+                },
+                "mask": {
+                    "description": [
+                        "IP network wildcard bits in decimal format between 0 and 32."
+                    ]
+                },
+                "max_load_balance": {
+                    "description": [
+                        "The maximum number of paths for forward packets over multiple paths. Valid value is an integer in the range from 1 to 64."
+                    ]
+                },
+                "nexthop_addr": {
+                    "description": [
+                        "IPv4 address for configure next-hop address's weight. Valid values are a string, formatted as an IP address."
+                    ]
+                },
+                "nexthop_weight": {
+                    "description": [
+                        "Indicates the weight of the next hop. The smaller the value is, the higher the preference of the route is. It is an integer that ranges from 1 to 254."
+                    ]
+                },
+                "process_id": {
+                    "description": [
+                        "Specifies a process ID. The value is an integer ranging from 1 to 4294967295."
+                    ],
+                    "required": true
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                }
+            },
+            "short_description": "Manages configuration of an OSPF instance on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: Ospf module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: Configure ospf\n    community.network.ce_ospf:\n      process_id: 1\n      area: 100\n      state: present\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "verbose mode",
+                "sample": {
+                    "areas": [
+                        {
+                            "areaId": "0.0.0.100",
+                            "areaType": "Normal"
+                        }
+                    ],
+                    "max_load_balance": "32",
+                    "nexthops": [],
+                    "process_id": "1"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "verbose mode",
+                "sample": {
+                    "areas": [],
+                    "max_load_balance": "32",
+                    "nexthops": [],
+                    "process_id": "1"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "verbose mode",
+                "sample": {
+                    "area": "100",
+                    "process_id": "1"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "ospf 1",
+                    "area 0.0.0.100"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

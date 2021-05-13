@@ -1,0 +1,454 @@
+{
+    "community.aws.redshift": {
+        "doc": {
+            "author": [
+                "Jens Carl (@j-carl), Hothead Games Inc.",
+                "Rafael Driutti (@rafaeldriutti)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Creates, deletes, or modifies Amazon Redshift cluster instances."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/redshift.py",
+            "has_action": false,
+            "module": "redshift",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "allow_version_upgrade": {
+                    "aliases": [
+                        "version_upgrade"
+                    ],
+                    "default": true,
+                    "description": [
+                        "When I(allow_version_upgrade=true) the cluster may be automatically upgraded during the maintenance window."
+                    ],
+                    "type": "bool"
+                },
+                "automated_snapshot_retention_period": {
+                    "aliases": [
+                        "retention_period"
+                    ],
+                    "description": [
+                        "The number of days that automated snapshots are retained."
+                    ],
+                    "type": "int"
+                },
+                "availability_zone": {
+                    "aliases": [
+                        "zone",
+                        "aws_zone"
+                    ],
+                    "description": [
+                        "Availability zone in which to launch cluster."
+                    ],
+                    "type": "str"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cluster_parameter_group_name": {
+                    "aliases": [
+                        "param_group_name"
+                    ],
+                    "description": [
+                        "Name of the cluster parameter group."
+                    ],
+                    "type": "str"
+                },
+                "cluster_security_groups": {
+                    "aliases": [
+                        "security_groups"
+                    ],
+                    "description": [
+                        "In which security group the cluster belongs."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "cluster_subnet_group_name": {
+                    "aliases": [
+                        "subnet"
+                    ],
+                    "description": [
+                        "Which subnet to place the cluster."
+                    ],
+                    "type": "str"
+                },
+                "cluster_type": {
+                    "choices": [
+                        "multi-node",
+                        "single-node"
+                    ],
+                    "default": "single-node",
+                    "description": [
+                        "The type of cluster."
+                    ],
+                    "type": "str"
+                },
+                "cluster_version": {
+                    "aliases": [
+                        "version"
+                    ],
+                    "choices": [
+                        "1.0"
+                    ],
+                    "description": [
+                        "Which version the cluster should have."
+                    ],
+                    "type": "str"
+                },
+                "command": {
+                    "choices": [
+                        "create",
+                        "facts",
+                        "delete",
+                        "modify"
+                    ],
+                    "description": [
+                        "Specifies the action to take."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "db_name": {
+                    "description": [
+                        "Name of the database."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "elastic_ip": {
+                    "description": [
+                        "An Elastic IP to use for the cluster."
+                    ],
+                    "type": "str"
+                },
+                "encrypted": {
+                    "default": false,
+                    "description": [
+                        "If the cluster is encrypted or not."
+                    ],
+                    "type": "bool"
+                },
+                "enhanced_vpc_routing": {
+                    "default": false,
+                    "description": [
+                        "Whether the cluster should have enhanced VPC routing enabled."
+                    ],
+                    "type": "bool"
+                },
+                "final_cluster_snapshot_identifier": {
+                    "aliases": [
+                        "final_snapshot_id"
+                    ],
+                    "description": [
+                        "Identifier of the final snapshot to be created before deleting the cluster.",
+                        "If this parameter is provided, I(skip_final_cluster_snapshot) must be C(false).",
+                        "Used only when I(command=delete)."
+                    ],
+                    "type": "str"
+                },
+                "identifier": {
+                    "description": [
+                        "Redshift cluster identifier."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_cluster_identifier": {
+                    "aliases": [
+                        "new_identifier"
+                    ],
+                    "description": [
+                        "Only used when command=modify."
+                    ],
+                    "type": "str"
+                },
+                "node_type": {
+                    "choices": [
+                        "ds1.xlarge",
+                        "ds1.8xlarge",
+                        "ds2.xlarge",
+                        "ds2.8xlarge",
+                        "dc1.large",
+                        "dc2.large",
+                        "dc1.8xlarge",
+                        "dw1.xlarge",
+                        "dw1.8xlarge",
+                        "dw2.large",
+                        "dw2.8xlarge"
+                    ],
+                    "description": [
+                        "The node type of the cluster.",
+                        "Require when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "number_of_nodes": {
+                    "description": [
+                        "Number of nodes.",
+                        "Only used when I(cluster_type=multi-node)."
+                    ],
+                    "type": "int"
+                },
+                "password": {
+                    "description": [
+                        "Master database password.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Which port the cluster is listening on."
+                    ],
+                    "type": "int"
+                },
+                "preferred_maintenance_window": {
+                    "aliases": [
+                        "maintance_window",
+                        "maint_window"
+                    ],
+                    "description": [
+                        "Maintenance window in format of C(ddd:hh24:mi-ddd:hh24:mi).  (Example: C(Mon:22:00-Mon:23:15))",
+                        "Times are specified in UTC.",
+                        "If not specified then a random 30 minute maintenance window is assigned."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "publicly_accessible": {
+                    "default": false,
+                    "description": [
+                        "If the cluster is accessible publicly or not."
+                    ],
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": "yes",
+                    "description": [
+                        "Purge existing tags that are not found in the cluster"
+                    ],
+                    "type": "bool",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.aws"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "skip_final_cluster_snapshot": {
+                    "aliases": [
+                        "skip_final_snapshot"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Skip a final snapshot before deleting the cluster.",
+                        "Used only when I(command=delete)."
+                    ],
+                    "type": "bool"
+                },
+                "tags": {
+                    "aliases": [
+                        "resource_tags"
+                    ],
+                    "description": [
+                        "A dictionary of resource tags."
+                    ],
+                    "type": "dict",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.aws"
+                },
+                "username": {
+                    "description": [
+                        "Master database username.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_security_group_ids": {
+                    "aliases": [
+                        "vpc_security_groups"
+                    ],
+                    "description": [
+                        "VPC security group"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "When I(command=create), I(command=modify) or I(command=restore) then wait for the database to enter the 'available' state.",
+                        "When I(command=delete) wait for the database to be terminated."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "When I(wait=true) defines how long in seconds before giving up."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "create, delete, or modify an Amazon Redshift instance",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Basic cluster provisioning example\n  community.aws.redshift:\n    command: create\n    node_type: ds1.xlarge\n    identifier: new_cluster\n    username: cluster_admin\n    password: 1nsecure\n\n- name: Cluster delete example\n  community.aws.redshift:\n    command: delete\n    identifier: new_cluster\n    skip_final_cluster_snapshot: true\n    wait: true\n",
+        "metadata": null,
+        "return": {
+            "cluster": {
+                "contains": {
+                    "availability_zone": {
+                        "description": "Amazon availability zone where the cluster is located. \"None\" until cluster is available.",
+                        "returned": "success",
+                        "sample": "us-east-1b",
+                        "type": "str"
+                    },
+                    "create_time": {
+                        "description": "Time of the cluster creation as timestamp.",
+                        "returned": "success",
+                        "sample": 1430158536.308,
+                        "type": "float"
+                    },
+                    "db_name": {
+                        "description": "Name of the database.",
+                        "returned": "success",
+                        "sample": "new_db_name",
+                        "type": "str"
+                    },
+                    "enhanced_vpc_routing": {
+                        "description": "status of the enhanced vpc routing feature.",
+                        "returned": "success",
+                        "type": "bool"
+                    },
+                    "identifier": {
+                        "description": "Id of the cluster.",
+                        "returned": "success",
+                        "sample": "new_redshift_cluster",
+                        "type": "str"
+                    },
+                    "maintenance_window": {
+                        "description": "Time frame when maintenance/upgrade are done.",
+                        "returned": "success",
+                        "sample": "sun:09:30-sun:10:00",
+                        "type": "str"
+                    },
+                    "port": {
+                        "description": "Port of the cluster. \"None\" until cluster is available.",
+                        "returned": "success",
+                        "sample": 5439,
+                        "type": "int"
+                    },
+                    "private_ip_address": {
+                        "description": "Private IP address of the main node.",
+                        "returned": "success",
+                        "sample": "10.10.10.10",
+                        "type": "str"
+                    },
+                    "public_ip_address": {
+                        "description": "Public IP address of the main node. \"None\" when enhanced_vpc_routing is enabled.",
+                        "returned": "success",
+                        "sample": "0.0.0.0",
+                        "type": "str"
+                    },
+                    "status": {
+                        "description": "Status of the cluster.",
+                        "returned": "success",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": "aws tags for cluster.",
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "url": {
+                        "description": "FQDN of the main cluster node. \"None\" until cluster is available.",
+                        "returned": "success",
+                        "sample": "new-redshift_cluster.jfkdjfdkj.us-east-1.redshift.amazonaws.com",
+                        "type": "str"
+                    }
+                },
+                "description": "dictionary containing all the cluster information",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

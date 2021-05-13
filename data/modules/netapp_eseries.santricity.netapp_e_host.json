@@ -1,0 +1,211 @@
+{
+    "netapp_eseries.santricity.netapp_e_host": {
+        "doc": {
+            "author": [
+                "Kevin Hulquest (@hulquest)",
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": "Create, update, remove hosts on NetApp E-series storage arrays",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_host.py",
+            "has_action": false,
+            "module": "netapp_e_host",
+            "notes": [
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "force_port": {
+                    "description": [
+                        "Allow ports that are already assigned to be re-assigned to your current host"
+                    ],
+                    "required": false,
+                    "type": "bool",
+                    "version_added": 2.7,
+                    "version_added_collection": "netapp_eseries.santricity"
+                },
+                "group": {
+                    "aliases": [
+                        "cluster"
+                    ],
+                    "description": [
+                        "The unique identifier of the host-group you want the host to be a member of; this is used for clustering."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "host_type": {
+                    "aliases": [
+                        "host_type_index"
+                    ],
+                    "description": [
+                        "This is the type of host to be mapped",
+                        "Required when C(state=present)",
+                        "Either one of the following names can be specified, Linux DM-MP, VMWare, Windows, Windows Clustered, or a host type index which can be found in M(netapp_e_facts)"
+                    ],
+                    "type": "str"
+                },
+                "log_path": {
+                    "description": [
+                        "A local path to a file to be used for debug logging"
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": 2.7,
+                    "version_added_collection": "netapp_eseries.santricity"
+                },
+                "name": {
+                    "aliases": [
+                        "label"
+                    ],
+                    "description": [
+                        "If the host doesn't yet exist, the label/name to assign at creation time.",
+                        "If the hosts already exists, this will be used to uniquely identify the host to make any required changes"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ports": {
+                    "description": [
+                        "A list of host ports you wish to associate with the host.",
+                        "Host ports are uniquely identified by their WWN or IQN. Their assignments to a particular host are uniquely identified by a label and these must be unique."
+                    ],
+                    "required": false,
+                    "suboptions": {
+                        "label": {
+                            "description": [
+                                "A unique label to assign to this port assignment."
+                            ],
+                            "required": true
+                        },
+                        "port": {
+                            "description": [
+                                "The WWN or IQN of the hostPort to assign to this port definition."
+                            ],
+                            "required": true
+                        },
+                        "type": {
+                            "choices": [
+                                "iscsi",
+                                "sas",
+                                "fc",
+                                "ib",
+                                "nvmeof",
+                                "ethernet"
+                            ],
+                            "description": [
+                                "The interface type of the port to define.",
+                                "Acceptable choices depend on the capabilities of the target hardware/software platform."
+                            ],
+                            "required": true
+                        }
+                    },
+                    "type": "list"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Set to absent to remove an existing host",
+                        "Set to present to modify or create a new host definition"
+                    ],
+                    "type": "str",
+                    "version_added": 2.7,
+                    "version_added_collection": "netapp_eseries.santricity"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage eseries hosts",
+            "version_added": "2.2",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n    - name: Define or update an existing host named 'Host1'\n      netapp_e_host:\n        ssid: \"1\"\n        api_url: \"10.113.1.101:8443\"\n        api_username: admin\n        api_password: myPassword\n        name: \"Host1\"\n        state: present\n        host_type_index: Linux DM-MP\n        ports:\n          - type: 'iscsi'\n            label: 'PORT_1'\n            port: 'iqn.1996-04.de.suse:01:56f86f9bd1fe'\n          - type: 'fc'\n            label: 'FC_1'\n            port: '10:00:FF:7C:FF:FF:FF:01'\n          - type: 'fc'\n            label: 'FC_2'\n            port: '10:00:FF:7C:FF:FF:FF:00'\n\n    - name: Ensure a host named 'Host2' doesn't exist\n      netapp_e_host:\n        ssid: \"1\"\n        api_url: \"10.113.1.101:8443\"\n        api_username: admin\n        api_password: myPassword\n        name: \"Host2\"\n        state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "api_url": {
+                "description": [
+                    "the url of the API that this request was processed by"
+                ],
+                "returned": "on success",
+                "sample": "https://webservices.example.com:8443",
+                "type": "str",
+                "version_added": "2.6",
+                "version_added_collection": "netapp_eseries.santricity"
+            },
+            "id": {
+                "description": [
+                    "the unique identifier of the host on the E-Series storage-system"
+                ],
+                "returned": "on success when state=present",
+                "sample": "00000000600A098000AAC0C3003004700AD86A52",
+                "type": "str",
+                "version_added": "2.6",
+                "version_added_collection": "netapp_eseries.santricity"
+            },
+            "msg": {
+                "description": [
+                    "A user-readable description of the actions performed."
+                ],
+                "returned": "on success",
+                "sample": "The host has been created.",
+                "type": "str"
+            },
+            "ssid": {
+                "description": [
+                    "the unique identifier of the E-Series storage-system with the current api"
+                ],
+                "returned": "on success",
+                "sample": 1,
+                "type": "str",
+                "version_added": "2.6",
+                "version_added_collection": "netapp_eseries.santricity"
+            }
+        }
+    }
+}

@@ -1,0 +1,131 @@
+{
+    "community.general.omapi_host": {
+        "doc": {
+            "author": [
+                "Loic Blot (@nerzhul)"
+            ],
+            "collection": "community.general",
+            "description": "Manage OMAPI hosts into compatible DHCPd servers",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/omapi_host.py",
+            "has_action": false,
+            "module": "omapi_host",
+            "options": {
+                "ddns": {
+                    "default": false,
+                    "description": [
+                        "Enable dynamic DNS updates for this host."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "default": "localhost",
+                    "description": [
+                        "Sets OMAPI server host to interact with."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Sets the host lease hostname (mandatory if state=present)."
+                    ],
+                    "type": "str"
+                },
+                "ip": {
+                    "description": [
+                        "Sets the lease host IP address."
+                    ],
+                    "type": "str"
+                },
+                "key": {
+                    "description": [
+                        "Sets the TSIG key content for authenticating against OMAPI server."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "key_name": {
+                    "description": [
+                        "Sets the TSIG key name for authenticating against OMAPI server."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "macaddr": {
+                    "description": [
+                        "Sets the lease host MAC address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 7911,
+                    "description": [
+                        "Sets the OMAPI server port to interact with."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "description": [
+                        "Create or remove OMAPI host."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "statements": {
+                    "default": [],
+                    "description": [
+                        "Attach a list of OMAPI DHCP statements with host lease (without ending semicolon)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "pypureomapi"
+            ],
+            "short_description": "Setup OMAPI hosts."
+        },
+        "examples": "\n- name: Add a host using OMAPI\n  community.general.omapi_host:\n    key_name: defomapi\n    key: +bFQtBCta6j2vWkjPkNFtgA==\n    host: 10.98.4.55\n    macaddr: 44:dd:ab:dd:11:44\n    name: server01\n    ip: 192.168.88.99\n    ddns: yes\n    statements:\n    - filename \"pxelinux.0\"\n    - next-server 1.1.1.1\n    state: present\n\n- name: Remove a host using OMAPI\n  community.general.omapi_host:\n    key_name: defomapi\n    key: +bFQtBCta6j2vWkjPkNFtgA==\n    host: 10.1.1.1\n    macaddr: 00:66:ab:dd:11:44\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "lease": {
+                "contains": {
+                    "hardware-address": {
+                        "description": "MAC address",
+                        "returned": "success",
+                        "sample": "00:11:22:33:44:55",
+                        "type": "str"
+                    },
+                    "hardware-type": {
+                        "description": "hardware type, generally '1'",
+                        "returned": "success",
+                        "sample": 1,
+                        "type": "int"
+                    },
+                    "ip-address": {
+                        "description": "IP address, if there is.",
+                        "returned": "success",
+                        "sample": "192.168.1.5",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "hostname",
+                        "returned": "success",
+                        "sample": "mydesktop",
+                        "type": "str"
+                    }
+                },
+                "description": "dictionary containing host information",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,152 @@
+{
+    "purestorage.flasharray.purefa_ds": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Set or erase configuration for the directory service. There is no facility to SSL certificates at this time. Use the FlashArray GUI for this additional configuration work.",
+                "To modify an existing directory service configuration you must first delete an exisitng configuration and then recreate with new settings."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_ds.py",
+            "has_action": false,
+            "module": "purefa_ds",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "aa_group": {
+                    "description": [
+                        "Sets the common Name (CN) of the directory service group containing administrators with full privileges when managing the FlashArray. The name should be just the Common Name of the group without the CN= specifier. Common Names should not exceed 64 characters in length.",
+                        "Not Supported from Purity 5.2.0 or higher. Use I(purefa_dsrole) module."
+                    ],
+                    "type": "str"
+                },
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "base_dn": {
+                    "description": [
+                        "Sets the base of the Distinguished Name (DN) of the directory service groups. The base should consist of only Domain Components (DCs). The base_dn will populate with a default value when a URI is entered by parsing domain components from the URI. The base DN should specify DC= for each domain component and multiple DCs should be separated by commas."
+                    ],
+                    "type": "str"
+                },
+                "bind_password": {
+                    "description": [
+                        "Sets the password of the bind_user user name account."
+                    ],
+                    "type": "str"
+                },
+                "bind_user": {
+                    "description": [
+                        "Sets the user name that can be used to bind to and query the directory.",
+                        "For Active Directory, enter the username - often referred to as sAMAccountName or User Logon Name - of the account that is used to perform directory lookups.",
+                        "For OpenLDAP, enter the full DN of the user."
+                    ],
+                    "type": "str"
+                },
+                "dstype": {
+                    "choices": [
+                        "management",
+                        "data"
+                    ],
+                    "default": "management",
+                    "description": [
+                        "The type of directory service to work on"
+                    ],
+                    "type": "str"
+                },
+                "enable": {
+                    "default": false,
+                    "description": [
+                        "Whether to enable or disable directory service support."
+                    ],
+                    "type": "bool"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "group_base": {
+                    "description": [
+                        "Specifies where the configured groups are located in the directory tree. This field consists of Organizational Units (OUs) that combine with the base DN attribute and the configured group CNs to complete the full Distinguished Name of the groups. The group base should specify OU= for each OU and multiple OUs should be separated by commas. The order of OUs is important and should get larger in scope from left to right. Each OU should not exceed 64 characters in length.",
+                        "Not Supported from Purity 5.2.0 or higher. Use I(purefa_dsrole) module."
+                    ],
+                    "type": "str"
+                },
+                "ro_group": {
+                    "description": [
+                        "Sets the common Name (CN) of the configured directory service group containing users with read-only privileges on the FlashArray. This name should be just the Common Name of the group without the CN= specifier. Common Names should not exceed 64 characters in length.",
+                        "Not Supported from Purity 5.2.0 or higher. Use I(purefa_dsrole) module."
+                    ],
+                    "type": "str"
+                },
+                "sa_group": {
+                    "description": [
+                        "Sets the common Name (CN) of the configured directory service group containing administrators with storage-related privileges on the FlashArray. This name should be just the Common Name of the group without the CN= specifier. Common Names should not exceed 64 characters in length.",
+                        "Not Supported from Purity 5.2.0 or higher. Use I(purefa_dsrole) module."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete directory service configuration"
+                    ],
+                    "type": "str"
+                },
+                "uri": {
+                    "description": [
+                        "A list of up to 30 URIs of the directory servers. Each URI must include the scheme ldap:// or ldaps:// (for LDAP over SSL), a hostname, and a domain name or IP address. For example, ldap://ad.company.com configures the directory service with the hostname \"ad\" in the domain \"company.com\" while specifying the unencrypted LDAP protocol."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "user_login": {
+                    "description": [
+                        "User login attribute in the structure of the configured LDAP servers. Typically the attribute field that holds the users unique login name. Default value is I(sAMAccountName) for Active Directory or I(uid) for all other directory services",
+                        "Supported from Purity 6.0 or higher."
+                    ],
+                    "type": "str"
+                },
+                "user_object": {
+                    "description": [
+                        "Value of the object class for a management LDAP user. Defaults to I(User) for Active Directory servers, I(posixAccount) or I(shadowAccount) for OpenLDAP servers dependent on the group type of the server, or person for all other directory servers.",
+                        "Supported from Purity 6.0 or higher."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Configure FlashArray Directory Service",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Delete existing directory service\n  purefa_ds:\n    state: absent\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create directory service (disabled) - Pre-5.2.0\n  purefa_ds:\n    uri: \"ldap://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    group_base: \"OU=Pure-Admin\"\n    ro_group: PureReadOnly\n    sa_group: PureStorage\n    aa_group: PureAdmin\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create directory service (disabled) - 5.2.0 or higher\n  purefa_ds:\n    dstype: management\n    uri: \"ldap://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Enable existing directory service\n  purefa_ds:\n    enable: true\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Disable existing directory service\n  purefa_ds:\n    enable: false\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create directory service (enabled) - Pre-5.2.0\n  purefa_ds:\n    enable: true\n    uri: \"ldap://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    group_base: \"OU=Pure-Admin\"\n    ro_group: PureReadOnly\n    sa_group: PureStorage\n    aa_group: PureAdmin\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create directory service (enabled) - 5.2.0 or higher\n  purefa_ds:\n    enable: true\n    dstype: management\n    uri: \"ldap://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

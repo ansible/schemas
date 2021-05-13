@@ -1,0 +1,161 @@
+{
+    "community.aws.aws_step_functions_state_machine_execution": {
+        "doc": {
+            "author": [
+                "Prasad Katti (@prasadkatti)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Start or stop execution of a state machine in AWS Step Functions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_step_functions_state_machine_execution.py",
+            "has_action": false,
+            "module": "aws_step_functions_state_machine_execution",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "action": {
+                    "choices": [
+                        "start",
+                        "stop"
+                    ],
+                    "default": "start",
+                    "description": "Desired action (start or stop) for a state machine execution.",
+                    "type": "str"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cause": {
+                    "default": "",
+                    "description": "A detailed explanation of the cause for stopping the execution.",
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "error": {
+                    "default": "",
+                    "description": "The error code of the failure to pass in when stopping the execution.",
+                    "type": "str"
+                },
+                "execution_arn": {
+                    "description": "The ARN of the execution you wish to stop.",
+                    "type": "str"
+                },
+                "execution_input": {
+                    "default": {},
+                    "description": "The JSON input data for the execution.",
+                    "type": "json"
+                },
+                "name": {
+                    "description": "Name of the execution.",
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state_machine_arn": {
+                    "description": "The ARN of the state machine that will be executed.",
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Start or stop execution of an AWS Step Functions state machine.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Start an execution of a state machine\n  community.aws.aws_step_functions_state_machine_execution:\n    name: an_execution_name\n    execution_input: '{ \"IsHelloWorldExample\": true }'\n    state_machine_arn: \"arn:aws:states:us-west-2:682285639423:stateMachine:HelloWorldStateMachine\"\n\n- name: Stop an execution of a state machine\n  community.aws.aws_step_functions_state_machine_execution:\n    action: stop\n    execution_arn: \"arn:aws:states:us-west-2:682285639423:execution:HelloWorldStateMachineCopy:a1e8e2b5-5dfe-d40e-d9e3-6201061047c8\"\n    cause: \"cause of task failure\"\n    error: \"error code of the failure\"\n",
+        "metadata": null,
+        "return": {
+            "execution_arn": {
+                "description": "ARN of the AWS Step Functions state machine execution.",
+                "returned": "if action == start and changed == True",
+                "sample": "arn:aws:states:us-west-2:682285639423:execution:HelloWorldStateMachineCopy:a1e8e2b5-5dfe-d40e-d9e3-6201061047c8",
+                "type": "str"
+            },
+            "start_date": {
+                "description": "The date the execution is started.",
+                "returned": "if action == start and changed == True",
+                "sample": "2019-11-02T22:39:49.071000-07:00",
+                "type": "str"
+            },
+            "stop_date": {
+                "description": "The date the execution is stopped.",
+                "returned": "if action == stop",
+                "sample": "2019-11-02T22:39:49.071000-07:00",
+                "type": "str"
+            }
+        }
+    }
+}

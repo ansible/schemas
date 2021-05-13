@@ -1,0 +1,235 @@
+{
+    "community.zabbix.zabbix_usergroup": {
+        "doc": {
+            "author": [
+                "Tobias Birkefeld (@tcraxs)"
+            ],
+            "collection": "community.zabbix",
+            "description": [
+                "Create user groups if they do not exist.",
+                "Delete existing user groups if they exist and are empty.",
+                "Update existing user groups."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/zabbix/plugins/modules/zabbix_usergroup.py",
+            "has_action": false,
+            "module": "zabbix_usergroup",
+            "notes": [
+                "Only Zabbix >= 4.0 is supported.",
+                "If you use I(login_password=zabbix), the word \"zabbix\" is replaced by \"********\" in all module output, because I(login_password) uses C(no_log). See L(this FAQ,https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-is-my-output-sometimes-replaced-with) for more information."
+            ],
+            "options": {
+                "debug_mode": {
+                    "choices": [
+                        "disabled",
+                        "enabled"
+                    ],
+                    "default": "disabled",
+                    "description": [
+                        "Whether debug mode is enabled or disabled."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "gui_access": {
+                    "choices": [
+                        "default",
+                        "internal",
+                        "LDAP",
+                        "disable"
+                    ],
+                    "default": "default",
+                    "description": [
+                        "Frontend authentication method of the users in the group.",
+                        "Possible values:",
+                        "default -  use the system default authentication method;",
+                        "internal - use internal authentication;",
+                        "LDAP - use LDAP authentication;",
+                        "disable - disable access to the frontend."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "http_login_password": {
+                    "description": [
+                        "Basic Auth password"
+                    ],
+                    "type": "str"
+                },
+                "http_login_user": {
+                    "description": [
+                        "Basic Auth login"
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "Zabbix user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "Zabbix user name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "user_group"
+                    ],
+                    "description": [
+                        "Name of the user group to create, update or delete."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "rights": {
+                    "description": [
+                        "Permissions to assign to the group"
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "host_group": {
+                            "description": [
+                                "Name of the host group to add permission to."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "permission": {
+                            "choices": [
+                                "denied",
+                                "read-only",
+                                "read-write"
+                            ],
+                            "description": [
+                                "Access level to the host group."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "server_url": {
+                    "aliases": [
+                        "url"
+                    ],
+                    "description": [
+                        "URL of Zabbix server, with protocol (http or https). C(url) is an alias for C(server_url)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the user group.",
+                        "On C(present), it will create if user group does not exist or update the user group if the associated data is different.",
+                        "On C(absent) will remove a user group if it exists."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "status": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "Whether the user group is enabled or disabled."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tag_filters": {
+                    "description": [
+                        "Tag based permissions to assign to the group"
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "host_group": {
+                            "description": [
+                                "Name of the host group to add permission to."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "tag": {
+                            "default": "",
+                            "description": [
+                                "Tag name."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "value": {
+                            "default": "",
+                            "description": [
+                                "Tag value."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The timeout of API request (seconds)."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to False, SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "zabbix-api >= 0.5.4"
+            ],
+            "short_description": "Create/delete/update Zabbix user groups"
+        },
+        "examples": "\n# Base create user group example\n- name: Create user group\n  community.zabbix.zabbix_usergroup:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    name: ACME\n    state: present\n\n# Base create user group with disabled gui access\n- name: Create user group with disabled gui access\n  community.zabbix.zabbix_usergroup:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    name: ACME\n    gui_access: disable\n\n# Base create user group with permissions\n- name: Create user group with permissions\n  community.zabbix.zabbix_usergroup:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    name: ACME\n    rights:\n        - host_group: Webserver\n          permission: read-write\n        - host_group: Databaseserver\n          permission: read-only\n    state: present\n\n# Base create user group with tag permissions\n- name: Create user group with tag permissions\n  community.zabbix.zabbix_usergroup:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    name: ACME\n    tag_filters:\n        - host_group: Webserver\n          tag: Application\n          value: Java\n        - host_group: Discovered hosts\n          tag: Service\n          value: JIRA\n    state: present\n\n# Base delete user groups example\n- name: Delete user groups\n  community.zabbix.zabbix_usergroup:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    name: ACME\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "The result of the operation",
+                "returned": "always",
+                "sample": "User group created: ACME, ID: 42",
+                "type": "str"
+            },
+            "state": {
+                "description": "User group state at the end of execution.",
+                "returned": "on success",
+                "sample": "present",
+                "type": "str"
+            },
+            "usergroup": {
+                "description": "User group name.",
+                "returned": "on success",
+                "sample": "ACME",
+                "type": "str"
+            },
+            "usrgrpid": {
+                "description": "User group id, if created, changed or deleted.",
+                "returned": "on success",
+                "sample": "42",
+                "type": "str"
+            }
+        }
+    }
+}

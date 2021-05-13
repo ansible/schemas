@@ -1,0 +1,143 @@
+{
+    "theforeman.foreman.repository_set": {
+        "doc": {
+            "author": "Andrew Kofink (@akofink)",
+            "collection": "theforeman.foreman",
+            "description": [
+                "Enable/disable Red Hat Repositories that are available through subscriptions"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/repository_set.py",
+            "has_action": false,
+            "module": "repository_set",
+            "options": {
+                "all_repositories": {
+                    "description": [
+                        "Affect all available repositories in the repository set instead of listing them in I(repositories).",
+                        "Required when I(repositories) is unset or an empty list."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "label": {
+                    "description": [
+                        "Label of the repository set, can be used in place of I(name) & I(product)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the repository set"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "organization": {
+                    "description": [
+                        "Organization that the entity is in"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "product": {
+                    "description": [
+                        "Name of the parent product"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "repositories": {
+                    "description": [
+                        "Release version and base architecture of the repositories to enable.",
+                        "Some reposotory sets require only I(basearch) or only I(releasever) to be set.",
+                        "See the examples how you can obtain this information using M(theforeman.foreman.resource_info).",
+                        "Required when I(all_repositories) is unset or C(false)."
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "basearch": {
+                            "description": [
+                                "Basearch of the repository to enable."
+                            ],
+                            "type": "str"
+                        },
+                        "releasever": {
+                            "description": [
+                                "Releasever of the repository to enable."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "Whether the repositories are enabled or not"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Enable/disable Red Hat Repositories available through subscriptions",
+            "version_added": "1.0.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n- name: \"Enable RHEL 7 RPMs repositories\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"Red Hat Enterprise Linux 7 Server (RPMs)\"\n    organization: \"Default Organization\"\n    product: \"Red Hat Enterprise Linux Server\"\n    repositories:\n    - releasever: \"7.0\"\n      basearch: \"x86_64\"\n    - releasever: \"7.1\"\n      basearch: \"x86_64\"\n    - releasever: \"7.2\"\n      basearch: \"x86_64\"\n    - releasever: \"7.3\"\n      basearch: \"x86_64\"\n    state: enabled\n\n- name: \"Enable RHEL 7 RPMs repositories with label\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    label: rhel-7-server-rpms\n    repositories:\n    - releasever: \"7.0\"\n      basearch: \"x86_64\"\n    - releasever: \"7.1\"\n      basearch: \"x86_64\"\n    - releasever: \"7.2\"\n      basearch: \"x86_64\"\n    - releasever: \"7.3\"\n      basearch: \"x86_64\"\n    state: enabled\n\n- name: \"Disable RHEL 7 Extras RPMs repository\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: Red Hat Enterprise Linux 7 Server - Extras (RPMs)\n    organization: \"Default Organization\"\n    product: Red Hat Enterprise Linux Server\n    state: disabled\n    repositories:\n      - basearch: x86_64\n\n- name: \"Enable RHEL 8 BaseOS RPMs repository with label\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    label: rhel-8-for-x86_64-baseos-rpms\n    repositories:\n      - releasever: \"8\"\n\n- name: \"Enable Red Hat Virtualization Manager RPMs repository with label\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    label: \"rhel-7-server-rhv-4.2-manager-rpms\"\n    repositories:\n      - basearch: x86_64\n    state: enabled\n\n- name: \"Enable Red Hat Virtualization Manager RPMs repository without specifying basearch\"\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    label: \"rhel-7-server-rhv-4.2-manager-rpms\"\n    all_repositories: true\n    state: enabled\n\n- name: \"Search for possible repository sets of a product\"\n  theforeman.foreman.resource_info:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    resource: repository_sets\n    search: product_name=\"Red Hat Virtualization Manager\"\n  register: data\n- name: \"Output found repository sets, see the contentUrl section for possible repository substitutions\"\n  debug:\n    var: data\n\n- name: \"Search for possible repository sets by label\"\n  theforeman.foreman.resource_info:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    resource: repository_sets\n    search: label=rhel-7-server-rhv-4.2-manager-rpms\n  register: data\n- name: \"Output found repository sets, see the contentUrl section for possible repository substitutions\"\n  debug:\n    var: data\n\n- name: Enable set with and without all_repositories at the same time\n  theforeman.foreman.repository_set:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    organization: \"Default Organization\"\n    label: \"{{ item.label }}\"\n    repositories: \"{{ item.repositories | default(omit) }}\"\n    all_repositories: \"{{ item.repositories is not defined }}\"\n    state: enabled\n  loop:\n    - label: rhel-7-server-rpms\n      repositories:\n        - releasever: \"7Server\"\n          basearch: \"x86_64\"\n    - label: rhel-7-server-rhv-4.2-manager-rpms\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "repository_sets": {
+                        "description": "List of repository sets.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

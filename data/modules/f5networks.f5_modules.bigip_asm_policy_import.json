@@ -1,0 +1,287 @@
+{
+    "f5networks.f5_modules.bigip_asm_policy_import": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)",
+                "Nitin Khanna (@nitinthewiz)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage the policy imports for BIG-IP ASM policies."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_asm_policy_import.py",
+            "has_action": false,
+            "module": "bigip_asm_policy_import",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "base64": {
+                    "description": [
+                        "Indicates if the imported policy string is encoded in Base64.",
+                        "Parameter only takes effect when using the C(inline) method of import."
+                    ],
+                    "type": "bool"
+                },
+                "encoding": {
+                    "choices": [
+                        "windows-874",
+                        "utf-8",
+                        "koi8-r",
+                        "windows-1253",
+                        "iso-8859-10",
+                        "gbk",
+                        "windows-1256",
+                        "windows-1250",
+                        "iso-8859-13",
+                        "iso-8859-9",
+                        "windows-1251",
+                        "iso-8859-6",
+                        "big5",
+                        "gb2312",
+                        "iso-8859-1",
+                        "windows-1252",
+                        "iso-8859-4",
+                        "iso-8859-2",
+                        "iso-8859-3",
+                        "gb18030",
+                        "shift_jis",
+                        "iso-8859-8",
+                        "euc-kr",
+                        "iso-8859-5",
+                        "iso-8859-7",
+                        "windows-1255",
+                        "euc-jp",
+                        "iso-8859-15",
+                        "windows-1257",
+                        "iso-8859-16",
+                        "auto-detect"
+                    ],
+                    "description": [
+                        "Specifies the desired application language of the imported policy.",
+                        "The imported policy cannot be a C(parent) type or attached to a C(parent) policy when C(auto-detect) encoding is set.",
+                        "When importing a policy to attach to a C(parent) policy, the C(encoding) of the imported policy, if different, must be set to be the same value as C(parent_policy), otherwise import will fail.",
+                        "This parameter is available on TMOS version 13.x and later and only takes effect when the C(inline) import method is used."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "When set to C(yes) any existing policy with the same name will be overwritten by the new import.",
+                        "Works for both inline and file imports, if the policy does not exist this setting is ignored."
+                    ],
+                    "type": "bool"
+                },
+                "inline": {
+                    "description": [
+                        "When specified, the ASM policy is created from a provided string.",
+                        "Content needs to be provided in a valid XML format, otherwise the operation will fail."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The ASM policy to create or override."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent_policy": {
+                    "description": [
+                        "The parent policy to which the newly imported policy should be attached as child.",
+                        "When C(parent_policy) is specified, the imported C(policy_type) must not be C(parent).",
+                        "This parameter is available on TMOS version 13.x and later and only takes effect when C(inline) import method is used."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition on which to create the policy.",
+                        "This parameter is also applied to indicate the partition of the C(parent) policy."
+                    ],
+                    "type": "str"
+                },
+                "policy_type": {
+                    "choices": [
+                        "security",
+                        "parent"
+                    ],
+                    "default": "security",
+                    "description": [
+                        "The type of the policy to import.",
+                        "When C(policy_type) is C(security), the policy is imported as an application security policy that you can apply to a virtual server.",
+                        "When C(policy_type) is C(parent), the policy becomes a parent to which other Security policies attach, inheriting its attributes. This policy type cannot be applied to Virtual Servers.",
+                        "This parameter is available on TMOS version 13.x and later and only takes effect when the C(inline) import method is used."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "retain_inheritance_settings": {
+                    "description": [
+                        "Indicate if an imported security type policy should retain settings when attached to parent policy.",
+                        "This parameter is available on TMOS version 13.x and later and only takes effect when the C(inline) import method is used."
+                    ],
+                    "type": "bool"
+                },
+                "source": {
+                    "description": [
+                        "Full path to a policy file to be imported into the BIG-IP ASM.",
+                        "Policy files exported from newer versions of BIG-IP cannot be imported into older versions of BIG-IP. The opposite, however, is true; you can import older into newer.",
+                        "The file format can be binary or XML."
+                    ],
+                    "type": "path"
+                }
+            },
+            "short_description": "Manage BIG-IP ASM policy imports",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Import ASM policy\n  bigip_asm_policy_import:\n    name: new_asm_policy\n    file: /root/asm_policy.xml\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Import ASM policy inline\n  bigip_asm_policy_import:\n    name: foo-policy4\n    inline: <xml>content</xml>\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Override existing ASM policy\n  bigip_asm_policy:\n    name: new_asm_policy\n    source: /root/asm_policy_new.xml\n    force: yes\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "base64": {
+                "description": "Indicates if the imported policy string is encoded in Base64.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "encoding": {
+                "description": "The desired application language of the imported policy.",
+                "returned": "changed",
+                "sample": "utf-8",
+                "type": "str"
+            },
+            "force": {
+                "description": "Set when overwriting an existing policy.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "inline": {
+                "description": "Contents of a policy as an inline string.",
+                "returned": "changed",
+                "sample": "<xml>foobar contents</xml>",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the ASM policy to be created/overwritten.",
+                "returned": "changed",
+                "sample": "Asm_APP1_Transparent",
+                "type": "str"
+            },
+            "parent_policy": {
+                "description": "The parent policy to which the newly imported policy should be attached as child.",
+                "returned": "changed",
+                "sample": "/Common/parent",
+                "type": "str"
+            },
+            "policy_type": {
+                "description": "The type of the policy to import.",
+                "returned": "changed",
+                "sample": "security",
+                "type": "str"
+            },
+            "retain_inheritance_settings": {
+                "description": "Indicate if an imported security type policy should retain settings when attached to the parent policy.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "source": {
+                "description": "Local path to an ASM policy file.",
+                "returned": "changed",
+                "sample": "/root/some_policy.xml",
+                "type": "str"
+            }
+        }
+    }
+}

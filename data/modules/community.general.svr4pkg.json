@@ -1,0 +1,84 @@
+{
+    "community.general.svr4pkg": {
+        "doc": {
+            "author": "Boyd Adamson (@brontitall)",
+            "collection": "community.general",
+            "description": [
+                "Manages SVR4 packages on Solaris 10 and 11.",
+                "These were the native packages on Solaris <= 10 and are available as a legacy feature in Solaris 11.",
+                "Note that this is a very basic packaging system. It will not enforce dependencies on install or remove."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/svr4pkg.py",
+            "has_action": false,
+            "module": "svr4pkg",
+            "options": {
+                "category": {
+                    "default": false,
+                    "description": [
+                        "Install/Remove category instead of a single package."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Package name, e.g. C(SUNWcsr)"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "proxy": {
+                    "description": [
+                        "HTTP[s] proxy to be used if C(src) is a URL."
+                    ],
+                    "type": "str"
+                },
+                "response_file": {
+                    "description": [
+                        "Specifies the location of a response file to be used if package expects input on install. (added in Ansible 1.4)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "Specifies the location to install the package from. Required when C(state=present).",
+                        "Can be any path acceptable to the C(pkgadd) command's C(-d) option. e.g.: C(somefile.pkg), C(/dir/with/pkgs), C(http:/server/mypkgs.pkg).",
+                        "If using a file or directory, they must already be accessible by the host. See the M(ansible.builtin.copy) module for a way to get them there."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Whether to install (C(present)), or remove (C(absent)) a package.",
+                        "If the package is to be installed, then I(src) is required.",
+                        "The SVR4 package system doesn't provide an upgrade operation. You need to uninstall the old, then install the new package."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "zone": {
+                    "choices": [
+                        "current",
+                        "all"
+                    ],
+                    "default": "all",
+                    "description": [
+                        "Whether to install the package only in the current zone, or install it into all zones.",
+                        "The installation into all zones works only if you are working with the global zone."
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage Solaris SVR4 packages"
+        },
+        "examples": "\n- name: Install a package from an already copied file\n  community.general.svr4pkg:\n    name: CSWcommon\n    src: /tmp/cswpkgs.pkg\n    state: present\n\n- name: Install a package directly from an http site\n  community.general.svr4pkg:\n    name: CSWpkgutil\n    src: 'http://get.opencsw.org/now'\n    state: present\n    zone: current\n\n- name: Install a package with a response file\n  community.general.svr4pkg:\n    name: CSWggrep\n    src: /tmp/third-party.pkg\n    response_file: /tmp/ggrep.response\n    state: present\n\n- name: Ensure that a package is not installed\n  community.general.svr4pkg:\n    name: SUNWgnome-sound-recorder\n    state: absent\n\n- name: Ensure that a category is not installed\n  community.general.svr4pkg:\n    name: FIREFOX\n    state: absent\n    category: true\n",
+        "metadata": null,
+        "return": null
+    }
+}

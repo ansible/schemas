@@ -1,12 +1,15 @@
 """Rebuilds JSON Schemas from our models."""
 import json
+import multiprocessing
 import os
 import subprocess
 from pathlib import Path
 from typing import Dict, List
 
 import requests
+from rich.progress import Progress
 
+from ansibleschemas._modules import ANSIBLE_MODULES
 from ansibleschemas.ansiblelint import AnsibleLintModel
 from ansibleschemas.galaxy import GalaxyFileModel
 from ansibleschemas.meta import MetaModel
@@ -64,6 +67,23 @@ def dump_ansible_modules() -> None:
     modules = sorted(json.loads(result.stdout).keys())
     with open(f"{module_dir}/_modules.py", "w") as file:
         file.write(GENERATED_HEADER + f"\nANSIBLE_MODULES = {modules}\n")
+
+
+def dump_module_doc(module):
+    """Dumps module docs as json."""
+    os.system(f"ansible-doc -j {module} > data/modules/{module}.json")
+    return module
+
+
+def doc_dump() -> None:
+    """Dump documentation for all Ansible modules."""
+    with Progress() as progress:
+        results = []
+        task_id = progress.add_task("Dumping doc for each module ...", total=len(ANSIBLE_MODULES))
+        with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+            for result in pool.imap(dump_module_doc, ANSIBLE_MODULES):
+                results.append(result)
+                progress.advance(task_id)
 
 
 def main() -> None:

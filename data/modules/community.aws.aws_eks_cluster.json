@@ -1,0 +1,238 @@
+{
+    "community.aws.aws_eks_cluster": {
+        "doc": {
+            "author": "Will Thames (@willthames)",
+            "collection": "community.aws",
+            "description": [
+                "Manage Elastic Kubernetes Service Clusters"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_eks_cluster.py",
+            "has_action": false,
+            "module": "aws_eks_cluster",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": "Name of EKS cluster",
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "role_arn": {
+                    "description": "ARN of IAM role used by the EKS cluster",
+                    "type": "str"
+                },
+                "security_groups": {
+                    "description": "list of security group names or IDs",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": "desired state of the EKS cluster",
+                    "type": "str"
+                },
+                "subnets": {
+                    "description": "list of subnet IDs for the Kubernetes cluster",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "version": {
+                    "description": "Kubernetes version - defaults to latest",
+                    "type": "str"
+                },
+                "wait": {
+                    "default": false,
+                    "description": "Specifies whether the module waits until the cluster is active or deleted before moving on. It takes \"usually less than 10 minutes\" per AWS documentation.",
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 1200,
+                    "description": "The duration in seconds to wait for the cluster to become active. Defaults to 1200 seconds (20 minutes).",
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage Elastic Kubernetes Service Clusters",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Create an EKS cluster\n  community.aws.aws_eks_cluster:\n    name: my_cluster\n    version: 1.14\n    role_arn: my_eks_role\n    subnets:\n      - subnet-aaaa1111\n    security_groups:\n      - my_eks_sg\n      - sg-abcd1234\n  register: caller_facts\n\n- name: Remove an EKS cluster\n  community.aws.aws_eks_cluster:\n    name: my_cluster\n    wait: yes\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "arn": {
+                "description": "ARN of the EKS cluster",
+                "returned": "when state is present",
+                "sample": "arn:aws:eks:us-west-2:111111111111:cluster/my-eks-cluster",
+                "type": "str"
+            },
+            "certificate_authority": {
+                "contains": {
+                    "data": {
+                        "description": "Base-64 encoded Certificate Authority Data for cluster",
+                        "returned": "when the cluster has been created and is active",
+                        "type": "str"
+                    }
+                },
+                "description": "Dictionary containing Certificate Authority Data for cluster",
+                "returned": "after creation",
+                "type": "complex"
+            },
+            "created_at": {
+                "description": "Cluster creation date and time",
+                "returned": "when state is present",
+                "sample": "2018-06-06T11:56:56.242000+00:00",
+                "type": "str"
+            },
+            "endpoint": {
+                "description": "Kubernetes API server endpoint",
+                "returned": "when the cluster has been created and is active",
+                "sample": "https://API_SERVER_ENDPOINT.yl4.us-west-2.eks.amazonaws.com",
+                "type": "str"
+            },
+            "name": {
+                "description": "EKS cluster name",
+                "returned": "when state is present",
+                "sample": "my-eks-cluster",
+                "type": "str"
+            },
+            "resources_vpc_config": {
+                "contains": {
+                    "security_group_ids": {
+                        "description": "List of security group IDs",
+                        "returned": "always",
+                        "sample": [
+                            "sg-abcd1234",
+                            "sg-aaaa1111"
+                        ],
+                        "type": "list"
+                    },
+                    "subnet_ids": {
+                        "description": "List of subnet IDs",
+                        "returned": "always",
+                        "sample": [
+                            "subnet-abcdef12",
+                            "subnet-345678ab",
+                            "subnet-cdef1234"
+                        ],
+                        "type": "list"
+                    },
+                    "vpc_id": {
+                        "description": "VPC id",
+                        "returned": "always",
+                        "sample": "vpc-a1b2c3d4",
+                        "type": "str"
+                    }
+                },
+                "description": "VPC configuration of the cluster",
+                "returned": "when state is present",
+                "type": "complex"
+            },
+            "role_arn": {
+                "description": "ARN of the IAM role used by the cluster",
+                "returned": "when state is present",
+                "sample": "arn:aws:iam::111111111111:role/aws_eks_cluster_role",
+                "type": "str"
+            },
+            "status": {
+                "description": "status of the EKS cluster",
+                "returned": "when state is present",
+                "sample": [
+                    "CREATING",
+                    "ACTIVE"
+                ],
+                "type": "str"
+            },
+            "version": {
+                "description": "Kubernetes version of the cluster",
+                "returned": "when state is present",
+                "sample": "1.10",
+                "type": "str"
+            }
+        }
+    }
+}

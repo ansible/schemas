@@ -1,0 +1,243 @@
+{
+    "f5networks.f5_modules.bigip_firewall_schedule": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage BIG-IP AFM (Avanced Firewall Manager) schedule configurations."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_firewall_schedule.py",
+            "has_action": false,
+            "module": "bigip_firewall_schedule",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "daily_hour_end": {
+                    "description": [
+                        "Specifies the time of day the rule will stop being used.",
+                        "When not defined, the default of C(24:00) is used when creating a new schedule.",
+                        "The time zone is always assumed to be UTC and values must be provided as C(HH:MM) using 24hour clock format."
+                    ],
+                    "type": "str"
+                },
+                "daily_hour_start": {
+                    "description": [
+                        "Specifies the time of day the rule will start to be in use.",
+                        "The value must be a time before C(daily_hour_end).",
+                        "When not defined, the default of C(0:00) is used when creating a new schedule.",
+                        "When the value is set to C(all-day) both C(daily_hour_end) and C(daily_hour_start) are reset to their respective defaults.",
+                        "The time zone is always assumed to be UTC and values must be provided as C(HH:MM) using 24hour clock format."
+                    ],
+                    "type": "str"
+                },
+                "date_valid_end": {
+                    "description": [
+                        "Specifies the end date/time this schedule will apply to the rule.",
+                        "The date must be after C(date_valid_start)",
+                        "When not defined, the default of C(indefinite) is used when creating a new schedule.",
+                        "The time zone is always assumed to be UTC.",
+                        "The datetime format should always be in C(YYYY-MM-DD:HH:MM:SS) format."
+                    ],
+                    "type": "str"
+                },
+                "date_valid_start": {
+                    "description": [
+                        "Specifies the start date/time this schedule will apply to the rule.",
+                        "When not defined the default of C(epoch) is used when creating a new schedule.",
+                        "The time zone is always assumed to be UTC.",
+                        "The datetime format should always be in C(YYYY-MM-DD:HH:MM:SS) format."
+                    ],
+                    "type": "str"
+                },
+                "days_of_week": {
+                    "choices": [
+                        "sunday",
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "all"
+                    ],
+                    "description": [
+                        "Specifies which days of the week the rule will be applied.",
+                        "When not defined, the default value of C(all) is used when creating a new schedule.",
+                        "The C(all) value is mutually exclusive with other choices."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "description": {
+                    "description": [
+                        "Specifies the user defined description text."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the AFM schedule configuration."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage BIG-IP AFM schedule configurations",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a 6 hour two day schedule, no start/end date\n  bigip_firewall_schedule:\n    name: barfoo\n    daily_hour_start: 13:00\n    daily_hour_end: 19:00\n    days_of_week:\n      - monday\n      - tuesday\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create a seven day schedule with start/end date\n  bigip_firewall_schedule:\n    name: foobar\n    date_valid_start: \"{{ lookup('pipe','date +%Y-%m-%d:%H:%M:%S') }}\"\n    date_valid_end: \"{{ lookup('pipe','date -d \\\"now + 7 days\\\" +%Y-%m-%d:%H:%M:%S') }}\"\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Modify created schedule to all-day\n  bigip_firewall_schedule:\n    name: barfoo\n    daily_hour_start: all-day\n    days_of_week:\n      - monday\n      - tuesday\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Modify a schedule to have no end date\n  bigip_firewall_schedule:\n    name: foobar\n    date_valid_start: \"{{ lookup('pipe','date +%Y-%m-%d:%H:%M:%S') }}\"\n    date_valid_end: \"indefinite\"\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove created schedule\n  bigip_firewall_schedule:\n    name: foobar\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "daily_hour_end": {
+                "description": "The time of day the rule will stop being used.",
+                "returned": "changed",
+                "sample": "18:00",
+                "type": "str"
+            },
+            "daily_hour_start": {
+                "description": "The time of day the rule will start to be in use.",
+                "returned": "changed",
+                "sample": "13:00",
+                "type": "str"
+            },
+            "date_valid_end": {
+                "description": "The end date/time schedule will apply to the rule.",
+                "returned": "changed",
+                "sample": "2019-03-11:15:30:00",
+                "type": "str"
+            },
+            "date_valid_start": {
+                "description": "The start date/time schedule will apply to the rule.",
+                "returned": "changed",
+                "sample": "2019-03-01:15:30:00",
+                "type": "str"
+            },
+            "days_of_week": {
+                "description": "The days of the week the rule will be applied.",
+                "returned": "changed",
+                "sample": [
+                    "monday",
+                    "tuesday"
+                ],
+                "type": "list"
+            },
+            "description": {
+                "description": "The user defined description text.",
+                "returned": "changed",
+                "sample": "Foo is bar",
+                "type": "str"
+            }
+        }
+    }
+}

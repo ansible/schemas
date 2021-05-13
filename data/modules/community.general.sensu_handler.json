@@ -1,0 +1,159 @@
+{
+    "community.general.sensu_handler": {
+        "doc": {
+            "author": "David Moreau Simard (@dmsimard)",
+            "collection": "community.general",
+            "description": [
+                "Manages Sensu handler configuration",
+                "For more information, refer to the Sensu documentation: U(https://sensuapp.org/docs/latest/reference/handlers.html)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/sensu_handler.py",
+            "has_action": false,
+            "module": "sensu_handler",
+            "notes": [
+                "Check mode is supported"
+            ],
+            "options": {
+                "command": {
+                    "description": [
+                        "The handler command to be executed.",
+                        "The event data is passed to the process via STDIN.",
+                        "NOTE: the command attribute is only required for Pipe handlers (i.e. handlers configured with \"type\": \"pipe\")."
+                    ],
+                    "type": "str"
+                },
+                "filter": {
+                    "description": [
+                        "The Sensu event filter (name) to use when filtering events for the handler."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "description": [
+                        "An array of Sensu event filters (names) to use when filtering events for the handler.",
+                        "Each array item must be a string."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "handle_flapping": {
+                    "default": "no",
+                    "description": [
+                        "If events in the flapping state should be handled."
+                    ],
+                    "type": "bool"
+                },
+                "handle_silenced": {
+                    "default": "no",
+                    "description": [
+                        "If events matching one or more silence entries should be handled."
+                    ],
+                    "type": "bool"
+                },
+                "handlers": {
+                    "description": [
+                        "An array of Sensu event handlers (names) to use for events using the handler set.",
+                        "NOTE: the handlers attribute is only required for handler sets (i.e. handlers configured with \"type\": \"set\")."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "mutator": {
+                    "description": [
+                        "The Sensu event mutator (name) to use to mutate event data for the handler."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "A unique name for the handler. The name cannot contain special characters or spaces."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "pipe": {
+                    "description": [
+                        "The pipe definition scope, used to configure the Sensu transport pipe.",
+                        "NOTE: the pipe attribute is only required for Transport handlers (i.e. handlers configured with \"type\": \"transport\")."
+                    ],
+                    "type": "dict"
+                },
+                "severities": {
+                    "description": [
+                        "An array of check result severities the handler will handle.",
+                        "NOTE: event resolution bypasses this filtering.",
+                        "Example: [ 'warning', 'critical', 'unknown' ]."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "socket": {
+                    "description": [
+                        "The socket definition scope, used to configure the TCP/UDP handler socket.",
+                        "NOTE: the socket attribute is only required for TCP/UDP handlers (i.e. handlers configured with \"type\": \"tcp\" or \"type\": \"udp\")."
+                    ],
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the handler should be present or not"
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The handler execution duration timeout in seconds (hard stop).",
+                        "Only used by pipe and tcp handler types."
+                    ],
+                    "type": "int"
+                },
+                "type": {
+                    "choices": [
+                        "pipe",
+                        "tcp",
+                        "udp",
+                        "transport",
+                        "set"
+                    ],
+                    "description": [
+                        "The handler type"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages Sensu handler configuration"
+        },
+        "examples": "\n# Configure a handler that sends event data as STDIN (pipe)\n- name: Configure IRC Sensu handler\n  community.general.sensu_handler:\n    name: \"irc_handler\"\n    type: \"pipe\"\n    command: \"/usr/local/bin/notify-irc.sh\"\n    severities:\n      - \"ok\"\n      - \"critical\"\n      - \"warning\"\n      - \"unknown\"\n    timeout: 15\n  notify:\n    - Restart sensu-client\n    - Restart sensu-server\n\n# Delete a handler\n- name: Delete IRC Sensu handler\n  community.general.sensu_handler:\n    name: \"irc_handler\"\n    state: \"absent\"\n\n# Example of a TCP handler\n- name: Configure TCP Sensu handler\n  community.general.sensu_handler:\n    name: \"tcp_handler\"\n    type: \"tcp\"\n    timeout: 30\n    socket:\n      host: \"10.0.1.99\"\n      port: 4444\n  register: handler\n  notify:\n    - Restart sensu-client\n    - Restart sensu-server\n\n- name: Secure Sensu handler configuration file\n  ansible.builtin.file:\n    path: \"{{ handler['file'] }}\"\n    owner: \"sensu\"\n    group: \"sensu\"\n    mode: \"0600\"\n",
+        "metadata": null,
+        "return": {
+            "config": {
+                "description": "Effective handler configuration, when state is present",
+                "returned": "success",
+                "sample": {
+                    "command": "/usr/local/bin/notify-irc.sh",
+                    "name": "irc",
+                    "type": "pipe"
+                },
+                "type": "dict"
+            },
+            "file": {
+                "description": "Path to the handler configuration file",
+                "returned": "success",
+                "sample": "/etc/sensu/conf.d/handlers/irc.json",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the handler",
+                "returned": "success",
+                "sample": "irc",
+                "type": "str"
+            }
+        }
+    }
+}

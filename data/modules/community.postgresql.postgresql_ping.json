@@ -1,0 +1,147 @@
+{
+    "community.postgresql.postgresql_ping": {
+        "doc": {
+            "author": [
+                "Andrew Klychkov (@Andersson007)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Simple module to check remote PostgreSQL server availability."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_ping.py",
+            "has_action": false,
+            "module": "postgresql_ping",
+            "notes": [
+                "Supports C(check_mode).",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of a database to connect to."
+                    ],
+                    "type": "str"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting. The specified session_role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session_role were the one that had logged in originally."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether a value of I(session_role) is potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via I(session_role) are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.postgresql.postgresql_info"
+                }
+            ],
+            "short_description": "Check remote PostgreSQL server availability"
+        },
+        "examples": "\n# PostgreSQL ping dbsrv server from the shell:\n# ansible dbsrv -m postgresql_ping\n\n# In the example below you need to generate certificates previously.\n# See https://www.postgresql.org/docs/current/libpq-ssl.html for more information.\n- name: PostgreSQL ping dbsrv server using not default credentials and ssl\n  community.postgresql.postgresql_ping:\n    db: protected_db\n    login_host: dbsrv\n    login_user: secret\n    login_password: secret_pass\n    ca_cert: /root/root.crt\n    ssl_mode: verify-full\n",
+        "metadata": null,
+        "return": {
+            "is_available": {
+                "description": "PostgreSQL server availability.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "server_version": {
+                "description": "PostgreSQL server version.",
+                "returned": "always",
+                "sample": {
+                    "full": "13.2",
+                    "major": 13,
+                    "minor": 2,
+                    "raw": "PostgreSQL 13.2 on x86_64-pc-linux-gnu"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

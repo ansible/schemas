@@ -1,0 +1,110 @@
+{
+    "dellemc.openmanage.ome_user": {
+        "doc": {
+            "author": "Sajna Shetty(@Sajna-Shetty)",
+            "collection": "dellemc.openmanage",
+            "description": "This module creates, modifies or deletes a user on OpenManage Enterprise.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/ome_user.py",
+            "has_action": false,
+            "module": "ome_user",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC OpenManage Enterprise.",
+                "This module does not support C(check_mode)."
+            ],
+            "options": {
+                "attributes": {
+                    "default": {},
+                    "description": [
+                        "Payload data for the user operations. It can take the following attributes for C(present).",
+                        "UserTypeId, DirectoryServiceId, Description, Name, Password, UserName, RoleId, Locked, Enabled.",
+                        "OME will throw error if required parameter is not provided for operation.",
+                        "Refer OpenManage Enterprise API Reference Guide for more details."
+                    ],
+                    "type": "dict"
+                },
+                "hostname": {
+                    "description": "Target IP address or hostname.",
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Unique Name of the user to be deleted.",
+                        "Either I(user_id) or I(name) is mandatory for C(absent) operation."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": "Target user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": "Target HTTPS port.",
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "C(present) creates a user in case the I(UserName) provided inside I(attributes) does not exist.",
+                        "C(present) modifies a user in case the I(UserName) provided inside I(attributes) exists.",
+                        "C(absent) deletes an existing user."
+                    ],
+                    "type": "str"
+                },
+                "user_id": {
+                    "description": [
+                        "Unique ID of the user to be deleted.",
+                        "Either I(user_id) or I(name) is mandatory for C(absent) operation."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "description": "Target username.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7.5"
+            ],
+            "short_description": "Create, modify or delete a user on OpenManage Enterprise",
+            "version_added": "2.0.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Create user with required parameters\n  dellemc.openmanage.ome_user:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    attributes:\n      UserName: \"user1\"\n      Password: \"UserPassword\"\n      RoleId: \"10\"\n      Enabled: True\n\n- name: Create user with all parameters\n  dellemc.openmanage.ome_user:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    attributes:\n      UserName: \"user2\"\n      Description: \"user2 description\"\n      Password: \"UserPassword\"\n      RoleId: \"10\"\n      Enabled: True\n      DirectoryServiceId: 0\n      UserTypeId: 1\n      Locked: False\n      Name: \"user2\"\n\n- name: Modify existing user\n  dellemc.openmanage.ome_user:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    state: \"present\"\n    attributes:\n      UserName: \"user3\"\n      RoleId: \"10\"\n      Enabled: True\n      Description: \"Modify user Description\"\n\n- name: Delete existing user using id\n  dellemc.openmanage.ome_user:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    state: \"absent\"\n    user_id: 1234\n\n- name: Delete existing user using name\n  dellemc.openmanage.ome_user:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    state: \"absent\"\n    name: \"name\"\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Overall status of the user operation.",
+                "returned": "always",
+                "sample": "Successfully created a User",
+                "type": "str"
+            },
+            "user_status": {
+                "description": "Details of the user operation, when I(state) is C(present).",
+                "returned": "When I(state) is C(present).",
+                "sample": {
+                    "Description": "Test user creation",
+                    "DirectoryServiceId": 0,
+                    "Enabled": true,
+                    "Id": "61546",
+                    "IsBuiltin": false,
+                    "Locked": false,
+                    "Name": "test",
+                    "Password": null,
+                    "PlainTextPassword": null,
+                    "RoleId": "10",
+                    "UserName": "test",
+                    "UserTypeId": 1
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

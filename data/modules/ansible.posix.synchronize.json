@@ -1,0 +1,246 @@
+{
+    "ansible.posix.synchronize": {
+        "doc": {
+            "author": [
+                "Timothy Appnel (@tima)"
+            ],
+            "collection": "ansible.posix",
+            "description": [
+                "C(synchronize) is a wrapper around rsync to make common tasks in your playbooks quick and easy.",
+                "It is run and originates on the local host where Ansible is being run.",
+                "Of course, you could just use the C(command) action to call rsync yourself, but you also have to add a fair number of boilerplate options and host facts.",
+                "This module is not intended to provide access to the full power of rsync, but does make the most common invocations easier to implement. You `still` may need to call rsync directly via C(command) or C(shell) depending on your use case."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/posix/plugins/modules/synchronize.py",
+            "has_action": true,
+            "module": "synchronize",
+            "notes": [
+                "rsync must be installed on both the local and remote host.",
+                "For the C(synchronize) module, the \"local host\" is the host `the synchronize task originates on`, and the \"destination host\" is the host `synchronize is connecting to`.",
+                "The \"local host\" can be changed to a different host by using `delegate_to`.  This enables copying between two remote hosts or entirely on one remote machine.",
+                "The user and permissions for the synchronize `src` are those of the user running the Ansible task on the local host (or the remote_user for a delegate_to host when delegate_to is used).\n",
+                "The user and permissions for the synchronize `dest` are those of the `remote_user` on the destination host or the `become_user` if `become=yes` is active.",
+                "In Ansible 2.0 a bug in the synchronize module made become occur on the \"local host\".  This was fixed in Ansible 2.0.1.",
+                "Currently, synchronize is limited to elevating permissions via passwordless sudo.  This is because rsync itself is connecting to the remote machine and rsync doesn't give us a way to pass sudo credentials in.",
+                "Currently there are only a few connection types which support synchronize (ssh, paramiko, local, and docker) because a sync strategy has been determined for those connection types.  Note that the connection for these must not need a password as rsync itself is making the connection and rsync does not provide us a way to pass a password to the connection.",
+                "Expect that dest=~/x will be ~<remote_user>/x even if using sudo.",
+                "Inspect the verbose output to validate the destination user/host/path are what was expected.",
+                "To exclude files and directories from being synchronized, you may add C(.rsync-filter) files to the source directory.",
+                "rsync daemon must be up and running with correct permission when using rsync protocol in source or destination path.",
+                "The C(synchronize) module forces `--delay-updates` to avoid leaving a destination in a broken in-between state if the underlying rsync process encounters an error. Those synchronizing large numbers of files that are willing to trade safety for performance should call rsync directly.",
+                "link_destination is subject to the same limitations as the underlying rsync daemon. Hard links are only preserved if the relative subtrees of the source and destination are the same. Attempts to hardlink into a directory that is a subdirectory of the source will be prevented."
+            ],
+            "options": {
+                "archive": {
+                    "default": true,
+                    "description": [
+                        "Mirrors the rsync archive flag, enables recursive, links, perms, times, owner, group flags and -D."
+                    ],
+                    "type": "bool"
+                },
+                "checksum": {
+                    "default": false,
+                    "description": [
+                        "Skip based on checksum, rather than mod-time & size; Note that that \"archive\" option is still enabled by default - the \"checksum\" option will not disable it."
+                    ],
+                    "type": "bool"
+                },
+                "compress": {
+                    "default": true,
+                    "description": [
+                        "Compress file data during the transfer.",
+                        "In most cases, leave this enabled unless it causes problems."
+                    ],
+                    "type": "bool"
+                },
+                "copy_links": {
+                    "default": false,
+                    "description": [
+                        "Copy symlinks as the item that they point to (the referent) is copied, rather than the symlink."
+                    ],
+                    "type": "bool"
+                },
+                "delete": {
+                    "default": false,
+                    "description": [
+                        "Delete files in C(dest) that don't exist (after transfer, not before) in the C(src) path.",
+                        "This option requires C(recursive=yes).",
+                        "This option ignores excluded files and behaves like the rsync opt --delete-excluded."
+                    ],
+                    "type": "bool"
+                },
+                "dest": {
+                    "description": [
+                        "Path on the destination host that will be synchronized from the source.",
+                        "The path can be absolute or relative."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "dest_port": {
+                    "description": [
+                        "Port number for ssh on the destination host.",
+                        "Prior to Ansible 2.0, the ansible_ssh_port inventory var took precedence over this value.",
+                        "This parameter defaults to the value of C(ansible_ssh_port) or C(ansible_port), the C(remote_port) config setting or the value from ssh client configuration if none of the former have been set."
+                    ],
+                    "type": "int"
+                },
+                "dirs": {
+                    "default": false,
+                    "description": [
+                        "Transfer directories without recursing."
+                    ],
+                    "type": "bool"
+                },
+                "existing_only": {
+                    "default": false,
+                    "description": [
+                        "Skip creating new files on receiver."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Preserve group.",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "link_dest": {
+                    "default": null,
+                    "description": [
+                        "Add a destination to hard link against during the rsync."
+                    ],
+                    "type": "list"
+                },
+                "links": {
+                    "description": [
+                        "Copy symlinks as symlinks.",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "mode": {
+                    "choices": [
+                        "pull",
+                        "push"
+                    ],
+                    "default": "push",
+                    "description": [
+                        "Specify the direction of the synchronization.",
+                        "In push mode the localhost or delegate is the source.",
+                        "In pull mode the remote host in context is the source."
+                    ],
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Preserve owner (super user only).",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "partial": {
+                    "default": false,
+                    "description": [
+                        "Tells rsync to keep the partial file which should make a subsequent transfer of the rest of the file much faster."
+                    ],
+                    "type": "bool"
+                },
+                "perms": {
+                    "description": [
+                        "Preserve permissions.",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "private_key": {
+                    "description": [
+                        "Specify the private key to use for SSH-based rsync connections (e.g. C(~/.ssh/id_rsa))."
+                    ],
+                    "type": "path"
+                },
+                "recursive": {
+                    "description": [
+                        "Recurse into directories.",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "rsync_opts": {
+                    "default": null,
+                    "description": [
+                        "Specify additional rsync options by passing in an array.",
+                        "Note that an empty string in C(rsync_opts) will end up transfer the current working directory."
+                    ],
+                    "type": "list"
+                },
+                "rsync_path": {
+                    "description": [
+                        "Specify the rsync command to run on the remote host. See C(--rsync-path) on the rsync man page.",
+                        "To specify the rsync command to run on the local host, you need to set this your task var C(ansible_rsync_path)."
+                    ],
+                    "type": "str"
+                },
+                "rsync_timeout": {
+                    "default": 0,
+                    "description": [
+                        "Specify a C(--timeout) for the rsync command in seconds."
+                    ],
+                    "type": "int"
+                },
+                "set_remote_user": {
+                    "default": true,
+                    "description": [
+                        "Put user@ for the remote paths.",
+                        "If you have a custom ssh config to define the remote user for a host that does not match the inventory user, you should set this parameter to C(no)."
+                    ],
+                    "type": "bool"
+                },
+                "src": {
+                    "description": [
+                        "Path on the source host that will be synchronized to the destination.",
+                        "The path can be absolute or relative."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "times": {
+                    "description": [
+                        "Preserve modification times.",
+                        "This parameter defaults to the value of the archive option."
+                    ],
+                    "type": "bool"
+                },
+                "use_ssh_args": {
+                    "default": false,
+                    "description": [
+                        "Use the ssh_args specified in ansible.cfg. Setting this to `yes` will also make `synchronize` use `ansible_ssh_common_args`."
+                    ],
+                    "type": "bool"
+                },
+                "verify_host": {
+                    "default": false,
+                    "description": [
+                        "Verify destination host key."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "copy"
+                },
+                {
+                    "module": "community.windows.win_robocopy"
+                }
+            ],
+            "short_description": "A wrapper around rsync to make common tasks in your playbooks quick and easy",
+            "version_added": "1.0.0",
+            "version_added_collection": "ansible.posix"
+        },
+        "examples": "\n- name: Synchronization of src on the control machine to dest on the remote hosts\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n\n- name: Synchronization using rsync protocol (push)\n  ansible.posix.synchronize:\n    src: some/relative/path/\n    dest: rsync://somehost.com/path/\n\n- name: Synchronization using rsync protocol (pull)\n  ansible.posix.synchronize:\n    mode: pull\n    src: rsync://somehost.com/path/\n    dest: /some/absolute/path/\n\n- name:  Synchronization using rsync protocol on delegate host (push)\n  ansible.posix.synchronize:\n    src: /some/absolute/path/\n    dest: rsync://somehost.com/path/\n  delegate_to: delegate.host\n\n- name: Synchronization using rsync protocol on delegate host (pull)\n  ansible.posix.synchronize:\n    mode: pull\n    src: rsync://somehost.com/path/\n    dest: /some/absolute/path/\n  delegate_to: delegate.host\n\n- name: Synchronization without any --archive options enabled\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    archive: no\n\n- name: Synchronization with --archive options enabled except for --recursive\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    recursive: no\n\n- name: Synchronization with --archive options enabled except for --times, with --checksum option enabled\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    checksum: yes\n    times: no\n\n- name: Synchronization without --archive options enabled except use --links\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    archive: no\n    links: yes\n\n- name: Synchronization of two paths both on the control machine\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n  delegate_to: localhost\n\n- name: Synchronization of src on the inventory host to the dest on the localhost in pull mode\n  ansible.posix.synchronize:\n    mode: pull\n    src: some/relative/path\n    dest: /some/absolute/path\n\n- name: Synchronization of src on delegate host to dest on the current inventory host.\n  ansible.posix.synchronize:\n    src: /first/absolute/path\n    dest: /second/absolute/path\n  delegate_to: delegate.host\n\n- name: Synchronize two directories on one remote host.\n  ansible.posix.synchronize:\n    src: /first/absolute/path\n    dest: /second/absolute/path\n  delegate_to: \"{{ inventory_hostname }}\"\n\n- name: Synchronize and delete files in dest on the remote host that are not found in src of localhost.\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    delete: yes\n    recursive: yes\n\n# This specific command is granted su privileges on the destination\n- name: Synchronize using an alternate rsync command\n  ansible.posix.synchronize:\n    src: some/relative/path\n    dest: /some/absolute/path\n    rsync_path: su -c rsync\n\n# Example .rsync-filter file in the source directory\n# - var       # exclude any path whose last part is 'var'\n# - /var      # exclude any path starting with 'var' starting at the source directory\n# + /var/conf # include /var/conf even though it was previously excluded\n\n- name: Synchronize passing in extra rsync options\n  ansible.posix.synchronize:\n    src: /tmp/helloworld\n    dest: /var/www/helloworld\n    rsync_opts:\n      - \"--no-motd\"\n      - \"--exclude=.git\"\n\n# Hardlink files if they didn't change\n- name: Use hardlinks when synchronizing filesystems\n  ansible.posix.synchronize:\n    src: /tmp/path_a/foo.txt\n    dest: /tmp/path_b/foo.txt\n    link_dest: /tmp/path_a/\n\n# Specify the rsync binary to use on remote host and on local host\n- hosts: groupofhosts\n  vars:\n        ansible_rsync_path: /usr/gnu/bin/rsync\n\n  tasks:\n    - name: copy /tmp/localpath/ to remote location /tmp/remotepath\n      ansible.posix.synchronize:\n        src: /tmp/localpath/\n        dest: /tmp/remotepath\n        rsync_path: /usr/gnu/bin/rsync\n",
+        "metadata": null,
+        "return": null
+    }
+}

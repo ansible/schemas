@@ -1,0 +1,125 @@
+{
+    "community.vmware.vca_nat": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "community.vmware",
+            "description": [
+                "Adds or removes nat rules from a gateway in a vca environment"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vca_nat.py",
+            "has_action": false,
+            "module": "vca_nat",
+            "options": {
+                "api_version": {
+                    "default": "5.7",
+                    "description": [
+                        "The API version to be used with the vca."
+                    ],
+                    "type": "str"
+                },
+                "gateway_name": {
+                    "default": "gateway",
+                    "description": [
+                        "The name of the gateway of the vdc where the rule should be added."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "The authentication host to be used when service type is vcd."
+                    ],
+                    "type": "str"
+                },
+                "instance_id": {
+                    "description": [
+                        "The instance ID in a vchs environment to be used for creating the vapp."
+                    ],
+                    "type": "str"
+                },
+                "nat_rules": {
+                    "default": false,
+                    "description": [
+                        "A list of rules to be added to the gateway, Please see examples on valid entries"
+                    ],
+                    "required": true
+                },
+                "org": {
+                    "description": [
+                        "The org to login to for creating vapp.",
+                        "This option is required when the C(service_type) is I(vdc)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "passwd"
+                    ],
+                    "description": [
+                        "The vca password, if not set the environment variable C(VCA_PASS) is checked for the password."
+                    ],
+                    "type": "str"
+                },
+                "purge_rules": {
+                    "default": false,
+                    "description": [
+                        "If set to true, it will delete all rules in the gateway that are not given as parameter to this module."
+                    ],
+                    "type": "bool"
+                },
+                "service_type": {
+                    "choices": [
+                        "vca",
+                        "vcd",
+                        "vchs"
+                    ],
+                    "default": "vca",
+                    "description": [
+                        "The type of service we are authenticating against."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the object should be added or removed."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "The vca username or email address, if not set the environment variable C(VCA_USER) is checked for the username."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_certs"
+                    ],
+                    "default": true,
+                    "description": [
+                        "If the certificates of the authentication is to be verified."
+                    ],
+                    "type": "bool"
+                },
+                "vdc_name": {
+                    "description": [
+                        "The name of the vdc where the gateway is located."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "add remove nat rules in a gateway  in a vca"
+        },
+        "examples": "\n\n#An example for a source nat\n\n- hosts: localhost\n  connection: local\n  tasks:\n   - community.vmware.vca_nat:\n       instance_id: 'b15ff1e5-1024-4f55-889f-ea0209726282'\n       vdc_name: 'benz_ansible'\n       state: 'present'\n       nat_rules:\n         - rule_type: SNAT\n           original_ip: 192.0.2.42\n           translated_ip: 203.0.113.23\n\n#example for a DNAT\n- hosts: localhost\n  connection: local\n  tasks:\n   - community.vmware.vca_nat:\n       instance_id: 'b15ff1e5-1024-4f55-889f-ea0209726282'\n       vdc_name: 'benz_ansible'\n       state: 'present'\n       nat_rules:\n         - rule_type: DNAT\n           original_ip: 203.0.113.23\n           original_port: 22\n           translated_ip: 192.0.2.42\n           translated_port: 22\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

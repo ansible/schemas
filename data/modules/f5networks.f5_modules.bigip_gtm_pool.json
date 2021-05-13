@@ -1,0 +1,388 @@
+{
+    "f5networks.f5_modules.bigip_gtm_pool": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages F5 BIG-IP GTM (now BIG-IP DNS) pools."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_gtm_pool.py",
+            "has_action": false,
+            "module": "bigip_gtm_pool",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "alternate_lb_method": {
+                    "choices": [
+                        "round-robin",
+                        "return-to-dns",
+                        "none",
+                        "ratio",
+                        "topology",
+                        "static-persistence",
+                        "global-availability",
+                        "virtual-server-capacity",
+                        "packet-rate",
+                        "drop-packet",
+                        "fallback-ip",
+                        "virtual-server-score"
+                    ],
+                    "description": [
+                        "The load balancing mode the system tries if the C(preferred_lb_method) is unsuccessful in picking a pool."
+                    ],
+                    "type": "str"
+                },
+                "availability_requirements": {
+                    "description": [
+                        "If you activate more than one health monitor, specifies the number of health monitors that must receive successful responses in order for the link to be considered available."
+                    ],
+                    "suboptions": {
+                        "at_least": {
+                            "description": [
+                                "Specifies the minimum number of active health monitors that must be successful before the link is considered up.",
+                                "This parameter is only relevant when a C(type) of C(at_least) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(require) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "number_of_probers": {
+                            "description": [
+                                "Specifies the number of probers that should be used when running probes.",
+                                "When creating a new virtual server, if this parameter is specified, the C(number_of_probes) parameter must also be specified.",
+                                "The value of this parameter should always be B(higher) than, or B(equal to), the value of C(number_of_probers).",
+                                "This parameter is only relevant when a C(type) of C(require) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(at_least) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "number_of_probes": {
+                            "description": [
+                                "Specifies the minimum number of probes that must succeed for this server to be declared up.",
+                                "When creating a new virtual server, if this parameter is specified, the C(number_of_probers) parameter must also be specified.",
+                                "The value of this parameter should always be B(lower) than, or B(equal to), the value of C(number_of_probers).",
+                                "This parameter is only relevant when a C(type) of C(require) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(at_least) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "type": {
+                            "choices": [
+                                "all",
+                                "at_least",
+                                "require"
+                            ],
+                            "description": [
+                                "Monitor rule type when C(monitors) is specified.",
+                                "When creating a new pool, if this value is not specified, the default of 'all' will be used."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "fallback_ip": {
+                    "description": [
+                        "Specifies the IPv4 or IPv6 address of the server to which the system directs requests when it cannot use one of its pools to do so. Note that the system uses the fallback IP only if you select the C(fallback_ip) load balancing method."
+                    ],
+                    "type": "str"
+                },
+                "fallback_lb_method": {
+                    "choices": [
+                        "round-robin",
+                        "return-to-dns",
+                        "ratio",
+                        "topology",
+                        "static-persistence",
+                        "global-availability",
+                        "virtual-server-capacity",
+                        "least-connections",
+                        "lowest-round-trip-time",
+                        "fewest-hops",
+                        "packet-rate",
+                        "cpu",
+                        "completion-rate",
+                        "quality-of-service",
+                        "kilobytes-per-second",
+                        "drop-packet",
+                        "fallback-ip",
+                        "virtual-server-score",
+                        "none"
+                    ],
+                    "description": [
+                        "The load balancing mode the system tries if both the C(preferred_lb_method) and C(alternate_lb_method)s are unsuccessful in picking a pool."
+                    ],
+                    "type": "str"
+                },
+                "max_answers_returned": {
+                    "description": [
+                        "Specifies the maximum number of available virtual servers the system lists in a response.",
+                        "The maximum is 500."
+                    ],
+                    "type": "int"
+                },
+                "members": {
+                    "description": [
+                        "Members to assign to the pool.",
+                        "The order of the members in this list is the order they will be listed in the pool."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "server": {
+                            "description": [
+                                "Name of the server which the pool member is a part of."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "virtual_server": {
+                            "description": [
+                                "Name of the virtual server, associated with the server, the pool member is a part of."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "monitors": {
+                    "description": [
+                        "Specifies the health monitors the system currently uses to monitor this resource.",
+                        "When C(availability_requirements.type) is C(require), you may only have a single monitor in the C(monitors) list."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the GTM pool."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "preferred_lb_method": {
+                    "choices": [
+                        "round-robin",
+                        "return-to-dns",
+                        "ratio",
+                        "topology",
+                        "static-persistence",
+                        "global-availability",
+                        "virtual-server-capacity",
+                        "least-connections",
+                        "lowest-round-trip-time",
+                        "fewest-hops",
+                        "packet-rate",
+                        "cpu",
+                        "completion-rate",
+                        "quality-of-service",
+                        "kilobytes-per-second",
+                        "drop-packet",
+                        "fallback-ip",
+                        "virtual-server-score"
+                    ],
+                    "description": [
+                        "The load balancing mode the system tries first."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Pool state. When C(present), ensures the pool is created and enabled. When C(absent), ensures the pool is removed from the system. When C(enabled) or C(disabled), ensures the pool is enabled or disabled (respectively) on the remote device."
+                    ],
+                    "type": "str"
+                },
+                "ttl": {
+                    "description": [
+                        "Specifies the number of seconds the IP address, once found, is valid."
+                    ],
+                    "type": "int"
+                },
+                "type": {
+                    "choices": [
+                        "a",
+                        "aaaa",
+                        "cname",
+                        "mx",
+                        "naptr",
+                        "srv"
+                    ],
+                    "description": [
+                        "The type of GTM pool you want to create."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP GTM pools",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a GTM pool\n  bigip_gtm_pool:\n    name: my_pool\n    type: a\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Disable pool\n  bigip_gtm_pool:\n    state: disabled\n    name: my_pool\n    type: a\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "alternate_lb_method": {
+                "description": "New alternate load balancing method for the pool.",
+                "returned": "changed",
+                "sample": "drop-packet",
+                "type": "str"
+            },
+            "fallback_ip": {
+                "description": "New fallback IP used when load balacing using the C(fallback_ip) method.",
+                "returned": "changed",
+                "sample": "10.10.10.10",
+                "type": "str"
+            },
+            "fallback_lb_method": {
+                "description": "New fallback load balancing method for the pool.",
+                "returned": "changed",
+                "sample": "fewest-hops",
+                "type": "str"
+            },
+            "max_answers_returned": {
+                "description": "The new Maximum Answers Returned value.",
+                "returned": "changed",
+                "sample": 25,
+                "type": "int"
+            },
+            "members": {
+                "contains": {
+                    "server": {
+                        "description": "The name of the server portion of the member.",
+                        "returned": "changed",
+                        "type": "str"
+                    },
+                    "virtual_server": {
+                        "description": "The name of the virtual server portion of the member.",
+                        "returned": "changed",
+                        "type": "str"
+                    }
+                },
+                "description": "List of members in the pool.",
+                "returned": "changed",
+                "type": "complex"
+            },
+            "monitors": {
+                "description": "The new list of monitors for the resource.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/monitor1",
+                    "/Common/monitor2"
+                ],
+                "type": "list"
+            },
+            "preferred_lb_method": {
+                "description": "New preferred load balancing method for the pool.",
+                "returned": "changed",
+                "sample": "topology",
+                "type": "str"
+            }
+        }
+    }
+}

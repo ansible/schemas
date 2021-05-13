@@ -1,0 +1,133 @@
+{
+    "community.general.github_webhook": {
+        "doc": {
+            "author": [
+                "Chris St. Pierre (@stpierre)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Create and delete GitHub webhooks"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/github_webhook.py",
+            "has_action": false,
+            "module": "github_webhook",
+            "options": {
+                "active": {
+                    "default": true,
+                    "description": [
+                        "Whether or not the hook is active"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "content_type": {
+                    "choices": [
+                        "form",
+                        "json"
+                    ],
+                    "default": "form",
+                    "description": [
+                        "The media type used to serialize the payloads"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "events": {
+                    "description": [
+                        "A list of GitHub events the hook is triggered for. Events are listed at U(https://developer.github.com/v3/activity/events/types/). Required unless C(state) is C(absent)\n"
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "github_url": {
+                    "default": "https://api.github.com",
+                    "description": [
+                        "Base URL of the GitHub API"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "insecure_ssl": {
+                    "default": false,
+                    "description": [
+                        "Flag to indicate that GitHub should skip SSL verification when calling the hook.\n"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "password": {
+                    "description": [
+                        "Password to authenticate to GitHub with"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "repository": {
+                    "aliases": [
+                        "repo"
+                    ],
+                    "description": [
+                        "Full name of the repository to configure a hook for"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "secret": {
+                    "description": [
+                        "The shared secret between GitHub and the payload URL."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the hook should be present or absent"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "token": {
+                    "description": [
+                        "Token to authenticate to GitHub with"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "URL to which payloads will be delivered"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "User to authenticate to GitHub as"
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "PyGithub >= 1.3.5"
+            ],
+            "short_description": "Manage GitHub webhooks"
+        },
+        "examples": "\n- name:  create a new webhook that triggers on push (password auth)\n  community.general.github_webhook:\n    repository: ansible/ansible\n    url: https://www.example.com/hooks/\n    events:\n      - push\n    user: \"{{ github_user }}\"\n    password: \"{{ github_password }}\"\n\n- name: Create a new webhook in a github enterprise installation with multiple event triggers (token auth)\n  community.general.github_webhook:\n    repository: myorg/myrepo\n    url: https://jenkins.example.com/ghprbhook/\n    content_type: json\n    secret: \"{{ github_shared_secret }}\"\n    insecure_ssl: True\n    events:\n      - issue_comment\n      - pull_request\n    user: \"{{ github_user }}\"\n    token: \"{{ github_user_api_token }}\"\n    github_url: https://github.example.com\n\n- name: Delete a webhook (password auth)\n  community.general.github_webhook:\n    repository: ansible/ansible\n    url: https://www.example.com/hooks/\n    state: absent\n    user: \"{{ github_user }}\"\n    password: \"{{ github_password }}\"\n",
+        "metadata": null,
+        "return": {
+            "hook_id": {
+                "description": "The GitHub ID of the hook created/updated",
+                "returned": "when state is 'present'",
+                "sample": 6206,
+                "type": "int"
+            }
+        }
+    }
+}

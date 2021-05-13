@@ -1,0 +1,135 @@
+{
+    "awx.awx.tower_ad_hoc_command_wait": {
+        "doc": {
+            "author": "John Westcott IV (@john-westcott-iv)",
+            "collection": "awx.awx",
+            "description": [
+                "Wait for Ansible Tower ad hoc command to finish and report success or failure. See U(https://www.ansible.com/tower) for an overview."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/awx/awx/plugins/modules/tower_ad_hoc_command_wait.py",
+            "has_action": false,
+            "module": "tower_ad_hoc_command_wait",
+            "notes": [
+                "If no I(config_file) is provided we will attempt to use the tower-cli library defaults to find your Tower host information.",
+                "I(config_file) should contain Tower configuration in the following format host=hostname username=username password=password"
+            ],
+            "options": {
+                "command_id": {
+                    "description": [
+                        "ID of the ad hoc command to monitor."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "interval": {
+                    "default": 1,
+                    "description": [
+                        "The interval in sections, to request an update from Tower."
+                    ],
+                    "required": false,
+                    "type": "float"
+                },
+                "timeout": {
+                    "description": [
+                        "Maximum time in seconds to wait for a ad hoc command to finish."
+                    ],
+                    "type": "int"
+                },
+                "tower_config_file": {
+                    "description": [
+                        "Path to the Tower or AWX config file.",
+                        "If provided, the other locations for config files will not be considered."
+                    ],
+                    "type": "path"
+                },
+                "tower_host": {
+                    "description": [
+                        "URL to your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_HOST) and then config files",
+                        "If value not specified by any means, the value of C(127.0.0.1) will be used"
+                    ],
+                    "type": "str"
+                },
+                "tower_oauthtoken": {
+                    "description": [
+                        "The Tower OAuth token to use.",
+                        "This value can be in one of two formats.",
+                        "A string which is the token itself. (i.e. bqV5txm97wqJqtkxlMkhQz0pKhRMMX)",
+                        "A dictionary structure as returned by the tower_token module.",
+                        "If value not set, will try environment variable C(TOWER_OAUTH_TOKEN) and then config files"
+                    ],
+                    "type": "raw",
+                    "version_added": "3.7",
+                    "version_added_collection": "awx.awx"
+                },
+                "tower_password": {
+                    "description": [
+                        "Password for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_PASSWORD) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "tower_username": {
+                    "description": [
+                        "Username for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_USERNAME) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tower_verify_ssl"
+                    ],
+                    "description": [
+                        "Whether to allow insecure connections to Tower or AWX.",
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates.",
+                        "If value not set, will try environment variable C(TOWER_VERIFY_SSL) and then config files"
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Wait for Ansible Tower Ad Hoc Command to finish."
+        },
+        "examples": "\n- name: Launch an ad hoc command\n  tower_ad_hoc_command:\n    inventory: \"Demo Inventory\"\n    credential: \"Demo Credential\"\n    wait: false\n  register: command\n\n- name: Wait for ad joc command max 120s\n  tower_ad_hoc_command_wait:\n    command_id: \"{{ command.id }}\"\n    timeout: 120\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "elapsed": {
+                "description": "total time in seconds the command took to run",
+                "returned": "success",
+                "sample": 10.879,
+                "type": "float"
+            },
+            "finished": {
+                "description": "timestamp of when the command finished running",
+                "returned": "success",
+                "sample": "2017-03-01T17:04:04.078782Z",
+                "type": "str"
+            },
+            "id": {
+                "description": "Ad hoc command id that is being waited on",
+                "returned": "success",
+                "sample": 99,
+                "type": "int"
+            },
+            "started": {
+                "description": "timestamp of when the command started running",
+                "returned": "success",
+                "sample": "2017-03-01T17:03:53.200234Z",
+                "type": "str"
+            },
+            "status": {
+                "description": "current status of command",
+                "returned": "success",
+                "sample": "successful",
+                "type": "str"
+            }
+        }
+    }
+}

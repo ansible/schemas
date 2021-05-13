@@ -1,0 +1,182 @@
+{
+    "google.cloud.gcp_pubsub_topic": {
+        "doc": {
+            "author": "Google Inc. (@googlecloudplatform)",
+            "collection": "google.cloud",
+            "description": [
+                "A named resource to which messages are sent by publishers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/google/cloud/plugins/modules/gcp_pubsub_topic.py",
+            "has_action": false,
+            "module": "gcp_pubsub_topic",
+            "notes": [
+                "API Reference: U(https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics)",
+                "Managing Topics: U(https://cloud.google.com/pubsub/docs/admin#managing_topics)",
+                "for authentication, you can set service_account_file using the C(gcp_service_account_file) env variable.",
+                "for authentication, you can set service_account_contents using the C(GCP_SERVICE_ACCOUNT_CONTENTS) env variable.",
+                "For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL) env variable.",
+                "For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.",
+                "For authentication, you can set scopes using the C(GCP_SCOPES) env variable.",
+                "Environment variables values will only be used if the playbook values are not set.",
+                "The I(service_account_email) and I(service_account_file) options are mutually exclusive."
+            ],
+            "options": {
+                "auth_kind": {
+                    "choices": [
+                        "application",
+                        "machineaccount",
+                        "serviceaccount"
+                    ],
+                    "description": [
+                        "The type of credential used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "env_type": {
+                    "description": [
+                        "Specifies which Ansible environment you're running this module within.",
+                        "This should not be set unless you know what you're doing.",
+                        "This only alters the User Agent string for any API requests."
+                    ],
+                    "type": "str"
+                },
+                "kms_key_name": {
+                    "description": [
+                        "The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic. Your project's PubSub service account (`service-{{PROJECT_NUMBER}}@gcp-sa-pubsub.iam.gserviceaccount.com`) must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` to use this feature.",
+                        "The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*` ."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "labels": {
+                    "description": [
+                        "A set of key/value label pairs to assign to this Topic."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "message_storage_policy": {
+                    "description": [
+                        "Policy constraining the set of Google Cloud Platform regions where messages published to the topic may be stored. If not present, then no constraints are in effect."
+                    ],
+                    "required": false,
+                    "suboptions": {
+                        "allowed_persistence_regions": {
+                            "description": [
+                                "A list of IDs of GCP regions where messages that are published to the topic may be persisted in storage. Messages published by publishers running in non-allowed GCP regions (or running outside of GCP altogether) will be routed for storage in one of the allowed regions. An empty list means that no regions are allowed, and is not a valid configuration."
+                            ],
+                            "elements": "str",
+                            "required": true,
+                            "type": "list"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "Name of the topic."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "project": {
+                    "description": [
+                        "The Google Cloud Platform project to use."
+                    ],
+                    "type": "str"
+                },
+                "scopes": {
+                    "description": [
+                        "Array of scopes to be used"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "service_account_contents": {
+                    "description": [
+                        "The contents of a Service Account JSON file, either in a dictionary or as a JSON string that represents it."
+                    ],
+                    "type": "jsonarg"
+                },
+                "service_account_email": {
+                    "description": [
+                        "An optional service account email address if machineaccount is selected and the user does not wish to use the default email."
+                    ],
+                    "type": "str"
+                },
+                "service_account_file": {
+                    "description": [
+                        "The path of a Service Account JSON file if serviceaccount is selected as type."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the given object should exist in GCP"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "requests >= 2.18.4",
+                "google-auth >= 1.3.0"
+            ],
+            "short_description": "Creates a GCP Topic"
+        },
+        "examples": "\n- name: create a topic\n  google.cloud.gcp_pubsub_topic:\n    name: test-topic1\n    project: test_project\n    auth_kind: serviceaccount\n    service_account_file: \"/tmp/auth.pem\"\n    state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "kmsKeyName": {
+                "description": [
+                    "The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic. Your project's PubSub service account (`service-{{PROJECT_NUMBER}}@gcp-sa-pubsub.iam.gserviceaccount.com`) must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` to use this feature.",
+                    "The expected format is `projects/*/locations/*/keyRings/*/cryptoKeys/*` ."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "labels": {
+                "description": [
+                    "A set of key/value label pairs to assign to this Topic."
+                ],
+                "returned": "success",
+                "type": "dict"
+            },
+            "messageStoragePolicy": {
+                "contains": {
+                    "allowedPersistenceRegions": {
+                        "description": [
+                            "A list of IDs of GCP regions where messages that are published to the topic may be persisted in storage. Messages published by publishers running in non-allowed GCP regions (or running outside of GCP altogether) will be routed for storage in one of the allowed regions. An empty list means that no regions are allowed, and is not a valid configuration."
+                        ],
+                        "returned": "success",
+                        "type": "list"
+                    }
+                },
+                "description": [
+                    "Policy constraining the set of Google Cloud Platform regions where messages published to the topic may be stored. If not present, then no constraints are in effect."
+                ],
+                "returned": "success",
+                "type": "complex"
+            },
+            "name": {
+                "description": [
+                    "Name of the topic."
+                ],
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

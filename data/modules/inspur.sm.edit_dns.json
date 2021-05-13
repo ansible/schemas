@@ -1,0 +1,184 @@
+{
+    "inspur.sm.edit_dns": {
+        "doc": {
+            "author": [
+                "WangBaoshan (@ISIB-group)"
+            ],
+            "collection": "inspur.sm",
+            "description": [
+                "Set dns information on Inspur server."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/inspur/sm/plugins/modules/edit_dns.py",
+            "has_action": false,
+            "module": "edit_dns",
+            "options": {
+                "dns_iface": {
+                    "description": [
+                        "DNS Interface,input like 'eth0', 'eth1', 'bond0'.",
+                        "Required when I(dns_manual=auto)."
+                    ],
+                    "type": "str"
+                },
+                "dns_manual": {
+                    "choices": [
+                        "manual",
+                        "auto"
+                    ],
+                    "description": [
+                        "DNS Settings."
+                    ],
+                    "type": "str"
+                },
+                "dns_priority": {
+                    "choices": [
+                        "4",
+                        "6"
+                    ],
+                    "description": [
+                        "IP Priority.",
+                        "Required when I(dns_manual=auto)."
+                    ],
+                    "type": "str"
+                },
+                "dns_server1": {
+                    "description": [
+                        "DNS Server1 IPv4 or IPv6 address.",
+                        "Required when I(dns_manual=manual)."
+                    ],
+                    "type": "str"
+                },
+                "dns_server2": {
+                    "description": [
+                        "DNS Server2 IPv4 or IPv6 address.",
+                        "Required when I(dns_manual=manual)."
+                    ],
+                    "type": "str"
+                },
+                "dns_server3": {
+                    "description": [
+                        "DNS Server3 IPv4 or IPv6 address.",
+                        "Required when I(dns_manual=manual)."
+                    ],
+                    "type": "str"
+                },
+                "dns_status": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "DNS status."
+                    ],
+                    "type": "str"
+                },
+                "domain_iface": {
+                    "description": [
+                        "Network Interface,input like 'eth0_v4', 'eth0_v6', 'eth1_v4', 'eth1_v6', 'bond0_v4', 'bond0_v6'.",
+                        "Required when I(domain_manual=auto)."
+                    ],
+                    "type": "str"
+                },
+                "domain_manual": {
+                    "choices": [
+                        "manual",
+                        "auto"
+                    ],
+                    "description": [
+                        "Domain Settings."
+                    ],
+                    "type": "str"
+                },
+                "domain_name": {
+                    "description": [
+                        "Domain Name.",
+                        "Required when I(domain_manual=manual)."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                    ],
+                    "type": "str"
+                },
+                "host_cfg": {
+                    "choices": [
+                        "manual",
+                        "auto"
+                    ],
+                    "description": [
+                        "Host Settings."
+                    ],
+                    "type": "str"
+                },
+                "host_name": {
+                    "description": [
+                        "Host Name.",
+                        "Required when I(host_cfg=manual)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Specifies the password to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "username": {
+                    "description": [
+                        "Configures the username to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Set dns information.",
+            "version_added": "0.1.0",
+            "version_added_collection": "inspur.sm"
+        },
+        "examples": "\n- name: DNS test\n  hosts: ism\n  connection: local\n  gather_facts: no\n  vars:\n    ism:\n      host: \"{{ ansible_ssh_host }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  tasks:\n\n  - name: \"Set dns information\"\n    inspur.sm.edit_dns:\n      dns_status: \"disable\"\n      provider: \"{{ ism }}\"\n\n  - name: \"Set dns information\"\n    inspur.sm.edit_dns:\n      dns_status: \"enable\"\n      host_cfg: \"manual\"\n      host_name: \"123456789\"\n      domain_manual: \"auto\"\n      domain_iface: \"eth0_v4\"\n      dns_manual: \"manual\"\n      dns_server1: \"100.2.2.2\"\n      dns_server2: \"100.2.2.3\"\n      dns_server3: \"100.2.2.4\"\n      provider: \"{{ ism }}\"\n\n  - name: \"Set dns information\"\n    inspur.sm.edit_dns:\n      dns_status: \"enable\"\n      host_cfg: \"manual\"\n      host_name: \"123456789\"\n      domain_manual: \"manual\"\n      domain_name: \"inspur.com\"\n      dns_manual: \"auto\"\n      dns_iface: \"eth0\"\n      dns_priority: \"4\"\n      provider: \"{{ ism }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Check to see if a change was made on the device.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "message": {
+                "description": "Messages returned after module execution.",
+                "returned": "always",
+                "type": "str"
+            },
+            "state": {
+                "description": "Status after module execution.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

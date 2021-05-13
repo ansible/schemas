@@ -1,0 +1,170 @@
+{
+    "community.network.ce_evpn_bd_vni": {
+        "doc": {
+            "author": "Zhijin Zhou (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages Ethernet Virtual Private Network (EVPN) VXLAN Network Identifier (VNI) configurations on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_evpn_bd_vni.py",
+            "has_action": false,
+            "module": "ce_evpn_bd_vni",
+            "notes": [
+                "Ensure that EVPN has been configured to serve as the VXLAN control plane when state is present.",
+                "Ensure that a bridge domain (BD) has existed when state is present.",
+                "Ensure that a VNI has been created and associated with a broadcast domain (BD) when state is present.",
+                "If you configure evpn:false to delete an EVPN instance, all configurations in the EVPN instance are deleted.",
+                "After an EVPN instance has been created in the BD view, you can configure an RD using route_distinguisher parameter in BD-EVPN instance view.",
+                "Before configuring VPN targets for a BD EVPN instance, ensure that an RD has been configured for the BD EVPN instance",
+                "If you unconfigure route_distinguisher, all VPN target attributes for the BD EVPN instance will be removed at the same time.",
+                "When using state:absent, evpn is not supported and it will be ignored.",
+                "When using state:absent to delete VPN target attributes, ensure the configuration of VPN target attributes has existed and otherwise it will report an error.",
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "bridge_domain_id": {
+                    "description": [
+                        "Specify an existed bridge domain (BD).The value is an integer ranging from 1 to 16777215."
+                    ],
+                    "required": true
+                },
+                "evpn": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "default": "enable",
+                    "description": [
+                        "Create or delete an EVPN instance for a VXLAN in BD view."
+                    ]
+                },
+                "route_distinguisher": {
+                    "description": [
+                        "Configures a route distinguisher (RD) for a BD EVPN instance. The format of an RD can be as follows",
+                        "1) 2-byte AS number:4-byte user-defined number, for example, 1:3. An AS number is an integer ranging from 0 to 65535, and a user-defined number is an integer ranging from 0 to 4294967295. The AS and user-defined numbers cannot be both 0s. This means that an RD cannot be 0:0.",
+                        "2) Integral 4-byte AS number:2-byte user-defined number, for example, 65537:3. An AS number is an integer ranging from 65536 to 4294967295, and a user-defined number is an integer ranging from 0 to 65535.",
+                        "3) 4-byte AS number in dotted notation:2-byte user-defined number, for example, 0.0:3 or 0.1:0. A 4-byte AS number in dotted notation is in the format of x.y, where x and y are integers ranging from 0 to 65535.",
+                        "4) A user-defined number is an integer ranging from 0 to 65535. The AS and user-defined numbers cannot be both 0s. This means that an RD cannot be 0.0:0.",
+                        "5) 32-bit IP address:2-byte user-defined number. For example, 192.168.122.15:1. An IP address ranges from 0.0.0.0 to 255.255.255.255, and a user-defined number is an integer ranging from 0 to 65535.",
+                        "6) 'auto' specifies the RD that is automatically generated."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Manage the state of the resource."
+                    ]
+                },
+                "vpn_target_both": {
+                    "description": [
+                        "Add VPN targets to both the import and export VPN target lists of a BD EVPN instance. The format is the same as route_distinguisher."
+                    ]
+                },
+                "vpn_target_export": {
+                    "description": [
+                        "Add VPN targets to the export VPN target list of a BD EVPN instance. The format is the same as route_distinguisher."
+                    ]
+                },
+                "vpn_target_import": {
+                    "description": [
+                        "Add VPN targets to the import VPN target list of a BD EVPN instance. The format is the same as route_distinguisher."
+                    ],
+                    "required": true
+                }
+            },
+            "short_description": "Manages EVPN VXLAN Network Identifier (VNI) on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: EVPN BD VNI test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: \"Configure an EVPN instance for a VXLAN in BD view\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      evpn: enable\n      provider: \"{{ cli }}\"\n\n  - name: \"Configure a route distinguisher (RD) for a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      route_distinguisher: '22:22'\n      provider: \"{{ cli }}\"\n\n  - name: \"Configure VPN targets to both the import and export VPN target lists of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_both: 22:100,22:101\n      provider: \"{{ cli }}\"\n\n  - name: \"Configure VPN targets to the import VPN target list of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_import: 22:22,22:23\n      provider: \"{{ cli }}\"\n\n  - name: \"Configure VPN targets to the export VPN target list of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_export: 22:38,22:39\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure VPN targets to both the import and export VPN target lists of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_both: '22:100'\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure VPN targets to the import VPN target list of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_import: '22:22'\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure VPN targets to the export VPN target list of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      vpn_target_export: '22:38'\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure a route distinguisher (RD) of a BD EVPN instance\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      route_distinguisher: '22:22'\n      state: absent\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure an EVPN instance for a VXLAN in BD view\"\n    community.network.ce_evpn_bd_vni:\n      bridge_domain_id: 20\n      evpn: disable\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of end attributes on the device",
+                "returned": "always",
+                "sample": {
+                    "bridge_domain_id": "2",
+                    "evpn": "enable",
+                    "route_distinguisher": "22:22",
+                    "vpn_target_both": [
+                        "22:100",
+                        "22:101"
+                    ],
+                    "vpn_target_export": [
+                        "22:38",
+                        "22:39"
+                    ],
+                    "vpn_target_import": [
+                        "22:22",
+                        "22:23"
+                    ]
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing attributes on the device",
+                "returned": "always",
+                "sample": {
+                    "bridge_domain_id": "2",
+                    "evpn": "disable",
+                    "route_distinguisher": null,
+                    "vpn_target_both": [],
+                    "vpn_target_export": [],
+                    "vpn_target_import": []
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "bridge_domain_id": "2",
+                    "evpn": "enable",
+                    "route_distinguisher": "22:22",
+                    "state": "present",
+                    "vpn_target_both": [
+                        "22:100",
+                        "22:101"
+                    ],
+                    "vpn_target_export": [
+                        "22:38",
+                        "22:39"
+                    ],
+                    "vpn_target_import": [
+                        "22:22",
+                        "22:23"
+                    ]
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command list sent to the device",
+                "returned": "always",
+                "sample": [
+                    "bridge-domain 2",
+                    "  evpn",
+                    "    route-distinguisher 22:22",
+                    "    vpn-target 22:38 export-extcommunity",
+                    "    vpn-target 22:39 export-extcommunity",
+                    "    vpn-target 22:100 export-extcommunity",
+                    "    vpn-target 22:101 export-extcommunity",
+                    "    vpn-target 22:22 import-extcommunity",
+                    "    vpn-target 22:23 import-extcommunity",
+                    "    vpn-target 22:100 import-extcommunity",
+                    "    vpn-target 22:101 import-extcommunity"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

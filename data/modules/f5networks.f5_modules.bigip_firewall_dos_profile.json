@@ -1,0 +1,187 @@
+{
+    "f5networks.f5_modules.bigip_firewall_dos_profile": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages AFM (Advanced Firewall Manager) Denial of Service (DoS) profiles on a BIG-IP. To manage the vectors associated with a DoS profile, refer to the C(bigip_firewall_dos_vector) module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_firewall_dos_profile.py",
+            "has_action": false,
+            "module": "bigip_firewall_dos_profile",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "default_whitelist": {
+                    "description": [
+                        "The default whitelist address list for the system to use to determine which IP addresses are legitimate.",
+                        "The system does not examine traffic from the IP addresses in the list when performing DoS prevention.",
+                        "To define a new whitelist, use the C(bigip_firewall_address_list) module."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The description of the DoS profile."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the profile."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                },
+                "threshold_sensitivity": {
+                    "choices": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "description": [
+                        "Specifies the threshold sensitivity for the DoS profile.",
+                        "Thresholds for detecting attacks are higher when sensitivity is C(low), and lower when sensitivity is C(high).",
+                        "When creating a new profile, if this parameter is not specified, the default is C(medium)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage AFM DoS profiles on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a new DoS profile\n  bigip_firewall_dos_profile:\n    name: profile1\n    description: DoS profile 1\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "default_whitelist": {
+                "description": "The new whitelist attached to the profile.",
+                "returned": "changed",
+                "sample": "/Common/whitelist1",
+                "type": "str"
+            },
+            "description": {
+                "description": "The description of the profile.",
+                "returned": "changed",
+                "sample": "New description",
+                "type": "str"
+            },
+            "threshold_sensitivity": {
+                "description": "The new threshold sensitivity of the profile.",
+                "returned": "changed",
+                "sample": "low",
+                "type": "str"
+            }
+        }
+    }
+}

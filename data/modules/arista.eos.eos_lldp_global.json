@@ -1,0 +1,146 @@
+{
+    "arista.eos.eos_lldp_global": {
+        "doc": {
+            "author": "Nathaniel Case (@Qalthos)",
+            "collection": "arista.eos",
+            "description": [
+                "This module manages Global Link Layer Discovery Protocol (LLDP) settings on Arista EOS devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/arista/eos/plugins/modules/eos_lldp_global.py",
+            "has_action": true,
+            "module": "eos_lldp_global",
+            "notes": [
+                "Tested against Arista EOS 4.20.10M",
+                "This module works with connection C(network_cli). See the L(EOS Platform Options,../network/user_guide/platform_eos.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "The provided global LLDP configuration.",
+                    "suboptions": {
+                        "holdtime": {
+                            "description": [
+                                "Specifies the holdtime (in sec) to be sent in packets."
+                            ],
+                            "type": "int"
+                        },
+                        "reinit": {
+                            "description": [
+                                "Specifies the delay (in sec) for LLDP initialization on any interface."
+                            ],
+                            "type": "int"
+                        },
+                        "timer": {
+                            "description": [
+                                "Specifies the rate at which LLDP packets are sent (in sec)."
+                            ],
+                            "type": "int"
+                        },
+                        "tlv_select": {
+                            "description": [
+                                "Specifies the LLDP TLVs to enable or disable."
+                            ],
+                            "suboptions": {
+                                "link_aggregation": {
+                                    "description": [
+                                        "Enable or disable link aggregation TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "management_address": {
+                                    "description": [
+                                        "Enable or disable management address TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "max_frame_size": {
+                                    "description": [
+                                        "Enable or disable maximum frame size TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "port_description": {
+                                    "description": [
+                                        "Enable or disable port description TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_capabilities": {
+                                    "description": [
+                                        "Enable or disable system capabilities TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_description": {
+                                    "description": [
+                                        "Enable or disable system description TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_name": {
+                                    "description": [
+                                        "Enable or disable system name TLV."
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the EOS device by executing the command B(show running-config | section lldp).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "deleted",
+                        "rendered",
+                        "gathered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LLDP resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "arista.eos"
+        },
+        "examples": "\n# Using merged\n#\n# ------------\n# Before State\n# ------------\n#\n# veos# show run | section lldp\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select system-description\n\n- name: Merge provided LLDP configuration with the existing configuration\n  arista.eos.eos_lldp_global:\n    config:\n      holdtime: 100\n      tlv_select:\n        management_address: false\n        port_description: false\n        system_description: true\n    state: merged\n\n# -----------\n# After state\n# -----------\n#\n# veos# show run | section lldp\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select port-description\n\n\n# Using replaced\n#\n# ------------\n# Before State\n# ------------\n#\n# veos# show run | section lldp\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select system-description\n\n- name: Replace existing LLDP device configuration with provided configuration\n  arista.eos.eos_lldp_global:\n    config:\n      holdtime: 100\n      tlv_select:\n        management_address: false\n        port_description: false\n        system_description: true\n    state: replaced\n\n# -----------\n# After state\n# -----------\n#\n# veos# show run | section lldp\n# lldp holdtime 100\n# no lldp tlv-select management-address\n# no lldp tlv-select port-description\n\n\n# Using deleted\n#\n# ------------\n# Before State\n# ------------\n#\n# veos# show run | section lldp\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select system-description\n\n- name: Delete existing LLDP configurations from the device\n  arista.eos.eos_lldp_global:\n    state: deleted\n\n# -----------\n# After state\n# -----------\n#\n# veos# show run | section ^lldp\n\n# Using rendered:\n\n- name: Use Rendered to convert the structured data to native config\n  arista.eos.eos_lldp_global:\n    config:\n      holdtime: 100\n      tlv_select:\n        management_address: false\n        port_description: false\n        system_description: true\n    state: rendered\n\n# -----------\n# Output\n# -----------\n#\n# rendered:\n#   - \"lldp holdtime 100\"\n#   - \"no lldp tlv-select management-address\"\n#   - \"no lldp tlv-select port-description\"\n\n# Using parsed\n\n# parsed.cfg\n\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select system-description\n\n- name: Use parsed to convert native configs to structured data\n  arista.eos.lldp_global:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# -----------\n# Output\n# -----------\n\n#    parsed:\n#      holdtime: 100\n#      timer 3000\n#      reinit 5\n#      tlv_select:\n#        management_address: False\n#        port_description: False\n#        system_description: True\n\n# Using gathered:\n# native config:\n# lldp timer 3000\n# lldp holdtime 100\n# lldp reinit 5\n# no lldp tlv-select management-address\n# no lldp tlv-select system-description\n\n\n- name: Gather lldp_global facts from the device\n  arista.eos.lldp_global:\n    state: gathered\n\n# -----------\n# Output\n# -----------\n\n#    gathered:\n#      holdtime: 100\n#      timer 3000\n#      reinit 5\n#      tlv_select:\n#        management_address: False\n#        port_description: False\n#        system_description: True\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "lldp holdtime 100",
+                    "no lldp timer",
+                    "lldp tlv-select system-description"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

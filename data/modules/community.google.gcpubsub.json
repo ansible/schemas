@@ -1,0 +1,146 @@
+{
+    "community.google.gcpubsub": {
+        "doc": {
+            "author": [
+                "Tom Melendez (@supertom) <tom@supertom.com>"
+            ],
+            "collection": "community.google",
+            "description": [
+                "Create and Delete Topics/Subscriptions, Publish and pull messages on PubSub. See U(https://cloud.google.com/pubsub/docs) for an overview."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/google/plugins/modules/gcpubsub.py",
+            "has_action": false,
+            "module": "gcpubsub",
+            "notes": [
+                "Subscription pull happens before publish.  You cannot publish and pull in the same task."
+            ],
+            "options": {
+                "credentials_file": {
+                    "description": [
+                        "path to the JSON file associated with the service account email"
+                    ],
+                    "type": "str"
+                },
+                "project_id": {
+                    "description": [
+                        "your GCE project ID"
+                    ],
+                    "type": "str"
+                },
+                "publish": {
+                    "description": [
+                        "List of dictionaries describing messages and attributes to be published.  Dictionary is in message(str):attributes(dict) format. Only message is required."
+                    ],
+                    "type": "list"
+                },
+                "service_account_email": {
+                    "description": [
+                        "service account email"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the topic or queue.",
+                        "Applies to the most granular resource.",
+                        "If subscription isspecified we remove it.",
+                        "If only topic is specified, that is what is removed.",
+                        "NOTE - A topic can be removed without first removing the subscription."
+                    ],
+                    "type": "str"
+                },
+                "subscription": {
+                    "description": [
+                        "Dictionary containing a subscription name associated with a topic (required), along with optional ack_deadline, push_endpoint and pull. For pulling from a subscription, message_ack (bool), max_messages (int) and return_immediate are available as subfields. See subfields name, push_endpoint and ack_deadline for more information."
+                    ],
+                    "suboptions": {
+                        "ack_deadline": {
+                            "description": [
+                                "Subfield of subscription. Not required. Default deadline for subscriptions to ACK the message before it is resent. See examples."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Subfield of subscription. Required if subscription is specified. See examples."
+                            ]
+                        },
+                        "pull": {
+                            "description": [
+                                "Subfield of subscription. Not required. If specified, messages will be retrieved from topic via the provided subscription name. max_messages (int; default None; max number of messages to pull), message_ack (bool; default False; acknowledge the message) and return_immediately (bool; default True, don't wait for messages to appear). If the messages are acknowledged, changed is set to True, otherwise, changed is False."
+                            ]
+                        },
+                        "push_endpoint": {
+                            "description": [
+                                "Subfield of subscription.  Not required.  If specified, message will be sent to an endpoint. See U(https://cloud.google.com/pubsub/docs/advanced#push_endpoints) for more information."
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "topic": {
+                    "description": [
+                        "GCP pubsub topic name.",
+                        "Only the name, not the full path, is required."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "google-auth >= 0.5.0",
+                "google-cloud-pubsub >= 0.22.0"
+            ],
+            "short_description": "Create and Delete Topics/Subscriptions, Publish and pull messages on PubSub"
+        },
+        "examples": "\n# (Message will be pushed; there is no check to see if the message was pushed before\n- name: Create a topic and publish a message to it\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    state: present\n\n# Subscriptions associated with topic are not deleted.\n- name: Delete Topic\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    state: absent\n\n# Setting absent will keep the messages from being sent\n- name: Publish multiple messages, with attributes (key:value available with the message)\n  community.google.gcpubsub:\n    topic: '{{ topic_name }}'\n    state: present\n    publish:\n      - message: this is message 1\n        attributes:\n          mykey1: myvalue\n          mykey2: myvalu2\n          mykey3: myvalue3\n      - message: this is message 2\n        attributes:\n          server: prod\n          sla: \"99.9999\"\n          owner: fred\n\n- name: Create Subscription (pull)\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    subscription:\n    - name: mysub\n    state: present\n\n# pull is default, ack_deadline is not required\n- name: Create Subscription with ack_deadline and push endpoint\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    subscription:\n    - name: mysub\n      ack_deadline: \"60\"\n      push_endpoint: http://pushendpoint.example.com\n    state: present\n\n# Setting push_endpoint to \"None\" converts subscription to pull.\n- name: Subscription change from push to pull\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    subscription:\n      name: mysub\n      push_endpoint: \"None\"\n\n### Topic will not be deleted\n- name: Delete subscription\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    subscription:\n    - name: mysub\n    state: absent\n\n# only pull keyword is required.\n- name: Pull messages from subscription\n  community.google.gcpubsub:\n    topic: ansible-topic-example\n    subscription:\n      name: ansible-topic-example-sub\n      pull:\n        message_ack: yes\n        max_messages: \"100\"\n",
+        "metadata": null,
+        "return": {
+            "publish": {
+                "description": "List of dictionaries describing messages and attributes to be published.  Dictionary is in message(str):attributes(dict) format. Only message is required.",
+                "returned": "Only when specified",
+                "sample": "publish: ['message': 'my message', attributes: {'key1': 'value1'}]",
+                "type": "list"
+            },
+            "pulled_messages": {
+                "description": "list of dictionaries containing message info.  Fields are ack_id, attributes, data, message_id.",
+                "returned": "Only when subscription.pull is specified",
+                "sample": [
+                    {
+                        "ack_id": "XkASTCcYREl...",
+                        "attributes": {
+                            "...": null,
+                            "key1": "val1"
+                        },
+                        "data": "this is message 1",
+                        "message_id": "49107464153705"
+                    },
+                    ".."
+                ],
+                "type": "list"
+            },
+            "state": {
+                "description": "The state of the topic or subscription. Value will be either 'absent' or 'present'.",
+                "returned": "Always",
+                "sample": "present",
+                "type": "str"
+            },
+            "subscription": {
+                "description": "Name of subscription.",
+                "returned": "When subscription fields are specified",
+                "sample": "mysubscription",
+                "type": "str"
+            },
+            "topic": {
+                "description": "Name of topic.",
+                "returned": "Always",
+                "sample": "mytopic",
+                "type": "str"
+            }
+        }
+    }
+}

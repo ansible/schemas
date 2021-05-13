@@ -1,0 +1,162 @@
+{
+    "netbox.netbox.netbox_provider": {
+        "doc": {
+            "author": [
+                "Mikhail Yohman (@FragmentedPacket)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates, updates or removes providers from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_provider.py",
+            "has_action": false,
+            "module": "netbox_provider",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the provider configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "account": {
+                            "description": [
+                                "The account number of the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "admin_contact": {
+                            "description": [
+                                "The admin contact of the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "asn": {
+                            "description": [
+                                "The provider ASN"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "comments": {
+                            "description": [
+                                "Comments related to the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "custom_fields": {
+                            "description": [
+                                "must exist in Netbox"
+                            ],
+                            "required": false,
+                            "type": "dict"
+                        },
+                        "name": {
+                            "description": [
+                                "The name of the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "noc_contact": {
+                            "description": [
+                                "The NOC contact of the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "portal_url": {
+                            "description": [
+                                "The URL of the provider"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the device may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Create, update or delete providers within Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox modules\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n\n  tasks:\n    - name: Create provider within Netbox with only required information\n      netbox_provider:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Provider\n        state: present\n\n    - name: Update provider with other fields\n      netbox_provider:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Provider\n          asn: 65001\n          account: 200129104\n          portal_url: http://provider.net\n          noc_contact: noc@provider.net\n          admin_contact: admin@provider.net\n          comments: \"BAD PROVIDER\"\n        state: present\n\n    - name: Delete provider within netbox\n      netbox_provider:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Provider\n        state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            },
+            "provider": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "success (when I(state=present))",
+                "type": "dict"
+            }
+        }
+    }
+}

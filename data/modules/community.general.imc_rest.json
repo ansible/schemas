@@ -1,0 +1,171 @@
+{
+    "community.general.imc_rest": {
+        "doc": {
+            "author": [
+                "Dag Wieers (@dagwieers)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Provides direct access to the Cisco IMC REST API.",
+                "Perform any configuration changes and actions that the Cisco IMC supports.",
+                "More information about the IMC REST API is available from U(http://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/c/sw/api/3_0/b_Cisco_IMC_api_301.html)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/imc_rest.py",
+            "has_action": false,
+            "module": "imc_rest",
+            "notes": [
+                "The XML fragments don't need an authentication cookie, this is injected by the module automatically.",
+                "The Cisco IMC XML output is being translated to JSON using the Cobra convention.",
+                "Any configConfMo change requested has a return status of 'modified', even if there was no actual change from the previous configuration. As a result, this module will always report a change on subsequent runs. In case this behaviour is fixed in a future update to Cisco IMC, this module will automatically adapt.",
+                "If you get a C(Connection failure) related to C(The read operation timed out) increase the C(timeout) parameter. Some XML fragments can take longer than the default timeout.",
+                "More information about the IMC REST API is available from U(http://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/c/sw/api/3_0/b_Cisco_IMC_api_301.html)"
+            ],
+            "options": {
+                "content": {
+                    "description": [
+                        "When used instead of C(path), sets the content of the API requests directly.",
+                        "This may be convenient to template simple requests, for anything complex use the M(ansible.builtin.template) module.",
+                        "You can collate multiple IMC XML fragments and they will be processed sequentially in a single stream, the Cisco IMC output is subsequently merged.",
+                        "Parameter C(content) is mutual exclusive with parameter C(path)."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "aliases": [
+                        "host",
+                        "ip"
+                    ],
+                    "description": [
+                        "IP Address or hostname of Cisco IMC, resolvable by Ansible control host."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "default": "password",
+                    "description": [
+                        "The password to use for authentication."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "aliases": [
+                        "src",
+                        "config_file"
+                    ],
+                    "description": [
+                        "Name of the absolute path of the filename that includes the body of the http request being sent to the Cisco IMC REST API.",
+                        "Parameter C(path) is mutual exclusive with parameter C(content)."
+                    ],
+                    "type": "path"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "Connection protocol to use."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 60,
+                    "description": [
+                        "The socket level timeout in seconds.",
+                        "This is the time that every single connection (every fragment) can spend. If this C(timeout) is reached, the module will fail with a C(Connection failure) indicating that C(The read operation timed out)."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "Username used to login to the switch."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "lxml",
+                "xmljson >= 0.1.8"
+            ],
+            "short_description": "Manage Cisco IMC hardware through its REST API"
+        },
+        "examples": "\n- name: Power down server\n  community.general.imc_rest:\n    hostname: '{{ imc_hostname }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    content: |\n      <configConfMo><inConfig>\n        <computeRackUnit dn=\"sys/rack-unit-1\" adminPower=\"down\"/>\n      </inConfig></configConfMo>\n  delegate_to: localhost\n\n- name: Configure IMC using multiple XML fragments\n  community.general.imc_rest:\n    hostname: '{{ imc_hostname }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    timeout: 120\n    content: |\n      <!-- Configure Serial-on-LAN -->\n      <configConfMo><inConfig>\n        <solIf dn=\"sys/rack-unit-1/sol-if\" adminState=\"enable\" speed==\"115200\" comport=\"com0\"/>\n      </inConfig></configConfMo>\n\n      <!-- Configure Console Redirection -->\n      <configConfMo><inConfig>\n        <biosVfConsoleRedirection dn=\"sys/rack-unit-1/bios/bios-settings/Console-redirection\"\n          vpBaudRate=\"115200\"\n          vpConsoleRedirection=\"com-0\"\n          vpFlowControl=\"none\"\n          vpTerminalType=\"vt100\"\n          vpPuttyKeyPad=\"LINUX\"\n          vpRedirectionAfterPOST=\"Always Enable\"/>\n      </inConfig></configConfMo>\n  delegate_to: localhost\n\n- name: Enable PXE boot and power-cycle server\n  community.general.imc_rest:\n    hostname: '{{ imc_hostname }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    content: |\n      <!-- Configure PXE boot -->\n      <configConfMo><inConfig>\n        <lsbootLan dn=\"sys/rack-unit-1/boot-policy/lan-read-only\" access=\"read-only\" order=\"1\" prot=\"pxe\" type=\"lan\"/>\n      </inConfig></configConfMo>\n\n      <!-- Power cycle server -->\n      <configConfMo><inConfig>\n        <computeRackUnit dn=\"sys/rack-unit-1\" adminPower=\"cycle-immediate\"/>\n      </inConfig></configConfMo>\n  delegate_to: localhost\n\n- name: Reconfigure IMC to boot from storage\n  community.general.imc_rest:\n    hostname: '{{ imc_host }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    content: |\n      <configConfMo><inConfig>\n        <lsbootStorage dn=\"sys/rack-unit-1/boot-policy/storage-read-write\" access=\"read-write\" order=\"1\" type=\"storage\"/>\n      </inConfig></configConfMo>\n  delegate_to: localhost\n\n- name: Add customer description to server\n  community.general.imc_rest:\n    hostname: '{{ imc_host }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    content: |\n        <configConfMo><inConfig>\n          <computeRackUnit dn=\"sys/rack-unit-1\" usrLbl=\"Customer Lab - POD{{ pod_id }} - {{ inventory_hostname_short }}\"/>\n        </inConfig></configConfMo>\n    delegate_to: localhost\n\n- name: Disable HTTP and increase session timeout to max value 10800 secs\n  community.general.imc_rest:\n    hostname: '{{ imc_host }}'\n    username: '{{ imc_username }}'\n    password: '{{ imc_password }}'\n    validate_certs: no\n    timeout: 120\n    content: |\n        <configConfMo><inConfig>\n          <commHttp dn=\"sys/svc-ext/http-svc\" adminState=\"disabled\"/>\n        </inConfig></configConfMo>\n\n        <configConfMo><inConfig>\n          <commHttps dn=\"sys/svc-ext/https-svc\" adminState=\"enabled\" sessionTimeout=\"10800\"/>\n        </inConfig></configConfMo>\n    delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "aaLogin": {
+                "description": "Cisco IMC XML output for the login, translated to JSON using Cobra convention",
+                "returned": "success",
+                "sample": "\"attributes\": {\n    \"cookie\": \"\",\n    \"outCookie\": \"1498902428/9de6dc36-417c-157c-106c-139efe2dc02a\",\n    \"outPriv\": \"admin\",\n    \"outRefreshPeriod\": \"600\",\n    \"outSessionId\": \"114\",\n    \"outVersion\": \"2.0(13e)\",\n    \"response\": \"yes\"\n}\n",
+                "type": "dict"
+            },
+            "configConfMo": {
+                "description": "Cisco IMC XML output for any configConfMo XML fragments, translated to JSON using Cobra convention",
+                "returned": "success",
+                "sample": "",
+                "type": "dict"
+            },
+            "elapsed": {
+                "description": "Elapsed time in seconds",
+                "returned": "always",
+                "sample": 31,
+                "type": "int"
+            },
+            "error": {
+                "description": "Cisco IMC XML error output for last request, translated to JSON using Cobra convention",
+                "returned": "failed",
+                "sample": "\"attributes\": {\n    \"cookie\": \"\",\n    \"errorCode\": \"ERR-xml-parse-error\",\n    \"errorDescr\": \"XML PARSING ERROR: Element 'computeRackUnit', attribute 'admin_Power': The attribute 'admin_Power' is not allowed. \",\n    \"invocationResult\": \"594\",\n    \"response\": \"yes\"\n}\n",
+                "type": "dict"
+            },
+            "error_code": {
+                "description": "Cisco IMC error code",
+                "returned": "failed",
+                "sample": "ERR-xml-parse-error",
+                "type": "str"
+            },
+            "error_text": {
+                "description": "Cisco IMC error message",
+                "returned": "failed",
+                "sample": "XML PARSING ERROR: Element 'computeRackUnit', attribute 'admin_Power': The attribute 'admin_Power' is not allowed.\n",
+                "type": "str"
+            },
+            "input": {
+                "description": "RAW XML input sent to the Cisco IMC, causing the error",
+                "returned": "failed",
+                "sample": "<configConfMo><inConfig><computeRackUnit dn=\"sys/rack-unit-1\" admin_Power=\"down\"/></inConfig></configConfMo>\n",
+                "type": "str"
+            },
+            "output": {
+                "description": "RAW XML output received from the Cisco IMC, with error details",
+                "returned": "failed",
+                "sample": "<error cookie=\"\"\n  response=\"yes\"\n  errorCode=\"ERR-xml-parse-error\"\n  invocationResult=\"594\"\n  errorDescr=\"XML PARSING ERROR: Element 'computeRackUnit', attribute 'admin_Power': The attribute 'admin_Power' is not allowed.\\n\"/>\n",
+                "type": "str"
+            },
+            "response": {
+                "description": "HTTP response message, including content length",
+                "returned": "always",
+                "sample": "OK (729 bytes)",
+                "type": "str"
+            },
+            "status": {
+                "description": "The HTTP response status code",
+                "returned": "always",
+                "sample": 200,
+                "type": "dict"
+            }
+        }
+    }
+}

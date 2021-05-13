@@ -1,0 +1,120 @@
+{
+    "mellanox.onyx.onyx_traffic_class": {
+        "doc": {
+            "author": "Anas Badaha (@anasb)",
+            "collection": "mellanox.onyx",
+            "description": [
+                "This module provides declarative management of Traffic Class configuration on Mellanox ONYX network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/mellanox/onyx/plugins/modules/onyx_traffic_class.py",
+            "has_action": false,
+            "module": "onyx_traffic_class",
+            "options": {
+                "congestion_control": {
+                    "description": [
+                        "configure congestion control on interface."
+                    ],
+                    "suboptions": {
+                        "control": {
+                            "choices": [
+                                "red",
+                                "ecn",
+                                "both"
+                            ],
+                            "description": [
+                                "congestion control type."
+                            ],
+                            "required": true
+                        },
+                        "max_threshold": {
+                            "description": [
+                                "Set maximum-threshold value (in KBs) for marking traffic-class queue."
+                            ],
+                            "required": true
+                        },
+                        "min_threshold": {
+                            "description": [
+                                "Set minimum-threshold value (in KBs) for marking traffic-class queue."
+                            ],
+                            "required": true
+                        },
+                        "threshold_mode": {
+                            "choices": [
+                                "absolute",
+                                "relative"
+                            ],
+                            "description": [
+                                "congestion control threshold mode."
+                            ],
+                            "required": true
+                        }
+                    }
+                },
+                "dcb": {
+                    "description": [
+                        "configure dcb control on interface."
+                    ],
+                    "suboptions": {
+                        "mode": {
+                            "choices": [
+                                "strict",
+                                "wrr"
+                            ],
+                            "description": [
+                                "dcb control mode."
+                            ],
+                            "required": true
+                        },
+                        "weight": {
+                            "description": [
+                                "Relevant only for wrr mode."
+                            ]
+                        }
+                    }
+                },
+                "interfaces": {
+                    "description": [
+                        "list of interfaces name."
+                    ],
+                    "required": true
+                },
+                "state": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "enable congestion control on interface."
+                    ]
+                },
+                "tc": {
+                    "description": [
+                        "traffic class, range 0-7."
+                    ],
+                    "required": true
+                }
+            },
+            "short_description": "Configures Traffic Class"
+        },
+        "examples": "\n- name: Configure traffic class\n  onyx_traffic_class:\n    interfaces:\n      - Eth1/1\n      - Eth1/2\n    tc: 3\n    congestion_control:\n      control: ecn\n      threshold_mode: absolute\n      min_threshold: 500\n      max_threshold: 1500\n    dcb:\n      mode: strict\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device.",
+                "returned": "always",
+                "sample": [
+                    "interface ethernet 1/15 traffic-class 3 congestion-control ecn minimum-absolute 150 maximum-absolute 1500",
+                    "interface ethernet 1/16 traffic-class 3 congestion-control ecn minimum-absolute 150 maximum-absolute 1500",
+                    "interface mlag-port-channel 7 traffic-class 3 congestion-control ecn minimum-absolute 150 maximum-absolute 1500",
+                    "interface port-channel 1 traffic-class 3 congestion-control ecn minimum-absolute 150 maximum-absolute 1500",
+                    "interface ethernet 1/15 traffic-class 3 dcb ets strict",
+                    "interface ethernet 1/16 traffic-class 3 dcb ets strict",
+                    "interface mlag-port-channel 7 traffic-class 3 dcb ets strict",
+                    "interface port-channel 1 traffic-class 3 dcb ets strict"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

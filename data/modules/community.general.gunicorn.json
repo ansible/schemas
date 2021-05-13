@@ -1,0 +1,95 @@
+{
+    "community.general.gunicorn": {
+        "doc": {
+            "author": [
+                "Alejandro Gomez (@agmezr)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Starts gunicorn with the parameters specified. Common settings for gunicorn configuration are supported. For additional configuration use a config file See U(https://gunicorn-docs.readthedocs.io/en/latest/settings.html) for more options. It's recommended to always use the chdir option to avoid problems with the location of the app."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/gunicorn.py",
+            "has_action": false,
+            "module": "gunicorn",
+            "notes": [
+                "If not specified on config file, a temporary error log will be created on /tmp dir. Please make sure you have write access in /tmp dir. Not needed but will help you to identify any problem with configuration."
+            ],
+            "options": {
+                "app": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "The app module. A name refers to a WSGI callable that should be found in the specified module."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "chdir": {
+                    "description": [
+                        "Chdir to specified directory before apps loading."
+                    ],
+                    "type": "path"
+                },
+                "config": {
+                    "aliases": [
+                        "conf"
+                    ],
+                    "description": [
+                        "Path to the gunicorn configuration file."
+                    ],
+                    "type": "path"
+                },
+                "pid": {
+                    "description": [
+                        "A filename to use for the PID file. If not set and not found on the configuration file a tmp pid file will be created to check a successful run of gunicorn."
+                    ],
+                    "type": "path"
+                },
+                "user": {
+                    "description": [
+                        "Switch worker processes to run as this user."
+                    ],
+                    "type": "str"
+                },
+                "venv": {
+                    "aliases": [
+                        "virtualenv"
+                    ],
+                    "description": [
+                        "Path to the virtualenv directory."
+                    ],
+                    "type": "path"
+                },
+                "worker": {
+                    "choices": [
+                        "sync",
+                        "eventlet",
+                        "gevent",
+                        "tornado ",
+                        "gthread",
+                        "gaiohttp"
+                    ],
+                    "description": [
+                        "The type of workers to use. The default class (sync) should handle most \"normal\" types of workloads."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "gunicorn"
+            ],
+            "short_description": "Run gunicorn with various settings."
+        },
+        "examples": "\n- name: Simple gunicorn run example\n  community.general.gunicorn:\n    app: 'wsgi'\n    chdir: '/workspace/example'\n\n- name: Run gunicorn on a virtualenv\n  community.general.gunicorn:\n    app: 'wsgi'\n    chdir: '/workspace/example'\n    venv: '/workspace/example/venv'\n\n- name: Run gunicorn with a config file\n  community.general.gunicorn:\n    app: 'wsgi'\n    chdir: '/workspace/example'\n    conf: '/workspace/example/gunicorn.cfg'\n\n- name: Run gunicorn as ansible user with specified pid and config file\n  community.general.gunicorn:\n    app: 'wsgi'\n    chdir: '/workspace/example'\n    conf: '/workspace/example/gunicorn.cfg'\n    venv: '/workspace/example/venv'\n    pid: '/workspace/example/gunicorn.pid'\n    user: 'ansible'\n",
+        "metadata": null,
+        "return": {
+            "gunicorn": {
+                "description": "process id of gunicorn",
+                "returned": "changed",
+                "sample": "1234",
+                "type": "str"
+            }
+        }
+    }
+}

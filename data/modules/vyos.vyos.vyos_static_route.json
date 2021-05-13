@@ -1,0 +1,167 @@
+{
+    "vyos.vyos.vyos_static_route": {
+        "doc": {
+            "author": "Trishna Guha (@trishnaguha)",
+            "collection": "vyos.vyos",
+            "deprecated": {
+                "alternative": "vyos_static_routes",
+                "removed_at_date": "2022-06-01",
+                "removed_from_collection": "vyos.vyos",
+                "why": "Updated modules released with more functionality."
+            },
+            "description": [
+                "This module provides declarative management of static IP routes on Vyatta VyOS network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/vyos/vyos/plugins/modules/vyos_static_route.py",
+            "has_action": true,
+            "module": "vyos_static_route",
+            "notes": [
+                "Tested against VyOS 1.1.8 (helium).",
+                "This module works with connection C(network_cli). See L(the VyOS OS Platform Options,../network/user_guide/platform_vyos.html).",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`"
+            ],
+            "options": {
+                "admin_distance": {
+                    "description": [
+                        "Admin distance of the static route."
+                    ],
+                    "type": "int"
+                },
+                "aggregate": {
+                    "description": "List of static route definitions",
+                    "elements": "dict",
+                    "suboptions": {
+                        "admin_distance": {
+                            "description": [
+                                "Admin distance of the static route."
+                            ],
+                            "type": "int"
+                        },
+                        "mask": {
+                            "description": [
+                                "Network prefix mask of the static route."
+                            ],
+                            "type": "str"
+                        },
+                        "next_hop": {
+                            "description": [
+                                "Next hop IP of the static route."
+                            ],
+                            "type": "str"
+                        },
+                        "prefix": {
+                            "description": [
+                                "Network prefix of the static route. C(mask) param should be ignored if C(prefix) is provided with C(mask) value C(prefix/mask)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "state": {
+                            "choices": [
+                                "present",
+                                "absent"
+                            ],
+                            "description": [
+                                "State of the static route configuration."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "mask": {
+                    "description": [
+                        "Network prefix mask of the static route."
+                    ],
+                    "type": "str"
+                },
+                "next_hop": {
+                    "description": [
+                        "Next hop IP of the static route."
+                    ],
+                    "type": "str"
+                },
+                "prefix": {
+                    "description": [
+                        "Network prefix of the static route. C(mask) param should be ignored if C(prefix) is provided with C(mask) value C(prefix/mask)."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(Network Guide, ../network/getting_started/network_differences.html#multiple-communication-protocols).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the static route configuration."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "(deprecated, removed after 2022-06-01) Manage static IP routes on Vyatta VyOS network devices",
+            "version_added": "1.0.0",
+            "version_added_collection": "vyos.vyos"
+        },
+        "examples": "\n- name: configure static route\n  vyos.vyos.vyos_static_route:\n    prefix: 192.168.2.0\n    mask: 24\n    next_hop: 10.0.0.1\n\n- name: configure static route prefix/mask\n  vyos.vyos.vyos_static_route:\n    prefix: 192.168.2.0/16\n    next_hop: 10.0.0.1\n\n- name: remove configuration\n  vyos.vyos.vyos_static_route:\n    prefix: 192.168.2.0\n    mask: 16\n    next_hop: 10.0.0.1\n    state: absent\n\n- name: configure aggregates of static routes\n  vyos.vyos.vyos_static_route:\n    aggregate:\n    - {prefix: 192.168.2.0, mask: 24, next_hop: 10.0.0.1}\n    - {prefix: 192.168.3.0, mask: 16, next_hop: 10.0.2.1}\n    - {prefix: 192.168.3.0/16, next_hop: 10.0.2.1}\n\n- name: Remove static route collections\n  vyos.vyos.vyos_static_route:\n    aggregate:\n    - {prefix: 172.24.1.0/24, next_hop: 192.168.42.64}\n    - {prefix: 172.24.3.0/24, next_hop: 192.168.42.64}\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always",
+                "sample": [
+                    "set protocols static route 192.168.2.0/16 next-hop 10.0.0.1"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,128 @@
+{
+    "community.windows.win_psmodule": {
+        "doc": {
+            "author": [
+                "Wojciech Sciesinski (@it-praktyk)",
+                "Daniele Lazzari (@dlazz)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "This module helps to install Windows PowerShell modules and register custom modules repository on Windows-based systems."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_psmodule.py",
+            "has_action": false,
+            "module": "win_psmodule",
+            "notes": [
+                "PowerShell modules needed - PowerShellGet >= 1.6.0 - PackageManagement >= 1.1.7",
+                "PowerShell package provider needed - NuGet >= 2.8.5.201",
+                "On PowerShell 5.x required modules and a package provider will be updated under the first run of the win_psmodule module.",
+                "On PowerShell 3.x and 4.x you have to install them before using the win_psmodule."
+            ],
+            "options": {
+                "allow_clobber": {
+                    "default": false,
+                    "description": [
+                        "If C(yes) allows install modules that contains commands those have the same names as commands that already exists."
+                    ],
+                    "type": "bool"
+                },
+                "allow_prerelease": {
+                    "default": false,
+                    "description": [
+                        "If C(yes) installs modules marked as prereleases.",
+                        "It doesn't work with the parameters C(minimum_version) and/or C(maximum_version).",
+                        "It doesn't work with the C(state) set to absent."
+                    ],
+                    "type": "bool"
+                },
+                "maximum_version": {
+                    "description": [
+                        "The maximum version of the PowerShell module that has to be installed."
+                    ],
+                    "type": "str"
+                },
+                "minimum_version": {
+                    "description": [
+                        "The minimum version of the PowerShell module that has to be installed."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the Windows PowerShell module that has to be installed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "repository": {
+                    "description": [
+                        "Name of the custom repository to use."
+                    ],
+                    "type": "str"
+                },
+                "required_version": {
+                    "description": [
+                        "The exact version of the PowerShell module that has to be installed."
+                    ],
+                    "type": "str"
+                },
+                "skip_publisher_check": {
+                    "default": false,
+                    "description": [
+                        "If C(yes), allows you to install a different version of a module that already exists on your computer in the case when a different one is not digitally signed by a trusted publisher and the newest existing module is digitally signed by a trusted publisher."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "latest",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(present) a new module is installed.",
+                        "If C(absent) a module is removed.",
+                        "If C(latest) a module is updated to the newest version."
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "URL of the custom repository to register.",
+                        "DEPRECATED, will be removed in a major release after C(2021-07-01), please use the M(community.windows.win_psrepository) module instead."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "community.windows.win_psrepository"
+                }
+            ],
+            "short_description": "Adds or removes a Windows PowerShell module"
+        },
+        "examples": "\n---\n- name: Add a PowerShell module\n  community.windows.win_psmodule:\n    name: PowerShellModule\n    state: present\n\n- name: Add an exact version of PowerShell module\n  community.windows.win_psmodule:\n    name: PowerShellModule\n    required_version: \"4.0.2\"\n    state: present\n\n- name: Install or update an existing PowerShell module to the newest version\n  community.windows.win_psmodule:\n    name: PowerShellModule\n    state: latest\n\n- name: Install newer version of built-in Windows module\n  community.windows.win_psmodule:\n    name: Pester\n    skip_publisher_check: yes\n    state: present\n\n- name: Add a PowerShell module and register a repository\n  community.windows.win_psmodule:\n    name: MyCustomModule\n    repository: MyRepository\n    state: present\n\n- name: Add a PowerShell module from a specific repository\n  community.windows.win_psmodule:\n    name: PowerShellModule\n    repository: MyRepository\n    state: present\n\n- name: Remove a PowerShell module\n  community.windows.win_psmodule:\n    name: PowerShellModule\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "nuget_changed": {
+                "description": "True when Nuget package provider is installed.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "output": {
+                "description": "A message describing the task result.",
+                "returned": "always",
+                "sample": "Module PowerShellCookbook installed",
+                "type": "str"
+            },
+            "repository_changed": {
+                "description": "True when a custom repository is installed or removed.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

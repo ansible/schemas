@@ -1,0 +1,134 @@
+{
+    "community.network.cnos_rollback": {
+        "doc": {
+            "author": "Anil Kumar Muraleedharan (@amuraleedhar)",
+            "collection": "community.network",
+            "description": [
+                "This module allows you to work with switch configurations. It provides a way to roll back configurations of a switch from a remote server. This is achieved by using startup or running configurations of the target device that were previously backed up to a remote server using FTP, SFTP, TFTP, or SCP. The first step is to create a directory from where the remote server can be reached. The next step is to provide the full file path of he backup configuration's location. Authentication details required by the remote server must be provided as well. By default, this method overwrites the switch's configuration file with the newly downloaded file. This module uses SSH to manage network device configuration. The results of the operation will be placed in a directory named 'results' that must be created by the user in their local directory to where the playbook is run."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/cnos_rollback.py",
+            "has_action": false,
+            "module": "cnos_rollback",
+            "notes": [
+                "For more information on using Ansible to manage Lenovo Network devices see U(https://www.ansible.com/ansible-lenovo)."
+            ],
+            "options": {
+                "configType": {
+                    "choices": [
+                        "running-config",
+                        "startup-config"
+                    ],
+                    "default": null,
+                    "description": [
+                        "This refers to the type of configuration which will be used for the rolling back process. The choices are the running or startup configurations. There is no default value, so it will result in an error if the input is incorrect."
+                    ],
+                    "required": true
+                },
+                "deviceType": {
+                    "choices": [
+                        "g8272_cnos",
+                        "g8296_cnos",
+                        "g8332_cnos",
+                        "NE0152T",
+                        "NE1072T",
+                        "NE1032",
+                        "NE1032T",
+                        "NE10032",
+                        "NE2572"
+                    ],
+                    "description": [
+                        "This specifies the type of device where the method is executed. The choices NE1072T,NE1032,NE1032T,NE10032,NE2572 are added since Ansible 2.4. The choice NE0152T is added since 2.8"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enablePassword": {
+                    "description": [
+                        "Configures the password used to enter Global Configuration command mode on the switch. If the switch does not request this password, the parameter is ignored.While generally the value should come from the inventory file, you can also specify it as a variable. This parameter is optional. If it is not specified, no default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "This is the variable used to search the hosts file at /etc/ansible/hosts and identify the IP address of the device on which the template is going to be applied. Usually the Ansible keyword {{ inventory_hostname }} is specified in the playbook as an abstraction of the group of network elements that need to be configured."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "outputfile": {
+                    "description": [
+                        "This specifies the file path where the output of each command execution is saved. Each command that is specified in the merged template file and each response from the device are saved here. Usually the location is the results folder, but you can choose another location based on your write permission."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Configures the password used to authenticate the connection to the remote device. The value of the password parameter is used to authenticate the SSH session. While generally the value should come from the inventory file, you can also specify it as a variable. This parameter is optional. If it is not specified, no default value will be used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "protocol": {
+                    "choices": [
+                        "SFTP",
+                        "SCP",
+                        "FTP",
+                        "TFTP"
+                    ],
+                    "default": null,
+                    "description": [
+                        "This refers to the protocol used by the network device to interact with the remote server from where to download the backup configuration. The choices are FTP, SFTP, TFTP, or SCP. Any other protocols will result in error. If this parameter is not specified, there is no default value to be used."
+                    ],
+                    "required": true
+                },
+                "rcpath": {
+                    "default": null,
+                    "description": [
+                        "This specifies the full file path of the configuration file located on the remote server. In case the relative path is used as the variable value, the root folder for the user of the server needs to be specified."
+                    ],
+                    "required": true
+                },
+                "rcserverip": {
+                    "default": null,
+                    "description": [
+                        "This specifies the IP Address of the remote server from where the backup configuration will be downloaded."
+                    ],
+                    "required": true
+                },
+                "serverpassword": {
+                    "default": null,
+                    "description": [
+                        "Specify password for the server relating to the protocol used."
+                    ],
+                    "required": true
+                },
+                "serverusername": {
+                    "default": null,
+                    "description": [
+                        "Specify username for the server relating to the protocol used."
+                    ],
+                    "required": true
+                },
+                "username": {
+                    "description": [
+                        "Configures the username used to authenticate the connection to the remote device. The value of the username parameter is used to authenticate the SSH session. While generally the value should come from the inventory file, you can also specify it as a variable. This parameter is optional. If it is not specified, no default value will be used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Roll back the running or startup configuration from a remote server on devices running Lenovo CNOS"
+        },
+        "examples": "\nTasks : The following are examples of using the module cnos_rollback.\n These are written in the main.yml file of the tasks directory.\n---\n\n- name: Test Rollback of config - Running config\n  cnos_rolback:\n      deviceType: \"{{ hostvars[inventory_hostname]['deviceType'] }}\"\n      outputfile: \"./results/test_rollback_{{ inventory_hostname }}_output.txt\"\n      configType: running-config\n      protocol: \"sftp\"\n      serverip: \"10.241.106.118\"\n      rcpath: \"/root/cnos/G8272-running-config.txt\"\n      serverusername: \"root\"\n      serverpassword: \"root123\"\n\n- name: Test Rollback of config - Startup config\n  cnos_rolback:\n      deviceType: \"{{ hostvars[inventory_hostname]['deviceType'] }}\"\n      outputfile: \"./results/test_rollback_{{ inventory_hostname }}_output.txt\"\n      configType: startup-config\n      protocol: \"sftp\"\n      serverip: \"10.241.106.118\"\n      rcpath: \"/root/cnos/G8272-startup-config.txt\"\n      serverusername: \"root\"\n      serverpassword: \"root123\"\n\n- name: Test Rollback of config - Running config - TFTP\n  cnos_rolback:\n      deviceType: \"{{ hostvars[inventory_hostname]['deviceType'] }}\"\n      outputfile: \"./results/test_rollback_{{ inventory_hostname }}_output.txt\"\n      configType: running-config\n      protocol: \"tftp\"\n      serverip: \"10.241.106.118\"\n      rcpath: \"/anil/G8272-running-config.txt\"\n      serverusername: \"root\"\n      serverpassword: \"root123\"\n\n- name: Test Rollback of config - Startup config - TFTP\n  cnos_rolback:\n      deviceType: \"{{ hostvars[inventory_hostname]['deviceType'] }}\"\n      outputfile: \"./results/test_rollback_{{ inventory_hostname }}_output.txt\"\n      configType: startup-config\n      protocol: \"tftp\"\n      serverip: \"10.241.106.118\"\n      rcpath: \"/anil/G8272-startup-config.txt\"\n      serverusername: \"root\"\n      serverpassword: \"root123\"\n\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Success or failure message",
+                "returned": "always",
+                "sample": "Config file transferred to Device",
+                "type": "str"
+            }
+        }
+    }
+}

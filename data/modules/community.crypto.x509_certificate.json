@@ -1,0 +1,782 @@
+{
+    "community.crypto.x509_certificate": {
+        "doc": {
+            "author": [
+                "Yanis Guenane (@Spredzy)",
+                "Markus Teufelberger (@MarkusTeufelberger)"
+            ],
+            "collection": "community.crypto",
+            "description": [
+                "If both the cryptography and PyOpenSSL libraries are available (and meet the minimum version requirements) cryptography will be preferred as a backend over PyOpenSSL (unless the backend is forced with C(select_crypto_backend)). Please note that the PyOpenSSL backend was deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0.",
+                "It implements a notion of provider (ie. C(selfsigned), C(ownca), C(acme), C(assertonly), C(entrust)) for your certificate.",
+                "It uses the pyOpenSSL or cryptography python library to interact with OpenSSL.",
+                "Many properties that can be specified in this module are for validation of an existing or newly generated certificate. The proper place to specify them, if you want to receive a certificate with these properties is a CSR (Certificate Signing Request).",
+                "Note that this module was called C(openssl_certificate) when included directly in Ansible up to version 2.9. When moved to the collection C(community.crypto), it was renamed to M(community.crypto.x509_certificate). From Ansible 2.10 on, it can still be used by the old short name (or by C(ansible.builtin.openssl_certificate)), which redirects to C(community.crypto.x509_certificate). When using FQCNs or when using the L(collections,https://docs.ansible.com/ansible/latest/user_guide/collections_using.html#using-collections-in-a-playbook) keyword, the new name M(community.crypto.x509_certificate) should be used to avoid a deprecation warning.",
+                "Please note that the module regenerates existing certificate if it does not match the module's options, or if it seems to be corrupt. If you are concerned that this could overwrite your existing certificate, consider using the I(backup) option.",
+                "The C(assertonly) provider is intended for use cases where one is only interested in checking properties of a supplied certificate. Please note that this provider has been deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0. See the examples on how to emulate C(assertonly) usage with M(community.crypto.x509_certificate_info), M(community.crypto.openssl_csr_info), M(community.crypto.openssl_privatekey_info) and M(ansible.builtin.assert). This also allows more flexible checks than the ones offered by the C(assertonly) provider.",
+                "The C(ownca) provider is intended for generating an OpenSSL certificate signed with your own CA (Certificate Authority) certificate (self-signed certificate).",
+                "This module allows one to (re)generate OpenSSL certificates."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/x509_certificate.py",
+            "has_action": false,
+            "module": "x509_certificate",
+            "notes": [
+                "Supports C(check_mode).",
+                "All ASN.1 TIME values should be specified following the YYYYMMDDHHMMSSZ pattern.",
+                "Date specified should be UTC. Minutes and seconds are mandatory.",
+                "For security reason, when you use C(ownca) provider, you should NOT run M(community.crypto.x509_certificate) on a target machine, but on a dedicated CA machine. It is recommended not to store the CA private key on the target machine. Once signed, the certificate can be moved to the target machine.",
+                "For the C(selfsigned) provider, I(csr_path) and I(csr_content) are optional. If not provided, a certificate without any information (Subject, Subject Alternative Names, Key Usage, etc.) is created."
+            ],
+            "options": {
+                "acme_accountkey_path": {
+                    "description": [
+                        "The path to the accountkey for the C(acme) provider.",
+                        "This is only used by the C(acme) provider."
+                    ],
+                    "type": "path"
+                },
+                "acme_chain": {
+                    "default": false,
+                    "description": [
+                        "Include the intermediate certificate to the generated certificate",
+                        "This is only used by the C(acme) provider.",
+                        "Note that this is only available for older versions of C(acme-tiny). New versions include the chain automatically, and setting I(acme_chain) to C(yes) results in an error."
+                    ],
+                    "type": "bool"
+                },
+                "acme_challenge_path": {
+                    "description": [
+                        "The path to the ACME challenge directory that is served on U(http://<HOST>:80/.well-known/acme-challenge/)",
+                        "This is only used by the C(acme) provider."
+                    ],
+                    "type": "path"
+                },
+                "acme_directory": {
+                    "default": "https://acme-v02.api.letsencrypt.org/directory",
+                    "description": [
+                        "The ACME directory to use. You can use any directory that supports the ACME protocol, such as Buypass or Let's Encrypt.",
+                        "Let's Encrypt recommends using their staging server while developing jobs. U(https://letsencrypt.org/docs/staging-environment/)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "Create a backup file including a timestamp so you can get the original certificate back if you overwrote it with a new one by accident.",
+                        "This is not used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "csr_content": {
+                    "description": [
+                        "Content of the Certificate Signing Request (CSR) used to generate this certificate.",
+                        "This is mutually exclusive with I(csr_path)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "csr_path": {
+                    "description": [
+                        "Path to the Certificate Signing Request (CSR) used to generate this certificate.",
+                        "This is mutually exclusive with I(csr_content)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_client_cert_key_path": {
+                    "description": [
+                        "The path to the private key of the client certificate used to authenticate to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_client_cert_path": {
+                    "description": [
+                        "The path to the client certificate used to authenticate to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_key": {
+                    "description": [
+                        "The key (password) for authentication to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_api_specification_path": {
+                    "default": "https://cloud.entrust.net/EntrustCloud/documentation/cms-api-2.1.0.yaml",
+                    "description": [
+                        "The path to the specification file defining the Entrust Certificate Services (ECS) API configuration.",
+                        "You can use this to keep a local copy of the specification to avoid downloading it every time the module is used.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_user": {
+                    "description": [
+                        "The username for authentication to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_cert_type": {
+                    "choices": [
+                        "STANDARD_SSL",
+                        "ADVANTAGE_SSL",
+                        "UC_SSL",
+                        "EV_SSL",
+                        "WILDCARD_SSL",
+                        "PRIVATE_SSL",
+                        "PD_SSL",
+                        "CDS_ENT_LITE",
+                        "CDS_ENT_PRO",
+                        "SMIME_ENT"
+                    ],
+                    "default": "STANDARD_SSL",
+                    "description": [
+                        "Specify the type of certificate requested.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "str"
+                },
+                "entrust_not_after": {
+                    "default": "+365d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as an absolute timestamp.",
+                        "A valid absolute time format is C(ASN.1 TIME) such as C(2019-06-18).",
+                        "A valid relative time format is C([+-]timespec) where timespec can be an integer + C([w | d | h | m | s]), such as C(+365d) or C(+32w1d2h)).",
+                        "Time will always be interpreted as UTC.",
+                        "Note that only the date (day, month, year) is supported for specifying the expiry date of the issued certificate.",
+                        "The full date-time is adjusted to EST (GMT -5:00) before issuance, which may result in a certificate with an expiration date one day earlier than expected if a relative time is used.",
+                        "The minimum certificate lifetime is 90 days, and maximum is three years.",
+                        "If this value is not specified, the certificate will stop being valid 365 days the date of issue.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_email": {
+                    "description": [
+                        "The email of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_name": {
+                    "description": [
+                        "The name of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_phone": {
+                    "description": [
+                        "The phone number of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "extended_key_usage": {
+                    "aliases": [
+                        "extendedKeyUsage"
+                    ],
+                    "description": [
+                        "The I(extended_key_usage) extension field must contain all these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "extended_key_usage_strict": {
+                    "aliases": [
+                        "extendedKeyUsage_strict"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), the I(extended_key_usage) extension field must contain only these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Generate the certificate, even if it already exists."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "has_expired": {
+                    "default": false,
+                    "description": [
+                        "Checks if the certificate is expired/not expired at the time the module is executed.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "invalid_at": {
+                    "description": [
+                        "The certificate must be invalid at this point in time.",
+                        "The timestamp is formatted as an ASN.1 TIME.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "str"
+                },
+                "issuer": {
+                    "description": [
+                        "The key/value pairs that must be present in the issuer name field of the certificate.",
+                        "If you need to specify more than one value with the same key, use a list as value.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "dict"
+                },
+                "issuer_strict": {
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), the I(issuer) field must contain only these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "key_usage": {
+                    "aliases": [
+                        "keyUsage"
+                    ],
+                    "description": [
+                        "The I(key_usage) extension field must contain all these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "key_usage_strict": {
+                    "aliases": [
+                        "keyUsage_strict"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), the I(key_usage) extension field must contain only these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "not_after": {
+                    "aliases": [
+                        "notAfter"
+                    ],
+                    "description": [
+                        "The certificate must expire at this point in time.",
+                        "The timestamp is formatted as an ASN.1 TIME.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "str"
+                },
+                "not_before": {
+                    "aliases": [
+                        "notBefore"
+                    ],
+                    "description": [
+                        "The certificate must start to become valid at this point in time.",
+                        "The timestamp is formatted as an ASN.1 TIME.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "str"
+                },
+                "ownca_content": {
+                    "description": [
+                        "Content of the CA (Certificate Authority) certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_path)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "ownca_create_authority_key_identifier": {
+                    "default": true,
+                    "description": [
+                        "Create a Authority Key Identifier from the CA's certificate. If the CSR provided a authority key identifier, it is ignored.",
+                        "The Authority Key Identifier is generated from the CA certificate's Subject Key Identifier, if available. If it is not available, the CA certificate's public key will be used.",
+                        "This is only used by the C(ownca) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "bool"
+                },
+                "ownca_create_subject_key_identifier": {
+                    "choices": [
+                        "create_if_not_provided",
+                        "always_create",
+                        "never_create"
+                    ],
+                    "default": "create_if_not_provided",
+                    "description": [
+                        "Whether to create the Subject Key Identifier (SKI) from the public key.",
+                        "A value of C(create_if_not_provided) (default) only creates a SKI when the CSR does not provide one.",
+                        "A value of C(always_create) always creates a SKI. If the CSR provides one, that one is ignored.",
+                        "A value of C(never_create) never creates a SKI. If the CSR provides one, that one is used.",
+                        "This is only used by the C(ownca) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "str"
+                },
+                "ownca_digest": {
+                    "default": "sha256",
+                    "description": [
+                        "The digest algorithm to be used for the C(ownca) certificate.",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_not_after": {
+                    "default": "+3650d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will stop being valid 10 years from now.",
+                        "This is only used by the C(ownca) provider.",
+                        "On macOS 10.15 and onwards, TLS server certificates must have a validity period of 825 days or fewer. Please see U(https://support.apple.com/en-us/HT210176) for more details."
+                    ],
+                    "type": "str"
+                },
+                "ownca_not_before": {
+                    "default": "+0s",
+                    "description": [
+                        "The point in time the certificate is valid from.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will start being valid from now.",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_path": {
+                    "description": [
+                        "Remote absolute path of the CA (Certificate Authority) certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_content)."
+                    ],
+                    "type": "path"
+                },
+                "ownca_privatekey_content": {
+                    "description": [
+                        "Content of the CA (Certificate Authority) private key to use when signing the certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_privatekey_path)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "ownca_privatekey_passphrase": {
+                    "description": [
+                        "The passphrase for the I(ownca_privatekey_path) resp. I(ownca_privatekey_content).",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_privatekey_path": {
+                    "description": [
+                        "Path to the CA (Certificate Authority) private key to use when signing the certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_privatekey_content)."
+                    ],
+                    "type": "path"
+                },
+                "ownca_version": {
+                    "default": 3,
+                    "description": [
+                        "The version of the C(ownca) certificate.",
+                        "Nowadays it should almost always be C(3).",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "int"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Remote absolute path where the generated certificate file should be created or is already located."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "privatekey_content": {
+                    "description": [
+                        "Path to the private key to use when signing the certificate.",
+                        "This is mutually exclusive with I(privatekey_path)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "privatekey_passphrase": {
+                    "description": [
+                        "The passphrase for the I(privatekey_path) resp. I(privatekey_content).",
+                        "This is required if the private key is password protected."
+                    ],
+                    "type": "str"
+                },
+                "privatekey_path": {
+                    "description": [
+                        "Path to the private key to use when signing the certificate.",
+                        "This is mutually exclusive with I(privatekey_content)."
+                    ],
+                    "type": "path"
+                },
+                "provider": {
+                    "choices": [
+                        "acme",
+                        "assertonly",
+                        "entrust",
+                        "ownca",
+                        "selfsigned"
+                    ],
+                    "description": [
+                        "Name of the provider to use to generate/retrieve the OpenSSL certificate.",
+                        "The C(assertonly) provider will not generate files and fail if the certificate file is missing.",
+                        "The C(assertonly) provider has been deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0. Please see the examples on how to emulate it with M(community.crypto.x509_certificate_info), M(community.crypto.openssl_csr_info), M(community.crypto.openssl_privatekey_info) and M(ansible.builtin.assert).",
+                        "The C(entrust) provider was added for Ansible 2.9 and requires credentials for the L(Entrust Certificate Services,https://www.entrustdatacard.com/products/categories/ssl-certificates) (ECS) API.",
+                        "Required if I(state) is C(present)."
+                    ],
+                    "type": "str"
+                },
+                "return_content": {
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), will return the (current or generated) certificate's content as I(certificate)."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "select_crypto_backend": {
+                    "choices": [
+                        "auto",
+                        "cryptography",
+                        "pyopenssl"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Determines which crypto backend to use.",
+                        "The default choice is C(auto), which tries to use C(cryptography) if available, and falls back to C(pyopenssl).",
+                        "If set to C(pyopenssl), will try to use the L(pyOpenSSL,https://pypi.org/project/pyOpenSSL/) library.",
+                        "If set to C(cryptography), will try to use the L(cryptography,https://cryptography.io/) library.",
+                        "Please note that the C(pyopenssl) backend has been deprecated in Ansible 2.9, and will be removed in community.crypto 2.0.0. From that point on, only the C(cryptography) backend will be available."
+                    ],
+                    "type": "str"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_create_subject_key_identifier": {
+                    "choices": [
+                        "create_if_not_provided",
+                        "always_create",
+                        "never_create"
+                    ],
+                    "default": "create_if_not_provided",
+                    "description": [
+                        "Whether to create the Subject Key Identifier (SKI) from the public key.",
+                        "A value of C(create_if_not_provided) (default) only creates a SKI when the CSR does not provide one.",
+                        "A value of C(always_create) always creates a SKI. If the CSR provides one, that one is ignored.",
+                        "A value of C(never_create) never creates a SKI. If the CSR provides one, that one is used.",
+                        "This is only used by the C(selfsigned) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_digest": {
+                    "default": "sha256",
+                    "description": [
+                        "Digest algorithm to be used when self-signing the certificate.",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_not_after": {
+                    "aliases": [
+                        "selfsigned_notAfter"
+                    ],
+                    "default": "+3650d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will stop being valid 10 years from now.",
+                        "This is only used by the C(selfsigned) provider.",
+                        "On macOS 10.15 and onwards, TLS server certificates must have a validity period of 825 days or fewer. Please see U(https://support.apple.com/en-us/HT210176) for more details."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_not_before": {
+                    "aliases": [
+                        "selfsigned_notBefore"
+                    ],
+                    "default": "+0s",
+                    "description": [
+                        "The point in time the certificate is valid from.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will start being valid from now.",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_version": {
+                    "default": 3,
+                    "description": [
+                        "Version of the C(selfsigned) certificate.",
+                        "Nowadays it should almost always be C(3).",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "int"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "signature_algorithms": {
+                    "description": [
+                        "A list of algorithms that you would accept the certificate to be signed with (e.g. ['sha256WithRSAEncryption', 'sha512WithRSAEncryption']).",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the certificate should exist or not, taking action if the state is different from what is stated."
+                    ],
+                    "type": "str"
+                },
+                "subject": {
+                    "description": [
+                        "The key/value pairs that must be present in the subject name field of the certificate.",
+                        "If you need to specify more than one value with the same key, use a list as value.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "dict"
+                },
+                "subject_alt_name": {
+                    "aliases": [
+                        "subjectAltName"
+                    ],
+                    "description": [
+                        "The I(subject_alt_name) extension field must contain these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "subject_alt_name_strict": {
+                    "aliases": [
+                        "subjectAltName_strict"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), the I(subject_alt_name) extension field must contain only these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "subject_strict": {
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), the I(subject) field must contain only these values.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "bool"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "valid_at": {
+                    "description": [
+                        "The certificate must be valid at this point in time.",
+                        "The timestamp is formatted as an ASN.1 TIME.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "str"
+                },
+                "valid_in": {
+                    "description": [
+                        "The certificate must still be valid at this relative time offset from now.",
+                        "Valid format is C([+-]timespec | number_of_seconds) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using this parameter, this module is NOT idempotent.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "description": [
+                        "The version of the certificate.",
+                        "Nowadays it should almost always be 3.",
+                        "This is only used by the C(assertonly) provider.",
+                        "This option is deprecated since Ansible 2.9 and will be removed with the C(assertonly) provider in community.crypto 2.0.0. For alternatives, see the example on replacing C(assertonly)."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "PyOpenSSL >= 0.15 or cryptography >= 1.6 (if using C(selfsigned), C(ownca) or C(assertonly) provider)",
+                "acme-tiny >= 4.0.0 (if using the C(acme) provider)"
+            ],
+            "seealso": [
+                {
+                    "module": "community.crypto.x509_certificate_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_csr"
+                },
+                {
+                    "module": "community.crypto.openssl_csr_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_dhparam"
+                },
+                {
+                    "module": "community.crypto.openssl_pkcs12"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_publickey"
+                }
+            ],
+            "short_description": "Generate and/or check OpenSSL certificates"
+        },
+        "examples": "\n- name: Generate a Self Signed OpenSSL certificate\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/ansible.com.crt\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    provider: selfsigned\n\n- name: Generate an OpenSSL certificate signed with your own CA certificate\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/ansible.com.crt\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    ownca_path: /etc/ssl/crt/ansible_CA.crt\n    ownca_privatekey_path: /etc/ssl/private/ansible_CA.pem\n    provider: ownca\n\n- name: Generate a Let's Encrypt Certificate\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/ansible.com.crt\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    provider: acme\n    acme_accountkey_path: /etc/ssl/private/ansible.com.pem\n    acme_challenge_path: /etc/ssl/challenges/ansible.com/\n\n- name: Force (re-)generate a new Let's Encrypt Certificate\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/ansible.com.crt\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    provider: acme\n    acme_accountkey_path: /etc/ssl/private/ansible.com.pem\n    acme_challenge_path: /etc/ssl/challenges/ansible.com/\n    force: yes\n\n- name: Generate an Entrust certificate via the Entrust Certificate Services (ECS) API\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/ansible.com.crt\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    provider: entrust\n    entrust_requester_name: Jo Doe\n    entrust_requester_email: jdoe@ansible.com\n    entrust_requester_phone: 555-555-5555\n    entrust_cert_type: STANDARD_SSL\n    entrust_api_user: apiusername\n    entrust_api_key: a^lv*32!cd9LnT\n    entrust_api_client_cert_path: /etc/ssl/entrust/ecs-client.crt\n    entrust_api_client_cert_key_path: /etc/ssl/entrust/ecs-key.crt\n    entrust_api_specification_path: /etc/ssl/entrust/api-docs/cms-api-2.1.0.yaml\n\n# The following example shows one assertonly usage using all existing options for\n# assertonly, and shows how to emulate the behavior with the x509_certificate_info,\n# openssl_csr_info, openssl_privatekey_info and assert modules:\n- name: Usage of assertonly with all existing options\n  community.crypto.x509_certificate:\n    provider: assertonly\n    path: /etc/ssl/crt/ansible.com.crt\n    csr_path: /etc/ssl/csr/ansible.com.csr\n    privatekey_path: /etc/ssl/csr/ansible.com.key\n    signature_algorithms:\n      - sha256WithRSAEncryption\n      - sha512WithRSAEncryption\n    subject:\n      commonName: ansible.com\n    subject_strict: yes\n    issuer:\n      commonName: ansible.com\n    issuer_strict: yes\n    has_expired: no\n    version: 3\n    key_usage:\n      - Data Encipherment\n    key_usage_strict: yes\n    extended_key_usage:\n      - DVCS\n    extended_key_usage_strict: yes\n    subject_alt_name:\n      - dns:ansible.com\n    subject_alt_name_strict: yes\n    not_before: 20190331202428Z\n    not_after: 20190413202428Z\n    valid_at: \"+1d10h\"\n    invalid_at: 20200331202428Z\n    valid_in: 10  # in ten seconds\n\n- name: Get certificate information\n  community.crypto.x509_certificate_info:\n    path: /etc/ssl/crt/ansible.com.crt\n    # for valid_at, invalid_at and valid_in\n    valid_at:\n      one_day_ten_hours: \"+1d10h\"\n      fixed_timestamp: 20200331202428Z\n      ten_seconds: \"+10\"\n  register: result\n\n- name: Get CSR information\n  community.crypto.openssl_csr_info:\n    # Verifies that the CSR signature is valid; module will fail if not\n    path: /etc/ssl/csr/ansible.com.csr\n  register: result_csr\n\n- name: Get private key information\n  community.crypto.openssl_privatekey_info:\n    path: /etc/ssl/csr/ansible.com.key\n  register: result_privatekey\n\n- assert:\n    that:\n      # When private key is specified for assertonly, this will be checked:\n      - result.public_key == result_privatekey.public_key\n      # When CSR is specified for assertonly, this will be checked:\n      - result.public_key == result_csr.public_key\n      - result.subject_ordered == result_csr.subject_ordered\n      - result.extensions_by_oid == result_csr.extensions_by_oid\n      # signature_algorithms check\n      - \"result.signature_algorithm == 'sha256WithRSAEncryption' or result.signature_algorithm == 'sha512WithRSAEncryption'\"\n      # subject and subject_strict\n      - \"result.subject.commonName == 'ansible.com'\"\n      - \"result.subject | length == 1\"  # the number must be the number of entries you check for\n      # issuer and issuer_strict\n      - \"result.issuer.commonName == 'ansible.com'\"\n      - \"result.issuer | length == 1\"  # the number must be the number of entries you check for\n      # has_expired\n      - not result.expired\n      # version\n      - result.version == 3\n      # key_usage and key_usage_strict\n      - \"'Data Encipherment' in result.key_usage\"\n      - \"result.key_usage | length == 1\"  # the number must be the number of entries you check for\n      # extended_key_usage and extended_key_usage_strict\n      - \"'DVCS' in result.extended_key_usage\"\n      - \"result.extended_key_usage | length == 1\"  # the number must be the number of entries you check for\n      # subject_alt_name and subject_alt_name_strict\n      - \"'dns:ansible.com' in result.subject_alt_name\"\n      - \"result.subject_alt_name | length == 1\"  # the number must be the number of entries you check for\n      # not_before and not_after\n      - \"result.not_before == '20190331202428Z'\"\n      - \"result.not_after == '20190413202428Z'\"\n      # valid_at, invalid_at and valid_in\n      - \"result.valid_at.one_day_ten_hours\"  # for valid_at\n      - \"not result.valid_at.fixed_timestamp\"  # for invalid_at\n      - \"result.valid_at.ten_seconds\"  # for valid_in\n\n# Examples for some checks one could use the assertonly provider for:\n# (Please note that assertonly has been deprecated!)\n\n# How to use the assertonly provider to implement and trigger your own custom certificate generation workflow:\n- name: Check if a certificate is currently still valid, ignoring failures\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    has_expired: no\n  ignore_errors: yes\n  register: validity_check\n\n- name: Run custom task(s) to get a new, valid certificate in case the initial check failed\n  command: superspecialSSL recreate /etc/ssl/crt/example.com.crt\n  when: validity_check.failed\n\n- name: Check the new certificate again for validity with the same parameters, this time failing the play if it is still invalid\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    has_expired: no\n  when: validity_check.failed\n\n# Some other checks that assertonly could be used for:\n- name: Verify that an existing certificate was issued by the Let's Encrypt CA and is currently still valid\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    issuer:\n      O: Let's Encrypt\n    has_expired: no\n\n- name: Ensure that a certificate uses a modern signature algorithm (no SHA1, MD5 or DSA)\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    signature_algorithms:\n      - sha224WithRSAEncryption\n      - sha256WithRSAEncryption\n      - sha384WithRSAEncryption\n      - sha512WithRSAEncryption\n      - sha224WithECDSAEncryption\n      - sha256WithECDSAEncryption\n      - sha384WithECDSAEncryption\n      - sha512WithECDSAEncryption\n\n- name: Ensure that the existing certificate belongs to the specified private key\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    privatekey_path: /etc/ssl/private/example.com.pem\n    provider: assertonly\n\n- name: Ensure that the existing certificate is still valid at the winter solstice 2017\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    valid_at: 20171221162800Z\n\n- name: Ensure that the existing certificate is still valid 2 weeks (1209600 seconds) from now\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    valid_in: 1209600\n\n- name: Ensure that the existing certificate is only used for digital signatures and encrypting other keys\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    key_usage:\n      - digitalSignature\n      - keyEncipherment\n    key_usage_strict: true\n\n- name: Ensure that the existing certificate can be used for client authentication\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    extended_key_usage:\n      - clientAuth\n\n- name: Ensure that the existing certificate can only be used for client authentication and time stamping\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    extended_key_usage:\n      - clientAuth\n      - 1.3.6.1.5.5.7.3.8\n    extended_key_usage_strict: true\n\n- name: Ensure that the existing certificate has a certain domain in its subjectAltName\n  community.crypto.x509_certificate:\n    path: /etc/ssl/crt/example.com.crt\n    provider: assertonly\n    subject_alt_name:\n      - www.example.com\n      - test.example.com\n",
+        "metadata": null,
+        "return": {
+            "backup_file": {
+                "description": "Name of backup file created.",
+                "returned": "changed and if I(backup) is C(yes)",
+                "sample": "/path/to/www.ansible.com.crt.2019-03-09@11:22~",
+                "type": "str"
+            },
+            "certificate": {
+                "description": "The (current or generated) certificate's content.",
+                "returned": "if I(state) is C(present) and I(return_content) is C(yes)",
+                "type": "str",
+                "version_added": "1.0.0",
+                "version_added_collection": "community.crypto"
+            },
+            "filename": {
+                "description": "Path to the generated certificate.",
+                "returned": "changed or success",
+                "sample": "/etc/ssl/crt/www.ansible.com.crt",
+                "type": "str"
+            }
+        }
+    }
+}

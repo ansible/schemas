@@ -1,0 +1,394 @@
+{
+    "f5networks.f5_modules.bigip_gtm_virtual_server": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages F5 BIG-IP GTM (now BIG-IP DNS) virtual servers. A GTM server can have many virtual servers associated with it. They are arranged in much the same way that pool members are to pools."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_gtm_virtual_server.py",
+            "has_action": false,
+            "module": "bigip_gtm_virtual_server",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "address": {
+                    "description": [
+                        "Specifies the IP Address of the virtual server.",
+                        "When creating a new GTM virtual server, this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "availability_requirements": {
+                    "description": [
+                        "If you activate more than one health monitor, specifies the number of health monitors that must receive successful responses in order for the link to be considered available."
+                    ],
+                    "suboptions": {
+                        "at_least": {
+                            "description": [
+                                "Specifies the minimum number of active health monitors that must be successful before the link is considered up.",
+                                "This parameter is only relevant when a C(type) of C(at_least) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(require) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "number_of_probers": {
+                            "description": [
+                                "Specifies the number of probers that should be used when running probes.",
+                                "When creating a new virtual server, if this parameter is specified, the C(number_of_probes) parameter must also be specified.",
+                                "The value of this parameter should always be B(higher) than or B(equal to) the value of C(number_of_probers).",
+                                "This parameter is only relevant when a C(type) of C(require) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(at_least) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "number_of_probes": {
+                            "description": [
+                                "Specifies the minimum number of probes that must succeed for this server to be declared up.",
+                                "When creating a new virtual server, if this parameter is specified, then the C(number_of_probers) parameter must also be specified.",
+                                "The value of this parameter should always be B(lower) than or B(equal to) the value of C(number_of_probers).",
+                                "This parameter is only relevant when a C(type) of C(require) is used.",
+                                "This parameter will be ignored if a type of either C(all) or C(at_least) is used."
+                            ],
+                            "type": "int"
+                        },
+                        "type": {
+                            "choices": [
+                                "all",
+                                "at_least",
+                                "require"
+                            ],
+                            "description": [
+                                "Monitor rule type when C(monitors) is specified.",
+                                "When creating a new virtual, if this value is not specified, the default of C(all) will be used."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "limits": {
+                    "description": [
+                        "Specifies resource thresholds or limit requirements at the server level.",
+                        "When you enable one or more limit settings, the system then uses that data to take servers in and out of service.",
+                        "You can define limits for any or all of the limit settings. However, when a server does not meet the resource threshold limit requirement, the system marks the entire server as unavailable and directs load balancing traffic to another resource.",
+                        "The limit settings available depend on the type of server."
+                    ],
+                    "suboptions": {
+                        "bits_enabled": {
+                            "description": [
+                                "Whether the bits limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "bits_limit": {
+                            "description": [
+                                "Specifies the maximum allowable data throughput rate for the virtual servers on the server, in bits per second.",
+                                "If the network traffic volume exceeds this limit, the system marks the server as unavailable."
+                            ],
+                            "type": "int"
+                        },
+                        "connections_enabled": {
+                            "description": [
+                                "Whether the current connections limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "connections_limit": {
+                            "description": [
+                                "Specifies the maximum number of concurrent connections, combined, for all of the virtual servers on the server.",
+                                "If the connections exceed this limit, the system marks the server as unavailable."
+                            ],
+                            "type": "int"
+                        },
+                        "packets_enabled": {
+                            "description": [
+                                "Whether the packets limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "packets_limit": {
+                            "description": [
+                                "Specifies the maximum allowable data transfer rate for the virtual servers on the server, in packets per second.",
+                                "If the network traffic volume exceeds this limit, the system marks the server as unavailable."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "link": {
+                    "description": [
+                        "Specifies a link to assign to the server or virtual server."
+                    ],
+                    "type": "str"
+                },
+                "monitors": {
+                    "description": [
+                        "Specifies the health monitors the system currently uses to monitor this resource.",
+                        "When C(availability_requirements.type) is C(require), you may only have a single monitor in the C(monitors) list."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the virtual server."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Specifies the service port number for the virtual server or pool member. For example, the HTTP service is typically port 80.",
+                        "To specify all ports, use an C(*).",
+                        "When creating a new GTM virtual server, if this parameter is not specified, a default of C(*) will be used."
+                    ],
+                    "type": "int"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "server_name": {
+                    "description": [
+                        "Specifies the name of the server the virtual server is associated with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                },
+                "translation_address": {
+                    "description": [
+                        "Specifies the translation IP address for the virtual server.",
+                        "To unset this parameter, use an empty string (C(\"\")) as a value.",
+                        "When creating a new GTM virtual server, if this parameter is not specified, a default of C(::) will be used."
+                    ],
+                    "type": "str"
+                },
+                "translation_port": {
+                    "description": [
+                        "Specifies the translation port number or service name for the virtual server.",
+                        "To specify all ports, use an C(*).",
+                        "When creating a new GTM virtual server, if this parameter is not specified, a default of C(*) will be used."
+                    ],
+                    "type": "str"
+                },
+                "virtual_server_dependencies": {
+                    "description": [
+                        "Specifies the virtual servers on which the current virtual server depends.",
+                        "If any of the specified servers are unavailable, the current virtual server is also listed as unavailable."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "server": {
+                            "description": [
+                                "Server which the dependant virtual server is part of."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "virtual_server": {
+                            "description": [
+                                "Virtual server to depend on."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP GTM virtual servers",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Enable virtual server\n  bigip_gtm_virtual_server:\n    server_name: server1\n    name: my-virtual-server\n    state: enabled\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "address": {
+                "description": "The new address of the resource.",
+                "returned": "changed",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "availability_requirements": {
+                "description": "The new availability requirement configurations for the resource.",
+                "returned": "changed",
+                "sample": {
+                    "type": "all"
+                },
+                "type": "dict"
+            },
+            "limits": {
+                "description": "The new limit configurations for the resource.",
+                "returned": "changed",
+                "sample": {
+                    "bits_enabled": true,
+                    "bits_limit": 100
+                },
+                "type": "dict"
+            },
+            "link": {
+                "description": "The new link value for the resource.",
+                "returned": "changed",
+                "sample": "/Common/my-link",
+                "type": "str"
+            },
+            "monitors": {
+                "description": "The new list of monitors for the resource.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/monitor1",
+                    "/Common/monitor2"
+                ],
+                "type": "list"
+            },
+            "port": {
+                "description": "The new port of the resource.",
+                "returned": "changed",
+                "sample": 500,
+                "type": "int"
+            },
+            "server_name": {
+                "description": "The server name associated with the virtual server.",
+                "returned": "changed",
+                "sample": "/Common/my-gtm-server",
+                "type": "str"
+            },
+            "translation_address": {
+                "description": "The new translation address of the resource.",
+                "returned": "changed",
+                "sample": 500,
+                "type": "int"
+            },
+            "translation_port": {
+                "description": "The new translation port of the resource.",
+                "returned": "changed",
+                "sample": 500,
+                "type": "int"
+            },
+            "virtual_server_dependencies": {
+                "description": "The new list of virtual server dependencies for the resource.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/vs1",
+                    "/Common/vs2"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

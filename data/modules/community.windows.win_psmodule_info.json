@@ -1,0 +1,532 @@
+{
+    "community.windows.win_psmodule_info": {
+        "doc": {
+            "author": [
+                "Brian Scholer (@briantist)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "Gather information about PowerShell Modules including information from PowerShellGet."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_psmodule_info.py",
+            "has_action": false,
+            "module": "win_psmodule_info",
+            "options": {
+                "name": {
+                    "default": "*",
+                    "description": [
+                        "The name of the module to retrieve.",
+                        "Supports any wildcard pattern supported by C(Get-Module).",
+                        "If omitted then all modules will returned."
+                    ],
+                    "type": "str"
+                },
+                "repository": {
+                    "description": [
+                        "The name of the PSRepository the modules were installed from.",
+                        "This acts as a filter against the modules that would be returned based on the I(name) option.",
+                        "Modules that were not installed from a repository will not be returned if this option is set.",
+                        "Only modules installed from a registered repository will be returned.",
+                        "If the repository was re-registered after module installation with a new C(SourceLocation), this will not match."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "C(PowerShellGet) module"
+            ],
+            "seealso": [
+                {
+                    "module": "community.windows.win_psrepository_info"
+                },
+                {
+                    "module": "community.windows.win_psscript_info"
+                }
+            ],
+            "short_description": "Gather information about PowerShell Modules"
+        },
+        "examples": "\n- name: Get info about all modules on the system\n  community.windows.win_psmodule_info:\n\n- name: Get info about the ScheduledTasks module\n  community.windows.win_psmodule_info:\n    name: ScheduledTasks\n\n- name: Get info about networking modules\n  community.windows.win_psmodule_info:\n    name: Net*\n\n- name: Get info about all modules installed from the PSGallery repository\n  community.windows.win_psmodule_info:\n    repository: PSGallery\n  register: gallery_modules\n\n- name: Update all modules retrieved from above example\n  community.windows.win_psmodule:\n    name: \"{{ item }}\"\n    state: latest\n  loop: \"{{ gallery_modules.modules | map(attribute=name) }}\"\n\n- name: Get info about all modules on the system\n  community.windows.win_psmodule_info:\n  register: all_modules\n\n- name: Find modules installed from a repository that isn't registered now\n  set_fact:\n    missing_repository_modules: \"{{\n      all_modules\n      | json_query('modules[?repository!=null && repository==repository_source_location].{name: name, version: version, repository: repository}')\n      | list\n    }}\"\n\n- debug:\n    var: missing_repository_modules\n",
+        "metadata": null,
+        "return": {
+            "modules": {
+                "contains": {
+                    "access_mode": {
+                        "description": [
+                            "The module's access mode. See U(https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.moduleaccessmode)"
+                        ],
+                        "sample": "ReadWrite",
+                        "type": "str"
+                    },
+                    "author": {
+                        "description": [
+                            "The author of the module."
+                        ],
+                        "sample": "Warren Frame",
+                        "type": "str"
+                    },
+                    "clr_version": {
+                        "description": [
+                            "The CLR version of the module."
+                        ],
+                        "sample": "4.0",
+                        "type": "str"
+                    },
+                    "company_name": {
+                        "description": [
+                            "The company name of the module."
+                        ],
+                        "sample": "Microsoft Corporation",
+                        "type": "str"
+                    },
+                    "compatible_ps_editions": {
+                        "description": [
+                            "The PS Editions the module is compatible with."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "Desktop"
+                        ],
+                        "type": "list"
+                    },
+                    "copyright": {
+                        "description": [
+                            "The copyright of the module."
+                        ],
+                        "sample": "(c) 2016 Warren F. All rights reserved.",
+                        "type": "str"
+                    },
+                    "dependencies": {
+                        "description": [
+                            "The modules required by this module."
+                        ],
+                        "elements": "str",
+                        "type": "list"
+                    },
+                    "description": {
+                        "description": [
+                            "The description of the module."
+                        ],
+                        "sample": "Provides cmdlets to work with local users and local groups",
+                        "type": "str"
+                    },
+                    "dot_net_framework_version": {
+                        "description": [
+                            "The .Net Framework version of the module."
+                        ],
+                        "sample": "4.6.1",
+                        "type": "str"
+                    },
+                    "exported_aliases": {
+                        "description": [
+                            "The aliases exported from the module."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "glu",
+                            "slu"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_cmdlets": {
+                        "description": [
+                            "The cmdlets exported from the module."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "Get-Certificate",
+                            "Get-PfxData"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_commands": {
+                        "description": [
+                            "All of the commands exported from the module. Includes functions, cmdlets, and aliases."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "glu",
+                            "Get-LocalUser"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_dsc_resources": {
+                        "description": [
+                            "The DSC resources exported from the module."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "xWebAppPool",
+                            "xWebSite"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_format_files": {
+                        "description": [
+                            "The format files exported from the module."
+                        ],
+                        "elements": "path",
+                        "sample": [
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsCmdlets.Format.ps1xml",
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsConfig.Format.ps1xml",
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsClientPSProvider.Format.ps1xml"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_functions": {
+                        "description": [
+                            "The functions exported from the module."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "New-VirtualDisk",
+                            "New-Volume"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_type_files": {
+                        "description": [
+                            "The type files exported from the module."
+                        ],
+                        "elements": "path",
+                        "sample": [
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsCmdlets.Types.ps1xml",
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsConfig.Types.ps1xml",
+                            "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\DnsClient\\DnsClientPSProvider.Types.ps1xml"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_variables": {
+                        "description": [
+                            "The variables exported from the module."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "GitPromptScriptBlock"
+                        ],
+                        "type": "list"
+                    },
+                    "exported_workflows": {
+                        "description": [
+                            "The workflows exported from the module."
+                        ],
+                        "elements": "str",
+                        "type": "list"
+                    },
+                    "file_list": {
+                        "description": [
+                            "The files included in the module."
+                        ],
+                        "elements": "path",
+                        "sample": [
+                            "C:\\Program Files\\WindowsPowerShell\\Modules\\PowerShellGet\\1.6.0\\PSModule.psm1",
+                            "C:\\Program Files\\WindowsPowerShell\\Modules\\PowerShellGet\\1.6.0\\PSGet.Format.ps1xml",
+                            "C:\\Program Files\\WindowsPowerShell\\Modules\\PowerShellGet\\1.6.0\\PSGet.Resource.psd1"
+                        ],
+                        "type": "list"
+                    },
+                    "guid": {
+                        "description": [
+                            "The GUID of the module."
+                        ],
+                        "sample": "74c9fd30-734b-4c89-a8ae-7727ad21d1d5",
+                        "type": "str"
+                    },
+                    "help_info_uri": {
+                        "description": [
+                            "The help info address of the module."
+                        ],
+                        "sample": "https://go.microsoft.com/fwlink/?linkid=390823",
+                        "type": "str"
+                    },
+                    "icon_uri": {
+                        "description": [
+                            "The address of the icon of the module."
+                        ],
+                        "sample": "https://raw.githubusercontent.com/powershell/psscriptanalyzer/master/logo.png",
+                        "type": "str"
+                    },
+                    "installed_date": {
+                        "description": [
+                            "The date the module was installed."
+                        ],
+                        "sample": "2018-02-14T17:55:34.9620740-05:00",
+                        "type": "str"
+                    },
+                    "installed_location": {
+                        "description": [
+                            "The path where the module is installed.",
+                            "This should have the same value as C(module_base) but only has a value when the module was installed via PowerShellGet."
+                        ],
+                        "sample": "C:\\Program Files\\WindowsPowerShell\\Modules\\posh-git\\0.7.1",
+                        "type": "str"
+                    },
+                    "license_uri": {
+                        "description": [
+                            "The address of the license for the module."
+                        ],
+                        "sample": "https://github.com/PowerShell/xPendingReboot/blob/master/LICENSE",
+                        "type": "str"
+                    },
+                    "log_pipeline_execution_details": {
+                        "description": [
+                            "Determines whether pipeline execution detail events should be logged."
+                        ],
+                        "type": "bool"
+                    },
+                    "module_base": {
+                        "description": [
+                            "The path that contains the module's files."
+                        ],
+                        "sample": "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\PKI",
+                        "type": "str"
+                    },
+                    "module_list": {
+                        "contains": {
+                            "guid": {
+                                "description": [
+                                    "The GUID of the module."
+                                ],
+                                "sample": "82fdb72c-ecc5-4dfd-b9d5-83cf6eb9067f",
+                                "type": "str"
+                            },
+                            "maximum_version": {
+                                "description": [
+                                    "The maximum version of the module."
+                                ],
+                                "sample": "2.9",
+                                "type": "str"
+                            },
+                            "name": {
+                                "description": [
+                                    "The name of the module.",
+                                    "This may also be a path to the module file."
+                                ],
+                                "sample": ".\\WindowsUpdateLog.psm1",
+                                "type": "str"
+                            },
+                            "required_version": {
+                                "description": [
+                                    "The exact version of the module required."
+                                ],
+                                "sample": "3.1.4",
+                                "type": "str"
+                            },
+                            "version": {
+                                "description": [
+                                    "The minimum version of the module."
+                                ],
+                                "sample": "2.0",
+                                "type": "str"
+                            }
+                        },
+                        "description": [
+                            "A list of modules packaged with this module.",
+                            "This value is not often returned and the modules are not automatically processed."
+                        ],
+                        "elements": "dict",
+                        "type": "list"
+                    },
+                    "module_type": {
+                        "description": [
+                            "The module's type. See U(https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.moduletype)"
+                        ],
+                        "sample": "Script",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": [
+                            "The name of the module."
+                        ],
+                        "sample": "PSReadLine",
+                        "type": "str"
+                    },
+                    "nested_modules": {
+                        "description": [
+                            "A list of modules nested with and loaded into the scope of this module.",
+                            "This list contains full module objects, so each item can have all of the properties listed here, including C(nested_modules)."
+                        ],
+                        "elements": "dict",
+                        "type": "list"
+                    },
+                    "package_management_provider": {
+                        "description": [
+                            "If the module was installed from PowerShellGet, this is the package management provider used."
+                        ],
+                        "sample": "NuGet",
+                        "type": "str"
+                    },
+                    "path": {
+                        "description": [
+                            "The path to the module."
+                        ],
+                        "sample": "C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules\\PKI\\PKI.psd1",
+                        "type": "str"
+                    },
+                    "power_shell_host_name": {
+                        "description": [
+                            "The name of the PowerShell host that the module requires."
+                        ],
+                        "sample": "Windows PowerShell ISE Host",
+                        "type": "str"
+                    },
+                    "power_shell_host_version": {
+                        "description": [
+                            "The version of the PowerShell host that the module requires."
+                        ],
+                        "sample": "1.1",
+                        "type": "str"
+                    },
+                    "power_shell_version": {
+                        "description": [
+                            "The minimum version of PowerShell that the module requires."
+                        ],
+                        "sample": "5.1",
+                        "type": "str"
+                    },
+                    "prefix": {
+                        "description": [
+                            "The default prefix applied to C(Verb-Noun) commands exported from the module, resulting in C(Verb-PrefixNoun) names."
+                        ],
+                        "type": "str"
+                    },
+                    "private_data": {
+                        "description": [
+                            "Arbitrary private data used by the module. This is typically defined in the module manifest.",
+                            "This module limits the depth of the data returned for module types other than C(Script) and C(Manifest).",
+                            "The C(PSData) is commonly supplied and provides metadata for PowerShellGet but those fields are surfaced in top-level properties as well."
+                        ],
+                        "sample": {
+                            "PSData": {
+                                "LicenseUri": "https://example.com/module/LICENSE",
+                                "ProjectUri": "https://example.com/module/",
+                                "ReleaseNotes": "v2 - Fixed some bugs\nv1 - First release\n",
+                                "Tags": [
+                                    "networking",
+                                    "serialization"
+                                ]
+                            }
+                        },
+                        "type": "dict"
+                    },
+                    "procoessor_architecture": {
+                        "description": [
+                            "The module's processor architecture. See U(https://docs.microsoft.com/en-us/dotnet/api/system.reflection.processorarchitecture)"
+                        ],
+                        "sample": "Amd64",
+                        "type": "str"
+                    },
+                    "project_uri": {
+                        "description": [
+                            "The address of the module's project."
+                        ],
+                        "sample": "https://github.com/psake/psake",
+                        "type": "str"
+                    },
+                    "published_date": {
+                        "description": [
+                            "The date the module was published."
+                        ],
+                        "sample": "2017-03-15T04:18:09.0000000",
+                        "type": "str"
+                    },
+                    "release_notes": {
+                        "description": [
+                            "The module's release notes. This is a free text field and no specific format should be assumed."
+                        ],
+                        "sample": "## 1.4.6\n- Update `HelpInfoUri` to point to the latest content\n\n## 1.4.5\n- Bug fix for deadlock when getting parameters in an event\n\n## 1.4.4\n- Bug fix when installing modules from private feeds\n",
+                        "type": "str"
+                    },
+                    "repository": {
+                        "description": [
+                            "The PSRepository where the module was installed from.",
+                            "This value is not historical. It depends on the PSRepositories that are registered now for the current user.",
+                            "The C(repository_source_location) must match the current source location of a registered repository to get a repository name.",
+                            "If there is no match, then this value will match C(repository_source_location)."
+                        ],
+                        "sample": "PSGallery",
+                        "type": "str"
+                    },
+                    "repository_source_location": {
+                        "description": [
+                            "The source location of the repository where the module was installed from."
+                        ],
+                        "sample": "https://www.powershellgallery.com/api/v2",
+                        "type": "str"
+                    },
+                    "required_assemblies": {
+                        "description": [
+                            "A list of assemblies that the module requires.",
+                            "The values may be a simple name or a full path."
+                        ],
+                        "sample": [
+                            "Microsoft.Management.Infrastructure.CimCmdlets.dll",
+                            "Microsoft.Management.Infrastructure.Dll"
+                        ],
+                        "type": "str"
+                    },
+                    "required_modules": {
+                        "description": [
+                            "A list of modules required by this module.",
+                            "This list contains full module objects, so each item can have all of the properties listed here, including C(required_modules).",
+                            "These module objects may not contain full information however, so you may see different results than if you had directly queried the module."
+                        ],
+                        "elements": "dict",
+                        "type": "list"
+                    },
+                    "root_module": {
+                        "description": [
+                            "The root module as defined in the manifest.",
+                            "This may be a module name, filename, or full path."
+                        ],
+                        "sample": "WindowsErrorReporting.psm1",
+                        "type": "str"
+                    },
+                    "scripts": {
+                        "description": [
+                            "A list of scripts (C(.ps1) files) that run in the caller's session state when the module is imported.",
+                            "This value comes from the C(ScriptsToProcess) field in the module's manifest."
+                        ],
+                        "sample": [
+                            "PrepareEnvironment.ps1",
+                            "InitializeData.ps1"
+                        ],
+                        "type": "list"
+                    },
+                    "tags": {
+                        "description": [
+                            "The tags defined in the module's C(PSData) metadata."
+                        ],
+                        "elements": "str",
+                        "sample": [
+                            "networking",
+                            "serialization",
+                            "git",
+                            "dsc"
+                        ],
+                        "type": "list"
+                    },
+                    "updated_date": {
+                        "description": [
+                            "The date the module was last updated."
+                        ],
+                        "sample": "2019-12-31T09:20:02.0000000",
+                        "type": "str"
+                    },
+                    "version": {
+                        "description": [
+                            "The module version."
+                        ],
+                        "sample": "1.2.3",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "A list of modules (or an empty list is there are none)."
+                ],
+                "elements": "dict",
+                "returned": "always",
+                "type": "list"
+            }
+        }
+    }
+}

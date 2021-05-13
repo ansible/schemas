@@ -1,0 +1,167 @@
+{
+    "community.general.statusio_maintenance": {
+        "doc": {
+            "author": "Benjamin Copeland (@bhcopeland) <ben@copeland.me.uk>",
+            "collection": "community.general",
+            "description": [
+                "Creates a maintenance window for status.io",
+                "Deletes a maintenance window for status.io"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/statusio_maintenance.py",
+            "has_action": false,
+            "module": "statusio_maintenance",
+            "notes": [
+                "You can use the apiary API url (http://docs.statusio.apiary.io/) to capture API traffic",
+                "Use start_date and start_time with minutes to set future maintenance window"
+            ],
+            "options": {
+                "all_infrastructure_affected": {
+                    "default": "no",
+                    "description": [
+                        "If it affects all components and containers"
+                    ],
+                    "type": "bool"
+                },
+                "api_id": {
+                    "description": [
+                        "Your unique API ID from status.io"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "Your unique API Key from status.io"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "automation": {
+                    "default": "no",
+                    "description": [
+                        "Automatically start and end the maintenance window"
+                    ],
+                    "type": "bool"
+                },
+                "components": {
+                    "aliases": [
+                        "component"
+                    ],
+                    "description": [
+                        "The given name of your component (server name)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "containers": {
+                    "aliases": [
+                        "container"
+                    ],
+                    "description": [
+                        "The given name of your container (data center)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "desc": {
+                    "default": "Created by Ansible",
+                    "description": [
+                        "Message describing the maintenance window"
+                    ],
+                    "type": "str"
+                },
+                "maintenance_id": {
+                    "description": [
+                        "The maintenance id number when deleting a maintenance window"
+                    ],
+                    "type": "str"
+                },
+                "maintenance_notify_1_hr": {
+                    "default": "no",
+                    "description": [
+                        "Notify subscribers 1 hour before maintenance start time"
+                    ],
+                    "type": "bool"
+                },
+                "maintenance_notify_24_hr": {
+                    "default": "no",
+                    "description": [
+                        "Notify subscribers 24 hours before maintenance start time"
+                    ],
+                    "type": "bool"
+                },
+                "maintenance_notify_72_hr": {
+                    "default": "no",
+                    "description": [
+                        "Notify subscribers 72 hours before maintenance start time"
+                    ],
+                    "type": "bool"
+                },
+                "maintenance_notify_now": {
+                    "default": "no",
+                    "description": [
+                        "Notify subscribers now"
+                    ],
+                    "type": "bool"
+                },
+                "minutes": {
+                    "default": 10,
+                    "description": [
+                        "The length of time in UTC that the maintenance will run (starting from playbook runtime)"
+                    ],
+                    "type": "int"
+                },
+                "start_date": {
+                    "description": [
+                        "Date maintenance is expected to start (Month/Day/Year) (UTC)",
+                        "End Date is worked out from start_date + minutes"
+                    ],
+                    "type": "str"
+                },
+                "start_time": {
+                    "description": [
+                        "Time maintenance is expected to start (Hour:Minutes) (UTC)",
+                        "End Time is worked out from start_time + minutes"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired state of the package."
+                    ],
+                    "type": "str"
+                },
+                "statuspage": {
+                    "description": [
+                        "Your unique StatusPage ID from status.io"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "title": {
+                    "default": "A new maintenance window",
+                    "description": [
+                        "A descriptive title for the maintenance window"
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "default": "https://api.status.io",
+                    "description": [
+                        "Status.io API URL. A private apiary can be used instead."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Create maintenance windows for your status.io dashboard"
+        },
+        "examples": "\n- name: Create a maintenance window for 10 minutes on server1, with automation to stop the maintenance\n  community.general.statusio_maintenance:\n    title: Router Upgrade from ansible\n    desc: Performing a Router Upgrade\n    components: server1.example.com\n    api_id: api_id\n    api_key: api_key\n    statuspage: statuspage_id\n    maintenance_notify_1_hr: True\n    automation: True\n\n- name: Create a maintenance window for 60 minutes on server1 and server2\n  community.general.statusio_maintenance:\n    title: Routine maintenance\n    desc: Some security updates\n    components:\n      - server1.example.com\n      - server2.example.com\n    minutes: 60\n    api_id: api_id\n    api_key: api_key\n    statuspage: statuspage_id\n    maintenance_notify_1_hr: True\n    automation: True\n  delegate_to: localhost\n\n- name: Create a future maintenance window for 24 hours to all hosts inside the Primary Data Center\n  community.general.statusio_maintenance:\n    title: Data center downtime\n    desc: Performing a Upgrade to our data center\n    components: Primary Data Center\n    api_id: api_id\n    api_key: api_key\n    statuspage: statuspage_id\n    start_date: 01/01/2016\n    start_time: 12:00\n    minutes: 1440\n\n- name: Delete a maintenance window\n  community.general.statusio_maintenance:\n    title: Remove a maintenance window\n    maintenance_id: 561f90faf74bc94a4700087b\n    statuspage: statuspage_id\n    api_id: api_id\n    api_key: api_key\n    state: absent\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,552 @@
+{
+    "community.aws.ec2_lc": {
+        "doc": {
+            "author": [
+                "Gareth Rushgrove (@garethr)",
+                "Willem van Ketwich (@wilvk)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Can create or delete AWS Autoscaling Configurations.",
+                "Works with the ec2_asg module to manage Autoscaling Groups."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_lc.py",
+            "has_action": false,
+            "module": "ec2_lc",
+            "notes": [
+                "Amazon ASG Autoscaling Launch Configurations are immutable once created, so modifying the configuration after it is changed will not modify the launch configuration on AWS. You must create a new config and assign it to the ASG instead.",
+                "encrypted volumes are supported on versions >= 2.4",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "assign_public_ip": {
+                    "description": [
+                        "Used for Auto Scaling groups that launch instances into an Amazon Virtual Private Cloud. Specifies whether to assign a public IP address to each instance launched in a Amazon VPC."
+                    ],
+                    "type": "bool"
+                },
+                "associate_public_ip_address": {
+                    "description": [
+                        "The I(associate_public_ip_address) option does nothing and will be removed after 2022-06-01"
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "classic_link_vpc_id": {
+                    "description": [
+                        "Id of ClassicLink enabled VPC"
+                    ],
+                    "type": "str"
+                },
+                "classic_link_vpc_security_groups": {
+                    "description": [
+                        "A list of security group IDs with which to associate the ClassicLink VPC instances."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ebs_optimized": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether the instance is optimized for EBS I/O (true) or not (false)."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "image_id": {
+                    "description": [
+                        "The AMI unique identifier to be used for the group."
+                    ],
+                    "type": "str"
+                },
+                "instance_id": {
+                    "description": [
+                        "The Id of a running instance to use as a basis for a launch configuration. Can be used in place of I(image_id) and I(instance_type)."
+                    ],
+                    "type": "str"
+                },
+                "instance_monitoring": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether instances are launched with detailed monitoring."
+                    ],
+                    "type": "bool"
+                },
+                "instance_profile_name": {
+                    "description": [
+                        "The name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instances."
+                    ],
+                    "type": "str"
+                },
+                "instance_type": {
+                    "description": [
+                        "Instance type to use for the instance.",
+                        "Required when creating a new Launch Configuration."
+                    ],
+                    "type": "str"
+                },
+                "kernel_id": {
+                    "description": [
+                        "Kernel id for the EC2 instance."
+                    ],
+                    "type": "str"
+                },
+                "key_name": {
+                    "description": [
+                        "The SSH key name to be used for access to managed instances."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Unique name for configuration."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "placement_tenancy": {
+                    "choices": [
+                        "default",
+                        "dedicated"
+                    ],
+                    "description": [
+                        "Determines whether the instance runs on single-tenant hardware or not.",
+                        "When not set AWS will default to C(default)."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "ramdisk_id": {
+                    "description": [
+                        "A RAM disk id for the instances."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_groups": {
+                    "description": [
+                        "A list of security groups to apply to the instances. Since version 2.4 you can specify either security group names or IDs or a mix.  Previous to 2.4, for VPC instances, specify security group IDs and for EC2-Classic, specify either security group names or IDs."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "spot_price": {
+                    "description": [
+                        "The spot price you are bidding. Only applies for an autoscaling group with spot instances."
+                    ],
+                    "type": "float"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Register or deregister the instance."
+                    ],
+                    "type": "str"
+                },
+                "user_data": {
+                    "description": [
+                        "Opaque blob of data which is made available to the ec2 instance. Mutually exclusive with I(user_data_path)."
+                    ],
+                    "type": "str"
+                },
+                "user_data_path": {
+                    "description": [
+                        "Path to the file that contains userdata for the ec2 instances. Mutually exclusive with I(user_data)."
+                    ],
+                    "type": "path"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "volumes": {
+                    "description": [
+                        "A list dictionaries defining the volumes to create.",
+                        "For any volume, a volume size less than 1 will be interpreted as a request not to create the volume."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "delete_on_termination": {
+                            "default": false,
+                            "description": [
+                                "Whether the volume should be automatically deleted when the instance is terminated."
+                            ],
+                            "type": "bool"
+                        },
+                        "device_name": {
+                            "description": [
+                                "The name for the volume (For example C(/dev/sda))."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "encrypted": {
+                            "default": false,
+                            "description": [
+                                "Whether the volume should be encrypted using the 'aws/ebs' KMS CMK."
+                            ],
+                            "type": "bool"
+                        },
+                        "ephemeral": {
+                            "description": [
+                                "Whether the volume should be ephemeral.",
+                                "Data on ephemeral volumes is lost when the instance is stopped.",
+                                "Mutually exclusive with the I(snapshot) parameter."
+                            ],
+                            "type": "str"
+                        },
+                        "iops": {
+                            "description": [
+                                "The number of IOPS per second to provision for the volume.",
+                                "Required when I(volume_type=io1)."
+                            ],
+                            "type": "int"
+                        },
+                        "no_device": {
+                            "description": [
+                                "When I(no_device=true) the device will not be created."
+                            ],
+                            "type": "bool"
+                        },
+                        "snapshot": {
+                            "description": [
+                                "The ID of an EBS snapshot to copy when creating the volume.",
+                                "Mutually exclusive with the I(ephemeral) parameter."
+                            ],
+                            "type": "str"
+                        },
+                        "volume_size": {
+                            "description": [
+                                "The size of the volume (in GiB).",
+                                "Required unless one of I(ephemeral), I(snapshot) or I(no_device) is set."
+                            ],
+                            "type": "int"
+                        },
+                        "volume_type": {
+                            "description": [
+                                "The type of volume to create.",
+                                "See U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html) for more information on the available volume types."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "vpc_id": {
+                    "description": [
+                        "VPC ID, used when resolving security group names to IDs."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3 >= 1.4.4",
+                "python >= 2.6"
+            ],
+            "short_description": "Create or delete AWS Autoscaling Launch Configurations",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n\n# create a launch configuration using an AMI image and instance type as a basis\n\n- name: note that encrypted volumes are only supported in >= Ansible 2.4\n  community.aws.ec2_lc:\n    name: special\n    image_id: ami-XXX\n    key_name: default\n    security_groups: ['group', 'group2' ]\n    instance_type: t1.micro\n    volumes:\n    - device_name: /dev/sda1\n      volume_size: 100\n      volume_type: io1\n      iops: 3000\n      delete_on_termination: true\n      encrypted: true\n    - device_name: /dev/sdb\n      ephemeral: ephemeral0\n\n- name: create a launch configuration using a running instance id as a basis\n  community.aws.ec2_lc:\n    name: special\n    instance_id: i-00a48b207ec59e948\n    key_name: default\n    security_groups: ['launch-wizard-2' ]\n    volumes:\n    - device_name: /dev/sda1\n      volume_size: 120\n      volume_type: io1\n      iops: 3000\n      delete_on_termination: true\n\n- name: create a launch configuration to omit the /dev/sdf EBS device that is included in the AMI image\n  community.aws.ec2_lc:\n    name: special\n    image_id: ami-XXX\n    key_name: default\n    security_groups: ['group', 'group2' ]\n    instance_type: t1.micro\n    volumes:\n    - device_name: /dev/sdf\n      no_device: true\n\n- name: Use EBS snapshot ID for volume\n  block:\n  - name: Set Volume Facts\n    ansible.builtin.set_fact:\n      volumes:\n      - device_name: /dev/sda1\n        volume_size: 20\n        ebs:\n          snapshot: snap-XXXX\n          volume_type: gp2\n          delete_on_termination: true\n          encrypted: no\n\n  - name: Create launch configuration\n    community.aws.ec2_lc:\n      name: lc1\n      image_id: ami-xxxx\n      assign_public_ip: yes\n      instance_type: t2.medium\n      key_name: my-key\n      security_groups: \"['sg-xxxx']\"\n      volumes: \"{{ volumes }}\"\n    register: lc_info\n",
+        "metadata": null,
+        "return": {
+            "arn": {
+                "description": "The Amazon Resource Name of the launch configuration.",
+                "returned": "when I(state=present)",
+                "sample": "arn:aws:autoscaling:us-east-1:148830907657:launchConfiguration:888d9b58-d93a-40c4-90cf-759197a2621a:launchConfigurationName/launch_config_name",
+                "type": "str"
+            },
+            "changed": {
+                "description": "Whether the state of the launch configuration has changed.",
+                "returned": "always",
+                "sample": false,
+                "type": "bool"
+            },
+            "created_time": {
+                "description": "The creation date and time for the launch configuration.",
+                "returned": "when I(state=present)",
+                "sample": "2017-11-03 23:46:44.841000",
+                "type": "str"
+            },
+            "image_id": {
+                "description": "The ID of the Amazon Machine Image used by the launch configuration.",
+                "returned": "when I(state=present)",
+                "sample": "ami-9be6f38c",
+                "type": "str"
+            },
+            "instance_type": {
+                "description": "The instance type for the instances.",
+                "returned": "when I(state=present)",
+                "sample": "t1.micro",
+                "type": "str"
+            },
+            "name": {
+                "description": "The name of the launch configuration.",
+                "returned": "when I(state=present)",
+                "sample": "launch_config_name",
+                "type": "str"
+            },
+            "result": {
+                "contains": {
+                    "PlacementTenancy": {
+                        "description": "The tenancy of the instances, either default or dedicated.",
+                        "returned": "when I(state=present)",
+                        "sample": "default",
+                        "type": "str"
+                    },
+                    "associate_public_ip_address": {
+                        "description": "(EC2-VPC) Indicates whether to assign a public IP address to each instance.",
+                        "returned": "when I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "block_device_mappings": {
+                        "contains": {
+                            "device_name": {
+                                "description": "The device name exposed to the EC2 instance (for example, /dev/sdh or xvdh).",
+                                "returned": "when I(state=present)",
+                                "sample": "/dev/sda1",
+                                "type": "str"
+                            },
+                            "ebs": {
+                                "contains": {
+                                    "snapshot_id": {
+                                        "description": "The ID of the snapshot.",
+                                        "returned": "when I(state=present)",
+                                        "type": "str"
+                                    },
+                                    "volume_size": {
+                                        "description": "The volume size, in GiB.",
+                                        "returned": "when I(state=present)",
+                                        "sample": "100",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "The information about the Amazon EBS volume.",
+                                "returned": "when I(state=present)",
+                                "type": "complex"
+                            },
+                            "virtual_name": {
+                                "description": "The name of the virtual device (for example, ephemeral0).",
+                                "returned": "when I(state=present)",
+                                "sample": "ephemeral0",
+                                "type": "str"
+                            }
+                        },
+                        "description": "A block device mapping, which specifies the block devices.",
+                        "returned": "when I(state=present)",
+                        "type": "complex"
+                    },
+                    "classic_link_vpc_id": {
+                        "description": "The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to.",
+                        "returned": "when I(state=present)",
+                        "type": "str"
+                    },
+                    "classic_link_vpc_security_groups": {
+                        "description": "The IDs of one or more security groups for the VPC specified in ClassicLinkVPCId.",
+                        "returned": "when I(state=present)",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "created_time": {
+                        "description": "The creation date and time for the launch configuration.",
+                        "returned": "when I(state=present)",
+                        "sample": "2017-11-03 23:46:44.841000",
+                        "type": "str"
+                    },
+                    "delete_on_termination": {
+                        "description": "Indicates whether the volume is deleted on instance termination.",
+                        "returned": "when I(state=present)",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "ebs_optimized": {
+                        "description": "Indicates whether the instance is optimized for EBS I/O (true) or not (false).",
+                        "returned": "when I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "image_id": {
+                        "description": "The ID of the Amazon Machine Image used by the launch configuration.",
+                        "returned": "when I(state=present)",
+                        "sample": "ami-9be6f38c",
+                        "type": "str"
+                    },
+                    "instance_monitoring": {
+                        "description": "Indicates whether instances in this group are launched with detailed (true) or basic (false) monitoring.",
+                        "returned": "when I(state=present)",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "instance_profile_name": {
+                        "description": "The name or Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance.",
+                        "returned": "when I(state=present)",
+                        "sample": null,
+                        "type": "str"
+                    },
+                    "instance_type": {
+                        "description": "The instance type for the instances.",
+                        "returned": "when I(state=present)",
+                        "sample": "t1.micro",
+                        "type": "str"
+                    },
+                    "iops": {
+                        "description": "The number of I/O operations per second (IOPS) to provision for the volume.",
+                        "returned": "when I(state=present)",
+                        "type": "int"
+                    },
+                    "kernel_id": {
+                        "description": "The ID of the kernel associated with the AMI.",
+                        "returned": "when I(state=present)",
+                        "sample": "",
+                        "type": "str"
+                    },
+                    "key_name": {
+                        "description": "The name of the key pair.",
+                        "returned": "when I(state=present)",
+                        "sample": "testkey",
+                        "type": "str"
+                    },
+                    "launch_configuration_arn": {
+                        "description": "The Amazon Resource Name (ARN) of the launch configuration.",
+                        "returned": "when I(state=present)",
+                        "sample": "arn:aws:autoscaling:us-east-1:148830907657:launchConfiguration:888d9b58-d93a-40c4-90cf-759197a2621a:launchConfigurationName/launch_config_name",
+                        "type": "str"
+                    },
+                    "member": {
+                        "description": "",
+                        "returned": "when I(state=present)",
+                        "sample": "\n      ",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "The name of the launch configuration.",
+                        "returned": "when I(state=present)",
+                        "sample": "launch_config_name",
+                        "type": "str"
+                    },
+                    "ramdisk_id": {
+                        "description": "The ID of the RAM disk associated with the AMI.",
+                        "returned": "when I(state=present)",
+                        "sample": "",
+                        "type": "str"
+                    },
+                    "security_groups": {
+                        "description": "The security groups to associate with the instances.",
+                        "returned": "when I(state=present)",
+                        "sample": [
+                            "sg-5e27db2f"
+                        ],
+                        "type": "list"
+                    },
+                    "spot_price": {
+                        "description": "The price to bid when launching Spot Instances.",
+                        "returned": "when I(state=present)",
+                        "type": "float"
+                    },
+                    "use_block_device_types": {
+                        "description": "Indicates whether to suppress a device mapping.",
+                        "returned": "when I(state=present)",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "user_data": {
+                        "description": "The user data available to the instances.",
+                        "returned": "when I(state=present)",
+                        "sample": "",
+                        "type": "str"
+                    },
+                    "volume_type": {
+                        "description": "The volume type (one of standard, io1, gp2).",
+                        "returned": "when I(state=present)",
+                        "sample": "io1",
+                        "type": "str"
+                    }
+                },
+                "description": "The specification details for the launch configuration.",
+                "returned": "when I(state=present)",
+                "type": "complex"
+            },
+            "security_groups": {
+                "description": "The security groups to associate with the instances.",
+                "returned": "when I(state=present)",
+                "sample": [
+                    "sg-5e27db2f"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

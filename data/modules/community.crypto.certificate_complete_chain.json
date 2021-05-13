@@ -1,0 +1,81 @@
+{
+    "community.crypto.certificate_complete_chain": {
+        "doc": {
+            "author": "Felix Fontein (@felixfontein)",
+            "collection": "community.crypto",
+            "description": [
+                "This module completes a given chain of certificates in PEM format by finding intermediate certificates from a given set of certificates, until it finds a root certificate in another given set of certificates.",
+                "This can for example be used to find the root certificate for a certificate chain returned by M(community.crypto.acme_certificate).",
+                "Note that this module does I(not) check for validity of the chains. It only checks that issuer and subject match, and that the signature is correct. It ignores validity dates and key usage completely. If you need to verify that a generated chain is valid, please use C(openssl verify ...)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/certificate_complete_chain.py",
+            "has_action": false,
+            "module": "certificate_complete_chain",
+            "options": {
+                "input_chain": {
+                    "description": [
+                        "A concatenated set of certificates in PEM format forming a chain.",
+                        "The module will try to complete this chain."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "intermediate_certificates": {
+                    "default": [],
+                    "description": [
+                        "A list of filenames or directories.",
+                        "A filename is assumed to point to a file containing one or more certificates in PEM format. All certificates in this file will be added to the set of root certificates.",
+                        "If a directory name is given, all files in the directory and its subdirectories will be scanned and tried to be parsed as concatenated certificates in PEM format.",
+                        "Symbolic links will be followed."
+                    ],
+                    "elements": "path",
+                    "type": "list"
+                },
+                "root_certificates": {
+                    "description": [
+                        "A list of filenames or directories.",
+                        "A filename is assumed to point to a file containing one or more certificates in PEM format. All certificates in this file will be added to the set of root certificates.",
+                        "If a directory name is given, all files in the directory and its subdirectories will be scanned and tried to be parsed as concatenated certificates in PEM format.",
+                        "Symbolic links will be followed."
+                    ],
+                    "elements": "path",
+                    "required": true,
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "cryptography >= 1.5"
+            ],
+            "short_description": "Complete certificate chain given a set of untrusted and root certificates"
+        },
+        "examples": "\n# Given a leaf certificate for www.ansible.com and one or more intermediate\n# certificates, finds the associated root certificate.\n- name: Find root certificate\n  community.crypto.certificate_complete_chain:\n    input_chain: \"{{ lookup('file', '/etc/ssl/csr/www.ansible.com-fullchain.pem') }}\"\n    root_certificates:\n    - /etc/ca-certificates/\n  register: www_ansible_com\n- name: Write root certificate to disk\n  copy:\n    dest: /etc/ssl/csr/www.ansible.com-root.pem\n    content: \"{{ www_ansible_com.root }}\"\n\n# Given a leaf certificate for www.ansible.com, and a list of intermediate\n# certificates, finds the associated root certificate.\n- name: Find root certificate\n  community.crypto.certificate_complete_chain:\n    input_chain: \"{{ lookup('file', '/etc/ssl/csr/www.ansible.com.pem') }}\"\n    intermediate_certificates:\n    - /etc/ssl/csr/www.ansible.com-chain.pem\n    root_certificates:\n    - /etc/ca-certificates/\n  register: www_ansible_com\n- name: Write complete chain to disk\n  copy:\n    dest: /etc/ssl/csr/www.ansible.com-completechain.pem\n    content: \"{{ ''.join(www_ansible_com.complete_chain) }}\"\n- name: Write root chain (intermediates and root) to disk\n  copy:\n    dest: /etc/ssl/csr/www.ansible.com-rootchain.pem\n    content: \"{{ ''.join(www_ansible_com.chain) }}\"\n",
+        "metadata": null,
+        "return": {
+            "chain": {
+                "description": [
+                    "The chain added to the given input chain. Includes the root certificate.",
+                    "Returned as a list of PEM certificates."
+                ],
+                "elements": "str",
+                "returned": "success",
+                "type": "list"
+            },
+            "complete_chain": {
+                "description": [
+                    "The completed chain, including leaf, all intermediates, and root.",
+                    "Returned as a list of PEM certificates."
+                ],
+                "elements": "str",
+                "returned": "success",
+                "type": "list"
+            },
+            "root": {
+                "description": [
+                    "The root certificate in PEM format."
+                ],
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

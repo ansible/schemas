@@ -1,0 +1,297 @@
+{
+    "community.general.proxmox": {
+        "doc": {
+            "author": "Sergei Antipov (@UnderGreen)",
+            "collection": "community.general",
+            "description": [
+                "allows you to create/delete/stop instances in Proxmox VE cluster",
+                "Starting in Ansible 2.1, it automatically detects containerization type (lxc for PVE 4, openvz for older)",
+                "From community.general 4.0.0 on, there will be no default values, see I(proxmox_default_behavior)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/proxmox.py",
+            "has_action": false,
+            "module": "proxmox",
+            "options": {
+                "api_host": {
+                    "description": [
+                        "Specify the target host of the Proxmox VE cluster."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_password": {
+                    "description": [
+                        "Specify the password to authenticate with.",
+                        "You can use C(PROXMOX_PASSWORD) environment variable."
+                    ],
+                    "type": "str"
+                },
+                "api_token_id": {
+                    "description": [
+                        "Specify the token ID."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_token_secret": {
+                    "description": [
+                        "Specify the token secret."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_user": {
+                    "description": [
+                        "Specify the user to authenticate with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "cores": {
+                    "description": [
+                        "Specify number of cores per socket.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "cpus": {
+                    "description": [
+                        "numbers of allocated cpus for instance",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "cpuunits": {
+                    "description": [
+                        "CPU weight for a VM",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1000). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "description": {
+                    "description": [
+                        "Specify the description for the container. Only used on the configuration web interface.",
+                        "This is saved as a comment inside the configuration file."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "disk": {
+                    "description": [
+                        "hard disk size in GB for instance",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(3). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "features": {
+                    "description": [
+                        "Specifies a list of features to be enabled. For valid options, see U(https://pve.proxmox.com/wiki/Linux_Container#pct_options).",
+                        "Some features require the use of a privileged container."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "2.0.0",
+                    "version_added_collection": "community.general"
+                },
+                "force": {
+                    "default": "no",
+                    "description": [
+                        "forcing operations",
+                        "can be used only with states C(present), C(stopped), C(restarted)",
+                        "with C(state=present) force option allow to overwrite existing container",
+                        "with states C(stopped) , C(restarted) allow to force stop instance"
+                    ],
+                    "type": "bool"
+                },
+                "hookscript": {
+                    "description": [
+                        "Script that will be executed during various steps in the containers lifetime."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "hostname": {
+                    "description": [
+                        "the instance hostname",
+                        "required only for C(state=present)",
+                        "must be unique if vmid is not passed"
+                    ],
+                    "type": "str"
+                },
+                "ip_address": {
+                    "description": [
+                        "specifies the address the container will be assigned"
+                    ],
+                    "type": "str"
+                },
+                "memory": {
+                    "description": [
+                        "memory size in MB for instance",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(512). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "mounts": {
+                    "description": [
+                        "specifies additional mounts (separate disks) for the container. As a hash/dictionary defining mount points"
+                    ],
+                    "type": "dict"
+                },
+                "nameserver": {
+                    "description": [
+                        "sets DNS server IP address for a container"
+                    ],
+                    "type": "str"
+                },
+                "netif": {
+                    "description": [
+                        "specifies network interfaces for the container. As a hash/dictionary defining interfaces."
+                    ],
+                    "type": "dict"
+                },
+                "node": {
+                    "description": [
+                        "Proxmox VE node on which to operate.",
+                        "Only required for I(state=present).",
+                        "For every other states it will be autodiscovered."
+                    ],
+                    "type": "str"
+                },
+                "onboot": {
+                    "description": [
+                        "specifies whether a VM will be started during system bootup",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(no). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "ostemplate": {
+                    "description": [
+                        "the template for VM creating",
+                        "required only for C(state=present)"
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "the instance root password"
+                    ],
+                    "type": "str"
+                },
+                "pool": {
+                    "description": [
+                        "Add the new VM to the specified pool."
+                    ],
+                    "type": "str"
+                },
+                "proxmox_default_behavior": {
+                    "choices": [
+                        "compatibility",
+                        "no_defaults"
+                    ],
+                    "description": [
+                        "Various module options used to have default values. This cause problems when user expects different behavior from proxmox by default or fill options which cause problems when they have been set.",
+                        "The default value is C(compatibility), which will ensure that the default values are used when the values are not explicitly specified by the user.",
+                        "From community.general 4.0.0 on, the default value will switch to C(no_defaults). To avoid deprecation warnings, please set I(proxmox_default_behavior) to an explicit value.",
+                        "This affects the I(disk), I(cores), I(cpus), I(memory), I(onboot), I(swap), I(cpuunits) options."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "pubkey": {
+                    "description": [
+                        "Public key to add to /root/.ssh/authorized_keys. This was added on Proxmox 4.2, it is ignored for earlier versions"
+                    ],
+                    "type": "str"
+                },
+                "purge": {
+                    "default": false,
+                    "description": [
+                        "Remove container from all related configurations.",
+                        "For example backup jobs, replication jobs, or HA.",
+                        "Related ACLs and Firewall entries will always be removed.",
+                        "Used with state C(absent)."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "searchdomain": {
+                    "description": [
+                        "sets DNS search domain for a container"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "started",
+                        "absent",
+                        "stopped",
+                        "restarted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the instance"
+                    ],
+                    "type": "str"
+                },
+                "storage": {
+                    "default": "local",
+                    "description": [
+                        "target storage"
+                    ],
+                    "type": "str"
+                },
+                "swap": {
+                    "description": [
+                        "swap memory size in MB for instance",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(0). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "timeout for operations"
+                    ],
+                    "type": "int"
+                },
+                "unprivileged": {
+                    "default": "no",
+                    "description": [
+                        "Indicate if the container should be unprivileged"
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": false,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "vmid": {
+                    "description": [
+                        "Specifies the instance ID.",
+                        "If not set the next available ID will be fetched from ProxmoxAPI."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "proxmoxer",
+                "requests"
+            ],
+            "short_description": "management of instances in Proxmox VE cluster"
+        },
+        "examples": "\n- name: Create new container with minimal options\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n\n- name: Create new container with hookscript and description\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    hookscript: 'local:snippets/vm_hook.sh'\n    description: created with ansible\n\n- name: Create new container automatically selecting the next available vmid.\n  community.general.proxmox:\n    node: 'uk-mc02'\n    api_user: 'root@pam'\n    api_password: '1q2w3e'\n    api_host: 'node1'\n    password: '123456'\n    hostname: 'example.org'\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n\n- name: Create new container with minimal options with force(it will rewrite existing container)\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    force: yes\n\n- name: Create new container with minimal options use environment PROXMOX_PASSWORD variable(you should export it before)\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n\n- name: Create new container with minimal options defining network interface with dhcp\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    netif: '{\"net0\":\"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0\"}'\n\n- name: Create new container with minimal options defining network interface with static ip\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: 'local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    netif: '{\"net0\":\"name=eth0,gw=192.168.0.1,ip=192.168.0.2/24,bridge=vmbr0\"}'\n\n- name: Create new container with minimal options defining a mount with 8GB\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    mounts: '{\"mp0\":\"local:8,mp=/mnt/test/\"}'\n\n- name: Create new container with minimal options defining a cpu core limit\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    cores: 2\n\n- name: Create a new container with nesting enabled and allows the use of CIFS/NFS inside the container.\n  community.general.proxmox:\n    vmid: 100\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    password: 123456\n    hostname: example.org\n    ostemplate: local:vztmpl/ubuntu-14.04-x86_64.tar.gz'\n    features:\n     - nesting=1\n     - mount=cifs,nfs\n\n\n- name: Start container\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    state: started\n\n- name: >\n    Start container with mount. You should enter a 90-second timeout because servers\n    with additional disks take longer to boot\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    state: started\n    timeout: 90\n\n- name: Stop container\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    state: stopped\n\n- name: Stop container with force\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    force: yes\n    state: stopped\n\n- name: Restart container(stopped or mounted container you can't restart)\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    state: restarted\n\n- name: Remove container\n  community.general.proxmox:\n    vmid: 100\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

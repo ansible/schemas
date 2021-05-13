@@ -1,0 +1,342 @@
+{
+    "f5networks.f5_modules.bigip_snmp_community": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Assists in managing Simple Network Management Protocol (SNMP) communities on a BIG-IP system. Different SNMP versions are supported by this module. Note the different parameters offered by this module, as different parameters work for different versions of SNMP. This is important if you are mixing versions C(v2c) and C(3)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_snmp_community.py",
+            "has_action": false,
+            "module": "bigip_snmp_community",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "access": {
+                    "choices": [
+                        "ro",
+                        "rw",
+                        "read-only",
+                        "read-write"
+                    ],
+                    "description": [
+                        "Specifies the user's access level to the MIB.",
+                        "When creating a new community, if this parameter is not specified, the default is C(ro).",
+                        "When C(ro), specifies the user can view the MIB, but cannot modify the MIB.",
+                        "When C(rw), specifies the user can view and modify the MIB."
+                    ],
+                    "type": "str"
+                },
+                "community": {
+                    "description": [
+                        "Specifies the community string (password) for access to the MIB.",
+                        "This parameter is only relevant when C(version) is C(v1) or C(v2c). If C(version) is something else, this parameter is ignored."
+                    ],
+                    "type": "str"
+                },
+                "ip_version": {
+                    "choices": [
+                        "4",
+                        "6"
+                    ],
+                    "description": [
+                        "Specifies whether the record applies to IPv4 or IPv6 addresses.",
+                        "When creating a new community, if this value is not specified, the default is C(4).",
+                        "This parameter is only relevant when C(version) is C(v1) or C(v2c). If C(version) is something else, this parameter is ignored."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name that identifies the SNMP community.",
+                        "When C(version) is C(v1) or C(v2c), this parameter is required.",
+                        "The name C(public) is a reserved name on the BIG-IP. This module handles that name differently than others. Functionally, you should not see a difference."
+                    ],
+                    "type": "str"
+                },
+                "oid": {
+                    "description": [
+                        "Specifies the object identifier (OID) for the record.",
+                        "When C(version) is C(v3), this parameter is required.",
+                        "When C(version) is either C(v1) or C(v2c), if this value is specified, then C(source) must not be set to C(all)."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Specifies the port for the trap destination.",
+                        "This parameter is only relevant when C(version) is C(v1) or C(v2c). If C(version) is something else, this parameter is ignored."
+                    ],
+                    "type": "int"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "snmp_auth_password": {
+                    "description": [
+                        "Specifies the password for the user.",
+                        "When creating a new SNMP C(v3) community, this parameter is required.",
+                        "This value must be at least 8 characters long."
+                    ],
+                    "type": "str"
+                },
+                "snmp_auth_protocol": {
+                    "choices": [
+                        "md5",
+                        "sha",
+                        "none"
+                    ],
+                    "description": [
+                        "Specifies the authentication method for the user.",
+                        "When C(md5), specifies the system uses the MD5 algorithm to authenticate the user.",
+                        "When C(sha), specifies the secure hash algorithm (SHA) to authenticate the user.",
+                        "When C(none), specifies the user does not require authentication.",
+                        "When creating a new SNMP C(v3) community, if this parameter is not specified, the default is C(sha)."
+                    ],
+                    "type": "str"
+                },
+                "snmp_privacy_password": {
+                    "description": [
+                        "Specifies the password for the user.",
+                        "When creating a new SNMP C(v3) community, this parameter is required.",
+                        "This value must be at least 8 characters long."
+                    ],
+                    "type": "str"
+                },
+                "snmp_privacy_protocol": {
+                    "choices": [
+                        "aes",
+                        "des",
+                        "none"
+                    ],
+                    "description": [
+                        "Specifies the encryption protocol.",
+                        "When C(aes), specifies the system encrypts the user information using AES (Advanced Encryption Standard).",
+                        "When C(des), specifies the system encrypts the user information using DES (Data Encryption Standard).",
+                        "When C(none), specifies the system does not encrypt the user information.",
+                        "When creating a new SNMP C(v3) community, if this parameter is not specified, the default is C(aes)."
+                    ],
+                    "type": "str"
+                },
+                "snmp_username": {
+                    "description": [
+                        "Specifies the name of the user for whom you want to grant access to the SNMP v3 MIB.",
+                        "This parameter is only relevant when C(version) is C(v3). If C(version) is something else, this parameter is ignored.",
+                        "When creating a new SNMP C(v3) community, this parameter is required.",
+                        "This parameter cannot be changed once it has been set."
+                    ],
+                    "type": "str"
+                },
+                "source": {
+                    "description": [
+                        "Specifies the source address for access to the MIB.",
+                        "This parameter can accept a value of C(all).",
+                        "If this parameter is not specified, the value is C(all).",
+                        "This parameter is only relevant when C(version) is C(v1) or C(v2c). If C(version) is something else, this parameter is ignored.",
+                        "If C(source) is set to C(all), it is not possible to specify an C(oid). This will raise an error.",
+                        "You should provide this parameter when C(state) is C(absent), so the correct community is removed. To remove the C(public) SNMP community that comes with a BIG-IP, this parameter should be C(default)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the address list and entries exists.",
+                        "When C(absent), ensures the address list is removed."
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "always",
+                        "on_create"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "C(always) allows users to update passwords. C(on_create) only sets the password for newly created resources."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "choices": [
+                        "v1",
+                        "v2c",
+                        "v3"
+                    ],
+                    "default": "v2c",
+                    "description": [
+                        "Specifies to which SNMP version the trap destination applies."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages SNMP communities on a BIG-IP.",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create an SMNP v2c read-only community\n  bigip_snmp_community:\n    name: foo\n    version: v2c\n    source: all\n    oid: .1\n    access: ro\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create an SMNP v3 read-write community\n  bigip_snmp_community:\n    name: foo\n    version: v3\n    snmp_username: foo\n    snmp_auth_protocol: sha\n    snmp_auth_password: secret\n    snmp_privacy_protocol: aes\n    snmp_privacy_password: secret\n    oid: .1\n    access: rw\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove the default 'public' SNMP community\n  bigip_snmp_community:\n    name: public\n    source: default\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "access": {
+                "description": "The new access level for the MIB.",
+                "returned": "changed",
+                "sample": "ro",
+                "type": "str"
+            },
+            "community": {
+                "description": "The new community value.",
+                "returned": "changed",
+                "sample": "community1",
+                "type": "str"
+            },
+            "ip_version": {
+                "description": "The new IP version value.",
+                "returned": "changed",
+                "sample": 0.1,
+                "type": "str"
+            },
+            "oid": {
+                "description": "The new OID value.",
+                "returned": "changed",
+                "sample": 0.1,
+                "type": "str"
+            },
+            "snmp_auth_password": {
+                "description": "The new password of the given snmp_username.",
+                "returned": "changed",
+                "sample": "secret1",
+                "type": "str"
+            },
+            "snmp_auth_protocol": {
+                "description": "The new SNMP auth protocol.",
+                "returned": "changed",
+                "sample": "sha",
+                "type": "str"
+            },
+            "snmp_privacy_password": {
+                "description": "The new password of the given snmp_username.",
+                "returned": "changed",
+                "sample": "secret2",
+                "type": "str"
+            },
+            "snmp_privacy_protocol": {
+                "description": "The new SNMP privacy protocol.",
+                "returned": "changed",
+                "sample": "aes",
+                "type": "str"
+            },
+            "snmp_username": {
+                "description": "The new SNMP username.",
+                "returned": "changed",
+                "sample": "user1",
+                "type": "str"
+            },
+            "source": {
+                "description": "The new source address to access the MIB.",
+                "returned": "changed",
+                "sample": "1.1.1.1",
+                "type": "str"
+            }
+        }
+    }
+}

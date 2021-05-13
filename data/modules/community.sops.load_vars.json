@@ -1,0 +1,157 @@
+{
+    "community.sops.load_vars": {
+        "doc": {
+            "author": "Felix Fontein (@felixfontein)",
+            "collection": "community.sops",
+            "description": [
+                "Loads sops-encrypted YAML/JSON variables dynamically from a file during task runtime.",
+                "To assign included variables to a different host than C(inventory_hostname), use C(delegate_to) and set C(delegate_facts=yes)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/sops/plugins/modules/load_vars.py",
+            "has_action": true,
+            "module": "load_vars",
+            "options": {
+                "aws_access_key_id": {
+                    "description": [
+                        "The AWS access key ID to use for requests to AWS.",
+                        "Sets the environment variable C(AWS_ACCESS_KEY_ID) for the sops call."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "aws_profile": {
+                    "description": [
+                        "The AWS profile to use for requests to AWS.",
+                        "This corresponds to the sops C(--aws-profile) option."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "aws_secret_access_key": {
+                    "description": [
+                        "The AWS secret access key to use for requests to AWS.",
+                        "Sets the environment variable C(AWS_SECRET_ACCESS_KEY) for the sops call."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "aws_session_token": {
+                    "description": [
+                        "The AWS session token to use for requests to AWS.",
+                        "Sets the environment variable C(AWS_SESSION_TOKEN) for the sops call."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "config_path": {
+                    "description": [
+                        "Path to the sops configuration file.",
+                        "If not set, sops will recursively search for the config file starting at the file that is encrypted or decrypted.",
+                        "This corresponds to the sops C(--config) option."
+                    ],
+                    "type": "path",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "enable_local_keyservice": {
+                    "default": false,
+                    "description": [
+                        "Tell sops to use local key service.",
+                        "This corresponds to the sops C(--enable-local-keyservice) option."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "expressions": {
+                    "choices": [
+                        "ignore",
+                        "evaluate-on-load"
+                    ],
+                    "default": "ignore",
+                    "description": [
+                        "This option controls how Jinja2 expressions in values in the loaded file are handled.",
+                        "If set to C(ignore), expressions will not be evaluated, but treated as regular strings.",
+                        "If set to C(evaluate-on-load), expressions will be evaluated on execution of this module, in other words, when the file is loaded.",
+                        "Unfortunately, there is no way for non-core modules to handle expressions \"unsafe\", in other words, evaluate them only on use. This can only achieved by M(ansible.builtin.include_vars), which unfortunately cannot handle sops-encrypted files."
+                    ],
+                    "type": "str"
+                },
+                "file": {
+                    "description": [
+                        "The file name from which variables should be loaded.",
+                        "If the path is relative, it will look for the file in C(vars/) subdirectory of a role or relative to playbook."
+                    ],
+                    "type": "path"
+                },
+                "keyservice": {
+                    "description": [
+                        "Specify key services to use next to the local one.",
+                        "A key service must be specified in the form C(protocol://address), for example C(tcp://myserver.com:5000).",
+                        "This corresponds to the sops C(--keyservice) option."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                },
+                "name": {
+                    "description": [
+                        "The name of a variable into which assign the included vars.",
+                        "If omitted (C(null)) they will be made top level vars."
+                    ],
+                    "type": "str"
+                },
+                "sops_binary": {
+                    "description": [
+                        "Path to the sops binary.",
+                        "By default uses C(sops)."
+                    ],
+                    "type": "path",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.sops"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.set_fact"
+                },
+                {
+                    "module": "ansible.builtin.include_vars"
+                },
+                {
+                    "description": "More information related to task delegation.",
+                    "ref": "playbooks_delegation"
+                }
+            ],
+            "short_description": "Load sops-encrypted variables from files, dynamically within a task",
+            "version_added": "0.1.0",
+            "version_added_collection": "community.sops"
+        },
+        "examples": "\n- name: Include variables of stuff.sops.yaml into the 'stuff' variable\n  community.sops.load_vars:\n    file: stuff.sops.yaml\n    name: stuff\n    expressions: evaluate-on-load  # interpret Jinja2 expressions in stuf.sops.yaml on load-time!\n\n- name: Conditionally decide to load in variables into 'plans' when x is 0, otherwise do not\n  community.sops.load_vars:\n    file: contingency_plan.sops.yaml\n    name: plans\n    expressions: ignore  # do not interpret possible Jinja2 expressions\n  when: x == 0\n\n- name: Load variables into the global namespace\n  community.sops.load_vars:\n    file: contingency_plan.sops.yaml\n",
+        "metadata": null,
+        "return": {
+            "ansible_facts": {
+                "description": "Variables that were included and their values.",
+                "returned": "success",
+                "sample": {
+                    "variable": "value"
+                },
+                "type": "dict"
+            },
+            "ansible_included_var_files": {
+                "description": "A list of files that were successfully included",
+                "elements": "str",
+                "returned": "success",
+                "sample": [
+                    "/path/to/file.sops.yaml"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

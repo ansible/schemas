@@ -1,0 +1,499 @@
+{
+    "community.okd.openshift_route": {
+        "doc": {
+            "author": "Fabian von Feilitzsch (@fabianvf)",
+            "collection": "community.okd",
+            "description": [
+                "Looks up a Service and creates a new Route based on it.",
+                "Analogous to `oc expose` and `oc create route` for creating Routes, but does not support creating Services.",
+                "For creating Services from other resources, see kubernetes.core.k8s_expose"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/okd/plugins/modules/openshift_route.py",
+            "has_action": false,
+            "module": "openshift_route",
+            "notes": [
+                "The OpenShift Python client wraps the K8s Python client, providing full access to all of the APIS and models available on both platforms. For API version details and additional information visit https://github.com/openshift/openshift-restclient-python",
+                "To avoid SSL certificate validation errors when C(validate_certs) is I(True), the full certificate chain for the API server must be provided via C(ca_cert) or in the kubeconfig file."
+            ],
+            "options": {
+                "api_key": {
+                    "description": [
+                        "Token used to authenticate with the API. Can also be specified via K8S_AUTH_API_KEY environment variable."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca_cert"
+                    ],
+                    "description": [
+                        "Path to a CA certificate used to authenticate with the API. The full certificate chain must be provided to avoid certificate validation errors. Can also be specified via K8S_AUTH_SSL_CA_CERT environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert_file"
+                    ],
+                    "description": [
+                        "Path to a certificate used to authenticate with the API. Can also be specified via K8S_AUTH_CERT_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key_file"
+                    ],
+                    "description": [
+                        "Path to a key file used to authenticate with the API. Can also be specified via K8S_AUTH_KEY_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "context": {
+                    "description": [
+                        "The name of a context found in the config file. Can also be specified via K8S_AUTH_CONTEXT environment variable."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "If set to C(yes), and I(state) is C(present), an existing object will be replaced."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "description": [
+                        "Provide a URL for accessing the API. Can also be specified via K8S_AUTH_HOST environment variable."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname for the Route."
+                    ],
+                    "type": "str"
+                },
+                "kubeconfig": {
+                    "description": [
+                        "Path to an existing Kubernetes config file. If not provided, and no other connection options are provided, the openshift client will attempt to load the default configuration file from I(~/.kube/config.json). Can also be specified via K8S_AUTH_KUBECONFIG environment variable."
+                    ],
+                    "type": "path"
+                },
+                "labels": {
+                    "description": [
+                        "Specify the labels to apply to the created Route.",
+                        "A set of key: value pairs."
+                    ],
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "The desired name of the Route to be created.",
+                        "Defaults to the value of I(service)"
+                    ],
+                    "type": "str"
+                },
+                "namespace": {
+                    "description": [
+                        "The namespace of the resource being targeted.",
+                        "The Route will be created in this namespace as well."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Provide a password for authenticating with the API. Can also be specified via K8S_AUTH_PASSWORD environment variable.",
+                        "Please read the description of the C(username) option for a discussion of when this option is applicable."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The path for the Route"
+                    ],
+                    "type": "str"
+                },
+                "persist_config": {
+                    "description": [
+                        "Whether or not to save the kube config refresh tokens. Can also be specified via K8S_AUTH_PERSIST_CONFIG environment variable.",
+                        "When the k8s context is using a user credentials with refresh tokens (like oidc or gke/gcloud auth), the token is refreshed by the k8s python client library but not saved by default. So the old refresh token can expire and the next auth might fail. Setting this flag to true will tell the k8s python client to save the new refresh token to the kube config file.",
+                        "Default to false.",
+                        "Please note that the current version of the k8s python client library does not support setting this flag to True yet.",
+                        "The fix for this k8s python library is here: https://github.com/kubernetes-client/python-base/pull/169"
+                    ],
+                    "type": "bool"
+                },
+                "port": {
+                    "description": [
+                        "Name or number of the port the Route will route traffic to."
+                    ],
+                    "type": "str"
+                },
+                "proxy": {
+                    "description": [
+                        "The URL of an HTTP proxy to use for the connection. Can also be specified via K8S_AUTH_PROXY environment variable.",
+                        "Please note that this module does not pick up typical proxy settings from the environment (e.g. HTTP_PROXY)."
+                    ],
+                    "type": "str"
+                },
+                "service": {
+                    "aliases": [
+                        "svc"
+                    ],
+                    "description": [
+                        "The name of the service to expose.",
+                        "Required when I(state) is not absent."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines if an object should be created, patched, or deleted. When set to C(present), an object will be created, if it does not already exist. If set to C(absent), an existing object will be deleted. If set to C(present), an existing object will be patched, if its attributes differ from those specified using I(resource_definition) or I(src)."
+                    ],
+                    "type": "str"
+                },
+                "termination": {
+                    "choices": [
+                        "edge",
+                        "passthrough",
+                        "reencrypt",
+                        "insecure"
+                    ],
+                    "default": "insecure",
+                    "description": [
+                        "The termination type of the Route.",
+                        "If left empty no termination type will be set, and the route will be insecure.",
+                        "When set to insecure I(tls) will be ignored."
+                    ],
+                    "type": "str"
+                },
+                "tls": {
+                    "description": [
+                        "TLS configuration for the newly created route.",
+                        "Only used when I(termination) is set."
+                    ],
+                    "suboptions": {
+                        "ca_certificate": {
+                            "description": [
+                                "Path to a CA certificate file on the target host.",
+                                "Not supported when I(termination) is set to passthrough."
+                            ],
+                            "type": "str"
+                        },
+                        "certificate": {
+                            "description": [
+                                "Path to a certificate file on the target host.",
+                                "Not supported when I(termination) is set to passthrough."
+                            ],
+                            "type": "str"
+                        },
+                        "destination_ca_certificate": {
+                            "description": [
+                                "Path to a CA certificate file used for securing the connection.",
+                                "Only used when I(termination) is set to reencrypt.",
+                                "Defaults to the Service CA."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure_policy": {
+                            "choices": [
+                                "allow",
+                                "redirect",
+                                "disallow"
+                            ],
+                            "default": "disallow",
+                            "description": [
+                                "Sets the InsecureEdgeTerminationPolicy for the Route.",
+                                "Not supported when I(termination) is set to reencrypt.",
+                                "When I(termination) is set to passthrough, only redirect is supported.",
+                                "If not provided, insecure traffic will be disallowed."
+                            ],
+                            "type": "str"
+                        },
+                        "key": {
+                            "description": [
+                                "Path to a key file on the target host.",
+                                "Not supported when I(termination) is set to passthrough."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "username": {
+                    "description": [
+                        "Provide a username for authenticating with the API. Can also be specified via K8S_AUTH_USERNAME environment variable.",
+                        "Please note that this only works with clusters configured to use HTTP Basic Auth. If your cluster has a different form of authentication (e.g. OAuth2 in OpenShift), this option will not work as expected and you should look into the C(k8s_auth) module, as that might do what you need."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to verify the API server's SSL certificates. Can also be specified via K8S_AUTH_VERIFY_SSL environment variable."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Whether to wait for certain resource kinds to end up in the desired state.",
+                        "By default the module exits once Kubernetes has received the request.",
+                        "Implemented for C(state=present) for C(Deployment), C(DaemonSet) and C(Pod), and for C(state=absent) for all resource kinds.",
+                        "For resource kinds without an implementation, C(wait) returns immediately unless C(wait_condition) is set."
+                    ],
+                    "type": "bool"
+                },
+                "wait_condition": {
+                    "description": [
+                        "Specifies a custom condition on the status to wait for.",
+                        "Ignored if C(wait) is not set or is set to False."
+                    ],
+                    "suboptions": {
+                        "reason": {
+                            "description": [
+                                "The value of the reason field in your desired condition",
+                                "For example, if a C(Deployment) is paused, The C(Progressing) C(type) will have the C(DeploymentPaused) reason.",
+                                "The possible reasons in a condition are specific to each resource type in Kubernetes.",
+                                "See the API documentation of the status field for a given resource to see possible choices."
+                            ],
+                            "type": "str"
+                        },
+                        "status": {
+                            "choices": [
+                                "True",
+                                "False",
+                                "Unknown"
+                            ],
+                            "default": "True",
+                            "description": [
+                                "The value of the status field in your desired condition.",
+                                "For example, if a C(Deployment) is paused, the C(Progressing) C(type) will have the C(Unknown) status."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "The type of condition to wait for.",
+                                "For example, the C(Pod) resource will set the C(Ready) condition (among others).",
+                                "Required if you are specifying a C(wait_condition).",
+                                "If left empty, the C(wait_condition) field will be ignored.",
+                                "The possible types for a condition are specific to each resource type in Kubernetes.",
+                                "See the API documentation of the status field for a given resource to see possible choices."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "wait_sleep": {
+                    "default": 5,
+                    "description": [
+                        "Number of seconds to sleep between checks."
+                    ],
+                    "type": "int"
+                },
+                "wait_timeout": {
+                    "default": 120,
+                    "description": [
+                        "How long in seconds to wait for the resource to end up in the desired state.",
+                        "Ignored if C(wait) is not set."
+                    ],
+                    "type": "int"
+                },
+                "wildcard_policy": {
+                    "choices": [
+                        "Subdomain"
+                    ],
+                    "description": [
+                        "The wildcard policy for the hostname.",
+                        "Currently only Subdomain is supported.",
+                        "If not provided, the default of None will be used."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "openshift >= 0.11.0",
+                "PyYAML >= 3.11"
+            ],
+            "short_description": "Expose a Service as an OpenShift Route.",
+            "version_added": "0.3.0",
+            "version_added_collection": "community.okd"
+        },
+        "examples": "\n- name: Create hello-world deployment\n  community.okd.k8s:\n    definition:\n      apiVersion: apps/v1\n      kind: Deployment\n      metadata:\n        name: hello-kubernetes\n        namespace: default\n      spec:\n        replicas: 3\n        selector:\n          matchLabels:\n            app: hello-kubernetes\n        template:\n          metadata:\n            labels:\n              app: hello-kubernetes\n          spec:\n            containers:\n            - name: hello-kubernetes\n              image: paulbouwer/hello-kubernetes:1.8\n              ports:\n              - containerPort: 8080\n\n- name: Create Service for the hello-world deployment\n  community.okd.k8s:\n    definition:\n      apiVersion: v1\n      kind: Service\n      metadata:\n        name: hello-kubernetes\n        namespace: default\n      spec:\n        ports:\n        - port: 80\n          targetPort: 8080\n        selector:\n          app: hello-kubernetes\n\n- name: Expose the insecure hello-world service externally\n  community.okd.openshift_route:\n    service: hello-kubernetes\n    namespace: default\n    insecure_policy: allow\n  register: route\n",
+        "metadata": null,
+        "return": {
+            "duration": {
+                "description": "elapsed time of task in seconds",
+                "returned": "when C(wait) is true",
+                "sample": 48,
+                "type": "int"
+            },
+            "result": {
+                "contains": {
+                    "apiVersion": {
+                        "description": "The versioned schema of this representation of an object.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "kind": {
+                        "description": "Represents the REST resource this object represents.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "metadata": {
+                        "contains": {
+                            "name": {
+                                "description": "The name of the created Route",
+                                "type": "str"
+                            },
+                            "namespace": {
+                                "description": "The namespace of the create Route",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Standard object metadata. Includes name, namespace, annotations, labels, etc.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "spec": {
+                        "contains": {
+                            "host": {
+                                "description": "Host is an alias/DNS that points to the service.",
+                                "type": "str"
+                            },
+                            "path": {
+                                "description": "Path that the router watches for, to route traffic for to the service.",
+                                "type": "str"
+                            },
+                            "port": {
+                                "contains": {
+                                    "targetPort": {
+                                        "description": "The target port on pods selected by the service this route points to.",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Defines a port mapping from a router to an endpoint in the service endpoints.",
+                                "type": "complex"
+                            },
+                            "tls": {
+                                "contains": {
+                                    "caCertificate": {
+                                        "description": "Provides the cert authority certificate contents.",
+                                        "type": "str"
+                                    },
+                                    "certificate": {
+                                        "description": "Provides certificate contents.",
+                                        "type": "str"
+                                    },
+                                    "destinationCACertificate": {
+                                        "description": "Provides the contents of the ca certificate of the final destination.",
+                                        "type": "str"
+                                    },
+                                    "insecureEdgeTerminationPolicy": {
+                                        "description": "Indicates the desired behavior for insecure connections to a route.",
+                                        "type": "str"
+                                    },
+                                    "key": {
+                                        "description": "Provides key file contents.",
+                                        "type": "str"
+                                    },
+                                    "termination": {
+                                        "description": "Indicates termination type.",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Defines config used to secure a route and provide termination.",
+                                "type": "complex"
+                            },
+                            "to": {
+                                "contains": {
+                                    "kind": {
+                                        "description": "The kind of target that the route is referring to. Currently, only 'Service' is allowed.",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "Name of the service/target that is being referred to. e.g. name of the service.",
+                                        "type": "str"
+                                    },
+                                    "weight": {
+                                        "description": "Specifies the target's relative weight against other target reference objects.",
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Specifies the target that resolve into endpoints.",
+                                "type": "complex"
+                            },
+                            "wildcardPolicy": {
+                                "description": "Wildcard policy if any for the route.",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Specification for the Route",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "status": {
+                        "contains": {
+                            "ingress": {
+                                "contains": {
+                                    "conditions": {
+                                        "contains": {
+                                            "status": {
+                                                "description": "The status of the condition. Can be True, False, Unknown.",
+                                                "type": "str"
+                                            },
+                                            "type": {
+                                                "description": "The type of the condition. Currently only 'Ready'.",
+                                                "type": "str"
+                                            }
+                                        },
+                                        "description": "Array of status conditions for the Route ingress.",
+                                        "type": "complex"
+                                    },
+                                    "host": {
+                                        "description": "The host string under which the route is exposed.",
+                                        "type": "str"
+                                    },
+                                    "routerCanonicalHostname": {
+                                        "description": "The external host name for the router that can be used as a CNAME for the host requested for this route. May not be set.",
+                                        "type": "str"
+                                    },
+                                    "routerName": {
+                                        "description": "A name chosen by the router to identify itself.",
+                                        "type": "str"
+                                    },
+                                    "wildcardPolicy": {
+                                        "description": "The wildcard policy that was allowed where this route is exposed.",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "List of places where the route may be exposed.",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Current status details for the Route",
+                        "returned": "success",
+                        "type": "complex"
+                    }
+                },
+                "description": [
+                    "The Route object that was created or updated. Will be empty in the case of deletion."
+                ],
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

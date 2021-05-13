@@ -1,0 +1,80 @@
+{
+    "community.general.selogin": {
+        "doc": {
+            "author": [
+                "Dan Keder (@dankeder)",
+                "Petr Lautrbach (@bachradsusi)",
+                "James Cassell (@jamescassell)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manages linux user to SELinux user mapping"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/selogin.py",
+            "has_action": false,
+            "module": "selogin",
+            "notes": [
+                "The changes are persistent across reboots",
+                "Not tested on any debian based system"
+            ],
+            "options": {
+                "ignore_selinux_state": {
+                    "default": false,
+                    "description": [
+                        "Run independent of selinux runtime state"
+                    ],
+                    "type": "bool"
+                },
+                "login": {
+                    "description": [
+                        "a Linux user"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "reload": {
+                    "default": true,
+                    "description": [
+                        "Reload SELinux policy after commit."
+                    ],
+                    "type": "bool"
+                },
+                "selevel": {
+                    "aliases": [
+                        "serange"
+                    ],
+                    "default": "s0",
+                    "description": [
+                        "MLS/MCS Security Range (MLS/MCS Systems only) SELinux Range for SELinux login mapping defaults to the SELinux user record range."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "SELinux user name"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired mapping value."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "libselinux",
+                "policycoreutils"
+            ],
+            "short_description": "Manages linux user to SELinux user mapping"
+        },
+        "examples": "\n- name: Modify the default user on the system to the guest_u user\n  community.general.selogin:\n    login: __default__\n    seuser: guest_u\n    state: present\n\n- name: Assign gijoe user on an MLS machine a range and to the staff_u user\n  community.general.selogin:\n    login: gijoe\n    seuser: staff_u\n    serange: SystemLow-Secret\n    state: present\n\n- name: Assign all users in the engineering group to the staff_u user\n  community.general.selogin:\n    login: '%engineering'\n    seuser: staff_u\n    state: present\n",
+        "metadata": null,
+        "return": null
+    }
+}

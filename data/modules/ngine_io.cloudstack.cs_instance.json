@@ -1,0 +1,534 @@
+{
+    "ngine_io.cloudstack.cs_instance": {
+        "doc": {
+            "author": "Ren\u00e9 Moser (@resmo)",
+            "collection": "ngine_io.cloudstack",
+            "description": [
+                "Deploy, start, update, scale, restart, restore, stop and destroy instances."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/cloudstack/plugins/modules/cs_instance.py",
+            "has_action": false,
+            "module": "cs_instance",
+            "notes": [
+                "A detailed guide about cloudstack modules can be found in the L(CloudStack Cloud Guide,../scenario_guides/guide_cloudstack.html).",
+                "This module supports check mode."
+            ],
+            "options": {
+                "account": {
+                    "description": [
+                        "Account the instance is related to."
+                    ],
+                    "type": "str"
+                },
+                "affinity_groups": {
+                    "aliases": [
+                        "affinity_group"
+                    ],
+                    "description": [
+                        "Affinity groups names to be applied to the new instance."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "allow_root_disk_shrink": {
+                    "default": false,
+                    "description": [
+                        "Enables a volume shrinkage when the new size is smaller than the old one."
+                    ],
+                    "type": "bool"
+                },
+                "api_http_method": {
+                    "choices": [
+                        "get",
+                        "post"
+                    ],
+                    "default": "get",
+                    "description": [
+                        "HTTP method used to query the API endpoint.",
+                        "If not given, the C(CLOUDSTACK_METHOD) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the CloudStack API.",
+                        "If not given, the C(CLOUDSTACK_KEY) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_secret": {
+                    "description": [
+                        "Secret key of the CloudStack API.",
+                        "If not set, the C(CLOUDSTACK_SECRET) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_timeout": {
+                    "default": 10,
+                    "description": [
+                        "HTTP timeout in seconds.",
+                        "If not given, the C(CLOUDSTACK_TIMEOUT) env variable is considered."
+                    ],
+                    "type": "int"
+                },
+                "api_url": {
+                    "description": [
+                        "URL of the CloudStack API e.g. https://cloud.example.com/client/api.",
+                        "If not given, the C(CLOUDSTACK_ENDPOINT) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_verify_ssl_cert": {
+                    "description": [
+                        "Verify CA authority cert file.",
+                        "If not given, the C(CLOUDSTACK_VERIFY) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "cpu": {
+                    "description": [
+                        "The number of CPUs to allocate to the instance, used with custom service offerings"
+                    ],
+                    "type": "int"
+                },
+                "cpu_speed": {
+                    "description": [
+                        "The clock speed/shares allocated to the instance, used with custom service offerings"
+                    ],
+                    "type": "int"
+                },
+                "details": {
+                    "description": [
+                        "Map to specify custom parameters."
+                    ],
+                    "type": "dict"
+                },
+                "disk_offering": {
+                    "description": [
+                        "Name of the disk offering to be used."
+                    ],
+                    "type": "str"
+                },
+                "disk_size": {
+                    "description": [
+                        "Disk size in GByte required if deploying instance from ISO."
+                    ],
+                    "type": "int"
+                },
+                "display_name": {
+                    "description": [
+                        "Custom display name of the instances.",
+                        "Display name will be set to I(name) if not specified.",
+                        "Either I(name) or I(display_name) is required."
+                    ],
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "Domain the instance is related to."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Force stop/start the instance if required to apply changes, otherwise a running instance will not be changed."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Group in where the new instance should be in."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Host on which an instance should be deployed or started on.",
+                        "Only considered when I(state=started) or instance is running.",
+                        "Requires root admin privileges."
+                    ],
+                    "type": "str"
+                },
+                "hypervisor": {
+                    "description": [
+                        "Name the hypervisor to be used for creating the new instance.",
+                        "Relevant when using I(state=present), but only considered if not set on ISO/template.",
+                        "If not set or found on ISO/template, first found hypervisor will be used.",
+                        "Possible values are C(KVM), C(VMware), C(BareMetal), C(XenServer), C(LXC), C(HyperV), C(UCS), C(OVM), C(Simulator)."
+                    ],
+                    "type": "str"
+                },
+                "ip6_address": {
+                    "description": [
+                        "IPv6 address for default instance's network."
+                    ],
+                    "type": "str"
+                },
+                "ip_address": {
+                    "description": [
+                        "IPv4 address for default instance's network during creation."
+                    ],
+                    "type": "str"
+                },
+                "ip_to_networks": {
+                    "aliases": [
+                        "ip_to_network"
+                    ],
+                    "description": [
+                        "List of mappings in the form I({'network': NetworkName, 'ip': 1.2.3.4})",
+                        "Mutually exclusive with I(networks) option."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "iso": {
+                    "description": [
+                        "Name or id of the ISO to be used for creating the new instance.",
+                        "Required when using I(state=present).",
+                        "Mutually exclusive with I(template) option."
+                    ],
+                    "type": "str"
+                },
+                "keyboard": {
+                    "choices": [
+                        "de",
+                        "de-ch",
+                        "es",
+                        "fi",
+                        "fr",
+                        "fr-be",
+                        "fr-ch",
+                        "is",
+                        "it",
+                        "jp",
+                        "nl-be",
+                        "no",
+                        "pt",
+                        "uk",
+                        "us"
+                    ],
+                    "description": [
+                        "Keyboard device type for the instance."
+                    ],
+                    "type": "str"
+                },
+                "memory": {
+                    "description": [
+                        "The memory allocated to the instance, used with custom service offerings"
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Host name of the instance. C(name) can only contain ASCII letters.",
+                        "Name will be generated (UUID) by CloudStack if not specified and can not be changed afterwards.",
+                        "Either C(name) or C(display_name) is required."
+                    ],
+                    "type": "str"
+                },
+                "networks": {
+                    "aliases": [
+                        "network"
+                    ],
+                    "description": [
+                        "List of networks to use for the new instance."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "poll_async": {
+                    "default": true,
+                    "description": [
+                        "Poll async jobs until job has finished."
+                    ],
+                    "type": "bool"
+                },
+                "project": {
+                    "description": [
+                        "Name of the project the instance to be deployed in."
+                    ],
+                    "type": "str"
+                },
+                "root_disk_size": {
+                    "description": [
+                        "Root disk size in GByte required if deploying instance with KVM hypervisor and want resize the root disk size at startup (need CloudStack >= 4.4, cloud-initramfs-growroot installed and enabled in the template)"
+                    ],
+                    "type": "int"
+                },
+                "security_groups": {
+                    "aliases": [
+                        "security_group"
+                    ],
+                    "description": [
+                        "List of security groups the instance to be applied to."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "service_offering": {
+                    "description": [
+                        "Name or id of the service offering of the new instance.",
+                        "If not set, first found service offering is used."
+                    ],
+                    "type": "str"
+                },
+                "ssh_key": {
+                    "description": [
+                        "Name of the SSH key to be deployed on the new instance."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "deployed",
+                        "started",
+                        "stopped",
+                        "restarted",
+                        "restored",
+                        "destroyed",
+                        "expunged",
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the instance."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "aliases": [
+                        "tag"
+                    ],
+                    "description": [
+                        "List of tags. Tags are a list of dictionaries having keys C(key) and C(value).",
+                        "If you want to delete all tags, set a empty list e.g. I(tags: [])."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "template": {
+                    "description": [
+                        "Name, display text or id of the template to be used for creating the new instance.",
+                        "Required when using I(state=present).",
+                        "Mutually exclusive with I(iso) option."
+                    ],
+                    "type": "str"
+                },
+                "template_filter": {
+                    "aliases": [
+                        "iso_filter"
+                    ],
+                    "choices": [
+                        "all",
+                        "featured",
+                        "self",
+                        "selfexecutable",
+                        "sharedexecutable",
+                        "executable",
+                        "community"
+                    ],
+                    "default": "executable",
+                    "description": [
+                        "Name of the filter used to search for the template or iso.",
+                        "Used for params I(iso) or I(template) on I(state=present).",
+                        "The filter C(all) was added in 2.6."
+                    ],
+                    "type": "str"
+                },
+                "user_data": {
+                    "description": [
+                        "Optional data (ASCII) that can be sent to the instance upon a successful deployment.",
+                        "The data will be automatically base64 encoded.",
+                        "Consider switching to HTTP_POST by using I(CLOUDSTACK_METHOD=post) to increase the HTTP_GET size limit of 2KB to 32 KB."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "Name of the zone in which the instance should be deployed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "cs >= 0.9.0"
+            ],
+            "short_description": "Manages instances and virtual machines on Apache CloudStack based clouds.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.cloudstack"
+        },
+        "examples": "\n# NOTE: Names of offerings and ISOs depending on the CloudStack configuration.\n- name: create a instance from an ISO\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    iso: Linux Debian 7 64-bit\n    hypervisor: VMware\n    project: Integration\n    zone: ch-zrh-ix-01\n    service_offering: 1cpu_1gb\n    disk_offering: PerfPlus Storage\n    disk_size: 20\n    networks:\n      - Server Integration\n      - Sync Integration\n      - Storage Integration\n\n- name: for changing a running instance, use the 'force' parameter\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    zone: zone01\n    display_name: web-vm-01.example.com\n    iso: Linux Debian 7 64-bit\n    service_offering: 2cpu_2gb\n    force: yes\n\n# NOTE: user_data can be used to kickstart the instance using cloud-init yaml config.\n- name: create or update a instance on Exoscale's public cloud using display_name.\n  ngine_io.cloudstack.cs_instance:\n    display_name: web-vm-1\n    zone: zone01\n    template: Linux Debian 7 64-bit\n    service_offering: Tiny\n    ssh_key: john@example.com\n    tags:\n      - key: admin\n        value: john\n      - key: foo\n        value: bar\n    user_data: |\n        #cloud-config\n        packages:\n          - nginx\n\n- name: create an instance with multiple interfaces specifying the IP addresses\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    zone: zone01\n    template: Linux Debian 7 64-bit\n    service_offering: Tiny\n    ip_to_networks:\n      - network: NetworkA\n        ip: 10.1.1.1\n      - network: NetworkB\n        ip: 192.0.2.1\n\n- name: ensure an instance is stopped\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    zone: zone01\n    state: stopped\n\n- name: ensure an instance is running\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    zone: zone01\n    state: started\n\n- name: remove an instance\n  ngine_io.cloudstack.cs_instance:\n    name: web-vm-1\n    zone: zone01\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "account": {
+                "description": "Account the instance is related to.",
+                "returned": "success",
+                "sample": "example account",
+                "type": "str"
+            },
+            "affinity_groups": {
+                "description": "Affinity groups the instance is in.",
+                "returned": "success",
+                "sample": "[ \"webservers\" ]",
+                "type": "list"
+            },
+            "created": {
+                "description": "Date of the instance was created.",
+                "returned": "success",
+                "sample": "2014-12-01T14:57:57+0100",
+                "type": "str"
+            },
+            "default_ip": {
+                "description": "Default IP address of the instance.",
+                "returned": "success",
+                "sample": "10.23.37.42",
+                "type": "str"
+            },
+            "default_ip6": {
+                "description": "Default IPv6 address of the instance.",
+                "returned": "if available",
+                "sample": "2a04:c43:c00:a07:4b4:beff:fe00:74",
+                "type": "str"
+            },
+            "display_name": {
+                "description": "Display name of the instance.",
+                "returned": "success",
+                "sample": "web-01",
+                "type": "str"
+            },
+            "domain": {
+                "description": "Domain the instance is related to.",
+                "returned": "success",
+                "sample": "example domain",
+                "type": "str"
+            },
+            "group": {
+                "description": "Group name of the instance is related.",
+                "returned": "success",
+                "sample": "web",
+                "type": "str"
+            },
+            "host": {
+                "description": "Hostname of hypervisor an instance is running on.",
+                "returned": "success and instance is running",
+                "sample": "host-01.example.com",
+                "type": "str"
+            },
+            "hypervisor": {
+                "description": "Hypervisor related to this instance.",
+                "returned": "success",
+                "sample": "KVM",
+                "type": "str"
+            },
+            "id": {
+                "description": "UUID of the instance.",
+                "returned": "success",
+                "sample": "04589590-ac63-4ffc-93f5-b698b8ac38b6",
+                "type": "str"
+            },
+            "instance_name": {
+                "description": "Internal name of the instance (ROOT admin only).",
+                "returned": "success",
+                "sample": "i-44-3992-VM",
+                "type": "str"
+            },
+            "iso": {
+                "description": "Name of ISO the instance was deployed with.",
+                "returned": "if available",
+                "sample": "Debian-8-64bit",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the instance.",
+                "returned": "success",
+                "sample": "web-01",
+                "type": "str"
+            },
+            "password": {
+                "description": "The password of the instance if exists.",
+                "returned": "if available",
+                "sample": "Ge2oe7Do",
+                "type": "str"
+            },
+            "password_enabled": {
+                "description": "True if password setting is enabled.",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "project": {
+                "description": "Name of project the instance is related to.",
+                "returned": "success",
+                "sample": "Production",
+                "type": "str"
+            },
+            "public_ip": {
+                "description": "Public IP address with instance via static NAT rule.",
+                "returned": "if available",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "security_groups": {
+                "description": "Security groups the instance is in.",
+                "returned": "success",
+                "sample": "[ \"default\" ]",
+                "type": "list"
+            },
+            "service_offering": {
+                "description": "Name of the service offering the instance has.",
+                "returned": "success",
+                "sample": "2cpu_2gb",
+                "type": "str"
+            },
+            "ssh_key": {
+                "description": "Name of SSH key deployed to instance.",
+                "returned": "if available",
+                "sample": "key@work",
+                "type": "str"
+            },
+            "state": {
+                "description": "State of the instance.",
+                "returned": "success",
+                "sample": "Running",
+                "type": "str"
+            },
+            "tags": {
+                "description": "List of resource tags associated with the instance.",
+                "returned": "success",
+                "sample": "[ { \"key\": \"foo\", \"value\": \"bar\" } ]",
+                "type": "list"
+            },
+            "template": {
+                "description": "Name of template the instance was deployed with.",
+                "returned": "success",
+                "sample": "Linux Debian 9 64-bit",
+                "type": "str"
+            },
+            "template_display_text": {
+                "description": "Display text of template the instance was deployed with.",
+                "returned": "success",
+                "sample": "Linux Debian 9 64-bit 200G Disk (2017-10-08-622866)",
+                "type": "str"
+            },
+            "user-data": {
+                "description": "Optional data sent to the instance.",
+                "returned": "success",
+                "sample": "VXNlciBkYXRhIGV4YW1wbGUK",
+                "type": "str"
+            },
+            "zone": {
+                "description": "Name of zone the instance is in.",
+                "returned": "success",
+                "sample": "ch-gva-2",
+                "type": "str"
+            }
+        }
+    }
+}

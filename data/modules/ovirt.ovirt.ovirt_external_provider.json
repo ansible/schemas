@@ -1,0 +1,308 @@
+{
+    "ovirt.ovirt.ovirt_external_provider": {
+        "doc": {
+            "author": "Ondra Machacek (@machacekondra)",
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage external providers in oVirt/RHV"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_external_provider.py",
+            "has_action": false,
+            "module": "ovirt_external_provider",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "authentication_keys": {
+                    "aliases": [
+                        "auth_keys"
+                    ],
+                    "default": [],
+                    "description": [
+                        "List of authentication keys.",
+                        "When you will not pass these keys and there are already some of them defined in the system they will be removed.",
+                        "Applicable for I(os_volume)."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "uuid": {
+                            "description": [
+                                "The uuid which will be used."
+                            ]
+                        },
+                        "value": {
+                            "description": [
+                                "The value which will be used."
+                            ]
+                        }
+                    },
+                    "type": "list"
+                },
+                "authentication_url": {
+                    "aliases": [
+                        "auth_url"
+                    ],
+                    "description": [
+                        "Keystone authentication URL of the openstack provider.",
+                        "Applicable for those types: I(os_image), I(os_volume) and I(network)."
+                    ],
+                    "type": "str"
+                },
+                "data_center": {
+                    "description": [
+                        "Name of the data center where provider should be attached.",
+                        "Applicable for those type: I(os_volume)."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the external provider."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Name of the external provider to manage."
+                    ],
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "network_type": {
+                    "choices": [
+                        "external",
+                        "neutron"
+                    ],
+                    "default": "external",
+                    "description": [
+                        "Type of the external network provider either external (for example OVN) or neutron.",
+                        "Applicable if C(type) is I(network)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user specified in C(username) parameter.",
+                        "Applicable for all types."
+                    ],
+                    "type": "str"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "read_only": {
+                    "description": [
+                        "Specify if the network should be read only.",
+                        "Applicable if C(type) is I(network)."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the external be present or absent",
+                        "When you are using absent for I(os_volume), you need to make sure that SD is not attached to the data center!"
+                    ],
+                    "type": "str"
+                },
+                "tenant_name": {
+                    "aliases": [
+                        "tenant"
+                    ],
+                    "description": [
+                        "Name of the tenant.",
+                        "Applicable for those types: I(os_image), I(os_volume) and I(network)."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "type": {
+                    "aliases": [
+                        "provider"
+                    ],
+                    "choices": [
+                        "os_image",
+                        "network",
+                        "os_volume",
+                        "foreman"
+                    ],
+                    "description": [
+                        "Type of the external provider."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "URL where external provider is hosted.",
+                        "Applicable for those types: I(os_image), I(os_volume), I(network) and I(foreman)."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username to be used for login to external provider.",
+                        "Applicable for all types."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage external providers in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n# Add image external provider:\n- ovirt.ovirt.ovirt_external_provider:\n    name: image_provider\n    type: os_image\n    url: http://1.2.3.4:9292\n    username: admin\n    password: 123456\n    tenant: admin\n    auth_url: http://1.2.3.4:35357/v2.0\n\n# Add volume external provider:\n- ovirt.ovirt.ovirt_external_provider:\n    name: image_provider\n    type: os_volume\n    url: http://1.2.3.4:9292\n    username: admin\n    password: 123456\n    tenant: admin\n    auth_url: http://1.2.3.4:5000/v2.0\n    authentication_keys:\n      -\n        uuid: \"1234567-a1234-12a3-a234-123abc45678\"\n        value: \"ABCD00000000111111222333445w==\"\n\n# Add foreman provider:\n- ovirt.ovirt.ovirt_external_provider:\n    name: foreman_provider\n    type: foreman\n    url: https://foreman.example.com\n    username: admin\n    password: 123456\n\n# Add external network provider for OVN:\n- ovirt.ovirt.ovirt_external_provider:\n    name: ovn_provider\n    type: network\n    network_type: external\n    url: http://1.2.3.4:9696\n\n# Remove image external provider:\n- ovirt.ovirt.ovirt_external_provider:\n    state: absent\n    name: image_provider\n    type: os_image\n",
+        "metadata": null,
+        "return": {
+            "external_host_provider": {
+                "description": "Dictionary of all the external_host_provider attributes. External provider attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/external_host_provider.",
+                "returned": "On success and if parameter 'type: foreman' is used.",
+                "type": "dict"
+            },
+            "id": {
+                "description": "ID of the external provider which is managed",
+                "returned": "On success if external provider is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            },
+            "openstack_image_provider": {
+                "description": "Dictionary of all the openstack_image_provider attributes. External provider attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/openstack_image_provider.",
+                "returned": "On success and if parameter 'type: os_image' is used.",
+                "type": "dict"
+            },
+            "openstack_network_provider": {
+                "description": "Dictionary of all the openstack_network_provider attributes. External provider attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/openstack_network_provider.",
+                "returned": "On success and if parameter 'type: network' is used.",
+                "type": "dict"
+            },
+            "openstack_volume_provider": {
+                "description": "Dictionary of all the openstack_volume_provider attributes. External provider attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/openstack_volume_provider.",
+                "returned": "On success and if parameter 'type: os_volume' is used.",
+                "type": "dict"
+            }
+        }
+    }
+}

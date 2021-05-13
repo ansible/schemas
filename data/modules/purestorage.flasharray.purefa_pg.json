@@ -1,0 +1,128 @@
+{
+    "purestorage.flasharray.purefa_pg": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Create, delete or modify protection groups on Pure Storage FlashArrays.",
+                "If a protection group exists and you try to add non-valid types, eg. a host to a volume protection group the module will ignore the invalid types.",
+                "Protection Groups on Offload targets are supported."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_pg.py",
+            "has_action": false,
+            "module": "purefa_pg",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "default": "yes",
+                    "description": [
+                        "Define whether to enabled snapshots for the protection group."
+                    ],
+                    "type": "bool"
+                },
+                "eradicate": {
+                    "default": "no",
+                    "description": [
+                        "Define whether to eradicate the protection group on delete and leave in trash."
+                    ],
+                    "type": "bool"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "List of existing hosts to add to protection group.",
+                        "Note that hostnames are case-sensitive however FlashArray hostnames are unique and ignore case - you cannot have I(hosta) and I(hostA)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "hostgroup": {
+                    "description": [
+                        "List of existing hostgroups to add to protection group.",
+                        "Note that hostgroups are case-sensitive however FlashArray hostgroup names are unique and ignore case - you cannot have I(groupa) and I(groupA)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "pgroup": {
+                    "description": [
+                        "The name of the protection group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "rename": {
+                    "description": [
+                        "Rename a protection group",
+                        "If the source protection group is in a Pod or Volume Group 'container' you only need to provide the new protection group name in the same 'container'"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Define whether the protection group should exist or not."
+                    ],
+                    "type": "str"
+                },
+                "target": {
+                    "description": [
+                        "List of remote arrays or offload target for replication protection group to connect to.",
+                        "Note that all replicated protection groups are asynchronous.",
+                        "Target arrays or offload targets must already be connected to the source array.",
+                        "Maximum number of targets per Portection Group is 4, assuming your configuration suppors this."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "volume": {
+                    "description": [
+                        "List of existing volumes to add to protection group.",
+                        "Note that volume are case-sensitive however FlashArray volume names are unique and ignore case - you cannot have I(volumea) and I(volumeA)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Manage protection groups on Pure Storage FlashArrays",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Create new local protection group\n  purefa_pg:\n    pgroup: foo\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create new protection group called bar in pod called foo\n  purefa_pg:\n    pgroup: \"foo::bar\"\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create new replicated protection group\n  purefa_pg:\n    pgroup: foo\n    target:\n      - arrayb\n      - arrayc\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create new replicated protection group to offload target and remote array\n  purefa_pg:\n    pgroup: foo\n    target:\n      - offload\n      - arrayc\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create new protection group with snapshots disabled\n  purefa_pg:\n    pgroup: foo\n    enabled: false\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Delete protection group\n  purefa_pg:\n    pgroup: foo\n    eradicate: true\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: absent\n\n- name: Eradicate protection group foo on offload target where source array is arrayA\n  purefa_pg:\n    pgroup: \"arrayA:foo\"\n    target: offload\n    eradicate: true\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: absent\n\n- name: Rename protection group foo in pod arrayA to bar\n  purefa_pg:\n    pgroup: \"arrayA::foo\"\n    rename: bar\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create protection group for hostgroups\n  purefa_pg:\n    pgroup: bar\n    hostgroup:\n      - hg1\n      - hg2\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create protection group for hosts\n  purefa_pg:\n    pgroup: bar\n    host:\n      - host1\n      - host2\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create replicated protection group for volumes\n  purefa_pg:\n    pgroup: bar\n    volume:\n      - vol1\n      - vol2\n    target: arrayb\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

@@ -1,0 +1,223 @@
+{
+    "community.postgresql.postgresql_lang": {
+        "doc": {
+            "author": [
+                "Jens Depuydt (@jensdepuydt)",
+                "Thomas O'Donnell (@andytom)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Adds, removes or changes procedural languages with a PostgreSQL database.",
+                "This module allows you to add a language, remote a language or change the trust relationship with a PostgreSQL database.",
+                "The module can be used on the machine where executed or on a remote host.",
+                "When removing a language from a database, it is possible that dependencies prevent the database from being removed. In that case, you can specify I(cascade=yes) to automatically drop objects that depend on the language (such as functions in the language).",
+                "In case the language can't be deleted because it is required by the database system, you can specify I(fail_on_drop=no) to ignore the error.",
+                "Be careful when marking a language as trusted since this could be a potential security breach. Untrusted languages allow only users with the PostgreSQL superuser privilege to use this language to create new functions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_lang.py",
+            "has_action": false,
+            "module": "postgresql_lang",
+            "notes": [
+                "Supports C(check_mode).",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "cascade": {
+                    "default": "no",
+                    "description": [
+                        "When dropping a language, also delete object that depend on this language.",
+                        "Only used when I(state=absent)."
+                    ],
+                    "type": "bool"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect to and where the language will be added, removed or changed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "fail_on_drop": {
+                    "default": "yes",
+                    "description": [
+                        "If C(yes), fail when removing a language. Otherwise just log and continue.",
+                        "In some cases, it is not possible to remove a language (used by the db-system).",
+                        "When dependencies block the removal, consider using I(cascade)."
+                    ],
+                    "type": "bool"
+                },
+                "force_trust": {
+                    "default": "no",
+                    "description": [
+                        "Marks the language as trusted, even if it's marked as untrusted in pg_pltemplate.",
+                        "Use with care!"
+                    ],
+                    "type": "bool"
+                },
+                "lang": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Name of the procedural language to add, remove or change."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Set an owner for the language.",
+                        "Ignored when I(state=absent)."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting.",
+                        "The specified I(session_role) must be a role that the current I(login_user) is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the I(session_role) were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The state of the language for the selected database."
+                    ],
+                    "type": "str"
+                },
+                "trust": {
+                    "default": "no",
+                    "description": [
+                        "Make this language trusted for the selected db."
+                    ],
+                    "type": "bool"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether values of parameters I(lang), I(session_role), I(owner) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via the parameters are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "description": "General information about PostgreSQL languages.",
+                    "link": "https://www.postgresql.org/docs/current/xplang.html",
+                    "name": "PostgreSQL languages"
+                },
+                {
+                    "description": "Complete reference of the CREATE LANGUAGE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-createlanguage.html",
+                    "name": "CREATE LANGUAGE reference"
+                },
+                {
+                    "description": "Complete reference of the ALTER LANGUAGE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-alterlanguage.html",
+                    "name": "ALTER LANGUAGE reference"
+                },
+                {
+                    "description": "Complete reference of the DROP LANGUAGE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-droplanguage.html",
+                    "name": "DROP LANGUAGE reference"
+                }
+            ],
+            "short_description": "Adds, removes or changes procedural languages with a PostgreSQL database"
+        },
+        "examples": "\n- name: Add language pltclu to database testdb if it doesn't exist\n  community.postgresql.postgresql_lang: db=testdb lang=pltclu state=present\n\n# Add language pltclu to database testdb if it doesn't exist and mark it as trusted.\n# Marks the language as trusted if it exists but isn't trusted yet.\n# force_trust makes sure that the language will be marked as trusted\n- name: Add language pltclu to database testdb if it doesn't exist and mark it as trusted\n  community.postgresql.postgresql_lang:\n    db: testdb\n    lang: pltclu\n    state: present\n    trust: yes\n    force_trust: yes\n\n- name: Remove language pltclu from database testdb\n  community.postgresql.postgresql_lang:\n    db: testdb\n    lang: pltclu\n    state: absent\n\n- name: Remove language pltclu from database testdb and remove all dependencies\n  community.postgresql.postgresql_lang:\n    db: testdb\n    lang: pltclu\n    state: absent\n    cascade: yes\n\n- name: Remove language c from database testdb but ignore errors if something prevents the removal\n  community.postgresql.postgresql_lang:\n    db: testdb\n    lang: pltclu\n    state: absent\n    fail_on_drop: no\n\n- name: In testdb change owner of mylang to alice\n  community.postgresql.postgresql_lang:\n    db: testdb\n    lang: mylang\n    owner: alice\n",
+        "metadata": null,
+        "return": {
+            "queries": {
+                "description": "List of executed queries.",
+                "returned": "always",
+                "sample": [
+                    "CREATE LANGUAGE \"acme\""
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

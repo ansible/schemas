@@ -1,0 +1,264 @@
+{
+    "template": {
+        "doc": {
+            "author": [
+                "Ansible Core Team",
+                "Michael DeHaan"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "Templates are processed by the L(Jinja2 templating language,http://jinja.pocoo.org/docs/).",
+                "Documentation on the template formatting can be found in the L(Template Designer Documentation,http://jinja.pocoo.org/docs/templates/).",
+                "Additional variables listed below can be used in templates.",
+                "C(ansible_managed) (configurable via the C(defaults) section of C(ansible.cfg)) contains a string which can be used to describe the template name, host, modification time of the template file and the owner uid.",
+                "C(template_host) contains the node name of the template's machine.",
+                "C(template_uid) is the numeric user id of the owner.",
+                "C(template_path) is the path of the template.",
+                "C(template_fullpath) is the absolute path of the template.",
+                "C(template_destpath) is the path of the template on the remote system (added in 2.8).",
+                "C(template_run_date) is the date that the template was rendered."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/template.py",
+            "has_action": true,
+            "module": "template",
+            "notes": [
+                "For Windows you can use M(ansible.windows.win_template) which uses '\\\\r\\\\n' as C(newline_sequence) by default.",
+                "Including a string that uses a date in the template will result in the template being marked 'changed' each time.",
+                "Since Ansible 0.9, templates are loaded with C(trim_blocks=True).",
+                "Also, you can override jinja2 settings by adding a special header to template file. i.e. C(#jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False) which changes the variable interpolation markers to C([% var %]) instead of C({{ var }}). This is the best way to prevent evaluation of things that look like, but should not be Jinja2.\n",
+                "Using raw/endraw in Jinja2 will not work as you expect because templates in Ansible are recursively evaluated.",
+                "To find Byte Order Marks in files, use C(Format-Hex <file> -Count 16) on Windows, and use C(od -a -t x1 -N 16 <file>) on Linux."
+            ],
+            "options": {
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly."
+                    ],
+                    "type": "bool"
+                },
+                "block_end_string": {
+                    "default": "%}",
+                    "description": [
+                        "The string marking the end of a block."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "block_start_string": {
+                    "default": "{%",
+                    "description": [
+                        "The string marking the beginning of a block."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "dest": {
+                    "description": [
+                        "Location to render the template to on the remote machine."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "follow": {
+                    "default": false,
+                    "description": [
+                        "Determine whether symbolic links should be followed.",
+                        "When set to C(yes) symbolic links will be followed, if they exist.",
+                        "When set to C(no) symbolic links will not be followed.",
+                        "Previous to Ansible 2.4, this was hardcoded as C(yes)."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "force": {
+                    "default": true,
+                    "description": [
+                        "Determine when the file is being transferred if the destination already exists.",
+                        "When set to C(yes), replace the remote file when contents are different than the source.",
+                        "When set to C(no), the file will only be transferred if the destination does not exist."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "lstrip_blocks": {
+                    "default": false,
+                    "description": [
+                        "Determine when leading spaces and tabs should be stripped.",
+                        "When set to C(yes) leading spaces and tabs are stripped from the start of a line to a block.",
+                        "This functionality requires Jinja 2.7 or newer."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "newline_sequence": {
+                    "choices": [
+                        "\\n",
+                        "\\r",
+                        "\\r\\n"
+                    ],
+                    "default": "\\n",
+                    "description": [
+                        "Specify the newline sequence to use for templating files."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "output_encoding": {
+                    "default": "utf-8",
+                    "description": [
+                        "Overrides the encoding used to write the template file defined by C(dest).",
+                        "It defaults to C(utf-8), but any encoding supported by python can be used.",
+                        "The source template file must always be encoded using C(utf-8), for homogeneity."
+                    ],
+                    "type": "str",
+                    "version_added": "2.7",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "Path of a Jinja2 formatted template on the Ansible controller.",
+                        "This can be a relative or an absolute path.",
+                        "The file must be encoded with C(utf-8) but I(output_encoding) can be used to control the encoding of the output template."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "trim_blocks": {
+                    "default": true,
+                    "description": [
+                        "Determine when newlines should be removed from blocks.",
+                        "When set to C(yes) the first newline after a block is removed (block, not variable tag!)."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "validate": {
+                    "description": [
+                        "The validation command to run before copying into place.",
+                        "The path to the file to validate is passed in via '%s' which must be present as in the examples below.",
+                        "The command is passed securely so shell features like expansion and pipes will not work."
+                    ],
+                    "type": "str"
+                },
+                "variable_end_string": {
+                    "default": "}}",
+                    "description": [
+                        "The string marking the end of a print statement."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "variable_start_string": {
+                    "default": "{{",
+                    "description": [
+                        "The string marking the beginning of a print statement."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.copy"
+                },
+                {
+                    "module": "ansible.windows.win_copy"
+                },
+                {
+                    "module": "ansible.windows.win_template"
+                }
+            ],
+            "short_description": "Template a file out to a target host",
+            "version_added": "historical",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Template a file to /etc/file.conf\n  ansible.builtin.template:\n    src: /mytemplates/foo.j2\n    dest: /etc/file.conf\n    owner: bin\n    group: wheel\n    mode: '0644'\n\n- name: Template a file, using symbolic modes (equivalent to 0644)\n  ansible.builtin.template:\n    src: /mytemplates/foo.j2\n    dest: /etc/file.conf\n    owner: bin\n    group: wheel\n    mode: u=rw,g=r,o=r\n\n- name: Copy a version of named.conf that is dependent on the OS. setype obtained by doing ls -Z /etc/named.conf on original file\n  ansible.builtin.template:\n    src: named.conf_{{ ansible_os_family }}.j2\n    dest: /etc/named.conf\n    group: named\n    setype: named_conf_t\n    mode: 0640\n\n- name: Create a DOS-style text file from a template\n  ansible.builtin.template:\n    src: config.ini.j2\n    dest: /share/windows/config.ini\n    newline_sequence: '\\r\\n'\n\n- name: Copy a new sudoers file into place, after passing validation with visudo\n  ansible.builtin.template:\n    src: /mine/sudoers\n    dest: /etc/sudoers\n    validate: /usr/sbin/visudo -cf %s\n\n- name: Update sshd configuration safely, avoid locking yourself out\n  ansible.builtin.template:\n    src: etc/ssh/sshd_config.j2\n    dest: /etc/ssh/sshd_config\n    owner: root\n    group: root\n    mode: '0600'\n    validate: /usr/sbin/sshd -t -f %s\n    backup: yes\n",
+        "metadata": null,
+        "return": null
+    }
+}

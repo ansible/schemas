@@ -1,0 +1,196 @@
+{
+    "community.network.sros_config": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "community.network",
+            "description": [
+                "Nokia SR OS configurations use a simple block indent file syntax for segmenting configuration into sections.  This module provides an implementation for working with SR OS configuration sections in a deterministic way."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/sros_config.py",
+            "has_action": false,
+            "module": "sros_config",
+            "notes": [
+                "For more information on using Ansible to manage Nokia SR OS Network devices see U(https://www.ansible.com/ansible-nokia)."
+            ],
+            "options": {
+                "after": {
+                    "description": [
+                        "The ordered set of commands to append to the end of the command stack if a change needs to be made.  Just like with I(before) this allows the playbook designer to append a set of commands to be executed after the command set."
+                    ]
+                },
+                "backup": {
+                    "default": "no",
+                    "description": [
+                        "This argument will cause the module to create a full backup of the current C(running-config) from the remote device before any changes are made. If the C(backup_options) value is not given, the backup file is written to the C(backup) folder in the playbook root directory. If the directory does not exist, it is created."
+                    ],
+                    "type": "bool"
+                },
+                "backup_options": {
+                    "description": [
+                        "This is a dict object containing configurable options related to backup file path. The value of this option is read only when C(backup) is set to I(yes), if C(backup) is set to I(no) this option will be silently ignored."
+                    ],
+                    "suboptions": {
+                        "dir_path": {
+                            "description": [
+                                "This option provides the path ending with directory name in which the backup configuration file will be stored. If the directory does not exist it will be first created and the filename is either the value of C(filename) or default filename as described in C(filename) options description. If the path value is not given in that case a I(backup) directory will be created in the current working directory and backup configuration will be copied in C(filename) within I(backup) directory."
+                            ],
+                            "type": "path"
+                        },
+                        "filename": {
+                            "description": [
+                                "The filename to be used to store the backup configuration. If the filename is not given it will be generated based on the hostname, current time and date in format defined by <hostname>_config.<current-date>@<current-time>"
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "before": {
+                    "description": [
+                        "The ordered set of commands to push on to the command stack if a change needs to be made.  This allows the playbook designer the opportunity to perform configuration commands prior to pushing any changes without affecting how the set of commands are matched against the system."
+                    ]
+                },
+                "config": {
+                    "description": [
+                        "The C(config) argument allows the playbook designer to supply the base configuration to be used to validate configuration changes necessary.  If this argument is provided, the module will not download the running-config from the remote node."
+                    ]
+                },
+                "defaults": {
+                    "aliases": [
+                        "detail"
+                    ],
+                    "default": "no",
+                    "description": [
+                        "This argument specifies whether or not to collect all defaults when getting the remote device running config.  When enabled, the module will get the current config by issuing the command C(admin display-config detail)."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "description": [
+                        "The force argument instructs the module to not consider the current devices running-config.  When set to true, this will cause the module to push the contents of I(src) into the device without first checking if already configured.",
+                        "Note this argument should be considered deprecated.  To achieve the equivalent, set the C(match=none) which is idempotent.  This argument will be removed in a future release."
+                    ],
+                    "type": "bool"
+                },
+                "lines": {
+                    "aliases": [
+                        "commands"
+                    ],
+                    "description": [
+                        "The ordered set of commands that should be configured in the section.  The commands must be the exact same commands as found in the device running-config.  Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser.  The I(lines) argument only supports current context lines.  See EXAMPLES"
+                    ]
+                },
+                "match": {
+                    "choices": [
+                        "line",
+                        "none"
+                    ],
+                    "default": "line",
+                    "description": [
+                        "Instructs the module on the way to perform the matching of the set of commands against the current device config.  If match is set to I(line), commands are matched line by line. If match is set to I(none), the module will not attempt to compare the source configuration with the running configuration on the remote device."
+                    ]
+                },
+                "parents": {
+                    "description": [
+                        "The ordered set of parents that uniquely identify the section or hierarchy the commands should be checked against.  If the parents argument is omitted, the commands are checked against the set of top level or global commands."
+                    ]
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "default": 22,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "default": 10,
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "replace": {
+                    "choices": [
+                        "line",
+                        "block"
+                    ],
+                    "default": "line",
+                    "description": [
+                        "Instructs the module on the way to perform the configuration on the device.  If the replace argument is set to I(line) then the modified lines are pushed to the device in configuration mode.  If the replace argument is set to I(block) then the entire command block is pushed to the device in configuration mode if any line is not correct."
+                    ]
+                },
+                "save": {
+                    "default": "no",
+                    "description": [
+                        "The C(save) argument instructs the module to save the running- config to the startup-config at the conclusion of the module running.  If check mode is specified, this argument is ignored."
+                    ],
+                    "type": "bool"
+                },
+                "src": {
+                    "description": [
+                        "Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory.  This argument is mutually exclusive with I(lines), I(parents)."
+                    ]
+                }
+            },
+            "short_description": "Manage Nokia SR OS device configuration"
+        },
+        "examples": "\n# Note: examples below use the following provider dict to handle\n#       transport and authentication to the node.\n---\nvars:\n  cli:\n    host: \"{{ inventory_hostname }}\"\n    username: admin\n    password: admin\n    transport: cli\n\n---\n- name: Enable rollback location\n  community.network.sros_config:\n    lines: configure system rollback rollback-location \"cf3:/ansible\"\n    provider: \"{{ cli }}\"\n\n- name: Set system name to {{ inventory_hostname }} using one line\n  community.network.sros_config:\n    lines:\n        - configure system name \"{{ inventory_hostname }}\"\n    provider: \"{{ cli }}\"\n\n- name: Set system name to {{ inventory_hostname }} using parents\n  community.network.sros_config:\n    lines:\n        - 'name \"{{ inventory_hostname }}\"'\n    parents:\n        - configure\n        - system\n    provider: \"{{ cli }}\"\n    backup: yes\n\n- name: Load config from file\n  community.network.sros_config:\n      src: \"{{ inventory_hostname }}.cfg\"\n      provider: \"{{ cli }}\"\n      save: yes\n\n- name: Invalid use of lines\n  community.network.sros_config:\n    lines:\n      - service\n      -     vpls 1000 customer foo 1 create\n      -         description \"invalid lines example\"\n    provider: \"{{ cli }}\"\n\n- name: Valid use of lines\n  community.network.sros_config:\n    lines:\n      - description \"invalid lines example\"\n    parents:\n      - service\n      - vpls 1000 customer foo 1 create\n    provider: \"{{ cli }}\"\n\n- name: Configurable backup path\n  community.network.sros_config:\n    backup: yes\n    backup_options:\n      filename: backup.cfg\n      dir_path: /home/user\n",
+        "metadata": null,
+        "return": {
+            "backup_path": {
+                "description": "The full path to the backup file",
+                "returned": "when backup is yes",
+                "sample": "/playbooks/ansible/backup/sros_config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "commands": {
+                "description": "The set of commands that will be pushed to the remote device",
+                "returned": "always",
+                "sample": [
+                    "config system name \"sros01\""
+                ],
+                "type": "list"
+            },
+            "updates": {
+                "description": "The set of commands that will be pushed to the remote device",
+                "returned": "always",
+                "sample": [
+                    "config system name \"sros01\""
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

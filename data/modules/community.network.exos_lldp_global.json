@@ -1,0 +1,122 @@
+{
+    "community.network.exos_lldp_global": {
+        "doc": {
+            "author": "Ujwal Komarla (@ujwalkomarla)",
+            "collection": "community.network",
+            "description": "This module configures and manages the Link Layer Discovery Protocol(LLDP) attributes on Extreme Networks EXOS platforms.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/exos_lldp_global.py",
+            "has_action": false,
+            "module": "exos_lldp_global",
+            "notes": [
+                "Tested against Extreme Networks EXOS version 30.2.1.8 on x460g2.",
+                "This module works with connection C(httpapi). See L(EXOS Platform Options,../network/user_guide/platform_exos.html)"
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of LLDP options",
+                    "suboptions": {
+                        "interval": {
+                            "default": 30,
+                            "description": [
+                                "Frequency at which LLDP advertisements are sent (in seconds). By default - 30 seconds."
+                            ],
+                            "type": "int"
+                        },
+                        "tlv_select": {
+                            "description": [
+                                "This attribute can be used to specify the TLVs that need to be sent in the LLDP packets. By default, only system name and system description is sent"
+                            ],
+                            "suboptions": {
+                                "management_address": {
+                                    "description": [
+                                        "Used to specify the management address in TLV messages"
+                                    ],
+                                    "type": "bool"
+                                },
+                                "port_description": {
+                                    "description": [
+                                        "Used to specify the port description TLV"
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_capabilities": {
+                                    "description": [
+                                        "Used to specify the system capabilities TLV"
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_description": {
+                                    "default": true,
+                                    "description": [
+                                        "Used to specify the system description TLV"
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_name": {
+                                    "default": true,
+                                    "description": [
+                                        "Used to specify the system name TLV"
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "deleted"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Configure and manage Link Layer Discovery Protocol(LLDP) attributes on EXOS platforms."
+        },
+        "examples": "\n# Using merged\n\n\n# Before state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 30,\n#     \"suppress-tlv-advertisement\": [\n#       \"PORT_DESCRIPTION\",\n#       \"SYSTEM_CAPABILITIES\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n- name: Merge provided LLDP configuration with device configuration\n  community.network.exos_lldp_global:\n    config:\n      interval: 10000\n      tlv_select:\n        system_capabilities: true\n    state: merged\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\": [\n#   {\n#     \"interval\": 30,\n#     \"tlv_select\": {\n#       \"system_name\": true,\n#       \"system_description\": true\n#       \"port_description\": false,\n#       \"management_address\": false,\n#       \"system_capabilities\": false\n#     }\n#   }\n# ]\n#\n# \"requests\": [\n#     {\n#        \"data\": {\n#           \"openconfig_lldp:config\": {\n#             \"hello-timer\": 10000,\n#             \"suppress-tlv-advertisement\": [\n#               \"PORT_DESCRIPTION\",\n#               \"MANAGEMENT_ADDRESS\"\n#             ]\n#           }\n#         },\n#        \"method\": \"PATCH\",\n#        \"path\": \"/rest/restconf/data/openconfig_lldp:lldp/config\"\n#     }\n# ]\n#\n# \"after\": [\n#   {\n#     \"interval\": 10000,\n#     \"tlv_select\": {\n#       \"system_name\": true,\n#       \"system_description\": true,\n#       \"port_description\": false,\n#       \"management_address\": false,\n#       \"system_capabilities\": true\n#     }\n#   }\n# ]\n\n\n# After state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 10000,\n#     \"suppress-tlv-advertisement\": [\n#       \"PORT_DESCRIPTION\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n\n# Using replaced\n\n\n# Before state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 30,\n#     \"suppress-tlv-advertisement\": [\n#       \"PORT_DESCRIPTION\",\n#       \"SYSTEM_CAPABILITIES\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n- name: Replace device configuration with provided LLDP configuration\n  community.network.exos_lldp_global:\n    config:\n      interval: 10000\n      tlv_select:\n        system_capabilities: true\n    state: replaced\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\": [\n#   {\n#     \"interval\": 30,\n#     \"tlv_select\": {\n#       \"system_name\": true,\n#       \"system_description\": true\n#       \"port_description\": false,\n#       \"management_address\": false,\n#       \"system_capabilities\": false\n#     }\n#   }\n# ]\n#\n# \"requests\": [\n#     {\n#        \"data\": {\n#           \"openconfig_lldp:config\": {\n#             \"hello-timer\": 10000,\n#             \"suppress-tlv-advertisement\": [\n#               \"SYSTEM_NAME\",\n#               \"SYSTEM_DESCRIPTION\",\n#               \"PORT_DESCRIPTION\",\n#               \"MANAGEMENT_ADDRESS\"\n#             ]\n#           }\n#         },\n#        \"method\": \"PATCH\",\n#        \"path\": \"/rest/restconf/data/openconfig_lldp:lldp/config\"\n#     }\n# ]\n#\n# \"after\": [\n#   {\n#     \"interval\": 10000,\n#     \"tlv_select\": {\n#       \"system_name\": false,\n#       \"system_description\": false,\n#       \"port_description\": false,\n#       \"management_address\": false,\n#       \"system_capabilities\": true\n#     }\n#   }\n# ]\n\n\n# After state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 10000,\n#     \"suppress-tlv-advertisement\": [\n#       \"SYSTEM_NAME\",\n#       \"SYSTEM_DESCRIPTION\",\n#       \"PORT_DESCRIPTION\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n\n# Using deleted\n\n\n# Before state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 10000,\n#     \"suppress-tlv-advertisement\": [\n#       \"SYSTEM_CAPABILITIES\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n- name: Delete attributes of given LLDP service (This won't delete the LLDP service itself)\n  community.network.exos_lldp_global:\n    config:\n    state: deleted\n\n# Module Execution Results:\n# -------------------------\n#\n# \"before\": [\n#   {\n#     \"interval\": 10000,\n#     \"tlv_select\": {\n#       \"system_name\": true,\n#       \"system_description\": true,\n#       \"port_description\": true,\n#       \"management_address\": false,\n#       \"system_capabilities\": false\n#     }\n#   }\n# ]\n#\n# \"requests\": [\n#     {\n#        \"data\": {\n#           \"openconfig_lldp:config\": {\n#             \"hello-timer\": 30,\n#             \"suppress-tlv-advertisement\": [\n#               \"SYSTEM_CAPABILITIES\",\n#               \"PORT_DESCRIPTION\",\n#               \"MANAGEMENT_ADDRESS\"\n#             ]\n#           }\n#         },\n#        \"method\": \"PATCH\",\n#        \"path\": \"/rest/restconf/data/openconfig_lldp:lldp/config\"\n#     }\n# ]\n#\n# \"after\": [\n#   {\n#     \"interval\": 30,\n#     \"tlv_select\": {\n#       \"system_name\": true,\n#       \"system_description\": true,\n#       \"port_description\": false,\n#       \"management_address\": false,\n#       \"system_capabilities\": false\n#     }\n#   }\n# ]\n\n\n# After state:\n# -------------\n# path: /rest/restconf/data/openconfig_lldp:lldp/config\n# method: GET\n# data:\n# {\n#   \"openconfig_lldp:config\": {\n#     \"enabled\": true,\n#     \"hello-timer\": 30,\n#     \"suppress-tlv-advertisement\": [\n#       \"SYSTEM_CAPABILITIES\",\n#       \"PORT_DESCRIPTION\",\n#       \"MANAGEMENT_ADDRESS\"\n#     ],\n#     \"system-description\": \"ExtremeXOS (X460G2-24t-10G4) version 30.2.1.8\"\n#     \"system-name\": \"X460G2-24t-10G4\"\n#   }\n# }\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "requests": {
+                "description": "The set of requests pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    },
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    },
+                    {
+                        "data": "...",
+                        "method": "...",
+                        "path": "..."
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

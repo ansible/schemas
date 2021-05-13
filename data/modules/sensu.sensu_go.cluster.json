@@ -1,0 +1,144 @@
+{
+    "sensu.sensu_go.cluster": {
+        "doc": {
+            "author": [
+                "Tadej Borovsak (@tadeboro)"
+            ],
+            "collection": "sensu.sensu_go",
+            "description": [
+                "Create, update or delete Sensu cluster.",
+                "For more information, refer to the Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/operations/deploy-sensu/cluster-sensu/)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/sensu/sensu_go/plugins/modules/cluster.py",
+            "has_action": false,
+            "module": "cluster",
+            "options": {
+                "api_urls": {
+                    "description": [
+                        "List of API urls that compose a single cluster.",
+                        "Required if I(state) is C(present)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "auth": {
+                    "description": [
+                        "Authentication parameters. Can define each of them with ENV as well."
+                    ],
+                    "suboptions": {
+                        "api_key": {
+                            "description": [
+                                "The API key that should be used when authenticating. If this is not set, the value of the SENSU_API_KEY environment variable will be checked.",
+                                "This replaces I(auth.user) and I(auth.password) parameters.",
+                                "For more information about the API key, refer to the official Sensu documentation at U(https://docs.sensu.io/sensu-go/latest/guides/use-apikey-feature/)."
+                            ],
+                            "type": "str",
+                            "version_added": "1.3.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "ca_path": {
+                            "description": [
+                                "Path to the CA bundle that should be used to validate the backend certificate.",
+                                "If this parameter is not set, module will use the CA bundle that python is using.",
+                                "It is also possible to set this parameter via the I(SENSU_CA_PATH) environment variable."
+                            ],
+                            "type": "path",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        },
+                        "password": {
+                            "default": "P@ssw0rd!",
+                            "description": [
+                                "The Sensu user's password. If this is not set the value of the SENSU_PASSWORD environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "default": "http://localhost:8080",
+                            "description": [
+                                "Location of the Sensu backend API. If this is not set the value of the SENSU_URL environment variable will be checked."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "default": "admin",
+                            "description": [
+                                "The username to use for connecting to the Sensu API. If this is not set the value of the SENSU_USER environment variable will be checked.",
+                                "This parameter is ignored if the I(auth.api_key) parameter is set."
+                            ],
+                            "type": "str"
+                        },
+                        "verify": {
+                            "default": true,
+                            "description": [
+                                "Flag that controls the certificate validation.",
+                                "If you are using self-signed certificates, you can set this parameter to C(false).",
+                                "ONLY USE THIS PARAMETER IN DEVELOPMENT SCENARIOS! In you use self-signed certificates in production, see the I(auth.ca_path) parameter.",
+                                "It is also possible to set this parameter via the I(SENSU_VERIFY) environment variable."
+                            ],
+                            "type": "bool",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "sensu.sensu_go"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "The Sensu resource's name. This name (in combination with the namespace where applicable) uniquely identifies the resource that Ansible operates on.",
+                        "If the resource with selected name already exists, Ansible module will update it to match the specification in the task.",
+                        "Consult the I(name) metadata attribute specification in the upstream docs on U(https://docs.sensu.io/sensu-go/latest/reference/) for more details about valid names and other restrictions."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Target state of the Sensu object."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7"
+            ],
+            "seealso": [
+                {
+                    "module": "sensu.sensu_go.cluster_info"
+                }
+            ],
+            "short_description": "Manage Sensu Go clusters",
+            "version_added": "1.9.0",
+            "version_added_collection": "sensu.sensu_go"
+        },
+        "examples": "\n- name: Create a small cluster\n  sensu.sensu_go.cluster:\n    name: small-cluster\n    api_urls: https://sensu.alpha.example.com:8080\n\n- name: Create a larger cluster\n  sensu.sensu_go.cluster:\n    name: large-cluster\n    api_urls:\n      - https://sensu.alpha.example.com:8080\n      - https://sensu.beta.example.com:8080\n      - https://sensu.gamma.example.com:8080\n\n- name: Delete a cluster\n  sensu.sensu_go.cluster:\n    name: small-cluster\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "object": {
+                "description": "Object representing Sensu cluster.",
+                "returned": "success",
+                "sample": {
+                    "api_urls": [
+                        "http://10.10.0.1:8080"
+                    ],
+                    "metadata": {
+                        "name": "alpha-cluster"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

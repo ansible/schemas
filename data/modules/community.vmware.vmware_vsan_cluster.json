@@ -1,0 +1,105 @@
+{
+    "community.vmware.vmware_vsan_cluster": {
+        "doc": {
+            "author": [
+                "Russell Teague (@mtnbikenc)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to configure VSAN clustering on an ESXi host"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_vsan_cluster.py",
+            "has_action": false,
+            "module": "vmware_vsan_cluster",
+            "notes": [
+                "Tested on vSphere 5.5"
+            ],
+            "options": {
+                "cluster_uuid": {
+                    "description": [
+                        "Desired cluster UUID"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Configure VSAN clustering on an ESXi host"
+        },
+        "examples": "\n- name: Configure VMware VSAN Cluster\n  hosts: deploy_node\n  tags:\n    - vsan\n  tasks:\n    - name: Configure VSAN on first host\n      community.vmware.vmware_vsan_cluster:\n         hostname: \"{{ groups['esxi'][0] }}\"\n         username: \"{{ esxi_username }}\"\n         password: \"{{ site_password }}\"\n      delegate_to: localhost\n      register: vsan_cluster\n\n    - name: Configure VSAN on remaining hosts\n      community.vmware.vmware_vsan_cluster:\n         hostname: \"{{ item }}\"\n         username: \"{{ esxi_username }}\"\n         password: \"{{ site_password }}\"\n         cluster_uuid: \"{{ vsan_cluster.cluster_uuid }}\"\n      delegate_to: localhost\n      loop: \"{{ groups['esxi'][1:] }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

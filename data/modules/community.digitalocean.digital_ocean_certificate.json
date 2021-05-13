@@ -1,0 +1,85 @@
+{
+    "community.digitalocean.digital_ocean_certificate": {
+        "doc": {
+            "author": "Abhijeet Kasurde (@Akasurde)",
+            "collection": "community.digitalocean",
+            "description": [
+                "Create, Retrieve and remove certificates DigitalOcean."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/digitalocean/plugins/modules/digital_ocean_certificate.py",
+            "has_action": false,
+            "module": "digital_ocean_certificate",
+            "notes": [
+                "Two environment variables can be used, DO_API_KEY, DO_OAUTH_TOKEN and DO_API_TOKEN. They both refer to the v2 token."
+            ],
+            "options": {
+                "certificate_chain": {
+                    "description": [
+                        "The full PEM-formatted trust chain between the certificate authority's certificate and your domain's SSL certificate."
+                    ],
+                    "type": "str"
+                },
+                "leaf_certificate": {
+                    "description": [
+                        "A PEM-formatted public SSL Certificate."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the certificate."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "oauth_token": {
+                    "aliases": [
+                        "api_token"
+                    ],
+                    "description": [
+                        "DigitalOcean OAuth token.",
+                        "There are several other environment variables which can be used to provide this value.",
+                        "i.e., - 'DO_API_TOKEN', 'DO_API_KEY', 'DO_OAUTH_TOKEN' and 'OAUTH_TOKEN'"
+                    ],
+                    "type": "str"
+                },
+                "private_key": {
+                    "description": [
+                        "A PEM-formatted private key content of SSL Certificate."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the certificate should be present or absent."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "The timeout in seconds used for polling DigitalOcean's API."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage certificates in DigitalOcean"
+        },
+        "examples": "\n- name: Create a certificate\n  community.digitalocean.digital_ocean_certificate:\n    name: production\n    state: present\n    private_key: \"-----BEGIN PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkM8OI7pRpgyj1I\\n-----END PRIVATE KEY-----\"\n    leaf_certificate: \"-----BEGIN CERTIFICATE-----\\nMIIFDmg2Iaw==\\n-----END CERTIFICATE-----\"\n    oauth_token: b7d03a6947b217efb6f3ec3bd365652\n\n- name: Create a certificate using file lookup plugin\n  community.digitalocean.digital_ocean_certificate:\n    name: production\n    state: present\n    private_key: \"{{ lookup('file', 'test.key') }}\"\n    leaf_certificate: \"{{ lookup('file', 'test.cert') }}\"\n    oauth_token: \"{{ oauth_token }}\"\n\n- name: Create a certificate with trust chain\n  community.digitalocean.digital_ocean_certificate:\n    name: production\n    state: present\n    private_key: \"{{ lookup('file', 'test.key') }}\"\n    leaf_certificate: \"{{ lookup('file', 'test.cert') }}\"\n    certificate_chain: \"{{ lookup('file', 'chain.cert') }}\"\n    oauth_token: \"{{ oauth_token }}\"\n\n- name: Remove a certificate\n  community.digitalocean.digital_ocean_certificate:\n    name: production\n    state: absent\n    oauth_token: \"{{ oauth_token }}\"\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

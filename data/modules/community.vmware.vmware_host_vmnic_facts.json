@@ -1,0 +1,212 @@
+{
+    "community.vmware.vmware_host_vmnic_facts": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)",
+                "Christian Kotte (@ckotte)"
+            ],
+            "collection": "community.vmware",
+            "deprecated": {
+                "alternative": "Use M(vmware_host_vmnic_info) instead.",
+                "removed_from_collection": "community.vmware",
+                "removed_in": "2.13",
+                "why": "Deprecated in favour of C(_info) module."
+            },
+            "description": [
+                "This module can be used to gather facts about vmnics available on the given ESXi host.",
+                "If C(cluster_name) is provided, then vmnic facts about all hosts from given cluster will be returned.",
+                "If C(esxi_hostname) is provided, then vmnic facts about given host system will be returned.",
+                "Additional details about vswitch and dvswitch with respective vmnic is also provided which is added in 2.7 version."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_host_vmnic_facts.py",
+            "has_action": false,
+            "module": "vmware_host_vmnic_facts",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "capabilities": {
+                    "default": false,
+                    "description": [
+                        "Gather facts about general capabilities (Auto negotiation, Wake On LAN, and Network I/O Control)."
+                    ],
+                    "type": "bool"
+                },
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster from which all host systems will be used.",
+                        "Vmnic facts about each ESXi server will be returned for the given cluster.",
+                        "This parameter is required if C(esxi_hostname) is not specified."
+                    ],
+                    "type": "str"
+                },
+                "directpath_io": {
+                    "default": false,
+                    "description": [
+                        "Gather facts about DirectPath I/O capabilities and configuration."
+                    ],
+                    "type": "bool"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "Name of the host system to work with.",
+                        "Vmnic facts about this ESXi server will be returned.",
+                        "This parameter is required if C(cluster_name) is not specified."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "sriov": {
+                    "default": false,
+                    "description": [
+                        "Gather facts about SR-IOV capabilities and configuration."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Gathers facts about vmnics available on the given ESXi host"
+        },
+        "examples": "\n- name: Gather facts about vmnics of all ESXi Host in the given Cluster\n  community.vmware.vmware_host_vmnic_facts:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    cluster_name: '{{ cluster_name }}'\n  delegate_to: localhost\n  register: cluster_host_vmnics\n\n- name: Gather facts about vmnics of an ESXi Host\n  community.vmware.vmware_host_vmnic_facts:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n  delegate_to: localhost\n  register: host_vmnics\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "hosts_vmnics_facts": {
+                "description": [
+                    "dict with hostname as key and dict with vmnics facts as value.",
+                    "for C(num_vmnics), only NICs starting with vmnic are counted. NICs like vusb* are not counted.",
+                    "details about vswitch and dvswitch was added in version 2.7.",
+                    "details about vmnics was added in version 2.8."
+                ],
+                "returned": "hosts_vmnics_facts",
+                "sample": {
+                    "10.76.33.204": {
+                        "all": [
+                            "vmnic0",
+                            "vmnic1"
+                        ],
+                        "available": [],
+                        "dvswitch": {
+                            "dvs_0002": [
+                                "vmnic1"
+                            ]
+                        },
+                        "num_vmnics": 2,
+                        "used": [
+                            "vmnic1",
+                            "vmnic0"
+                        ],
+                        "vmnic_details": [
+                            {
+                                "actual_duplex": "Full Duplex",
+                                "actual_speed": 10000,
+                                "adapter": "Intel(R) 82599 10 Gigabit Dual Port Network Connection",
+                                "configured_duplex": "Auto negotiate",
+                                "configured_speed": "Auto negotiate",
+                                "device": "vmnic0",
+                                "driver": "ixgbe",
+                                "location": "0000:01:00.0",
+                                "mac": "aa:bb:cc:dd:ee:ff",
+                                "status": "Connected"
+                            },
+                            {
+                                "actual_duplex": "Full Duplex",
+                                "actual_speed": 10000,
+                                "adapter": "Intel(R) 82599 10 Gigabit Dual Port Network Connection",
+                                "configured_duplex": "Auto negotiate",
+                                "configured_speed": "Auto negotiate",
+                                "device": "vmnic1",
+                                "driver": "ixgbe",
+                                "location": "0000:01:00.1",
+                                "mac": "ab:ba:cc:dd:ee:ff",
+                                "status": "Connected"
+                            }
+                        ],
+                        "vswitch": {
+                            "vSwitch0": [
+                                "vmnic0"
+                            ]
+                        }
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

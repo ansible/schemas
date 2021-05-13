@@ -1,0 +1,121 @@
+{
+    "community.general.beadm": {
+        "doc": {
+            "author": "Adam \u0160tevko (@xen0l)",
+            "collection": "community.general",
+            "description": [
+                "Create, delete or activate ZFS boot environments.",
+                "Mount and unmount ZFS boot environments."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/beadm.py",
+            "has_action": false,
+            "module": "beadm",
+            "options": {
+                "description": {
+                    "description": [
+                        "Associate a description with a new boot environment. This option is available only on Solarish platforms."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Specifies if the unmount should be forced."
+                    ],
+                    "type": "bool"
+                },
+                "mountpoint": {
+                    "description": [
+                        "Path where to mount the ZFS boot environment."
+                    ],
+                    "type": "path"
+                },
+                "name": {
+                    "aliases": [
+                        "be"
+                    ],
+                    "description": [
+                        "ZFS boot environment name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "options": {
+                    "description": [
+                        "Create the datasets for new BE with specific ZFS properties.",
+                        "Multiple options can be specified.",
+                        "This option is available only on Solarish platforms."
+                    ],
+                    "type": "str"
+                },
+                "snapshot": {
+                    "description": [
+                        "If specified, the new boot environment will be cloned from the given snapshot or inactive boot environment."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "activated",
+                        "mounted",
+                        "present",
+                        "unmounted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete ZFS boot environment."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage ZFS boot environments on FreeBSD/Solaris/illumos systems."
+        },
+        "examples": "\n- name: Create ZFS boot environment\n  community.general.beadm:\n    name: upgrade-be\n    state: present\n\n- name: Create ZFS boot environment from existing inactive boot environment\n  community.general.beadm:\n    name: upgrade-be\n    snapshot: be@old\n    state: present\n\n- name: Create ZFS boot environment with compression enabled and description \"upgrade\"\n  community.general.beadm:\n    name: upgrade-be\n    options: \"compression=on\"\n    description: upgrade\n    state: present\n\n- name: Delete ZFS boot environment\n  community.general.beadm:\n    name: old-be\n    state: absent\n\n- name: Mount ZFS boot environment on /tmp/be\n  community.general.beadm:\n    name: BE\n    mountpoint: /tmp/be\n    state: mounted\n\n- name: Unmount ZFS boot environment\n  community.general.beadm:\n    name: BE\n    state: unmounted\n\n- name: Activate ZFS boot environment\n  community.general.beadm:\n    name: upgrade-be\n    state: activated\n",
+        "metadata": null,
+        "return": {
+            "description": {
+                "description": "BE description",
+                "returned": "always",
+                "sample": "Upgrade from 9.0 to 10.0",
+                "type": "str"
+            },
+            "force": {
+                "description": "If forced action is wanted",
+                "returned": "always",
+                "sample": false,
+                "type": "bool"
+            },
+            "mountpoint": {
+                "description": "BE mountpoint",
+                "returned": "always",
+                "sample": "/mnt/be",
+                "type": "str"
+            },
+            "name": {
+                "description": "BE name",
+                "returned": "always",
+                "sample": "pre-upgrade",
+                "type": "str"
+            },
+            "options": {
+                "description": "BE additional options",
+                "returned": "always",
+                "sample": "compression=on",
+                "type": "str"
+            },
+            "snapshot": {
+                "description": "ZFS snapshot to create BE from",
+                "returned": "always",
+                "sample": "rpool/ROOT/oi-hipster@fresh",
+                "type": "str"
+            },
+            "state": {
+                "description": "state of the target",
+                "returned": "always",
+                "sample": "present",
+                "type": "str"
+            }
+        }
+    }
+}

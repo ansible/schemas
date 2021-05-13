@@ -1,0 +1,250 @@
+{
+    "ovirt.ovirt.ovirt_affinity_group": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "This module manage affinity groups in oVirt/RHV. It can also manage assignments of those groups to VMs."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_affinity_group.py",
+            "has_action": false,
+            "module": "ovirt_affinity_group",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "cluster": {
+                    "description": [
+                        "Name of the cluster of the affinity group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the affinity group."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "host_enforcing": {
+                    "description": [
+                        "If I(yes) VM cannot start on host if it does not satisfy the C(host_rule).",
+                        "This parameter is support since oVirt/RHV 4.1 version."
+                    ],
+                    "type": "bool"
+                },
+                "host_rule": {
+                    "choices": [
+                        "disabled",
+                        "negative",
+                        "positive"
+                    ],
+                    "description": [
+                        "If I(positive) I(all) VMs in this group should run on the this host.",
+                        "If I(negative) I(no) VMs in this group should run on the this host.",
+                        "If I(disabled) this affinity group doesn't take effect.",
+                        "This parameter is support since oVirt/RHV 4.1 version."
+                    ],
+                    "type": "str"
+                },
+                "hosts": {
+                    "description": [
+                        "List of the hosts names, which should have assigned this affinity group.",
+                        "This parameter is support since oVirt/RHV 4.1 version."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the affinity group to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the affinity group be present or absent."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "vm_enforcing": {
+                    "description": [
+                        "If I(yes) VM cannot start if it does not satisfy the C(vm_rule)."
+                    ],
+                    "type": "bool"
+                },
+                "vm_rule": {
+                    "choices": [
+                        "disabled",
+                        "negative",
+                        "positive"
+                    ],
+                    "description": [
+                        "If I(positive) I(all) VMs in this group should run on the host defined by C(host_rule).",
+                        "If I(negative) I(no) VMs in this group should run on the host defined by C(host_rule).",
+                        "If I(disabled) this affinity group doesn't take effect."
+                    ],
+                    "type": "str"
+                },
+                "vms": {
+                    "description": [
+                        "List of the VMs names, which should have assigned this affinity group."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage affinity groups in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n- name: Create(if not exists) and assign affinity group to VMs vm1 and vm2 and host host1\n  ovirt.ovirt.ovirt_affinity_group:\n    name: mygroup\n    cluster: mycluster\n    vm_enforcing: true\n    vm_rule: positive\n    host_enforcing: true\n    host_rule: positive\n    vms:\n      - vm1\n      - vm2\n    hosts:\n      - host1\n\n- name: Detach VMs from affinity group and disable VM rule\n  ovirt.ovirt.ovirt_affinity_group:\n    name: mygroup\n    cluster: mycluster\n    vm_enforcing: false\n    vm_rule: disabled\n    host_enforcing: true\n    host_rule: positive\n    vms: []\n    hosts:\n      - host1\n      - host2\n\n- name: Remove affinity group\n  ovirt.ovirt.ovirt_affinity_group:\n    state: absent\n    cluster: mycluster\n    name: mygroup\n",
+        "metadata": null,
+        "return": {
+            "affinity_group": {
+                "description": "Dictionary of all the affinity group attributes. Affinity group attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/affinity_group.",
+                "returned": "On success if affinity group is found.",
+                "type": "str"
+            },
+            "id": {
+                "description": "ID of the affinity group which is managed",
+                "returned": "On success if affinity group is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            }
+        }
+    }
+}

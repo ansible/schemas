@@ -1,0 +1,185 @@
+{
+    "community.vmware.vmware_vc_infraprofile_info": {
+        "doc": {
+            "author": [
+                "Naveenkumar G P (@ngp)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Module to manage VMware Vcenter infra profile configs.",
+                "Vcenter infra profile Library feature is introduced in vSphere 7.0 version, so this module is not supported in the earlier versions of vSphere.",
+                "All variables and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_vc_infraprofile_info.py",
+            "has_action": false,
+            "module": "vmware_vc_infraprofile_info",
+            "notes": [
+                "Tested on vSphere 7.0"
+            ],
+            "options": {
+                "api": {
+                    "choices": [
+                        "export",
+                        "import",
+                        "list",
+                        "validate"
+                    ],
+                    "description": [
+                        "API which needs to be executed"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "config_path": {
+                    "description": [
+                        "Config file path which contains infra profile config JSON data, supports both relative and absolute path.",
+                        "This parameter is required only when C(import),C(validate) APIs are being used."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "decryption_key": {
+                    "description": [
+                        "decryption_key argument for while doing import profile task as of now its not taken into account form API team."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of about encryption or decryption key."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "encryption_key": {
+                    "description": [
+                        "encryption_key argument for while doing import profile task as of now its not taken into account form API team."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead."
+                    ],
+                    "type": "int"
+                },
+                "profiles": {
+                    "description": [
+                        "A list of profile names to be exported, imported, and validated.",
+                        "This parameter is not required while running for List API, not for C(export),C(import) and C(validate)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The connection to protocol."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid.",
+                        "Set to C(no) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi",
+                "vSphere Automation SDK"
+            ],
+            "short_description": "List and Export VMware Vcenter infra profile configs.",
+            "version_added": "2.10",
+            "version_added_collection": "community.vmware"
+        },
+        "examples": "\n- name: Get information about VC infraprofile\n  vmware_vc_infraprofile_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: False\n  delegate_to: localhost\n\n- name: export Vcenter appliance infra profile config\n  vmware_vc_infraprofile_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: False\n    api: \"export\"\n    profiles: \"ApplianceManagement\"\n  delegate_to: localhost\n\n- name: validate Vcenter appliance infra profile config\n  vmware_vc_infraprofile_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: False\n    api: \"validate\"\n    profiles: \"ApplianceManagement\"\n    config_path: \"export.json\"\n\n- name: import Vcenter appliance infra profile config\n  vmware_vc_infraprofile_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: False\n    api: \"import\"\n    profiles: \"ApplianceManagement\"\n    config_path: \"import.json\"\n  delegate_to: localhost\n  ",
+        "metadata": null,
+        "return": {
+            "export_infra": {
+                "description": "A message about the exported file",
+                "returned": "On success with API set as \"export\"",
+                "sample": {
+                    "export_config_json": "json exported to file"
+                }
+            },
+            "import_profile": {
+                "description": "A message about import on import_profile spec",
+                "returned": "On success with API set as \"import\"",
+                "sample": {
+                    "changed": true,
+                    "failed": false,
+                    "status": "0.0"
+                }
+            },
+            "list_infra": {
+                "description": "A list of infra configs,",
+                "returned": "on success with API as \"list\"",
+                "sample": [
+                    {
+                        "info": "ApplianceManagement",
+                        "name": "ApplianceManagement"
+                    },
+                    {
+                        "info": "ApplianceNetwork",
+                        "name": "ApplianceNetwork"
+                    },
+                    {
+                        "info": "Authentication & Authorization Management",
+                        "name": "AuthManagement"
+                    }
+                ]
+            },
+            "validate_infra": {
+                "description": "A message about validate on exported file",
+                "returned": "On success with API set as \"validate\"",
+                "sample": {
+                    "changed": false,
+                    "failed": false,
+                    "status": "VALID"
+                }
+            }
+        }
+    }
+}

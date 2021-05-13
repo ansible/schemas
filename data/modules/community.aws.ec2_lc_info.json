@@ -1,0 +1,240 @@
+{
+    "community.aws.ec2_lc_info": {
+        "doc": {
+            "author": "Lo\u00efc Latreille (@psykotox)",
+            "collection": "community.aws",
+            "description": [
+                "Gather information about AWS Autoscaling Launch Configurations.",
+                "This module was called C(ec2_lc_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_lc_info.py",
+            "has_action": false,
+            "module": "ec2_lc_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "default": [],
+                    "description": [
+                        "A name or a list of name to match."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "sort": {
+                    "choices": [
+                        "launch_configuration_name",
+                        "image_id",
+                        "created_time",
+                        "instance_type",
+                        "kernel_id",
+                        "ramdisk_id",
+                        "key_name"
+                    ],
+                    "description": [
+                        "Optional attribute which with to sort the results."
+                    ],
+                    "type": "str"
+                },
+                "sort_end": {
+                    "description": [
+                        "Which result to end with (when sorting).",
+                        "Corresponds to Python slice notation."
+                    ],
+                    "type": "int"
+                },
+                "sort_order": {
+                    "choices": [
+                        "ascending",
+                        "descending"
+                    ],
+                    "default": "ascending",
+                    "description": [
+                        "Order in which to sort results.",
+                        "Only used when the 'sort' parameter is specified."
+                    ],
+                    "type": "str"
+                },
+                "sort_start": {
+                    "description": [
+                        "Which result to start with (when sorting).",
+                        "Corresponds to Python slice notation."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about AWS Autoscaling Launch Configurations.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Gather information about all launch configurations\n  community.aws.ec2_lc_info:\n\n- name: Gather information about launch configuration with name \"example\"\n  community.aws.ec2_lc_info:\n    name: example\n\n- name: Gather information sorted by created_time from most recent to least recent\n  community.aws.ec2_lc_info:\n    sort: created_time\n    sort_order: descending\n",
+        "metadata": null,
+        "return": {
+            "block_device_mapping": {
+                "description": "Block device mapping for the instances of launch configuration",
+                "returned": "always",
+                "sample": "[{ 'device_name': '/dev/xvda':, 'ebs': { 'delete_on_termination': true, 'volume_size': 8, 'volume_type': 'gp2' }]",
+                "type": "list"
+            },
+            "classic_link_vpc_security_groups": {
+                "description": "IDs of one or more security groups for the VPC specified in classic_link_vpc_id",
+                "returned": "always",
+                "sample": null,
+                "type": "str"
+            },
+            "created_time": {
+                "description": "The creation date and time for the launch configuration",
+                "returned": "always",
+                "sample": "2016-05-27T13:47:44.216000+00:00",
+                "type": "str"
+            },
+            "ebs_optimized": {
+                "description": "EBS I/O optimized (true ) or not (false )",
+                "returned": "always",
+                "sample": "true,",
+                "type": "bool"
+            },
+            "image_id": {
+                "description": "ID of the Amazon Machine Image (AMI)",
+                "returned": "always",
+                "sample": "ami-12345678",
+                "type": "str"
+            },
+            "instance_monitoring": {
+                "description": "Launched with detailed monitoring or not",
+                "returned": "always",
+                "sample": "{ 'enabled': true }",
+                "type": "dict"
+            },
+            "instance_type": {
+                "description": "Instance type",
+                "returned": "always",
+                "sample": "t2.micro",
+                "type": "str"
+            },
+            "kernel_id": {
+                "description": "ID of the kernel associated with the AMI",
+                "returned": "always",
+                "sample": null,
+                "type": "str"
+            },
+            "key_name": {
+                "description": "Name of the key pair",
+                "returned": "always",
+                "sample": "user_app",
+                "type": "str"
+            },
+            "launch_configuration_arn": {
+                "description": "Amazon Resource Name (ARN) of the launch configuration",
+                "returned": "always",
+                "sample": "arn:aws:autoscaling:us-east-1:666612345678:launchConfiguration:ba785e3a-dd42-6f02-4585-ea1a2b458b3d:launchConfigurationName/lc-app",
+                "type": "str"
+            },
+            "launch_configuration_name": {
+                "description": "Name of the launch configuration",
+                "returned": "always",
+                "sample": "lc-app",
+                "type": "str"
+            },
+            "ramdisk_id": {
+                "description": "ID of the RAM disk associated with the AMI",
+                "returned": "always",
+                "sample": null,
+                "type": "str"
+            },
+            "security_groups": {
+                "description": "Security groups to associated",
+                "returned": "always",
+                "sample": "[ 'web' ]",
+                "type": "list"
+            },
+            "user_data": {
+                "description": "User data available",
+                "returned": "always",
+                "sample": null,
+                "type": "str"
+            }
+        }
+    }
+}

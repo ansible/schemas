@@ -1,0 +1,144 @@
+{
+    "theforeman.foreman.bookmark": {
+        "doc": {
+            "author": [
+                "Bernhard Hopfenmueller (@Fobhep) ATIX AG",
+                "Christoffer Reijer (@ephracis) Basalt AB"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Manage Bookmark Entities"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/bookmark.py",
+            "has_action": false,
+            "module": "bookmark",
+            "options": {
+                "controller": {
+                    "description": [
+                        "Controller for the bookmark"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the bookmark"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "public": {
+                    "default": true,
+                    "description": [
+                        "Make bookmark available for all users"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "query": {
+                    "description": [
+                        "Query of the bookmark"
+                    ],
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "present_with_defaults",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the entity",
+                        "C(present_with_defaults) will ensure the entity exists, but won't update existing ones"
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Manage Bookmarks",
+            "version_added": "1.0.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n- name: \"Create a Bookmark\"\n  theforeman.foreman.bookmark:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"recent\"\n    controller: \"job_invocations\"\n    query: \"started_at > '24 hours ago'\"\n    state: present_with_defaults\n\n- name: \"Update a Bookmark\"\n  theforeman.foreman.bookmark:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"recent\"\n    controller: \"job_invocations\"\n    query: \"started_at > '12 hours ago'\"\n    state: present\n\n- name: \"Delete a Bookmark\"\n  theforeman.foreman.bookmark:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"recent\"\n    controller: \"job_invocations\"\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "bookmarks": {
+                        "contains": {
+                            "controller": {
+                                "description": "Controller, the query is performed on.",
+                                "type": "str"
+                            },
+                            "id": {
+                                "description": "Database id of the bookmark.",
+                                "type": "int"
+                            },
+                            "name": {
+                                "description": "Name of the bookmark.",
+                                "type": "str"
+                            },
+                            "owner_id": {
+                                "description": "Database id of the owner entity.",
+                                "type": "int"
+                            },
+                            "owner_type": {
+                                "description": "Class of the owner entity.",
+                                "type": "str"
+                            },
+                            "public": {
+                                "description": "Publicity of the bookmark.",
+                                "type": "bool"
+                            },
+                            "query": {
+                                "description": "Query to be performed on the controller.",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of bookmarks.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

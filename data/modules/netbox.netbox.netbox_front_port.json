@@ -1,0 +1,164 @@
+{
+    "netbox.netbox.netbox_front_port": {
+        "doc": {
+            "author": [
+                "Tobias Gro\u00df (@toerb)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates, updates or removes front ports from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_front_port.py",
+            "has_action": false,
+            "module": "netbox_front_port",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the front port configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "description": {
+                            "description": [
+                                "Description of the front port"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "device": {
+                            "description": [
+                                "The device the front port is attached to"
+                            ],
+                            "required": true,
+                            "type": "raw"
+                        },
+                        "name": {
+                            "description": [
+                                "The name of the front port"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "rear_port": {
+                            "description": [
+                                "The rear_port the front port is attached to"
+                            ],
+                            "required": true,
+                            "type": "raw"
+                        },
+                        "rear_port_position": {
+                            "description": [
+                                "The position of the rear port this front port is connected to"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the front port may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "type": {
+                            "choices": [
+                                "8p8c",
+                                "110-punch",
+                                "bnc",
+                                "mrj21",
+                                "fc",
+                                "lc",
+                                "lc-apc",
+                                "lsh",
+                                "lsh-apc",
+                                "mpo",
+                                "mtrj",
+                                "sc",
+                                "sc-apc",
+                                "st"
+                            ],
+                            "description": [
+                                "The type of the front port"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Create, update or delete front ports within Netbox",
+            "version_added": "0.2.3",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox modules\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n\n  tasks:\n    - name: Create front port within Netbox with only required information\n      netbox_front_port:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Front Port\n          device: Test Device\n          type: bnc\n          rear_port: Test Rear Port\n        state: present\n\n    - name: Update front port with other fields\n      netbox_front_port:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Front Port\n          device: Test Device\n          type: bnc\n          rear_port: Test Rear Port\n          rear_port_position: 5\n          description: front port description\n        state: present\n\n    - name: Delete front port within netbox\n      netbox_front_port:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test Front Port\n          device: Test Device\n          type: bnc\n          rear_port: Test Rear Port\n        state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "front_port": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "success (when I(state=present))",
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

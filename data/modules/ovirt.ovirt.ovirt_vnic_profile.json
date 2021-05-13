@@ -1,0 +1,264 @@
+{
+    "ovirt.ovirt.ovirt_vnic_profile": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage vNIC profile of network in oVirt/RHV"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_vnic_profile.py",
+            "has_action": false,
+            "module": "ovirt_vnic_profile",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "custom_properties": {
+                    "description": [
+                        "Custom properties applied to the vNIC profile.",
+                        "Custom properties is a list of dictionary which can have following values:"
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Name of the custom property. For example: I(hugepages), I(vhost), I(sap_agent), etc."
+                            ]
+                        },
+                        "regexp": {
+                            "description": [
+                                "Regular expression to set for custom property."
+                            ]
+                        },
+                        "value": {
+                            "description": [
+                                "Value to set for custom property."
+                            ]
+                        }
+                    },
+                    "type": "list"
+                },
+                "data_center": {
+                    "description": [
+                        "Datacenter name where network reside."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "A human-readable description in plain text."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "migratable": {
+                    "description": [
+                        "Marks whether pass_through NIC is migratable or not."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "A human-readable name in plain text."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "network": {
+                    "description": [
+                        "Name of network to which is vNIC attached."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "network_filter": {
+                    "description": [
+                        "The network filter enables to filter packets send to/from the VM's nic according to defined rules."
+                    ],
+                    "type": "str"
+                },
+                "pass_through": {
+                    "choices": [
+                        "disabled",
+                        "enabled"
+                    ],
+                    "description": [
+                        "Enables passthrough to an SR-IOV-enabled host NIC.",
+                        "When enabled C(qos) and  C(network_filter) are automatically set to None and C(port_mirroring) to False.",
+                        "When enabled and C(migratable) not specified then C(migratable) is enabled.",
+                        "Port mirroring, QoS and network filters are not supported on passthrough profiles."
+                    ],
+                    "type": "str"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "port_mirroring": {
+                    "description": [
+                        "Enables port mirroring."
+                    ],
+                    "type": "bool"
+                },
+                "qos": {
+                    "description": [
+                        "Quality of Service attributes regulate inbound and outbound network traffic of the NIC."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the vNIC be absent/present."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage vNIC profile of network in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n- name: Add vNIC\n  ovirt.ovirt.ovirt_vnic_profile:\n    name: myvnic\n    network: mynetwork\n    state: present\n    data_center: datacenter\n\n- name: Editing vNICs network_filter, custom_properties, qos\n  ovirt.ovirt.ovirt_vnic_profile:\n    name: myvnic\n    network: mynetwork\n    data_center: datacenter\n    qos: myqos\n    custom_properties:\n      - name: SecurityGroups\n        value: 9bd9bde9-39da-44a8-9541-aa39e1a81c9d\n    network_filter: allow-dhcp\n\n- name: Remove vNICs network_filter, custom_properties, qos\n  ovirt.ovirt.ovirt_vnic_profile:\n    name: myvnic\n    network: mynetwork\n    data_center: datacenter\n    qos: \"\"\n    custom_properties: \"\"\n    network_filter: \"\"\n\n- name: Dont use migratable\n  ovirt.ovirt.ovirt_vnic_profile:\n    name: myvnic\n    network: mynetwork\n    data_center: datacenter\n    migratable: False\n    pass_through: enabled\n\n- name: Remove vNIC\n  ovirt.ovirt.ovirt_vnic_profile:\n    name: myvnic\n    network: mynetwork\n    state: absent\n    data_center: datacenter\n",
+        "metadata": null,
+        "return": {
+            "id": {
+                "description": "ID of the vNIC profile which is managed",
+                "returned": "On success if vNIC profile is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            },
+            "vnic": {
+                "description": "Dictionary of all the vNIC profile attributes. Network interface attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/nic.",
+                "returned": "On success if vNIC profile is found.",
+                "type": "dict"
+            }
+        }
+    }
+}

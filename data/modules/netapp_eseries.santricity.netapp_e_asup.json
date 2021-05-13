@@ -1,0 +1,207 @@
+{
+    "netapp_eseries.santricity.netapp_e_asup": {
+        "doc": {
+            "author": "Michael Price (@lmprice)",
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "Allow the auto-support settings to be configured for an individual E-Series storage-system"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_asup.py",
+            "has_action": false,
+            "module": "netapp_e_asup",
+            "notes": [
+                "Check mode is supported.",
+                "Enabling ASUP will allow our support teams to monitor the logs of the storage-system in order to proactively respond to issues with the system. It is recommended that all ASUP-related options be enabled, but they may be disabled if desired.",
+                "This API is currently only supported with the Embedded Web Services API v2.0 and higher.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "active": {
+                    "default": true,
+                    "description": [
+                        "Enable active/proactive monitoring for ASUP. When a problem is detected by our monitoring systems, it's possible that the bundle did not contain all of the required information at the time of the event. Enabling this option allows NetApp support personnel to manually request transmission or re-transmission of support data in order ot resolve the problem.",
+                        "Only applicable if I(state=enabled)."
+                    ],
+                    "type": "bool"
+                },
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "days": {
+                    "aliases": [
+                        "days_of_week",
+                        "schedule_days"
+                    ],
+                    "choices": [
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday"
+                    ],
+                    "description": [
+                        "A list of days of the week that ASUP bundles will be sent. A larger, weekly bundle will be sent on one of the provided days."
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "end": {
+                    "aliases": [
+                        "end_time"
+                    ],
+                    "default": 24,
+                    "description": [
+                        "An end hour may be specified in a range from 1 to 24 hours.",
+                        "ASUP bundles will be sent daily between the provided start and end time (UTC).",
+                        "I(start) must be less than I(end)."
+                    ],
+                    "type": "int"
+                },
+                "log_path": {
+                    "description": [
+                        "A local path to a file to be used for debug logging"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "start": {
+                    "aliases": [
+                        "start_time"
+                    ],
+                    "default": 0,
+                    "description": [
+                        "A start hour may be specified in a range from 0 to 23 hours.",
+                        "ASUP bundles will be sent daily between the provided start and end time (UTC).",
+                        "I(start) must be less than I(end)."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "aliases": [
+                        "asup",
+                        "auto_support",
+                        "autosupport"
+                    ],
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "Enable/disable the E-Series auto-support configuration.",
+                        "When this option is enabled, configuration, logs, and other support-related information will be relayed to NetApp to help better support your system. No personally identifiable information, passwords, etc, will be collected."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "verbose": {
+                    "default": false,
+                    "description": [
+                        "Provide the full ASUP configuration in the return."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage auto-support settings",
+            "version_added": "2.7",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n    - name: Enable ASUP and allow pro-active retrieval of bundles\n      netapp_e_asup:\n        state: enabled\n        active: yes\n        api_url: \"10.1.1.1:8443\"\n        api_username: \"admin\"\n        api_password: \"myPass\"\n\n    - name: Set the ASUP schedule to only send bundles from 12 AM CST to 3 AM CST.\n      netapp_e_asup:\n        start: 17\n        end: 20\n        api_url: \"10.1.1.1:8443\"\n        api_username: \"admin\"\n        api_password: \"myPass\"\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "active": {
+                "description": [
+                    "True if the active option has been enabled."
+                ],
+                "returned": "on success",
+                "sample": true,
+                "type": "bool"
+            },
+            "asup": {
+                "description": [
+                    "True if ASUP is enabled."
+                ],
+                "returned": "on success",
+                "sample": true,
+                "type": "bool"
+            },
+            "cfg": {
+                "contains": {
+                    "asupEnabled": {
+                        "description": [
+                            "True if ASUP has been enabled."
+                        ],
+                        "type": "bool"
+                    },
+                    "daysOfWeek": {
+                        "description": [
+                            "The days of the week that ASUP bundles will be sent."
+                        ],
+                        "type": "list"
+                    },
+                    "onDemandEnabled": {
+                        "description": [
+                            "True if ASUP active monitoring has been enabled."
+                        ],
+                        "type": "bool"
+                    }
+                },
+                "description": [
+                    "Provide the full ASUP configuration."
+                ],
+                "returned": "on success when I(verbose=true).",
+                "type": "complex"
+            },
+            "msg": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": "The settings have been updated.",
+                "type": "str"
+            }
+        }
+    }
+}

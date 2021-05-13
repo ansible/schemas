@@ -1,0 +1,130 @@
+{
+    "cisco.ios.ios_lldp_interfaces": {
+        "doc": {
+            "author": "Sumit Jaiswal (@justjais)",
+            "collection": "cisco.ios",
+            "description": "This module manages link layer discovery protocol (LLDP) attributes of interfaces on Cisco IOS devices.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/ios/plugins/modules/ios_lldp_interfaces.py",
+            "has_action": true,
+            "module": "ios_lldp_interfaces",
+            "notes": [
+                "Tested against Cisco IOSv Version 15.2 on VIRL."
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of LLDP options",
+                    "elements": "dict",
+                    "suboptions": {
+                        "med_tlv_select": {
+                            "description": [
+                                "Selection of LLDP MED TLVs to send",
+                                "NOTE, if med-tlv-select is configured idempotency won't be maintained as Cisco device doesn't record configured med-tlv-select options. As such, Ansible cannot verify if the respective med-tlv-select options is already configured or not from the device side. If you try to apply med-tlv-select option in every play run, Ansible will show changed as True."
+                            ],
+                            "suboptions": {
+                                "inventory_management": {
+                                    "description": [
+                                        "LLDP MED Inventory Management TLV"
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "name": {
+                            "description": [
+                                "Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "receive": {
+                            "description": [
+                                "Enable LLDP reception on interface."
+                            ],
+                            "type": "bool"
+                        },
+                        "tlv_select": {
+                            "description": [
+                                "Selection of LLDP type-length-value i.e. TLVs to send",
+                                "NOTE, if tlv-select is configured idempotency won't be maintained as Cisco device doesn't record configured tlv-select options. As such, Ansible cannot verify if the respective tlv-select options is already configured or not from the device side. If you try to apply tlv-select option in every play run, Ansible will show changed as True."
+                            ],
+                            "suboptions": {
+                                "power_management": {
+                                    "description": [
+                                        "IEEE 802.3 DTE Power via MDI TLV"
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "transmit": {
+                            "description": [
+                                "Enable LLDP transmission on interface."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS device by executing the command B(sh lldp interface).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "rendered",
+                        "gathered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in",
+                        "The states I(rendered), I(gathered) and I(parsed) does not perform any change on the device.",
+                        "The state I(rendered) will transform the configuration in C(config) option to platform specific CLI commands which will be returned in the I(rendered) key within the result. For state I(rendered) active connection to remote host is not required.",
+                        "The state I(gathered) will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the I(gathered) key within the result.",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into JSON format as per the resource module parameters and the value is returned in the I(parsed) key within the result. The value of C(running_config) option should be the same format as the output of command I(show running-config | include ip route|ipv6 route) executed on device. For state I(parsed) active connection to remote host is not required."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LLDP interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.ios"
+        },
+        "examples": "\n# Using merged\n#\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n\n- name: Merge provided configuration with device configuration\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    - name: GigabitEthernet0/1\n      receive: true\n      transmit: true\n    - name: GigabitEthernet0/2\n      receive: true\n    - name: GigabitEthernet0/3\n      transmit: true\n    state: merged\n\n# After state:\n# ------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n\n# Using overridden\n#\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n- name: Override device configuration of all lldp_interfaces with provided configuration\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    - name: GigabitEthernet0/2\n      receive: true\n      transmit: true\n    state: overridden\n\n# After state:\n# ------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n# Using replaced\n#\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n\n- name: Replaces device configuration of listed lldp_interfaces with provided configuration\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    - name: GigabitEthernet0/2\n      receive: true\n      transmit: true\n    - name: GigabitEthernet0/3\n      receive: true\n    state: replaced\n\n# After state:\n# ------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: disabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n\n# Using Deleted\n#\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n- name: \"Delete LLDP attributes of given interfaces (Note: This won't delete the interface itself)\"\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    - name: GigabitEthernet0/1\n    state: deleted\n\n# After state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n\n# Using Deleted without any config passed\n# \"(NOTE: This will delete all of configured LLDP module attributes)\"\n#\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n- name: \"Delete LLDP attributes for all configured interfaces (Note: This won't delete the interface itself)\"\n  cisco.ios.ios_lldp_interfaces:\n    state: deleted\n\n# After state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: INIT\n#\n# GigabitEthernet0/3:\n#    Tx: disabled\n#    Rx: disabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n# Using Gathered\n\n# Before state:\n# -------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n- name: Gather listed LLDP interfaces with provided configurations\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    state: gathered\n\n# Module Execution Result:\n# ------------------------\n#\n# \"gathered\": [\n#         {\n#             \"name\": \"GigabitEthernet0/0\",\n#             \"receive\": true,\n#             \"transmit\": true\n#         },\n#         {\n#             \"name\": \"GigabitEthernet0/1\",\n#             \"receive\": true,\n#             \"transmit\": true\n#         },\n#         {\n#             \"name\": \"GigabitEthernet0/2\",\n#             \"receive\": true,\n#             \"transmit\": true\n#         }\n#     ]\n\n# After state:\n# ------------\n#\n# vios#sh lldp interface\n# GigabitEthernet0/0:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n# GigabitEthernet0/2:\n#    Tx: enabled\n#    Rx: enabled\n#    Tx state: IDLE\n#    Rx state: WAIT FOR FRAME\n\n# Using Rendered\n\n- name: Render the commands for provided  configuration\n  cisco.ios.ios_lldp_interfaces:\n    config:\n    - name: GigabitEthernet0/0\n      receive: true\n      transmit: true\n    - name: GigabitEthernet0/1\n      receive: true\n      transmit: true\n    - name: GigabitEthernet0/2\n      receive: true\n    state: rendered\n\n# Module Execution Result:\n# ------------------------\n#\n# \"rendered\": [\n#         \"interface GigabitEthernet0/0\",\n#         \"lldp receive\",\n#         \"lldp transmit\",\n#         \"interface GigabitEthernet0/1\",\n#         \"lldp receive\",\n#         \"lldp transmit\",\n#         \"interface GigabitEthernet0/2\",\n#         \"lldp receive\"\n#     ]\n\n# Using Parsed\n\n# File: parsed.cfg\n# ----------------\n#\n# GigabitEthernet0/0:\n#   Tx: enabled\n#   Rx: disabled\n#   Tx state: IDLE\n#   Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/1:\n#   Tx: enabled\n#   Rx: enabled\n#   Tx state: IDLE\n#   Rx state: WAIT FOR FRAME\n#\n# GigabitEthernet0/2:\n#   Tx: disabled\n#   Rx: enabled\n#   Tx state: IDLE\n#   Rx state: INIT\n\n- name: Parse the commands for provided configuration\n  cisco.ios.ios_lldp_interfaces:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# Module Execution Result:\n# ------------------------\n#\n# \"parsed\": [\n#         {\n#             \"name\": \"GigabitEthernet0/0\",\n#             \"receive\": false,\n#             \"transmit\": true\n#         },\n#         {\n#             \"name\": \"GigabitEthernet0/1\",\n#             \"receive\": true,\n#             \"transmit\": true\n#         },\n#         {\n#             \"name\": \"GigabitEthernet0/2\",\n#             \"receive\": true,\n#             \"transmit\": false\n#         }\n#     ]\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "interface GigabitEthernet 0/1",
+                    "lldp transmit",
+                    "lldp receive"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

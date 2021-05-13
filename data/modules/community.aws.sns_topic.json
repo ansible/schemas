@@ -1,0 +1,298 @@
+{
+    "community.aws.sns_topic": {
+        "doc": {
+            "author": [
+                "Joel Thompson (@joelthompson)",
+                "Fernando Jose Pando (@nand0p)",
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "The M(community.aws.sns_topic) module allows you to create, delete, and manage subscriptions for AWS SNS topics.",
+                "As of 2.6, this module can be use to subscribe and unsubscribe to topics outside of your AWS account."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/sns_topic.py",
+            "has_action": false,
+            "module": "sns_topic",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "delivery_policy": {
+                    "description": [
+                        "Delivery policy to apply to the SNS topic."
+                    ],
+                    "type": "dict"
+                },
+                "display_name": {
+                    "description": [
+                        "Display name of the topic."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name or ARN of the SNS topic to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "policy": {
+                    "description": [
+                        "Policy to apply to the SNS topic."
+                    ],
+                    "type": "dict"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_subscriptions": {
+                    "default": true,
+                    "description": [
+                        "Whether to purge any subscriptions not listed here. NOTE: AWS does not allow you to purge any PendingConfirmation subscriptions, so if any exist and would be purged, they are silently skipped. This means that somebody could come back later and confirm the subscription. Sorry. Blame Amazon."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether to create or destroy an SNS topic."
+                    ],
+                    "type": "str"
+                },
+                "subscriptions": {
+                    "default": [],
+                    "description": [
+                        "List of subscriptions to apply to the topic. Note that AWS requires subscriptions to be confirmed, so you will need to confirm any new subscriptions."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "endpoint": {
+                            "description": "Endpoint of subscription.",
+                            "required": true
+                        },
+                        "protocol": {
+                            "description": "Protocol of subscription.",
+                            "required": true
+                        }
+                    },
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "python >= 2.6"
+            ],
+            "short_description": "Manages AWS SNS topics and subscriptions",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n\n- name: Create alarm SNS topic\n  community.aws.sns_topic:\n    name: \"alarms\"\n    state: present\n    display_name: \"alarm SNS topic\"\n    delivery_policy:\n      http:\n        defaultHealthyRetryPolicy:\n            minDelayTarget: 2\n            maxDelayTarget: 4\n            numRetries: 3\n            numMaxDelayRetries: 5\n            backoffFunction: \"<linear|arithmetic|geometric|exponential>\"\n        disableSubscriptionOverrides: True\n        defaultThrottlePolicy:\n            maxReceivesPerSecond: 10\n    subscriptions:\n      - endpoint: \"my_email_address@example.com\"\n        protocol: \"email\"\n      - endpoint: \"my_mobile_number\"\n        protocol: \"sms\"\n\n",
+        "metadata": null,
+        "return": {
+            "community.aws.sns_topic": {
+                "contains": {
+                    "attributes_set": {
+                        "description": "list of attributes set during this run",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "check_mode": {
+                        "description": "whether check mode was on",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "delivery_policy": {
+                        "description": "Delivery policy for the SNS topic",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "{\"http\":{\"defaultHealthyRetryPolicy\":{\"minDelayTarget\":20,\"maxDelayTarget\":20,\"numRetries\":3,\"numMaxDelayRetries\":0, \"numNoDelayRetries\":0,\"numMinDelayRetries\":0,\"backoffFunction\":\"linear\"},\"disableSubscriptionOverrides\":false}}\n",
+                        "type": "str"
+                    },
+                    "display_name": {
+                        "description": "Display name for SNS topic",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "My topic name",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "Topic name",
+                        "returned": "always",
+                        "sample": "ansible-test-dummy-topic",
+                        "type": "str"
+                    },
+                    "owner": {
+                        "description": "AWS account that owns the topic",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "111111111111",
+                        "type": "str"
+                    },
+                    "policy": {
+                        "description": "Policy for the SNS topic",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "{\"Version\":\"2012-10-17\",\"Id\":\"SomePolicyId\",\"Statement\":[{\"Sid\":\"ANewSid\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::111111111111:root\"}, \"Action\":\"sns:Subscribe\",\"Resource\":\"arn:aws:sns:us-east-2:111111111111:ansible-test-dummy-topic\",\"Condition\":{\"StringEquals\":{\"sns:Protocol\":\"email\"}}}]}\n",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "whether the topic is present or absent",
+                        "returned": "always",
+                        "sample": "present",
+                        "type": "str"
+                    },
+                    "subscriptions": {
+                        "description": "List of subscribers to the topic in this AWS account",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "subscriptions_added": {
+                        "description": "List of subscribers added in this run",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "subscriptions_confirmed": {
+                        "description": "Count of confirmed subscriptions",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "0",
+                        "type": "str"
+                    },
+                    "subscriptions_deleted": {
+                        "description": "Count of deleted subscriptions",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "0",
+                        "type": "str"
+                    },
+                    "subscriptions_existing": {
+                        "description": "List of existing subscriptions",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "subscriptions_new": {
+                        "description": "List of new subscriptions",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "subscriptions_pending": {
+                        "description": "Count of pending subscriptions",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "0",
+                        "type": "str"
+                    },
+                    "subscriptions_purge": {
+                        "description": "Whether or not purge_subscriptions was set",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "topic_arn": {
+                        "description": "ARN of the SNS topic (equivalent to sns_arn)",
+                        "returned": "when topic is owned by this AWS account",
+                        "sample": "arn:aws:sns:us-east-2:111111111111:ansible-test-dummy-topic",
+                        "type": "str"
+                    },
+                    "topic_created": {
+                        "description": "Whether the topic was created",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "topic_deleted": {
+                        "description": "Whether the topic was deleted",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    }
+                },
+                "description": "Dict of sns topic details",
+                "returned": "always",
+                "type": "complex"
+            },
+            "sns_arn": {
+                "description": "The ARN of the topic you are modifying",
+                "returned": "always",
+                "sample": "arn:aws:sns:us-east-2:111111111111:my_topic_name",
+                "type": "str"
+            }
+        }
+    }
+}

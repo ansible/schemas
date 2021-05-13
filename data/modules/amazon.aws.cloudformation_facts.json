@@ -1,0 +1,219 @@
+{
+    "amazon.aws.cloudformation_facts": {
+        "doc": {
+            "author": [
+                "Justin Menga (@jmenga)",
+                "Kevin Coming (@waffie1)"
+            ],
+            "collection": "amazon.aws",
+            "description": [
+                "Gets information about an AWS CloudFormation stack.",
+                "This module was called C(cloudformation_facts) before Ansible 2.9, returning C(ansible_facts). Note that the M(cloudformation_info) module no longer returns C(ansible_facts)!"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/cloudformation_facts.py",
+            "has_action": false,
+            "module": "cloudformation_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "all_facts": {
+                    "default": false,
+                    "description": [
+                        "Get all stack information for the stack."
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "stack_change_sets": {
+                    "default": false,
+                    "description": [
+                        "Get stack change sets for the stack"
+                    ],
+                    "type": "bool"
+                },
+                "stack_events": {
+                    "default": false,
+                    "description": [
+                        "Get stack events for the stack."
+                    ],
+                    "type": "bool"
+                },
+                "stack_name": {
+                    "description": [
+                        "The name or id of the CloudFormation stack. Gathers information on all stacks by default."
+                    ],
+                    "type": "str"
+                },
+                "stack_policy": {
+                    "default": false,
+                    "description": [
+                        "Get stack policy for the stack."
+                    ],
+                    "type": "bool"
+                },
+                "stack_resources": {
+                    "default": false,
+                    "description": [
+                        "Get stack resources for the stack."
+                    ],
+                    "type": "bool"
+                },
+                "stack_template": {
+                    "default": false,
+                    "description": [
+                        "Get stack template body for the stack."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3 >= 1.0.0",
+                "python >= 2.6"
+            ],
+            "short_description": "Obtain information about an AWS CloudFormation stack"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Get summary information about a stack\n- cloudformation_info:\n    stack_name: my-cloudformation-stack\n  register: output\n\n- debug:\n    msg: \"{{ output['cloudformation']['my-cloudformation-stack'] }}\"\n\n# When the module is called as cloudformation_facts, return values are published\n# in ansible_facts['cloudformation'][<stack_name>] and can be used as follows.\n# Note that this is deprecated and will stop working in Ansible 2.13.\n\n- cloudformation_facts:\n    stack_name: my-cloudformation-stack\n\n- debug:\n    msg: \"{{ ansible_facts['cloudformation']['my-cloudformation-stack'] }}\"\n\n# Get stack outputs, when you have the stack name available as a fact\n- set_fact:\n    stack_name: my-awesome-stack\n\n- cloudformation_info:\n    stack_name: \"{{ stack_name }}\"\n  register: my_stack\n\n- debug:\n    msg: \"{{ my_stack.cloudformation[stack_name].stack_outputs }}\"\n\n# Get all stack information about a stack\n- cloudformation_info:\n    stack_name: my-cloudformation-stack\n    all_facts: true\n\n# Get stack resource and stack policy information about a stack\n- cloudformation_info:\n    stack_name: my-cloudformation-stack\n    stack_resources: true\n    stack_policy: true\n\n# Fail if the stack doesn't exist\n- name: try to get facts about a stack but fail if it doesn't exist\n  cloudformation_info:\n    stack_name: nonexistent-stack\n    all_facts: yes\n  failed_when: cloudformation['nonexistent-stack'] is undefined\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "stack_change_sets": {
+                "description": "A list of stack change sets.  Each item in the list represents the details of a specific changeset",
+                "returned": "only if all_facts or stack_change_sets is true and the stack exists",
+                "type": "list"
+            },
+            "stack_description": {
+                "description": "Summary facts about the stack",
+                "returned": "if the stack exists",
+                "type": "dict"
+            },
+            "stack_events": {
+                "description": "All stack events for the stack",
+                "returned": "only if all_facts or stack_events is true and the stack exists",
+                "type": "list"
+            },
+            "stack_outputs": {
+                "description": "Dictionary of stack outputs keyed by the value of each output 'OutputKey' parameter and corresponding value of each output 'OutputValue' parameter",
+                "returned": "if the stack exists",
+                "sample": {
+                    "ApplicationDatabaseName": "dazvlpr01xj55a.ap-southeast-2.rds.amazonaws.com"
+                },
+                "type": "dict"
+            },
+            "stack_parameters": {
+                "description": "Dictionary of stack parameters keyed by the value of each parameter 'ParameterKey' parameter and corresponding value of each parameter 'ParameterValue' parameter",
+                "returned": "if the stack exists",
+                "sample": {
+                    "DatabaseEngine": "mysql",
+                    "DatabasePassword": "***"
+                },
+                "type": "dict"
+            },
+            "stack_policy": {
+                "description": "Describes the stack policy for the stack",
+                "returned": "only if all_facts or stack_policy is true and the stack exists",
+                "type": "dict"
+            },
+            "stack_resource_list": {
+                "description": "Describes stack resources for the stack",
+                "returned": "only if all_facts or stack_resourses is true and the stack exists",
+                "type": "list"
+            },
+            "stack_resources": {
+                "description": "Dictionary of stack resources keyed by the value of each resource 'LogicalResourceId' parameter and corresponding value of each resource 'PhysicalResourceId' parameter",
+                "returned": "only if all_facts or stack_resourses is true and the stack exists",
+                "sample": {
+                    "ApplicationDatabase": "dazvlpr01xj55a",
+                    "AutoScalingGroup": "dev-someapp-AutoscalingGroup-1SKEXXBCAN0S7",
+                    "AutoScalingSecurityGroup": "sg-abcd1234"
+                },
+                "type": "dict"
+            },
+            "stack_template": {
+                "description": "Describes the stack template for the stack",
+                "returned": "only if all_facts or stack_template is true and the stack exists",
+                "type": "dict"
+            }
+        }
+    }
+}

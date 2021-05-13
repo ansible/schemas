@@ -1,0 +1,163 @@
+{
+    "f5networks.f5_modules.bigip_software_install": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)",
+                "Nitin Khanna (@nitinthewiz)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Install new software images on a BIG-IP system."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_software_install.py",
+            "has_action": false,
+            "module": "bigip_software_install",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "block_device_image": {
+                    "description": [
+                        "Image to install on the remote device. In the case of a VCMP guest, ensure this image is present on the VCMP host and is referenced from there, and not from the VCMP guest. An ISO image directly uploaded to the VCMP guest will not work."
+                    ],
+                    "type": "str",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "image": {
+                    "description": [
+                        "Image to install on the remote device."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "activated",
+                        "installed"
+                    ],
+                    "default": "activated",
+                    "description": [
+                        "When C(installed), ensures the software is installed on the volume and the volume is set to be booted from. The device is B(not) rebooted into the new software.",
+                        "When C(activated), performs the same operation as C(installed), but the system is rebooted to the new software."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "standard",
+                        "vcmp"
+                    ],
+                    "default": "standard",
+                    "description": [
+                        "The type of the BIG-IP.",
+                        "Defaults to C(standard), the other choice is C(vcmp)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "volume": {
+                    "description": [
+                        "The volume on which to install the software image."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Install software images on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Ensure an existing image is installed in specified volume\n  bigip_software_install:\n    image: BIGIP-13.0.0.0.0.1645.iso\n    volume: HD1.2\n    state: installed\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Ensure an existing image is activated in specified volume\n  bigip_software_install:\n    image: BIGIP-13.0.0.0.0.1645.iso\n    state: activated\n    volume: HD1.2\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Ensure an existing image is activated in specified volume in a VCMP guest\n  bigip_software_install:\n    block_device_image: BIGIP-13.0.0.0.0.1645.iso\n    type: vcmp\n    state: activated\n    volume: HD1.2\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": null
+    }
+}

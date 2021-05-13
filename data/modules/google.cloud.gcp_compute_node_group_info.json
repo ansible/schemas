@@ -1,0 +1,196 @@
+{
+    "google.cloud.gcp_compute_node_group_info": {
+        "doc": {
+            "author": "Google Inc. (@googlecloudplatform)",
+            "collection": "google.cloud",
+            "description": [
+                "Gather info for GCP NodeGroup"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/google/cloud/plugins/modules/gcp_compute_node_group_info.py",
+            "has_action": false,
+            "module": "gcp_compute_node_group_info",
+            "notes": [
+                "for authentication, you can set service_account_file using the C(gcp_service_account_file) env variable.",
+                "for authentication, you can set service_account_contents using the C(GCP_SERVICE_ACCOUNT_CONTENTS) env variable.",
+                "For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL) env variable.",
+                "For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.",
+                "For authentication, you can set scopes using the C(GCP_SCOPES) env variable.",
+                "Environment variables values will only be used if the playbook values are not set.",
+                "The I(service_account_email) and I(service_account_file) options are mutually exclusive."
+            ],
+            "options": {
+                "auth_kind": {
+                    "choices": [
+                        "application",
+                        "machineaccount",
+                        "serviceaccount"
+                    ],
+                    "description": [
+                        "The type of credential used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "env_type": {
+                    "description": [
+                        "Specifies which Ansible environment you're running this module within.",
+                        "This should not be set unless you know what you're doing.",
+                        "This only alters the User Agent string for any API requests."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "description": [
+                        "A list of filter value pairs. Available filters are listed here U(https://cloud.google.com/sdk/gcloud/reference/topic/filters).",
+                        "Each additional filter in the list will act be added as an AND condition (filter1 and filter2) ."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "project": {
+                    "description": [
+                        "The Google Cloud Platform project to use."
+                    ],
+                    "type": "str"
+                },
+                "scopes": {
+                    "description": [
+                        "Array of scopes to be used"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "service_account_contents": {
+                    "description": [
+                        "The contents of a Service Account JSON file, either in a dictionary or as a JSON string that represents it."
+                    ],
+                    "type": "jsonarg"
+                },
+                "service_account_email": {
+                    "description": [
+                        "An optional service account email address if machineaccount is selected and the user does not wish to use the default email."
+                    ],
+                    "type": "str"
+                },
+                "service_account_file": {
+                    "description": [
+                        "The path of a Service Account JSON file if serviceaccount is selected as type."
+                    ],
+                    "type": "path"
+                },
+                "zone": {
+                    "description": [
+                        "Zone where this node group is located ."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "requests >= 2.18.4",
+                "google-auth >= 1.3.0"
+            ],
+            "short_description": "Gather info for GCP NodeGroup"
+        },
+        "examples": "\n- name: get info on a node group\n  gcp_compute_node_group_info:\n    zone: us-central1-a\n    filters:\n    - name = test_object\n    project: test_project\n    auth_kind: serviceaccount\n    service_account_file: \"/tmp/auth.pem\"\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "resources": {
+                "contains": {
+                    "autoscalingPolicy": {
+                        "contains": {
+                            "maxNodes": {
+                                "description": [
+                                    "Maximum size of the node group. Set to a value less than or equal to 100 and greater than or equal to min-nodes."
+                                ],
+                                "returned": "success",
+                                "type": "int"
+                            },
+                            "minNodes": {
+                                "description": [
+                                    "Minimum size of the node group. Must be less than or equal to max-nodes. The default value is 0."
+                                ],
+                                "returned": "success",
+                                "type": "int"
+                            },
+                            "mode": {
+                                "description": [
+                                    "The autoscaling mode. Set to one of the following: - OFF: Disables the autoscaler.",
+                                    "- ON: Enables scaling in and scaling out.",
+                                    "- ONLY_SCALE_OUT: Enables only scaling out.",
+                                    "You must use this mode if your node groups are configured to restart their hosted VMs on minimal servers."
+                                ],
+                                "returned": "success",
+                                "type": "str"
+                            }
+                        },
+                        "description": [
+                            "If you use sole-tenant nodes for your workloads, you can use the node group autoscaler to automatically manage the sizes of your node groups."
+                        ],
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "creationTimestamp": {
+                        "description": [
+                            "Creation timestamp in RFC3339 text format."
+                        ],
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "description": {
+                        "description": [
+                            "An optional textual description of the resource."
+                        ],
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "maintenancePolicy": {
+                        "description": [
+                            "Specifies how to handle instances when a node in the group undergoes maintenance. Set to one of: DEFAULT, RESTART_IN_PLACE, or MIGRATE_WITHIN_NODE_GROUP. The default value is DEFAULT."
+                        ],
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": [
+                            "Name of the resource."
+                        ],
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "nodeTemplate": {
+                        "description": [
+                            "The URL of the node template to which this node group belongs."
+                        ],
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "size": {
+                        "description": [
+                            "The total number of nodes in the node group."
+                        ],
+                        "returned": "success",
+                        "type": "int"
+                    },
+                    "zone": {
+                        "description": [
+                            "Zone where this node group is located ."
+                        ],
+                        "returned": "success",
+                        "type": "str"
+                    }
+                },
+                "description": "List of resources",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

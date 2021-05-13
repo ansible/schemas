@@ -1,0 +1,76 @@
+{
+    "ansible.posix.sysctl": {
+        "doc": {
+            "author": "David CHANIAL (@davixx) <david.chanial@gmail.com>",
+            "collection": "ansible.posix",
+            "description": [
+                "This module manipulates sysctl entries and optionally performs a C(/sbin/sysctl -p) after changing them."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/posix/plugins/modules/sysctl.py",
+            "has_action": false,
+            "module": "sysctl",
+            "options": {
+                "ignoreerrors": {
+                    "default": "no",
+                    "description": [
+                        "Use this option to ignore errors about unknown keys."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "aliases": [
+                        "key"
+                    ],
+                    "description": [
+                        "The dot-separated path (aka I(key)) specifying the sysctl variable."
+                    ],
+                    "required": true
+                },
+                "reload": {
+                    "default": "yes",
+                    "description": [
+                        "If C(yes), performs a I(/sbin/sysctl -p) if the C(sysctl_file) is updated. If C(no), does not reload I(sysctl) even if the C(sysctl_file) is updated."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the entry should be present or absent in the sysctl file."
+                    ]
+                },
+                "sysctl_file": {
+                    "default": "/etc/sysctl.conf",
+                    "description": [
+                        "Specifies the absolute path to C(sysctl.conf), if not C(/etc/sysctl.conf)."
+                    ]
+                },
+                "sysctl_set": {
+                    "default": "no",
+                    "description": [
+                        "Verify token value with the sysctl command and set with -w if necessary"
+                    ],
+                    "type": "bool"
+                },
+                "value": {
+                    "aliases": [
+                        "val"
+                    ],
+                    "description": [
+                        "Desired value of the sysctl key."
+                    ]
+                }
+            },
+            "short_description": "Manage entries in sysctl.conf.",
+            "version_added": "1.0.0",
+            "version_added_collection": "ansible.posix"
+        },
+        "examples": "\n# Set vm.swappiness to 5 in /etc/sysctl.conf\n- ansible.posix.sysctl:\n    name: vm.swappiness\n    value: '5'\n    state: present\n\n# Remove kernel.panic entry from /etc/sysctl.conf\n- ansible.posix.sysctl:\n    name: kernel.panic\n    state: absent\n    sysctl_file: /etc/sysctl.conf\n\n# Set kernel.panic to 3 in /tmp/test_sysctl.conf\n- ansible.posix.sysctl:\n    name: kernel.panic\n    value: '3'\n    sysctl_file: /tmp/test_sysctl.conf\n    reload: no\n\n# Set ip forwarding on in /proc and verify token value with the sysctl command\n- ansible.posix.sysctl:\n    name: net.ipv4.ip_forward\n    value: '1'\n    sysctl_set: yes\n\n# Set ip forwarding on in /proc and in the sysctl file and reload if necessary\n- ansible.posix.sysctl:\n    name: net.ipv4.ip_forward\n    value: '1'\n    sysctl_set: yes\n    state: present\n    reload: yes\n",
+        "metadata": null,
+        "return": null
+    }
+}

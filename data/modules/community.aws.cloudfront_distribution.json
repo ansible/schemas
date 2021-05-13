@@ -1,0 +1,1672 @@
+{
+    "community.aws.cloudfront_distribution": {
+        "doc": {
+            "author": [
+                "Willem van Ketwich (@wilvk)",
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Allows for easy creation, updating and deletion of CloudFront distributions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/cloudfront_distribution.py",
+            "has_action": false,
+            "module": "cloudfront_distribution",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "alias": {
+                    "description": [
+                        "The name of an alias (CNAME) that is used in a distribution. This is used to effectively reference a distribution by its alias as an alias can only be used by one distribution per AWS account. This variable avoids having to provide the I(distribution_id) as well as the I(e_tag), or I(caller_reference) of an existing distribution."
+                    ],
+                    "type": "str"
+                },
+                "aliases": {
+                    "description": [
+                        "A list of domain name aliases (CNAMEs) as strings to be used for the distribution.",
+                        "Each alias must be unique across all distribution for the AWS account."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cache_behaviors": {
+                    "description": [
+                        "A list of dictionaries describing the cache behaviors for the distribution.",
+                        "The order of the list is preserved across runs unless I(purge_cache_behaviors) is enabled."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "forwarded_values": {
+                            "description": [
+                                "A dict that specifies how CloudFront handles query strings and cookies."
+                            ],
+                            "suboptions": {
+                                "allowed_methods": {
+                                    "description": "A dict that controls which HTTP methods CloudFront processes and forwards.",
+                                    "suboptions": {
+                                        "cached_methods": {
+                                            "description": [
+                                                "A list of HTTP methods that you want CloudFront to apply caching to.",
+                                                "This can either be C([GET,HEAD]), or C([GET,HEAD,OPTIONS])."
+                                            ],
+                                            "elements": "str",
+                                            "type": "list"
+                                        },
+                                        "items": {
+                                            "description": "A list of HTTP methods that you want CloudFront to process and forward.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "compress": {
+                                    "description": [
+                                        "Whether you want CloudFront to automatically compress files."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "cookies": {
+                                    "description": "A dict that specifies whether you want CloudFront to forward cookies to the origin and, if so, which ones.",
+                                    "suboptions": {
+                                        "forward": {
+                                            "description": [
+                                                "Specifies which cookies to forward to the origin for this cache behavior.",
+                                                "Valid values are C(all), C(none), or C(whitelist)."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "whitelisted_names": {
+                                            "description": "A list of cookies to forward to the origin for this cache behavior.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "default_ttl": {
+                                    "description": "The default amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "field_level_encryption_id": {
+                                    "description": [
+                                        "The field-level encryption configuration that you want CloudFront to use for encrypting specific fields of data."
+                                    ],
+                                    "type": "str"
+                                },
+                                "headers": {
+                                    "description": [
+                                        "A list of headers to forward to the origin for this cache behavior.",
+                                        "To forward all headers use a list containing a single element '*' (C(['*']))"
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "lambda_function_associations": {
+                                    "description": [
+                                        "A list of Lambda function associations to use for this cache behavior."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "event_type": {
+                                            "description": [
+                                                "Specifies the event type that triggers a Lambda function invocation.",
+                                                "This can be C(viewer-request), C(origin-request), C(origin-response) or C(viewer-response)."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "lambda_function_arn": {
+                                            "description": "The ARN of the Lambda function.",
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "max_ttl": {
+                                    "description": "The maximum amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "min_ttl": {
+                                    "description": "The minimum amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "query_string": {
+                                    "description": [
+                                        "Indicates whether you want CloudFront to forward query strings to the origin that is associated with this cache behavior."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "query_string_cache_keys": {
+                                    "description": [
+                                        "A list that contains the query string parameters you want CloudFront to use as a basis for caching for a cache behavior."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "smooth_streaming": {
+                                    "description": [
+                                        "Whether you want to distribute media files in the Microsoft Smooth Streaming format."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "trusted_signers": {
+                                    "description": [
+                                        "A dict that specifies the AWS accounts that you want to allow to create signed URLs for private content."
+                                    ],
+                                    "suboptions": {
+                                        "enabled": {
+                                            "description": "Whether you want to require viewers to use signed URLs to access the files specified by I(path_pattern) and I(target_origin_id)",
+                                            "type": "bool"
+                                        },
+                                        "items": {
+                                            "description": "A list of trusted signers for this cache behavior.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "viewer_protocol_policy": {
+                                    "description": [
+                                        "The protocol that viewers can use to access the files in the origin specified by I(target_origin_id) when a request matches I(path_pattern).",
+                                        "Valid values are C(allow-all), C(redirect-to-https) and C(https-only)."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "path_pattern": {
+                            "description": [
+                                "The pattern that specifies which requests to apply the behavior to."
+                            ],
+                            "type": "str"
+                        },
+                        "target_origin_id": {
+                            "description": [
+                                "The ID of the origin that you want CloudFront to route requests to by default."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "caller_reference": {
+                    "description": [
+                        "A unique identifier for creating and updating CloudFront distributions.",
+                        "Each caller reference must be unique across all distributions. e.g. a caller reference used in a web distribution cannot be reused in a streaming distribution. This parameter can be used instead of I(distribution_id) to reference an existing distribution. If not specified, this defaults to a datetime stamp of the format C(YYYY-MM-DDTHH:MM:SS.ffffff)."
+                    ],
+                    "type": "str"
+                },
+                "comment": {
+                    "description": [
+                        "A comment that describes the CloudFront distribution.",
+                        "If not specified, it defaults to a generic message that it has been created with Ansible, and a datetime stamp."
+                    ],
+                    "type": "str"
+                },
+                "custom_error_responses": {
+                    "description": [
+                        "A config element that is a I(list[]) of complex custom error responses to be specified for the distribution.",
+                        "This attribute configures custom http error messages returned to the user."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "error_caching_min_ttl": {
+                            "description": "The length of time (in seconds) that CloudFront will cache status codes for.",
+                            "type": "int"
+                        },
+                        "error_code": {
+                            "description": "The error code the custom error page is for.",
+                            "type": "int"
+                        },
+                        "response_code": {
+                            "description": [
+                                "The HTTP status code that CloudFront should return to a user when the origin returns the HTTP status code specified by I(error_code)."
+                            ],
+                            "type": "int"
+                        },
+                        "response_page_path": {
+                            "description": [
+                                "The path to the custom error page that you want CloudFront to return to a viewer when your origin returns the HTTP status code specified by I(error_code)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "default_cache_behavior": {
+                    "description": [
+                        "A dict specifying the default cache behavior of the distribution.",
+                        "If not specified, the I(target_origin_id) is defined as the I(target_origin_id) of the first valid cache_behavior in I(cache_behaviors) with defaults."
+                    ],
+                    "suboptions": {
+                        "forwarded_values": {
+                            "description": [
+                                "A dict that specifies how CloudFront handles query strings and cookies."
+                            ],
+                            "suboptions": {
+                                "allowed_methods": {
+                                    "description": "A dict that controls which HTTP methods CloudFront processes and forwards.",
+                                    "suboptions": {
+                                        "cached_methods": {
+                                            "description": [
+                                                "A list of HTTP methods that you want CloudFront to apply caching to.",
+                                                "This can either be C([GET,HEAD]), or C([GET,HEAD,OPTIONS])."
+                                            ],
+                                            "elements": "str",
+                                            "type": "list"
+                                        },
+                                        "items": {
+                                            "description": "A list of HTTP methods that you want CloudFront to process and forward.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "compress": {
+                                    "description": [
+                                        "Whether you want CloudFront to automatically compress files."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "cookies": {
+                                    "description": "A dict that specifies whether you want CloudFront to forward cookies to the origin and, if so, which ones.",
+                                    "suboptions": {
+                                        "forward": {
+                                            "description": [
+                                                "Specifies which cookies to forward to the origin for this cache behavior.",
+                                                "Valid values are C(all), C(none), or C(whitelist)."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "whitelisted_names": {
+                                            "description": "A list of cookies to forward to the origin for this cache behavior.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "default_ttl": {
+                                    "description": "The default amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "field_level_encryption_id": {
+                                    "description": [
+                                        "The field-level encryption configuration that you want CloudFront to use for encrypting specific fields of data."
+                                    ],
+                                    "type": "str"
+                                },
+                                "headers": {
+                                    "description": [
+                                        "A list of headers to forward to the origin for this cache behavior.",
+                                        "To forward all headers use a list containing a single element '*' (C(['*']))"
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "lambda_function_associations": {
+                                    "description": [
+                                        "A list of Lambda function associations to use for this cache behavior."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "event_type": {
+                                            "description": [
+                                                "Specifies the event type that triggers a Lambda function invocation.",
+                                                "This can be C(viewer-request), C(origin-request), C(origin-response) or C(viewer-response)."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "lambda_function_arn": {
+                                            "description": "The ARN of the Lambda function.",
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "max_ttl": {
+                                    "description": "The maximum amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "min_ttl": {
+                                    "description": "The minimum amount of time that you want objects to stay in CloudFront caches.",
+                                    "type": "int"
+                                },
+                                "query_string": {
+                                    "description": [
+                                        "Indicates whether you want CloudFront to forward query strings to the origin that is associated with this cache behavior."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "query_string_cache_keys": {
+                                    "description": [
+                                        "A list that contains the query string parameters you want CloudFront to use as a basis for caching for a cache behavior."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "smooth_streaming": {
+                                    "description": [
+                                        "Whether you want to distribute media files in the Microsoft Smooth Streaming format."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "trusted_signers": {
+                                    "description": [
+                                        "A dict that specifies the AWS accounts that you want to allow to create signed URLs for private content."
+                                    ],
+                                    "suboptions": {
+                                        "enabled": {
+                                            "description": "Whether you want to require viewers to use signed URLs to access the files specified by I(target_origin_id)",
+                                            "type": "bool"
+                                        },
+                                        "items": {
+                                            "description": "A list of trusted signers for this cache behavior.",
+                                            "elements": "str",
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "viewer_protocol_policy": {
+                                    "description": [
+                                        "The protocol that viewers can use to access the files in the origin specified by I(target_origin_id).",
+                                        "Valid values are C(allow-all), C(redirect-to-https) and C(https-only)."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "target_origin_id": {
+                            "description": [
+                                "The ID of the origin that you want CloudFront to route requests to by default."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "default_origin_domain_name": {
+                    "description": [
+                        "The domain name to use for an origin if no I(origins) have been specified.",
+                        "Should only be used on a first run of generating a distribution and not on subsequent runs.",
+                        "Should not be used in conjunction with I(distribution_id), I(caller_reference) or I(alias)."
+                    ],
+                    "type": "str"
+                },
+                "default_origin_path": {
+                    "description": [
+                        "The default origin path to specify for an origin if no I(origins) have been specified. Defaults to empty if not specified."
+                    ],
+                    "type": "str"
+                },
+                "default_root_object": {
+                    "description": [
+                        "A config element that specifies the path to request when the user requests the origin.",
+                        "e.g. if specified as 'index.html', this maps to www.example.com/index.html when www.example.com is called by the user.",
+                        "This prevents the entire distribution origin from being exposed at the root."
+                    ],
+                    "type": "str"
+                },
+                "distribution_id": {
+                    "description": [
+                        "The ID of the CloudFront distribution.",
+                        "This parameter can be exchanged with I(alias) or I(caller_reference) and is used in conjunction with I(e_tag)."
+                    ],
+                    "type": "str"
+                },
+                "e_tag": {
+                    "description": [
+                        "A unique identifier of a modified or existing distribution. Used in conjunction with I(distribution_id).",
+                        "Is determined automatically if not specified."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "description": [
+                        "A boolean value that specifies whether the distribution is enabled or disabled.",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "http_version": {
+                    "description": [
+                        "The version of the http protocol to use for the distribution.",
+                        "AWS defaults this to C(http2).",
+                        "Valid values are C(http1.1) and C(http2)."
+                    ],
+                    "type": "str"
+                },
+                "ipv6_enabled": {
+                    "description": [
+                        "Determines whether IPv6 support is enabled or not.",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "logging": {
+                    "description": [
+                        "A config element that is a complex object that defines logging for the distribution."
+                    ],
+                    "suboptions": {
+                        "bucket": {
+                            "description": "The S3 bucket to store the log in.",
+                            "type": "str"
+                        },
+                        "enabled": {
+                            "description": "When I(enabled=true) CloudFront will log access to an S3 bucket.",
+                            "type": "bool"
+                        },
+                        "include_cookies": {
+                            "description": "When I(include_cookies=true) CloudFront will include cookies in the logs.",
+                            "type": "bool"
+                        },
+                        "prefix": {
+                            "description": "A prefix to include in the S3 object names.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "origins": {
+                    "description": [
+                        "A config element that is a list of complex origin objects to be specified for the distribution. Used for creating and updating distributions."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "custom_headers": {
+                            "description": [
+                                "Custom headers you wish to add to the request before passing it to the origin.",
+                                "For more information see the CloudFront documentation at U(https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/forward-custom-headers.html)."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "header_name": {
+                                    "description": "The name of a header that you want CloudFront to forward to your origin.",
+                                    "type": "str"
+                                },
+                                "header_value": {
+                                    "description": "The value for the header that you specified in the I(header_name) field.",
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "custom_origin_config": {
+                            "description": "Connection information about the origin.",
+                            "suboptions": {
+                                "http_port": {
+                                    "description": "The HTTP port the custom origin listens on.",
+                                    "type": "int"
+                                },
+                                "https_port": {
+                                    "description": "The HTTPS port the custom origin listens on.",
+                                    "type": "int"
+                                },
+                                "origin_keepalive_timeout": {
+                                    "description": "A keep-alive timeout (in seconds).",
+                                    "type": "int"
+                                },
+                                "origin_protocol_policy": {
+                                    "description": "The origin protocol policy to apply to your origin.",
+                                    "type": "str"
+                                },
+                                "origin_read_timeout": {
+                                    "description": "A timeout (in seconds) when reading from your origin.",
+                                    "type": "int"
+                                },
+                                "origin_ssl_protocols": {
+                                    "description": "A list of SSL/TLS protocols that you want CloudFront to use when communicating to the origin over HTTPS.",
+                                    "elements": "str",
+                                    "type": "list"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "domain_name": {
+                            "description": [
+                                "The domain name which CloudFront will query as the origin.",
+                                "For more information see the CloudFront documentation at U(https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesDomainName)"
+                            ],
+                            "type": "str"
+                        },
+                        "id": {
+                            "description": "A unique identifier for the origin or origin group. I(id) must be unique within the distribution.",
+                            "type": "str"
+                        },
+                        "origin_path": {
+                            "description": "Tells CloudFront to request your content from a directory in your Amazon S3 bucket or your custom origin.",
+                            "type": "str"
+                        },
+                        "s3_origin_access_identity_enabled": {
+                            "description": [
+                                "Use an origin access identity to configure the origin so that viewers can only access objects in an Amazon S3 bucket through CloudFront.",
+                                "Will automatically create an Identity for you.",
+                                "See also U(https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "list"
+                },
+                "price_class": {
+                    "description": [
+                        "A string that specifies the pricing class of the distribution. As per U(https://aws.amazon.com/cloudfront/pricing/)",
+                        "I(price_class=PriceClass_100) consists of the areas United States, Canada and Europe.",
+                        "I(price_class=PriceClass_200) consists of the areas United States, Canada, Europe, Japan, India, Hong Kong, Philippines, S. Korea, Singapore & Taiwan.",
+                        "I(price_class=PriceClass_All) consists of the areas United States, Canada, Europe, Japan, India, South America, Australia, Hong Kong, Philippines, S. Korea, Singapore & Taiwan.",
+                        "AWS defaults this to C(PriceClass_All).",
+                        "Valid values are C(PriceClass_100), C(PriceClass_200) and C(PriceClass_All)"
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_aliases": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether existing aliases will be removed before adding new aliases.",
+                        "When I(purge_aliases=yes), existing aliases are removed and I(aliases) are added."
+                    ],
+                    "type": "bool"
+                },
+                "purge_cache_behaviors": {
+                    "default": false,
+                    "description": [
+                        "Whether to remove any cache behaviors that aren't listed in I(cache_behaviors).",
+                        "This switch also allows the reordering of I(cache_behaviors)."
+                    ],
+                    "type": "bool"
+                },
+                "purge_custom_error_responses": {
+                    "default": false,
+                    "description": "Whether to remove any custom error responses that aren't listed in I(custom_error_responses).",
+                    "type": "bool"
+                },
+                "purge_origins": {
+                    "default": false,
+                    "description": "Whether to remove any origins that aren't listed in I(origins).",
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether existing tags will be removed before adding new tags.",
+                        "When I(purge_tags=yes), existing tags are removed and I(tags) are added, if specified. If no tags are specified, it removes all existing tags for the distribution.",
+                        "When I(purge_tags=no), existing tags are kept and I(tags) are added, if specified."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "restrictions": {
+                    "description": [
+                        "A config element that is a complex object that describes how a distribution should restrict it's content."
+                    ],
+                    "suboptions": {
+                        "geo_restriction": {
+                            "description": "Apply a restriction based on the location of the requester.",
+                            "suboptions": {
+                                "items": {
+                                    "description": [
+                                        "A list of ISO 3166-1 two letter (Alpha 2) country codes that the restriction should apply to.",
+                                        "See the ISO website for a full list of codes U(https://www.iso.org/obp/ui/#search/code/)."
+                                    ],
+                                    "type": "list"
+                                },
+                                "restriction_type": {
+                                    "description": [
+                                        "The method that you want to use to restrict distribution of your content by country.",
+                                        "Valid values are C(none), C(whitelist), C(blacklist)."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The desired state of the distribution.",
+                        "I(state=present) creates a new distribution or updates an existing distribution.",
+                        "I(state=absent) deletes an existing distribution."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Should be input as a dict of key-value pairs.",
+                        "Note that numeric keys or values must be wrapped in quotes. e.g. C(Priority: '1')"
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "viewer_certificate": {
+                    "description": [
+                        "A dict that specifies the encryption details of the distribution."
+                    ],
+                    "suboptions": {
+                        "acm_certificate_arn": {
+                            "description": [
+                                "The ID of a certificate stored in ACM to use for HTTPS connections.",
+                                "If I(acm_certificate_id) is set then you must also specify I(ssl_support_method)."
+                            ],
+                            "type": "str"
+                        },
+                        "cloudfront_default_certificate": {
+                            "description": [
+                                "If you're using the CloudFront domain name for your distribution, such as C(123456789abcde.cloudfront.net) you should set I(cloudfront_default_certificate=true).",
+                                "If I(cloudfront_default_certificate=true) do not set I(ssl_support_method)."
+                            ],
+                            "type": "bool"
+                        },
+                        "iam_certificate_id": {
+                            "description": [
+                                "The ID of a certificate stored in IAM to use for HTTPS connections.",
+                                "If I(iam_certificate_id) is set then you must also specify I(ssl_support_method)."
+                            ],
+                            "type": "str"
+                        },
+                        "minimum_protocol_version": {
+                            "description": [
+                                "The security policy that you want CloudFront to use for HTTPS connections.",
+                                "See U(https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html) for supported security policies."
+                            ],
+                            "type": "str"
+                        },
+                        "ssl_support_method": {
+                            "description": [
+                                "How CloudFront should serve SSL certificates.",
+                                "Valid values are C(sni-only) for SNI, and C(vip) if CloudFront is configured to use a dedicated IP for your content."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether the module waits until the distribution has completed processing the creation or update."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 1800,
+                    "description": [
+                        "Specifies the duration in seconds to wait for a timeout of a cloudfront create or update."
+                    ],
+                    "type": "int"
+                },
+                "web_acl_id": {
+                    "description": [
+                        "The ID of a Web Application Firewall (WAF) Access Control List (ACL)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3 >= 1.0.0",
+                "python >= 2.6"
+            ],
+            "short_description": "Create, update and delete AWS CloudFront distributions.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: create a basic distribution with defaults and tags\n  community.aws.cloudfront_distribution:\n    state: present\n    default_origin_domain_name: www.my-cloudfront-origin.com\n    tags:\n      Name: example distribution\n      Project: example project\n      Priority: '1'\n\n- name: update a distribution comment by distribution_id\n  community.aws.cloudfront_distribution:\n    state: present\n    distribution_id: E1RP5A2MJ8073O\n    comment: modified by ansible cloudfront.py\n\n- name: update a distribution comment by caller_reference\n  community.aws.cloudfront_distribution:\n    state: present\n    caller_reference: my cloudfront distribution 001\n    comment: modified by ansible cloudfront.py\n\n- name: update a distribution's aliases and comment using the distribution_id as a reference\n  community.aws.cloudfront_distribution:\n    state: present\n    distribution_id: E1RP5A2MJ8073O\n    comment: modified by cloudfront.py again\n    aliases: [ 'www.my-distribution-source.com', 'zzz.aaa.io' ]\n\n- name: update a distribution's aliases and comment using an alias as a reference\n  community.aws.cloudfront_distribution:\n    state: present\n    caller_reference: my test distribution\n    comment: modified by cloudfront.py again\n    aliases:\n      - www.my-distribution-source.com\n      - zzz.aaa.io\n\n- name: update a distribution's comment and aliases and tags and remove existing tags\n  community.aws.cloudfront_distribution:\n    state: present\n    distribution_id: E15BU8SDCGSG57\n    comment: modified by cloudfront.py again\n    aliases:\n      - tested.com\n    tags:\n      Project: distribution 1.2\n    purge_tags: yes\n\n- name: create a distribution with an origin, logging and default cache behavior\n  community.aws.cloudfront_distribution:\n    state: present\n    caller_reference: unique test distribution ID\n    origins:\n        - id: 'my test origin-000111'\n          domain_name: www.example.com\n          origin_path: /production\n          custom_headers:\n            - header_name: MyCustomHeaderName\n              header_value: MyCustomHeaderValue\n    default_cache_behavior:\n      target_origin_id: 'my test origin-000111'\n      forwarded_values:\n        query_string: true\n        cookies:\n          forward: all\n        headers:\n         - '*'\n      viewer_protocol_policy: allow-all\n      smooth_streaming: true\n      compress: true\n      allowed_methods:\n        items:\n          - GET\n          - HEAD\n        cached_methods:\n          - GET\n          - HEAD\n    logging:\n      enabled: true\n      include_cookies: false\n      bucket: mylogbucket.s3.amazonaws.com\n      prefix: myprefix/\n    enabled: false\n    comment: this is a CloudFront distribution with logging\n\n- name: delete a distribution\n  community.aws.cloudfront_distribution:\n    state: absent\n    caller_reference: replaceable distribution\n",
+        "metadata": null,
+        "return": {
+            "active_trusted_signers": {
+                "contains": {
+                    "enabled": {
+                        "description": "Whether trusted signers are in use.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "items": {
+                        "description": "Number of trusted signers.",
+                        "returned": "when there are trusted signers",
+                        "sample": [
+                            "key_pair_id"
+                        ],
+                        "type": "list"
+                    },
+                    "quantity": {
+                        "description": "Number of trusted signers.",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    }
+                },
+                "description": "Key pair IDs that CloudFront is aware of for each trusted signer.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "aliases": {
+                "contains": {
+                    "items": {
+                        "description": "List of aliases.",
+                        "returned": "always",
+                        "sample": [
+                            "test.example.com"
+                        ],
+                        "type": "list"
+                    },
+                    "quantity": {
+                        "description": "Number of aliases.",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    }
+                },
+                "description": "Aliases that refer to the distribution.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "arn": {
+                "description": "Amazon Resource Name of the distribution.",
+                "returned": "always",
+                "sample": "arn:aws:cloudfront::123456789012:distribution/E1234ABCDEFGHI",
+                "type": "str"
+            },
+            "cache_behaviors": {
+                "contains": {
+                    "items": {
+                        "contains": {
+                            "allowed_methods": {
+                                "contains": {
+                                    "cached_methods": {
+                                        "contains": {
+                                            "items": {
+                                                "description": "List of cached methods.",
+                                                "returned": "always",
+                                                "sample": [
+                                                    "HEAD",
+                                                    "GET"
+                                                ],
+                                                "type": "list"
+                                            },
+                                            "quantity": {
+                                                "description": "Count of cached methods.",
+                                                "returned": "always",
+                                                "sample": 2,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "Methods cached by the cache behavior.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    },
+                                    "items": {
+                                        "description": "List of methods allowed by the cache behavior.",
+                                        "returned": "always",
+                                        "sample": [
+                                            "HEAD",
+                                            "GET"
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of methods allowed by the cache behavior.",
+                                        "returned": "always",
+                                        "sample": 2,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Methods allowed by the cache behavior.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "compress": {
+                                "description": "Whether compression is turned on for the cache behavior.",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "default_ttl": {
+                                "description": "Default Time to Live of the cache behavior.",
+                                "returned": "always",
+                                "sample": 86400,
+                                "type": "int"
+                            },
+                            "forwarded_values": {
+                                "contains": {
+                                    "cookies": {
+                                        "contains": {
+                                            "forward": {
+                                                "description": "Which cookies to forward to the origin for this cache behavior.",
+                                                "returned": "always",
+                                                "sample": "none",
+                                                "type": "str"
+                                            },
+                                            "whitelisted_names": {
+                                                "contains": {
+                                                    "items": {
+                                                        "description": "List of cookies to forward.",
+                                                        "returned": "when list is not empty",
+                                                        "sample": "my_cookie",
+                                                        "type": "list"
+                                                    },
+                                                    "quantity": {
+                                                        "description": "Count of cookies to forward.",
+                                                        "returned": "always",
+                                                        "sample": 1,
+                                                        "type": "int"
+                                                    }
+                                                },
+                                                "description": "The names of the cookies to forward to the origin for this cache behavior.",
+                                                "returned": "when I(forward=whitelist)",
+                                                "type": "complex"
+                                            }
+                                        },
+                                        "description": "Cookies to forward to the origin.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    },
+                                    "headers": {
+                                        "contains": {
+                                            "items": {
+                                                "description": "List of headers to vary on.",
+                                                "returned": "when list is not empty",
+                                                "sample": [
+                                                    "Host"
+                                                ],
+                                                "type": "list"
+                                            },
+                                            "quantity": {
+                                                "description": "Count of headers to vary on.",
+                                                "returned": "always",
+                                                "sample": 1,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "Which headers are used to vary on cache retrievals.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    },
+                                    "query_string": {
+                                        "description": "Whether the query string is used in cache lookups.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "query_string_cache_keys": {
+                                        "contains": {
+                                            "items": {
+                                                "description": "List of query string cache keys to use in cache lookups.",
+                                                "returned": "when list is not empty",
+                                                "sample": null,
+                                                "type": "list"
+                                            },
+                                            "quantity": {
+                                                "description": "Count of query string cache keys to use in cache lookups.",
+                                                "returned": "always",
+                                                "sample": 1,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "Which query string keys to use in cache lookups.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    }
+                                },
+                                "description": "Values forwarded to the origin for this cache behavior.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "lambda_function_associations": {
+                                "contains": {
+                                    "items": {
+                                        "description": "List of lambda function associations.",
+                                        "returned": "when list is not empty",
+                                        "sample": [
+                                            {
+                                                "event_type": "viewer-response",
+                                                "lambda_function_arn": "arn:aws:lambda:123456789012:us-east-1/lambda/lambda-function"
+                                            }
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of lambda function associations.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Lambda function associations for a cache behavior.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "max_ttl": {
+                                "description": "Maximum Time to Live.",
+                                "returned": "always",
+                                "sample": 31536000,
+                                "type": "int"
+                            },
+                            "min_ttl": {
+                                "description": "Minimum Time to Live.",
+                                "returned": "always",
+                                "sample": 0,
+                                "type": "int"
+                            },
+                            "path_pattern": {
+                                "description": "Path pattern that determines this cache behavior.",
+                                "returned": "always",
+                                "sample": "/path/to/files/*",
+                                "type": "str"
+                            },
+                            "smooth_streaming": {
+                                "description": "Whether smooth streaming is enabled.",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "target_origin_id": {
+                                "description": "ID of origin reference by this cache behavior.",
+                                "returned": "always",
+                                "sample": "origin_abcd",
+                                "type": "str"
+                            },
+                            "trusted_signers": {
+                                "contains": {
+                                    "enabled": {
+                                        "description": "Whether trusted signers are enabled for this cache behavior.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of trusted signers.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Trusted signers.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "viewer_protocol_policy": {
+                                "description": "Policy of how to handle http/https.",
+                                "returned": "always",
+                                "sample": "redirect-to-https",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of cache behaviors.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "quantity": {
+                        "description": "Count of cache behaviors.",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    }
+                },
+                "description": "CloudFront cache behaviors.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "caller_reference": {
+                "description": "Idempotency reference given when creating CloudFront distribution.",
+                "returned": "always",
+                "sample": "1484796016700",
+                "type": "str"
+            },
+            "comment": {
+                "description": "Any comments you want to include about the distribution.",
+                "returned": "always",
+                "sample": "my first CloudFront distribution",
+                "type": "str"
+            },
+            "custom_error_responses": {
+                "contains": {
+                    "items": {
+                        "contains": {
+                            "error_caching_min_ttl": {
+                                "description": "Minimum time to cache this error response.",
+                                "returned": "always",
+                                "sample": 300,
+                                "type": "int"
+                            },
+                            "error_code": {
+                                "description": "Origin response code that triggers this error response.",
+                                "returned": "always",
+                                "sample": 500,
+                                "type": "int"
+                            },
+                            "response_code": {
+                                "description": "Response code to return to the requester.",
+                                "returned": "always",
+                                "sample": "500",
+                                "type": "str"
+                            },
+                            "response_page_path": {
+                                "description": "Path that contains the error page to display.",
+                                "returned": "always",
+                                "sample": "/errors/5xx.html",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of custom error responses.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "quantity": {
+                        "description": "Count of custom error response items",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    }
+                },
+                "description": "Custom error responses to use for error handling.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "default_cache_behavior": {
+                "contains": {
+                    "allowed_methods": {
+                        "contains": {
+                            "cached_methods": {
+                                "contains": {
+                                    "items": {
+                                        "description": "List of cached methods.",
+                                        "returned": "always",
+                                        "sample": [
+                                            "HEAD",
+                                            "GET"
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of cached methods.",
+                                        "returned": "always",
+                                        "sample": 2,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Methods cached by the cache behavior.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "items": {
+                                "description": "List of methods allowed by the cache behavior.",
+                                "returned": "always",
+                                "sample": [
+                                    "HEAD",
+                                    "GET"
+                                ],
+                                "type": "list"
+                            },
+                            "quantity": {
+                                "description": "Count of methods allowed by the cache behavior.",
+                                "returned": "always",
+                                "sample": 2,
+                                "type": "int"
+                            }
+                        },
+                        "description": "Methods allowed by the cache behavior.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "compress": {
+                        "description": "Whether compression is turned on for the cache behavior.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "default_ttl": {
+                        "description": "Default Time to Live of the cache behavior.",
+                        "returned": "always",
+                        "sample": 86400,
+                        "type": "int"
+                    },
+                    "forwarded_values": {
+                        "contains": {
+                            "cookies": {
+                                "contains": {
+                                    "forward": {
+                                        "description": "Which cookies to forward to the origin for this cache behavior.",
+                                        "returned": "always",
+                                        "sample": "none",
+                                        "type": "str"
+                                    },
+                                    "whitelisted_names": {
+                                        "contains": {
+                                            "items": {
+                                                "description": "List of cookies to forward.",
+                                                "returned": "when list is not empty",
+                                                "sample": "my_cookie",
+                                                "type": "list"
+                                            },
+                                            "quantity": {
+                                                "description": "Count of cookies to forward.",
+                                                "returned": "always",
+                                                "sample": 1,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "The names of the cookies to forward to the origin for this cache behavior.",
+                                        "returned": "when I(forward=whitelist)",
+                                        "type": "complex"
+                                    }
+                                },
+                                "description": "Cookies to forward to the origin.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "headers": {
+                                "contains": {
+                                    "items": {
+                                        "description": "List of headers to vary on.",
+                                        "returned": "when list is not empty",
+                                        "sample": [
+                                            "Host"
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of headers to vary on.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Which headers are used to vary on cache retrievals.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "query_string": {
+                                "description": "Whether the query string is used in cache lookups.",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "query_string_cache_keys": {
+                                "contains": {
+                                    "items": {
+                                        "description": "List of query string cache keys to use in cache lookups.",
+                                        "returned": "when list is not empty",
+                                        "sample": null,
+                                        "type": "list"
+                                    },
+                                    "quantity": {
+                                        "description": "Count of query string cache keys to use in cache lookups.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Which query string keys to use in cache lookups.",
+                                "returned": "always",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Values forwarded to the origin for this cache behavior.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "lambda_function_associations": {
+                        "contains": {
+                            "items": {
+                                "description": "List of lambda function associations.",
+                                "returned": "when list is not empty",
+                                "sample": [
+                                    {
+                                        "event_type": "viewer-response",
+                                        "lambda_function_arn": "arn:aws:lambda:123456789012:us-east-1/lambda/lambda-function"
+                                    }
+                                ],
+                                "type": "list"
+                            },
+                            "quantity": {
+                                "description": "Count of lambda function associations.",
+                                "returned": "always",
+                                "sample": 1,
+                                "type": "int"
+                            }
+                        },
+                        "description": "Lambda function associations for a cache behavior.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "max_ttl": {
+                        "description": "Maximum Time to Live.",
+                        "returned": "always",
+                        "sample": 31536000,
+                        "type": "int"
+                    },
+                    "min_ttl": {
+                        "description": "Minimum Time to Live.",
+                        "returned": "always",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "path_pattern": {
+                        "description": "Path pattern that determines this cache behavior.",
+                        "returned": "always",
+                        "sample": "/path/to/files/*",
+                        "type": "str"
+                    },
+                    "smooth_streaming": {
+                        "description": "Whether smooth streaming is enabled.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "target_origin_id": {
+                        "description": "ID of origin reference by this cache behavior.",
+                        "returned": "always",
+                        "sample": "origin_abcd",
+                        "type": "str"
+                    },
+                    "trusted_signers": {
+                        "contains": {
+                            "enabled": {
+                                "description": "Whether trusted signers are enabled for this cache behavior.",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "quantity": {
+                                "description": "Count of trusted signers.",
+                                "returned": "always",
+                                "sample": 1,
+                                "type": "int"
+                            }
+                        },
+                        "description": "Trusted signers.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "viewer_protocol_policy": {
+                        "description": "Policy of how to handle http/https.",
+                        "returned": "always",
+                        "sample": "redirect-to-https",
+                        "type": "str"
+                    }
+                },
+                "description": "Default cache behavior.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "default_root_object": {
+                "description": "The object that you want CloudFront to request from your origin (for example, index.html) when a viewer requests the root URL for your distribution.",
+                "returned": "always",
+                "sample": "",
+                "type": "str"
+            },
+            "diff": {
+                "description": "Difference between previous configuration and new configuration.",
+                "returned": "always",
+                "sample": {},
+                "type": "dict"
+            },
+            "domain_name": {
+                "description": "Domain name of CloudFront distribution.",
+                "returned": "always",
+                "sample": "d1vz8pzgurxosf.cloudfront.net",
+                "type": "str"
+            },
+            "enabled": {
+                "description": "Whether the CloudFront distribution is enabled or not.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "http_version": {
+                "description": "Version of HTTP supported by the distribution.",
+                "returned": "always",
+                "sample": "http2",
+                "type": "str"
+            },
+            "id": {
+                "description": "CloudFront distribution ID.",
+                "returned": "always",
+                "sample": "E123456ABCDEFG",
+                "type": "str"
+            },
+            "in_progress_invalidation_batches": {
+                "description": "The number of invalidation batches currently in progress.",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "is_ipv6_enabled": {
+                "description": "Whether IPv6 is enabled.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "last_modified_time": {
+                "description": "Date and time distribution was last modified.",
+                "returned": "always",
+                "sample": "2017-10-13T01:51:12.656000+00:00",
+                "type": "str"
+            },
+            "logging": {
+                "contains": {
+                    "bucket": {
+                        "description": "S3 bucket logging destination.",
+                        "returned": "always",
+                        "sample": "logs-example-com.s3.amazonaws.com",
+                        "type": "str"
+                    },
+                    "enabled": {
+                        "description": "Whether logging is enabled.",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "include_cookies": {
+                        "description": "Whether to log cookies.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "prefix": {
+                        "description": "Prefix added to logging object names.",
+                        "returned": "always",
+                        "sample": "cloudfront/test",
+                        "type": "str"
+                    }
+                },
+                "description": "Logging information.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "origins": {
+                "contains": {
+                    "items": {
+                        "contains": {
+                            "custom_headers": {
+                                "contains": {
+                                    "quantity": {
+                                        "description": "Count of headers.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Custom headers passed to the origin.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "custom_origin_config": {
+                                "contains": {
+                                    "http_port": {
+                                        "description": "Port on which HTTP is listening.",
+                                        "returned": "always",
+                                        "sample": 80,
+                                        "type": "int"
+                                    },
+                                    "https_port": {
+                                        "description": "Port on which HTTPS is listening.",
+                                        "returned": "always",
+                                        "sample": 443,
+                                        "type": "int"
+                                    },
+                                    "origin_keepalive_timeout": {
+                                        "description": "Keep-alive timeout.",
+                                        "returned": "always",
+                                        "sample": 5,
+                                        "type": "int"
+                                    },
+                                    "origin_protocol_policy": {
+                                        "description": "Policy of which protocols are supported.",
+                                        "returned": "always",
+                                        "sample": "https-only",
+                                        "type": "str"
+                                    },
+                                    "origin_read_timeout": {
+                                        "description": "Timeout for reads to the origin.",
+                                        "returned": "always",
+                                        "sample": 30,
+                                        "type": "int"
+                                    },
+                                    "origin_ssl_protocols": {
+                                        "contains": {
+                                            "items": {
+                                                "description": "List of SSL protocols.",
+                                                "returned": "always",
+                                                "sample": [
+                                                    "TLSv1",
+                                                    "TLSv1.1",
+                                                    "TLSv1.2"
+                                                ],
+                                                "type": "list"
+                                            },
+                                            "quantity": {
+                                                "description": "Count of SSL protocols.",
+                                                "returned": "always",
+                                                "sample": 3,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "SSL protocols allowed by the origin.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    }
+                                },
+                                "description": "Configuration of the origin.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "domain_name": {
+                                "description": "Domain name of the origin.",
+                                "returned": "always",
+                                "sample": "test-origin.example.com",
+                                "type": "str"
+                            },
+                            "id": {
+                                "description": "ID of the origin.",
+                                "returned": "always",
+                                "sample": "test-origin.example.com",
+                                "type": "str"
+                            },
+                            "origin_path": {
+                                "description": "Subdirectory to prefix the request from the S3 or HTTP origin.",
+                                "returned": "always",
+                                "sample": "",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of origins.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "quantity": {
+                        "description": "Count of origins.",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    }
+                },
+                "description": "Origins in the CloudFront distribution.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "price_class": {
+                "description": "Price class of CloudFront distribution.",
+                "returned": "always",
+                "sample": "PriceClass_All",
+                "type": "str"
+            },
+            "restrictions": {
+                "contains": {
+                    "geo_restriction": {
+                        "contains": {
+                            "items": {
+                                "description": "List of country codes allowed or disallowed.",
+                                "returned": "always",
+                                "sample": "xy",
+                                "type": "list"
+                            },
+                            "quantity": {
+                                "description": "Count of restrictions.",
+                                "returned": "always",
+                                "sample": 1,
+                                "type": "int"
+                            },
+                            "restriction_type": {
+                                "description": "Type of restriction.",
+                                "returned": "always",
+                                "sample": "blacklist",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Controls the countries in which your content is distributed.",
+                        "returned": "always",
+                        "type": "complex"
+                    }
+                },
+                "description": "Restrictions in use by CloudFront.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "status": {
+                "description": "Status of the CloudFront distribution.",
+                "returned": "always",
+                "sample": "InProgress",
+                "type": "str"
+            },
+            "tags": {
+                "description": "Distribution tags.",
+                "returned": "always",
+                "sample": {
+                    "Hello": "World"
+                },
+                "type": "dict"
+            },
+            "viewer_certificate": {
+                "contains": {
+                    "acm_certificate_arn": {
+                        "description": "ARN of ACM certificate.",
+                        "returned": "when certificate comes from ACM",
+                        "sample": "arn:aws:acm:us-east-1:123456789012:certificate/abcd1234-1234-1234-abcd-123456abcdef",
+                        "type": "str"
+                    },
+                    "certificate": {
+                        "description": "Reference to certificate.",
+                        "returned": "always",
+                        "sample": "arn:aws:acm:us-east-1:123456789012:certificate/abcd1234-1234-1234-abcd-123456abcdef",
+                        "type": "str"
+                    },
+                    "certificate_source": {
+                        "description": "Where certificate comes from.",
+                        "returned": "always",
+                        "sample": "acm",
+                        "type": "str"
+                    },
+                    "minimum_protocol_version": {
+                        "description": "Minimum SSL/TLS protocol supported by this distribution.",
+                        "returned": "always",
+                        "sample": "TLSv1",
+                        "type": "str"
+                    },
+                    "ssl_support_method": {
+                        "description": "Support for pre-SNI browsers or not.",
+                        "returned": "always",
+                        "sample": "sni-only",
+                        "type": "str"
+                    }
+                },
+                "description": "Certificate used by CloudFront distribution.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "web_acl_id": {
+                "description": "ID of Web Access Control List (from WAF service).",
+                "returned": "always",
+                "sample": "abcd1234-1234-abcd-abcd-abcd12345678",
+                "type": "str"
+            }
+        }
+    }
+}

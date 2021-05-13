@@ -1,0 +1,184 @@
+{
+    "inspur.sm.edit_ldap": {
+        "doc": {
+            "author": [
+                "WangBaoshan (@ISIB-group)"
+            ],
+            "collection": "inspur.sm",
+            "description": [
+                "Set ldap information on Inspur server."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/inspur/sm/plugins/modules/edit_ldap.py",
+            "has_action": false,
+            "module": "edit_ldap",
+            "options": {
+                "address": {
+                    "description": [
+                        "Server Address."
+                    ],
+                    "type": "str"
+                },
+                "attr": {
+                    "choices": [
+                        "cn",
+                        "uid"
+                    ],
+                    "description": [
+                        "Attribute of User Login."
+                    ],
+                    "type": "str"
+                },
+                "base": {
+                    "description": [
+                        "Search Base,",
+                        "Search base is a string of 4 to 64 alpha-numeric characters;",
+                        "It must start with an alphabetical character;",
+                        "Special Symbols like dot(.), comma(,), hyphen(-), underscore(_), equal-to(=) are allowed."
+                    ],
+                    "type": "str"
+                },
+                "ca": {
+                    "description": [
+                        "CA certificate file path.",
+                        "Required when I(encry=StartTLS)."
+                    ],
+                    "type": "str"
+                },
+                "ce": {
+                    "description": [
+                        "Certificate file path.",
+                        "Required when I(encry=StartTLS)."
+                    ],
+                    "type": "str"
+                },
+                "cn": {
+                    "choices": [
+                        "ip",
+                        "fqdn"
+                    ],
+                    "description": [
+                        "Common name type.",
+                        "Required when I(encry=StartTLS)."
+                    ],
+                    "type": "str"
+                },
+                "code": {
+                    "description": [
+                        "Password.",
+                        "Required when I(enable=enable)."
+                    ],
+                    "type": "str"
+                },
+                "dn": {
+                    "description": [
+                        "Bind DN.",
+                        "Bind DN is a string of 4 to 64 alpha-numeric characters;",
+                        "It must start with an alphabetical character;",
+                        "Special Symbols like dot(.), comma(,), hyphen(-), underscore(_), equal-to(=) are allowed."
+                    ],
+                    "type": "str"
+                },
+                "enable": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "LDAP/E-Directory Authentication Status."
+                    ],
+                    "type": "str"
+                },
+                "encry": {
+                    "choices": [
+                        "no",
+                        "SSL",
+                        "StartTLS"
+                    ],
+                    "description": [
+                        "Encryption Type."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Specifies the password to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "pk": {
+                    "description": [
+                        "Private Key file path.",
+                        "Required when I(encry=StartTLS)."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "server_port": {
+                    "description": [
+                        "Server Port."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "description": [
+                        "Configures the username to use to authenticate the connection to the remote device. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Set ldap information.",
+            "version_added": "0.1.0",
+            "version_added_collection": "inspur.sm"
+        },
+        "examples": "\n- name: Ldap test\n  hosts: ism\n  connection: local\n  gather_facts: no\n  vars:\n    ism:\n      host: \"{{ ansible_ssh_host }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  tasks:\n\n  - name: \"Set ldap information\"\n    inspur.sm.edit_ldap:\n      enable: \"disable\"\n      provider: \"{{ ism }}\"\n\n  - name: \"Set ldap information\"\n    inspur.sm.edit_ldap:\n      enable: \"enable\"\n      encry: \"SSL\"\n      address: \"100.2.2.2\"\n      server_port: 389\n      dn: \"cn=manager,ou=login,dc=domain,dc=com\"\n      code: \"123456\"\n      base: \"cn=manager\"\n      attr: \"uid\"\n      provider: \"{{ ism }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Check to see if a change was made on the device.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "message": {
+                "description": "Messages returned after module execution.",
+                "returned": "always",
+                "type": "str"
+            },
+            "state": {
+                "description": "Status after module execution.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

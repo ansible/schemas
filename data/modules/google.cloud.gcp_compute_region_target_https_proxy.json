@@ -1,0 +1,191 @@
+{
+    "google.cloud.gcp_compute_region_target_https_proxy": {
+        "doc": {
+            "author": "Google Inc. (@googlecloudplatform)",
+            "collection": "google.cloud",
+            "description": [
+                "Represents a RegionTargetHttpsProxy resource, which is used by one or more forwarding rules to route incoming HTTPS requests to a URL map."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/google/cloud/plugins/modules/gcp_compute_region_target_https_proxy.py",
+            "has_action": false,
+            "module": "gcp_compute_region_target_https_proxy",
+            "notes": [
+                "API Reference: U(https://cloud.google.com/compute/docs/reference/rest/v1/regionTargetHttpsProxies)",
+                "Official Documentation: U(https://cloud.google.com/compute/docs/load-balancing/http/target-proxies)",
+                "for authentication, you can set service_account_file using the C(gcp_service_account_file) env variable.",
+                "for authentication, you can set service_account_contents using the C(GCP_SERVICE_ACCOUNT_CONTENTS) env variable.",
+                "For authentication, you can set service_account_email using the C(GCP_SERVICE_ACCOUNT_EMAIL) env variable.",
+                "For authentication, you can set auth_kind using the C(GCP_AUTH_KIND) env variable.",
+                "For authentication, you can set scopes using the C(GCP_SCOPES) env variable.",
+                "Environment variables values will only be used if the playbook values are not set.",
+                "The I(service_account_email) and I(service_account_file) options are mutually exclusive."
+            ],
+            "options": {
+                "auth_kind": {
+                    "choices": [
+                        "application",
+                        "machineaccount",
+                        "serviceaccount"
+                    ],
+                    "description": [
+                        "The type of credential used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "An optional description of this resource."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "env_type": {
+                    "description": [
+                        "Specifies which Ansible environment you're running this module within.",
+                        "This should not be set unless you know what you're doing.",
+                        "This only alters the User Agent string for any API requests."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the resource. Provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "project": {
+                    "description": [
+                        "The Google Cloud Platform project to use."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "The region where the regional proxy resides."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "scopes": {
+                    "description": [
+                        "Array of scopes to be used"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "service_account_contents": {
+                    "description": [
+                        "The contents of a Service Account JSON file, either in a dictionary or as a JSON string that represents it."
+                    ],
+                    "type": "jsonarg"
+                },
+                "service_account_email": {
+                    "description": [
+                        "An optional service account email address if machineaccount is selected and the user does not wish to use the default email."
+                    ],
+                    "type": "str"
+                },
+                "service_account_file": {
+                    "description": [
+                        "The path of a Service Account JSON file if serviceaccount is selected as type."
+                    ],
+                    "type": "path"
+                },
+                "ssl_certificates": {
+                    "description": [
+                        "A list of RegionSslCertificate resources that are used to authenticate connections between users and the load balancer. Currently, exactly one SSL certificate must be specified."
+                    ],
+                    "elements": "dict",
+                    "required": true,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the given object should exist in GCP"
+                    ],
+                    "type": "str"
+                },
+                "url_map": {
+                    "description": [
+                        "A reference to the RegionUrlMap resource that defines the mapping from URL to the RegionBackendService.",
+                        "This field represents a link to a RegionUrlMap resource in GCP. It can be specified in two ways. First, you can place a dictionary with key 'selfLink' and value of your resource's selfLink Alternatively, you can add `register: name-of-resource` to a gcp_compute_region_url_map task and then set this url_map field to \"{{ name-of-resource }}\""
+                    ],
+                    "required": true,
+                    "type": "dict"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "requests >= 2.18.4",
+                "google-auth >= 1.3.0"
+            ],
+            "short_description": "Creates a GCP RegionTargetHttpsProxy"
+        },
+        "examples": "\n- name: create a instance group\n  google.cloud.gcp_compute_instance_group:\n    name: instancegroup-targethttpsproxy\n    zone: us-central1-a\n    project: \"{{ gcp_project }}\"\n    auth_kind: \"{{ gcp_cred_kind }}\"\n    service_account_file: \"{{ gcp_cred_file }}\"\n    state: present\n  register: instancegroup\n\n- name: create a region health check\n  google.cloud.gcp_compute_region_health_check:\n    name: \"{{ resource_name }}\"\n    type: HTTPS\n    healthy_threshold: 10\n    timeout_sec: 2\n    unhealthy_threshold: 5\n    region: us-central1\n    project: \"{{ gcp_project }}\"\n    auth_kind: \"{{ gcp_cred_kind }}\"\n    service_account_file: \"{{ gcp_cred_file }}\"\n    state: present\n  register: healthcheck\n\n- name: create a region backend service\n  google.cloud.gcp_compute_region_backend_service:\n    name: backendservice-targethttpsproxy\n    region: us-central1\n    backends:\n    - group: \"{{ instancegroup.selfLink }}\"\n    healthchecks:\n    - \"{{ healthcheck.selfLink }}\"\n    project: \"{{ gcp_project }}\"\n    auth_kind: \"{{ gcp_cred_kind }}\"\n    service_account_file: \"{{ gcp_cred_file }}\"\n    state: present\n  register: backendservice\n\n- name: create a region URL map\n  google.cloud.gcp_compute_region_url_map:\n    name: urlmap-targethttpsproxy\n    region: us-central1\n    default_service: \"{{ backendservice }}\"\n    project: \"{{ gcp_project }}\"\n    auth_kind: \"{{ gcp_cred_kind }}\"\n    service_account_file: \"{{ gcp_cred_file }}\"\n    state: present\n  register: urlmap\n\n- name: create a SSL certificate\n  google.cloud.gcp_compute_ssl_certificate:\n    name: sslcert-targethttpsproxy\n    description: A certificate for testing. Do not use this certificate in production\n    certificate: |-\n      -----BEGIN CERTIFICATE-----\n      MIICqjCCAk+gAwIBAgIJAIuJ+0352Kq4MAoGCCqGSM49BAMCMIGwMQswCQYDVQQG\n      EwJVUzETMBEGA1UECAwKV2FzaGluZ3RvbjERMA8GA1UEBwwIS2lya2xhbmQxFTAT\n      BgNVBAoMDEdvb2dsZSwgSW5jLjEeMBwGA1UECwwVR29vZ2xlIENsb3VkIFBsYXRm\n      b3JtMR8wHQYDVQQDDBZ3d3cubXktc2VjdXJlLXNpdGUuY29tMSEwHwYJKoZIhvcN\n      AQkBFhJuZWxzb25hQGdvb2dsZS5jb20wHhcNMTcwNjI4MDQ1NjI2WhcNMjcwNjI2\n      MDQ1NjI2WjCBsDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hpbmd0b24xETAP\n      BgNVBAcMCEtpcmtsYW5kMRUwEwYDVQQKDAxHb29nbGUsIEluYy4xHjAcBgNVBAsM\n      FUdvb2dsZSBDbG91ZCBQbGF0Zm9ybTEfMB0GA1UEAwwWd3d3Lm15LXNlY3VyZS1z\n      aXRlLmNvbTEhMB8GCSqGSIb3DQEJARYSbmVsc29uYUBnb29nbGUuY29tMFkwEwYH\n      KoZIzj0CAQYIKoZIzj0DAQcDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ\n      4mzkzTv0dXyB750fOGN02HtkpBOZzzvUARTR10JQoSe2/5PIwaNQME4wHQYDVR0O\n      BBYEFKIQC3A2SDpxcdfn0YLKineDNq/BMB8GA1UdIwQYMBaAFKIQC3A2SDpxcdfn\n      0YLKineDNq/BMAwGA1UdEwQFMAMBAf8wCgYIKoZIzj0EAwIDSQAwRgIhALs4vy+O\n      M3jcqgA4fSW/oKw6UJxp+M6a+nGMX+UJR3YgAiEAvvl39QRVAiv84hdoCuyON0lJ\n      zqGNhIPGq2ULqXKK8BY=\n      -----END CERTIFICATE-----\n    private_key: |-\n      -----BEGIN EC PRIVATE KEY-----\n      MHcCAQEEIObtRo8tkUqoMjeHhsOh2ouPpXCgBcP+EDxZCB/tws15oAoGCCqGSM49\n      AwEHoUQDQgAEHGzpcRJ4XzfBJCCPMQeXQpTXwlblimODQCuQ4mzkzTv0dXyB750f\n      OGN02HtkpBOZzzvUARTR10JQoSe2/5PIwQ==\n      -----END EC PRIVATE KEY-----\n    project: \"{{ gcp_project }}\"\n    auth_kind: \"{{ gcp_cred_kind }}\"\n    service_account_file: \"{{ gcp_cred_file }}\"\n    state: present\n  register: sslcert\n\n- name: create a region target HTTPS proxy\n  google.cloud.gcp_compute_region_target_https_proxy:\n    name: test_object\n    region: us-central1\n    ssl_certificates:\n    - \"{{ sslcert }}\"\n    url_map: \"{{ urlmap }}\"\n    project: test_project\n    auth_kind: serviceaccount\n    service_account_file: \"/tmp/auth.pem\"\n    state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "creationTimestamp": {
+                "description": [
+                    "Creation timestamp in RFC3339 text format."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "description": {
+                "description": [
+                    "An optional description of this resource."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "id": {
+                "description": [
+                    "The unique identifier for the resource."
+                ],
+                "returned": "success",
+                "type": "int"
+            },
+            "name": {
+                "description": [
+                    "Name of the resource. Provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression `[a-z]([-a-z0-9]*[a-z0-9])?` which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "region": {
+                "description": [
+                    "The region where the regional proxy resides."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "sslCertificates": {
+                "description": [
+                    "A list of RegionSslCertificate resources that are used to authenticate connections between users and the load balancer. Currently, exactly one SSL certificate must be specified."
+                ],
+                "returned": "success",
+                "type": "list"
+            },
+            "urlMap": {
+                "description": [
+                    "A reference to the RegionUrlMap resource that defines the mapping from URL to the RegionBackendService."
+                ],
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,401 @@
+{
+    "community.kubevirt.kubevirt_preset": {
+        "doc": {
+            "author": "KubeVirt Team (@kubevirt)",
+            "collection": "community.kubevirt",
+            "description": [
+                "Use Openshift Python SDK to manage the state of KubeVirt virtual machine presets."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/kubevirt/plugins/modules/kubevirt_preset.py",
+            "has_action": false,
+            "module": "kubevirt_preset",
+            "notes": [
+                "The OpenShift Python client wraps the K8s Python client, providing full access to all of the APIS and models available on both platforms. For API version details and additional information visit https://github.com/openshift/openshift-restclient-python",
+                "To avoid SSL certificate validation errors when C(validate_certs) is I(True), the full certificate chain for the API server must be provided via C(ca_cert) or in the kubeconfig file.",
+                "In order to use this module you have to install Openshift Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=openshift>=0.8.2)"
+            ],
+            "options": {
+                "affinity": {
+                    "description": [
+                        "Describes node affinity scheduling rules for the vm."
+                    ],
+                    "suboptions": {
+                        "hard": {
+                            "description": [
+                                "If the affinity requirements specified by this field are not met at scheduling time, the vm will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during vm execution (e.g. due to a vm label update), the system may or may not try to eventually evict the vm from its node. When there are multiple elements, the lists of nodes corresponding to each C(term) are intersected, i.e. all terms must be satisfied."
+                            ],
+                            "type": "dict"
+                        },
+                        "soft": {
+                            "description": [
+                                "The scheduler will prefer to schedule vms to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding C(weight) to the sum if the node has vms which matches the corresponding C(term); the nodes with the highest sum are the most preferred."
+                            ],
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "anti_affinity": {
+                    "description": [
+                        "Describes vm anti-affinity scheduling rules e.g. avoid putting this vm in the same node, zone, etc. as some other vms."
+                    ],
+                    "suboptions": {
+                        "hard": {
+                            "description": [
+                                "If the anti-affinity requirements specified by this field are not met at scheduling time, the vm will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during vm execution (e.g. due to a vm label update), the system may or may not try to eventually evict the vm from its node. When there are multiple elements, the lists of nodes corresponding to each C(term) are intersected, i.e. all terms must be satisfied."
+                            ],
+                            "type": "dict"
+                        },
+                        "soft": {
+                            "description": [
+                                "The scheduler will prefer to schedule vms to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding C(weight) to the sum if the node has vms which matches the corresponding C(term); the nodes with the highest sum are the most preferred."
+                            ],
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "api_key": {
+                    "description": [
+                        "Token used to authenticate with the API. Can also be specified via K8S_AUTH_API_KEY environment variable."
+                    ],
+                    "type": "str"
+                },
+                "bootloader": {
+                    "description": [
+                        "Specify the bootloader of the virtual machine.",
+                        "All virtual machines use BIOS by default for booting."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca_cert"
+                    ],
+                    "description": [
+                        "Path to a CA certificate used to authenticate with the API. The full certificate chain must be provided to avoid certificate validation errors. Can also be specified via K8S_AUTH_SSL_CA_CERT environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert_file"
+                    ],
+                    "description": [
+                        "Path to a certificate used to authenticate with the API. Can also be specified via K8S_AUTH_CERT_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key_file"
+                    ],
+                    "description": [
+                        "Path to a key file used to authenticate with the API. Can also be specified via K8S_AUTH_KEY_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "cloud_init_nocloud": {
+                    "description": [
+                        "Represents a cloud-init NoCloud user-data source. The NoCloud data will be added as a disk to the virtual machine. A proper cloud-init installation is required inside the guest. More information U(https://kubevirt.io/api-reference/master/definitions.html#_v1_cloudinitnocloudsource)"
+                    ],
+                    "type": "dict"
+                },
+                "context": {
+                    "description": [
+                        "The name of a context found in the config file. Can also be specified via K8S_AUTH_CONTEXT environment variable."
+                    ],
+                    "type": "str"
+                },
+                "cpu_cores": {
+                    "description": [
+                        "Number of CPU cores."
+                    ],
+                    "type": "int"
+                },
+                "cpu_features": {
+                    "description": [
+                        "List of dictionary to fine-tune features provided by the selected CPU model.",
+                        "I(Note): Policy attribute can either be omitted or contain one of the following policies: force, require, optional, disable, forbid.",
+                        "I(Note): In case a policy is omitted for a feature, it will default to require.",
+                        "More information about policies: U(https://libvirt.org/formatdomain.html#elementsCPU)"
+                    ],
+                    "type": "list"
+                },
+                "cpu_limit": {
+                    "description": [
+                        "Is converted to its millicore value and multiplied by 100. The resulting value is the total amount of CPU time that a container can use every 100ms. A virtual machine cannot use more than its share of CPU time during this interval."
+                    ],
+                    "type": "int"
+                },
+                "cpu_model": {
+                    "description": [
+                        "CPU model.",
+                        "You can check list of available models here: U(https://github.com/libvirt/libvirt/blob/master/src/cpu_map/index.xml).",
+                        "I(Note:) User can define default CPU model via as I(default-cpu-model) in I(kubevirt-config) I(ConfigMap), if not set I(host-model) is used.",
+                        "I(Note:) Be sure that node CPU model where you run a VM, has the same or higher CPU family.",
+                        "I(Note:) If CPU model wasn't defined, the VM will have CPU model closest to one that used on the node where the VM is running."
+                    ],
+                    "type": "str"
+                },
+                "cpu_shares": {
+                    "description": [
+                        "Specify CPU shares."
+                    ],
+                    "type": "int"
+                },
+                "disks": {
+                    "description": [
+                        "List of dictionaries which specify disks of the virtual machine.",
+                        "A disk can be made accessible via four different types: I(disk), I(lun), I(cdrom), I(floppy).",
+                        "All possible configuration options are available in U(https://kubevirt.io/api-reference/master/definitions.html#_v1_disk)",
+                        "Each disk must have specified a I(volume) that declares which volume type of the disk All possible configuration options of volume are available in U(https://kubevirt.io/api-reference/master/definitions.html#_v1_volume)."
+                    ],
+                    "type": "list"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "If set to C(no), and I(state) is C(present), an existing object will be replaced."
+                    ],
+                    "type": "bool"
+                },
+                "headless": {
+                    "description": [
+                        "Specify if the virtual machine should have attached a  minimal Video and Graphics device configuration.",
+                        "By default a minimal Video and Graphics device configuration will be applied to the VirtualMachineInstance. The video device is vga compatible and comes with a memory size of 16 MB."
+                    ]
+                },
+                "host": {
+                    "description": [
+                        "Provide a URL for accessing the API. Can also be specified via K8S_AUTH_HOST environment variable."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "Specifies the hostname of the virtual machine. The hostname will be set either by dhcp, cloud-init if configured or virtual machine name will be used."
+                    ]
+                },
+                "hugepage_size": {
+                    "description": [
+                        "Specify huge page size."
+                    ],
+                    "type": "str"
+                },
+                "interfaces": {
+                    "description": [
+                        "An interface defines a virtual network interface of a virtual machine (also called a frontend).",
+                        "All possible configuration options interfaces are available in U(https://kubevirt.io/api-reference/master/definitions.html#_v1_interface)",
+                        "Each interface must have specified a I(network) that declares which logical or physical device it is connected to (also called as backend). All possible configuration options of network are available in U(https://kubevirt.io/api-reference/master/definitions.html#_v1_network)."
+                    ],
+                    "type": "list"
+                },
+                "kubeconfig": {
+                    "description": [
+                        "Path to an existing Kubernetes config file. If not provided, and no other connection options are provided, the openshift client will attempt to load the default configuration file from I(~/.kube/config.json). Can also be specified via K8S_AUTH_KUBECONFIG environment variable."
+                    ],
+                    "type": "path"
+                },
+                "labels": {
+                    "description": [
+                        "Labels are key/value pairs that are attached to virtual machines. Labels are intended to be used to specify identifying attributes of virtual machines that are meaningful and relevant to users, but do not directly imply semantics to the core system. Labels can be used to organize and to select subsets of virtual machines. Labels can be attached to virtual machines at creation time and subsequently added and modified at any time.",
+                        "More on labels that are used for internal implementation U(https://kubevirt.io/user-guide/#/misc/annotations_and_labels)"
+                    ],
+                    "type": "dict"
+                },
+                "machine_type": {
+                    "description": [
+                        "QEMU machine type is the actual chipset of the virtual machine."
+                    ],
+                    "type": "str"
+                },
+                "memory": {
+                    "description": [
+                        "The amount of memory to be requested by virtual machine.",
+                        "For example 1024Mi."
+                    ],
+                    "type": "str"
+                },
+                "memory_limit": {
+                    "description": [
+                        "The maximum memory to be used by virtual machine.",
+                        "For example 1024Mi."
+                    ],
+                    "type": "str"
+                },
+                "merge_type": {
+                    "choices": [
+                        "json",
+                        "merge",
+                        "strategic-merge"
+                    ],
+                    "description": [
+                        "Whether to override the default patch merge approach with a specific type.",
+                        "If more than one merge type is given, the merge types will be tried in order.",
+                        "Defaults to C(['strategic-merge', 'merge']), which is ideal for using the same parameters on resource kinds that combine Custom Resources and built-in resources, as Custom Resource Definitions typically aren't updatable by the usual strategic merge.",
+                        "See U(https://kubernetes.io/docs/tasks/run-application/update-api-object-kubectl-patch/#use-a-json-merge-patch-to-update-a-deployment)"
+                    ],
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the virtual machine preset."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "namespace": {
+                    "description": [
+                        "Namespace where the virtual machine preset exists."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "node_affinity": {
+                    "description": [
+                        "Describes vm affinity scheduling rules e.g. co-locate this vm in the same node, zone, etc. as some other vms"
+                    ],
+                    "suboptions": {
+                        "hard": {
+                            "description": [
+                                "If the affinity requirements specified by this field are not met at scheduling time, the vm will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during vm execution (e.g. due to an update), the system may or may not try to eventually evict the vm from its node."
+                            ],
+                            "type": "dict"
+                        },
+                        "soft": {
+                            "description": [
+                                "The scheduler will prefer to schedule vms to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding C(weight) to the sum if the node matches the corresponding match_expressions; the nodes with the highest sum are the most preferred."
+                            ],
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "password": {
+                    "description": [
+                        "Provide a password for authenticating with the API. Can also be specified via K8S_AUTH_PASSWORD environment variable.",
+                        "Please read the description of the C(username) option for a discussion of when this option is applicable."
+                    ],
+                    "type": "str"
+                },
+                "persist_config": {
+                    "description": [
+                        "Whether or not to save the kube config refresh tokens. Can also be specified via K8S_AUTH_PERSIST_CONFIG environment variable.",
+                        "When the k8s context is using a user credentials with refresh tokens (like oidc or gke/gcloud auth), the token is refreshed by the k8s python client library but not saved by default. So the old refresh token can expire and the next auth might fail. Setting this flag to true will tell the k8s python client to save the new refresh token to the kube config file.",
+                        "Default to false.",
+                        "Please note that the current version of the k8s python client library does not support setting this flag to True yet.",
+                        "The fix for this k8s python library is here: https://github.com/kubernetes-client/python-base/pull/169"
+                    ],
+                    "type": "bool"
+                },
+                "proxy": {
+                    "description": [
+                        "The URL of an HTTP proxy to use for the connection. Can also be specified via K8S_AUTH_PROXY environment variable.",
+                        "Please note that this module does not pick up typical proxy settings from the environment (e.g. HTTP_PROXY)."
+                    ],
+                    "type": "str"
+                },
+                "resource_definition": {
+                    "aliases": [
+                        "definition",
+                        "inline"
+                    ],
+                    "description": [
+                        "A partial YAML definition of the object being created/updated. Here you can define Kubernetes resource parameters not covered by this module's parameters.",
+                        "NOTE: I(resource_definition) has lower priority than module parameters. If you try to define e.g. I(metadata.namespace) here, that value will be ignored and I(namespace) used instead."
+                    ],
+                    "type": "dict"
+                },
+                "selector": {
+                    "description": [
+                        "Selector is a label query over a set of virtual machine preset."
+                    ],
+                    "type": "dict"
+                },
+                "smbios_uuid": {
+                    "description": [
+                        "In order to provide a consistent view on the virtualized hardware for the guest OS, the SMBIOS UUID can be set."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete virtual machine presets."
+                    ],
+                    "type": "str"
+                },
+                "subdomain": {
+                    "description": [
+                        "If specified, the fully qualified virtual machine hostname will be hostname.subdomain.namespace.svc.cluster_domain. If not specified, the virtual machine will not have a domain name at all. The DNS entry will resolve to the virtual machine, no matter if the virtual machine itself can pick up a hostname."
+                    ]
+                },
+                "tablets": {
+                    "description": [
+                        "Specify tablets to be used as input devices"
+                    ],
+                    "type": "list"
+                },
+                "username": {
+                    "description": [
+                        "Provide a username for authenticating with the API. Can also be specified via K8S_AUTH_USERNAME environment variable.",
+                        "Please note that this only works with clusters configured to use HTTP Basic Auth. If your cluster has a different form of authentication (e.g. OAuth2 in OpenShift), this option will not work as expected and you should look into the C(k8s_auth) module, as that might do what you need."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to verify the API server's SSL certificates. Can also be specified via K8S_AUTH_VERIFY_SSL environment variable."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "I(True) if the module should wait for the resource to get into desired state."
+                    ],
+                    "type": "bool"
+                },
+                "wait_sleep": {
+                    "default": 5,
+                    "description": [
+                        "Number of seconds to sleep between checks."
+                    ]
+                },
+                "wait_timeout": {
+                    "default": 120,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the resource to get into desired state."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "openshift >= 0.8.2",
+                "python >= 2.7"
+            ],
+            "short_description": "Manage KubeVirt virtual machine presets"
+        },
+        "examples": "\n- name: Create virtual machine preset 'vmi-preset-small'\n  community.kubevirt.kubevirt_preset:\n      state: present\n      name: vmi-preset-small\n      namespace: vms\n      memory: 64M\n      selector:\n        matchLabels:\n            kubevirt.io/vmPreset: vmi-preset-small\n\n- name: Remove virtual machine preset 'vmi-preset-small'\n  community.kubevirt.kubevirt_preset:\n      state: absent\n      name: vmi-preset-small\n      namespace: vms\n",
+        "metadata": null,
+        "return": {
+            "kubevirt_preset": {
+                "contains": {},
+                "description": [
+                    "The virtual machine preset managed by the user.",
+                    "This dictionary contains all values returned by the KubeVirt API all options are described here U(https://kubevirt.io/api-reference/master/definitions.html#_v1_virtualmachineinstancepreset)"
+                ],
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

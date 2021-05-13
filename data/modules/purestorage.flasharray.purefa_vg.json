@@ -1,0 +1,124 @@
+{
+    "purestorage.flasharray.purefa_vg": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Create, delete or modify volume groups on Pure Storage FlashArrays."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_vg.py",
+            "has_action": false,
+            "module": "purefa_vg",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "bw_qos": {
+                    "description": [
+                        "Bandwidth limit for vgroup in M or G units. M will set MB/s G will set GB/s To clear an existing QoS setting use 0 (zero)"
+                    ],
+                    "type": "str"
+                },
+                "count": {
+                    "description": [
+                        "Number of volume groups to be created in a multiple volume group creation",
+                        "Only supported from Purity//FA v6.0.0 and higher"
+                    ],
+                    "type": "int"
+                },
+                "digits": {
+                    "default": 1,
+                    "description": [
+                        "Number of digits to use for multiple volume group count. This will pad the index number with zeros where necessary",
+                        "Only supported from Purity//FA v6.0.0 and higher",
+                        "Range is between 1 and 10"
+                    ],
+                    "type": "int"
+                },
+                "eradicate": {
+                    "default": "no",
+                    "description": [
+                        "Define whether to eradicate the volume group on delete and leave in trash."
+                    ],
+                    "type": "bool"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "iops_qos": {
+                    "description": [
+                        "IOPs limit for vgroup - use value or K or M K will mean 1000 M will mean 1000000 To clear an existing IOPs setting use 0 (zero)"
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the volume group.",
+                        "Multi-volume-group support available from Purity//FA 6.0.0 B(***NOTE***) Manual deletion or eradication of individual volume groups created using multi-volume-group will cause idempotency to fail",
+                        "Multi-volume-group support only exists for volume group creation"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "start": {
+                    "default": 0,
+                    "description": [
+                        "Number at which to start the multiple volume group creation index",
+                        "Only supported from Purity//FA v6.0.0 and higher"
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Define whether the volume group should exist or not."
+                    ],
+                    "type": "str"
+                },
+                "suffix": {
+                    "description": [
+                        "Suffix string, if required, for multiple volume group create",
+                        "Volume group names will be formed as I(<name>#I<suffix>), where I(#) is a placeholder for the volume index See associated descriptions",
+                        "Only supported from Purity//FA v6.0.0 and higher"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Manage volume groups on Pure Storage FlashArrays",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Create new volune group\n  purefa_vg:\n    name: foo\n    bw_qos: 50M\n    iops_qos: 100\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create 10 volune groups of pattern foo#bar with QoS\n  purefa_vg:\n    name: foo\n    suffix: bar\n    count: 10\n    start: 10\n    digits: 3\n    bw_qos: 50M\n    iops_qos: 100\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Update volune group QoS limits\n  purefa_vg:\n    name: foo\n    bw_qos: 0\n    iops_qos: 5555\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Destroy volume group\n  purefa_vg:\n    name: foo\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: absent\n\n- name: Recover deleted volune group\n  purefa_vg:\n    name: foo\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Destroy and Eradicate volume group\n  purefa_vg:\n    name: foo\n    eradicate: true\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

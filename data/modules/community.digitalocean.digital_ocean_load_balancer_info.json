@@ -1,0 +1,74 @@
+{
+    "community.digitalocean.digital_ocean_load_balancer_info": {
+        "doc": {
+            "author": "Abhijeet Kasurde (@Akasurde)",
+            "collection": "community.digitalocean",
+            "description": [
+                "This module can be used to gather information about DigitalOcean provided load balancers.",
+                "This module was called C(digital_ocean_load_balancer_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/digitalocean/plugins/modules/digital_ocean_load_balancer_info.py",
+            "has_action": false,
+            "module": "digital_ocean_load_balancer_info",
+            "options": {
+                "load_balancer_id": {
+                    "description": [
+                        "Load balancer ID that can be used to identify and reference a load_balancer."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "oauth_token": {
+                    "aliases": [
+                        "api_token"
+                    ],
+                    "description": [
+                        "DigitalOcean OAuth token.",
+                        "There are several other environment variables which can be used to provide this value.",
+                        "i.e., - 'DO_API_TOKEN', 'DO_API_KEY', 'DO_OAUTH_TOKEN' and 'OAUTH_TOKEN'"
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "The timeout in seconds used for polling DigitalOcean's API."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about DigitalOcean load balancers"
+        },
+        "examples": "\n- name: Gather information about all load balancers\n  community.digitalocean.digital_ocean_load_balancer_info:\n    oauth_token: \"{{ oauth_token }}\"\n\n- name: Gather information about load balancer with given id\n  community.digitalocean.digital_ocean_load_balancer_info:\n    oauth_token: \"{{ oauth_token }}\"\n    load_balancer_id: \"4de7ac8b-495b-4884-9a69-1050c6793cd6\"\n\n- name: Get name from load balancer id\n  community.digitalocean.digital_ocean_load_balancer_info:\n  register: resp_out\n- set_fact:\n    load_balancer_name: \"{{ item.name }}\"\n  loop: \"{{ resp_out.data | community.general.json_query(name) }}\"\n  vars:\n    name: \"[?id=='4de7ac8b-495b-4884-9a69-1050c6793cd6']\"\n- debug:\n    var: load_balancer_name\n",
+        "metadata": null,
+        "return": {
+            "data": {
+                "description": "DigitalOcean Load balancer information",
+                "returned": "success",
+                "sample": [
+                    {
+                        "...": null,
+                        "algorithm": "round_robin",
+                        "created_at": "2017-02-01T22:22:58Z",
+                        "id": "4de7ac8b-495b-4884-9a69-1050c6793cd6",
+                        "ip": "104.131.186.241",
+                        "name": "example-lb-01",
+                        "status": "new"
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

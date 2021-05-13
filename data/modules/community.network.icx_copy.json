@@ -1,0 +1,111 @@
+{
+    "community.network.icx_copy": {
+        "doc": {
+            "author": "Ruckus Wireless (@Commscope)",
+            "collection": "community.network",
+            "description": [
+                "This module transfers files from or to remote devices running ICX."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/icx_copy.py",
+            "has_action": false,
+            "module": "icx_copy",
+            "notes": [
+                "Tested against ICX 10.1.",
+                "For information on using ICX platform, see L(the ICX OS Platform Options guide,../network/user_guide/platform_icx.html)."
+            ],
+            "options": {
+                "download": {
+                    "choices": [
+                        "running-config",
+                        "startup-config",
+                        "flash_primary",
+                        "flash_secondary",
+                        "bootrom",
+                        "fips-primary-sig",
+                        "fips-secondary-sig",
+                        "fips-bootrom-sig"
+                    ],
+                    "description": [
+                        "Name of the resource to be downloaded. Mutually exclusive with upload."
+                    ],
+                    "type": "str"
+                },
+                "protocol": {
+                    "choices": [
+                        "scp",
+                        "https"
+                    ],
+                    "description": [
+                        "Data transfer protocol to be used"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "public_key": {
+                    "choices": [
+                        "rsa",
+                        "dsa"
+                    ],
+                    "description": [
+                        "public key type to be used to login to scp server"
+                    ],
+                    "type": "str"
+                },
+                "remote_filename": {
+                    "description": [
+                        "The name or path of the remote file/resource to be uploaded or downloaded."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "remote_pass": {
+                    "description": [
+                        "remote password to be used for scp login."
+                    ],
+                    "type": "str"
+                },
+                "remote_port": {
+                    "description": [
+                        "The port number of the remote host. Default values will be selected based on protocol type. Default scp:22, http:443"
+                    ],
+                    "type": "str"
+                },
+                "remote_server": {
+                    "description": [
+                        "IP address of the remote server"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "remote_user": {
+                    "description": [
+                        "remote username to be used for scp login."
+                    ],
+                    "type": "str"
+                },
+                "upload": {
+                    "choices": [
+                        "running-config",
+                        "startup-config",
+                        "flash_primary",
+                        "flash_secondary"
+                    ],
+                    "description": [
+                        "Name of the resource to be uploaded. Mutually exclusive with download."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Transfer files from or to remote Ruckus ICX 7000 series switches"
+        },
+        "examples": "\n- name: Upload running-config to the remote scp server\n  community.network.icx_copy:\n    upload: running-config\n    protocol: scp\n    remote_server: 172.16.10.49\n    remote_filename: running.conf\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download running-config from the remote scp server\n  community.network.icx_copy:\n    download: running-config\n    protocol: scp\n    remote_server: 172.16.10.49\n    remote_filename: running.conf\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download running-config from the remote scp server using rsa public key\n  community.network.icx_copy:\n    download: running-config\n    protocol: scp\n    remote_server: 172.16.10.49\n    remote_filename: running.conf\n    remote_user: user1\n    remote_pass: pass123\n    public_key: rsa\n\n- name: Upload startup-config to the remote https server\n  community.network.icx_copy:\n    upload: startup-config\n    protocol: https\n    remote_server: 172.16.10.49\n    remote_filename: config/running.conf\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Upload startup-config to the remote https server\n  community.network.icx_copy:\n    upload: startup-config\n    protocol: https\n    remote_server: 172.16.10.49\n    remote_filename: config/running.conf\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download OS image into the flash from remote scp ipv6 server\n  community.network.icx_copy:\n    download: startup-config\n    protocol: scp\n    remote_server: ipv6 FE80:CD00:0000:0CDE:1257:0000:211E:729C\n    remote_filename: img.bin\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download OS image into the secondary flash from remote scp ipv6 server\n  community.network.icx_copy:\n    Download: flash_secondary\n    protocol: scp\n    remote_server: ipv6 FE80:CD00:0000:0CDE:1257:0000:211E:729C\n    remote_filename: img.bin\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download OS image into the secondary flash from remote scp ipv6 server on port 5000\n  community.network.icx_copy:\n    Download: flash_secondary\n    protocol: scp\n    remote_server: ipv6 FE80:CD00:0000:0CDE:1257:0000:211E:729C\n    remote_port: 5000\n    remote_filename: img.bin\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download OS image into the primary flash from remote https ipv6 server\n  community.network.icx_copy:\n    Download: flash_primary\n    protocol: https\n    remote_server: ipv6 FE80:CD00:0000:0CDE:1257:0000:211E:729C\n    remote_filename: images/img.bin\n    remote_user: user1\n    remote_pass: pass123\n\n- name: Download OS image into the primary flash from remote https ipv6 server on port 8080\n  community.network.icx_copy:\n    Download: flash_primary\n    protocol: https\n    remote_server: ipv6 FE80:CD00:0000:0CDE:1257:0000:211E:729C\n    remote_port: 8080\n    remote_filename: images/img.bin\n    remote_user: user1\n    remote_pass: pass123\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "true when downloaded any configuration or flash. false otherwise.",
+                "returned": "always",
+                "type": "bool"
+            }
+        }
+    }
+}

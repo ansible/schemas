@@ -1,0 +1,152 @@
+{
+    "community.general.redfish_config": {
+        "doc": {
+            "author": "Jose Delarosa (@jose-delarosa)",
+            "collection": "community.general",
+            "description": [
+                "Builds Redfish URIs locally and sends them to remote OOB controllers to set or update a configuration attribute.",
+                "Manages BIOS configuration settings.",
+                "Manages OOB controller configuration settings."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/redfish_config.py",
+            "has_action": false,
+            "module": "redfish_config",
+            "options": {
+                "auth_token": {
+                    "description": [
+                        "Security token for authentication with OOB controller"
+                    ],
+                    "type": "str",
+                    "version_added": "2.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "baseuri": {
+                    "description": [
+                        "Base URI of OOB controller"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "bios_attribute_name": {
+                    "default": "null",
+                    "description": [
+                        "name of BIOS attr to update (deprecated - use bios_attributes instead)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "bios_attribute_value": {
+                    "default": "null",
+                    "description": [
+                        "value of BIOS attr to update (deprecated - use bios_attributes instead)"
+                    ],
+                    "required": false,
+                    "type": "raw"
+                },
+                "bios_attributes": {
+                    "default": {},
+                    "description": [
+                        "dictionary of BIOS attributes to update"
+                    ],
+                    "required": false,
+                    "type": "dict",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "boot_order": {
+                    "default": [],
+                    "description": [
+                        "list of BootOptionReference strings specifying the BootOrder"
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "category": {
+                    "description": [
+                        "Category to execute on OOB controller"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "command": {
+                    "description": [
+                        "List of commands to execute on OOB controller"
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "network_protocols": {
+                    "description": [
+                        "setting dict of manager services to update"
+                    ],
+                    "required": false,
+                    "type": "dict",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "nic_addr": {
+                    "default": "null",
+                    "description": [
+                        "EthernetInterface Address string on OOB controller"
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "nic_config": {
+                    "description": [
+                        "setting dict of EthernetInterface on OOB controller"
+                    ],
+                    "required": false,
+                    "type": "dict",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "password": {
+                    "description": [
+                        "Password for authentication with OOB controller"
+                    ],
+                    "type": "str"
+                },
+                "resource_id": {
+                    "description": [
+                        "The ID of the System, Manager or Chassis to modify"
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "Timeout in seconds for URL requests to OOB controller"
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "description": [
+                        "User for authentication with OOB controller"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages Out-Of-Band controllers using Redfish APIs"
+        },
+        "examples": "\n  - name: Set BootMode to UEFI\n    community.general.redfish_config:\n      category: Systems\n      command: SetBiosAttributes\n      resource_id: 437XR1138R2\n      bios_attributes:\n        BootMode: \"Uefi\"\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Set multiple BootMode attributes\n    community.general.redfish_config:\n      category: Systems\n      command: SetBiosAttributes\n      resource_id: 437XR1138R2\n      bios_attributes:\n        BootMode: \"Bios\"\n        OneTimeBootMode: \"Enabled\"\n        BootSeqRetry: \"Enabled\"\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Enable PXE Boot for NIC1 using deprecated options\n    community.general.redfish_config:\n      category: Systems\n      command: SetBiosAttributes\n      resource_id: 437XR1138R2\n      bios_attribute_name: PxeDev1EnDis\n      bios_attribute_value: Enabled\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Set BIOS default settings with a timeout of 20 seconds\n    community.general.redfish_config:\n      category: Systems\n      command: SetBiosDefaultSettings\n      resource_id: 437XR1138R2\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      timeout: 20\n\n  - name: Set boot order\n    community.general.redfish_config:\n      category: Systems\n      command: SetBootOrder\n      boot_order:\n        - Boot0002\n        - Boot0001\n        - Boot0000\n        - Boot0003\n        - Boot0004\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Set boot order to the default\n    community.general.redfish_config:\n      category: Systems\n      command: SetDefaultBootOrder\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Set Manager Network Protocols\n    community.general.redfish_config:\n      category: Manager\n      command: SetNetworkProtocols\n      network_protocols:\n        SNMP:\n          ProtocolEnabled: True\n          Port: 161\n        HTTP:\n          ProtocolEnabled: False\n          Port: 8080\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n\n  - name: Set Manager NIC\n    community.general.redfish_config:\n      category: Manager\n      command: SetManagerNic\n      nic_config:\n        DHCPv4:\n          DHCPEnabled: False\n        IPv4StaticAddresses:\n          Address: 192.168.1.3\n          Gateway: 192.168.1.1\n          SubnetMask: 255.255.255.0\n      baseuri: \"{{ baseuri }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Message with action result or error description",
+                "returned": "always",
+                "sample": "Action was successful",
+                "type": "str"
+            }
+        }
+    }
+}

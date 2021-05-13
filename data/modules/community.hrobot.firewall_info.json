@@ -1,0 +1,202 @@
+{
+    "community.hrobot.firewall_info": {
+        "doc": {
+            "author": [
+                "Felix Fontein (@felixfontein)"
+            ],
+            "collection": "community.hrobot",
+            "description": [
+                "Manage Hetzner's dedicated server firewall."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/hrobot/plugins/modules/firewall_info.py",
+            "has_action": false,
+            "module": "firewall_info",
+            "options": {
+                "hetzner_password": {
+                    "description": "The password for the Robot webservice user.",
+                    "required": true,
+                    "type": "str"
+                },
+                "hetzner_user": {
+                    "description": "The username for the Robot webservice user.",
+                    "required": true,
+                    "type": "str"
+                },
+                "server_ip": {
+                    "description": "The server's main IP address.",
+                    "required": true,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "Timeout (in seconds) for waiting for firewall to be configured."
+                    ],
+                    "type": "int"
+                },
+                "wait_delay": {
+                    "default": 10,
+                    "description": [
+                        "Delay to wait (in seconds) before checking again whether the firewall has been configured."
+                    ],
+                    "type": "int"
+                },
+                "wait_for_configured": {
+                    "default": true,
+                    "description": [
+                        "Whether to wait until the firewall has been successfully configured before returning from the module.",
+                        "The API returns status C(in progress) when the firewall is currently being configured. If this happens, the module will try again until the status changes to C(active) or C(disabled).",
+                        "Please note that there is a request limit. If you have to do multiple updates, it can be better to disable waiting, and regularly use M(community.hrobot.firewall_info) to query status."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "seealso": [
+                {
+                    "description": "Hetzner's documentation on the stateless firewall for dedicated servers",
+                    "link": "https://wiki.hetzner.de/index.php/Robot_Firewall/en",
+                    "name": "Firewall documentation"
+                },
+                {
+                    "description": "Configure firewall.",
+                    "module": "community.hrobot.firewall"
+                }
+            ],
+            "short_description": "Manage Hetzner's dedicated server firewall"
+        },
+        "examples": "\n- name: Get firewall configuration for server with main IP 1.2.3.4\n  community.hrobot.firewall_info:\n    hetzner_user: foo\n    hetzner_password: bar\n    server_ip: 1.2.3.4\n  register: result\n\n- ansible.builtin.debug:\n    msg: \"{{ result.firewall }}\"\n",
+        "metadata": null,
+        "return": {
+            "firewall": {
+                "contains": {
+                    "port": {
+                        "description": [
+                            "Switch port of firewall.",
+                            "C(main) or C(kvm)."
+                        ],
+                        "sample": "main",
+                        "type": "str"
+                    },
+                    "rules": {
+                        "contains": {
+                            "input": {
+                                "contains": {
+                                    "action": {
+                                        "description": [
+                                            "Action if rule matches.",
+                                            "C(accept) or C(discard)."
+                                        ],
+                                        "sample": "accept",
+                                        "type": "str"
+                                    },
+                                    "dst_ip": {
+                                        "description": [
+                                            "Destination IP address or subnet address.",
+                                            "CIDR notation."
+                                        ],
+                                        "sample": "1.2.3.4/32",
+                                        "type": "str"
+                                    },
+                                    "dst_port": {
+                                        "description": [
+                                            "Destination port or port range."
+                                        ],
+                                        "sample": "443",
+                                        "type": "str"
+                                    },
+                                    "ip_version": {
+                                        "description": [
+                                            "Internet protocol version."
+                                        ],
+                                        "sample": "ipv4",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": [
+                                            "Name of the firewall rule."
+                                        ],
+                                        "sample": "Allow HTTP access to server",
+                                        "type": "str"
+                                    },
+                                    "protocol": {
+                                        "description": [
+                                            "Protocol above IP layer"
+                                        ],
+                                        "sample": "tcp",
+                                        "type": "str"
+                                    },
+                                    "src_ip": {
+                                        "description": [
+                                            "Source IP address or subnet address.",
+                                            "CIDR notation."
+                                        ],
+                                        "sample": null,
+                                        "type": "str"
+                                    },
+                                    "src_port": {
+                                        "description": [
+                                            "Source port or port range."
+                                        ],
+                                        "sample": null,
+                                        "type": "str"
+                                    },
+                                    "tcp_flags": {
+                                        "description": [
+                                            "TCP flags or logical combination of flags."
+                                        ],
+                                        "sample": null,
+                                        "type": "str"
+                                    }
+                                },
+                                "description": [
+                                    "Input firewall rules."
+                                ],
+                                "elements": "dict",
+                                "type": "list"
+                            }
+                        },
+                        "description": [
+                            "Firewall rules."
+                        ],
+                        "type": "dict"
+                    },
+                    "server_ip": {
+                        "description": [
+                            "Server's main IP address."
+                        ],
+                        "sample": "1.2.3.4",
+                        "type": "str"
+                    },
+                    "server_number": {
+                        "description": [
+                            "Hetzner's internal server number."
+                        ],
+                        "sample": 12345,
+                        "type": "int"
+                    },
+                    "status": {
+                        "description": [
+                            "Status of the firewall.",
+                            "C(active) or C(disabled).",
+                            "Will be C(in process) if the firewall is currently updated, and I(wait_for_configured) is set to C(no) or I(timeout) to a too small value."
+                        ],
+                        "sample": "active",
+                        "type": "str"
+                    },
+                    "whitelist_hos": {
+                        "description": [
+                            "Whether Hetzner services have access."
+                        ],
+                        "sample": true,
+                        "type": "bool"
+                    }
+                },
+                "description": [
+                    "The firewall configuration."
+                ],
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

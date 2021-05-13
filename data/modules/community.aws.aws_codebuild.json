@@ -1,0 +1,431 @@
+{
+    "community.aws.aws_codebuild": {
+        "doc": {
+            "author": [
+                "Stefan Horning (@stefanhorning) <horning@mediapeers.com>"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Create or delete a CodeBuild projects on AWS, used for building code artifacts from source code."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_codebuild.py",
+            "has_action": false,
+            "module": "aws_codebuild",
+            "notes": [
+                "For details of the parameters and returns see U(http://boto3.readthedocs.io/en/latest/reference/services/codebuild.html).",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "artifacts": {
+                    "description": [
+                        "Information about the build output artifacts for the build project."
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "location": {
+                            "description": [
+                                "Information about the build output artifact location. When choosing type S3, set the bucket name here."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Along with path and namespace_type, the pattern that AWS CodeBuild will use to name and store the output artifact."
+                            ]
+                        },
+                        "namespace_type": {
+                            "description": [
+                                "Along with path and name, the pattern that AWS CodeBuild will use to determine the name and location to store the output artifacts.",
+                                "Accepts C(BUILD_ID) and C(NONE).",
+                                "See docs here: U(http://boto3.readthedocs.io/en/latest/reference/services/codebuild.html#CodeBuild.Client.create_project)."
+                            ]
+                        },
+                        "packaging": {
+                            "description": [
+                                "The type of build output artifact to create on S3, can be NONE for creating a folder or ZIP for a ZIP file."
+                            ]
+                        },
+                        "path": {
+                            "description": [
+                                "Along with namespace_type and name, the pattern that AWS CodeBuild will use to name and store the output artifacts.",
+                                "Used for path in S3 bucket when type is C(S3)."
+                            ]
+                        },
+                        "type": {
+                            "description": [
+                                "The type of build output for artifacts. Can be one of the following: C(CODEPIPELINE), C(NO_ARTIFACTS), C(S3)."
+                            ],
+                            "required": true
+                        }
+                    },
+                    "type": "dict"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cache": {
+                    "description": [
+                        "Caching params to speed up following builds."
+                    ],
+                    "suboptions": {
+                        "location": {
+                            "description": [
+                                "Caching location on S3."
+                            ],
+                            "required": true
+                        },
+                        "type": {
+                            "description": [
+                                "Cache type. Can be C(NO_CACHE) or C(S3)."
+                            ],
+                            "required": true
+                        }
+                    },
+                    "type": "dict"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "Descriptive text of the CodeBuild project."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "encryption_key": {
+                    "description": [
+                        "The AWS Key Management Service (AWS KMS) customer master key (CMK) to be used for encrypting the build output artifacts."
+                    ],
+                    "type": "str"
+                },
+                "environment": {
+                    "description": [
+                        "Information about the build environment for the build project."
+                    ],
+                    "suboptions": {
+                        "compute_type": {
+                            "description": [
+                                "Information about the compute resources the build project will use.",
+                                "Available values include: C(BUILD_GENERAL1_SMALL), C(BUILD_GENERAL1_MEDIUM), C(BUILD_GENERAL1_LARGE)."
+                            ],
+                            "required": true
+                        },
+                        "environment_variables": {
+                            "description": [
+                                "A set of environment variables to make available to builds for the build project. List of dictionaries with name and value fields.",
+                                "Example: { name: 'MY_ENV_VARIABLE', value: 'test' }"
+                            ]
+                        },
+                        "image": {
+                            "description": [
+                                "The ID of the Docker image to use for this build project."
+                            ],
+                            "required": true
+                        },
+                        "privileged_mode": {
+                            "description": [
+                                "Enables running the Docker daemon inside a Docker container. Set to true only if the build project is be used to build Docker images."
+                            ]
+                        },
+                        "type": {
+                            "description": [
+                                "The type of build environment to use for the project. Usually C(LINUX_CONTAINER)."
+                            ],
+                            "required": true
+                        }
+                    },
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "Name of the CodeBuild project."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "service_role": {
+                    "description": [
+                        "The ARN of the AWS IAM role that enables AWS CodeBuild to interact with dependent AWS services on behalf of the AWS account."
+                    ],
+                    "type": "str"
+                },
+                "source": {
+                    "description": [
+                        "Configure service and location for the build input source."
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "buildspec": {
+                            "description": [
+                                "The build spec declaration to use for the builds in this build project. Leave empty if part of the code project."
+                            ],
+                            "type": "str"
+                        },
+                        "git_clone_depth": {
+                            "description": [
+                                "When using git you can specify the clone depth as an integer here."
+                            ],
+                            "type": "int"
+                        },
+                        "insecure_ssl": {
+                            "description": [
+                                "Enable this flag to ignore SSL warnings while connecting to the project source code."
+                            ],
+                            "type": "bool"
+                        },
+                        "location": {
+                            "description": [
+                                "Information about the location of the source code to be built. For type CODEPIPELINE location should not be specified."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "The type of the source. Allows one of these: C(CODECOMMIT), C(CODEPIPELINE), C(GITHUB), C(S3), C(BITBUCKET), C(GITHUB_ENTERPRISE)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or remove code build project."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "A set of tags for the build project."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "key": {
+                            "description": "The name of the Tag.",
+                            "type": "str"
+                        },
+                        "value": {
+                            "description": "The value of the Tag.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "timeout_in_minutes": {
+                    "default": 60,
+                    "description": [
+                        "How long CodeBuild should wait until timing out any build that has not been marked as completed."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_config": {
+                    "description": [
+                        "The VPC config enables AWS CodeBuild to access resources in an Amazon VPC."
+                    ],
+                    "type": "dict"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Create or delete an AWS CodeBuild project",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- community.aws.aws_codebuild:\n    name: my_project\n    description: My nice little project\n    service_role: \"arn:aws:iam::123123:role/service-role/code-build-service-role\"\n    source:\n        # Possible values: BITBUCKET, CODECOMMIT, CODEPIPELINE, GITHUB, S3\n        type: CODEPIPELINE\n        buildspec: ''\n    artifacts:\n        namespaceType: NONE\n        packaging: NONE\n        type: CODEPIPELINE\n        name: my_project\n    environment:\n        computeType: BUILD_GENERAL1_SMALL\n        privilegedMode: \"true\"\n        image: \"aws/codebuild/docker:17.09.0\"\n        type: LINUX_CONTAINER\n        environmentVariables:\n            - { name: 'PROFILE', value: 'staging' }\n    encryption_key: \"arn:aws:kms:us-east-1:123123:alias/aws/s3\"\n    region: us-east-1\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "project": {
+                "contains": {
+                    "arn": {
+                        "description": "ARN of the CodeBuild project",
+                        "returned": "always",
+                        "sample": "arn:aws:codebuild:us-east-1:123123123:project/vod-api-app-builder",
+                        "type": "str"
+                    },
+                    "artifacts": {
+                        "contains": {
+                            "location": {
+                                "description": "Output location for build artifacts",
+                                "returned": "when configured",
+                                "type": "str"
+                            },
+                            "type": {
+                                "description": "The type of build artifact.",
+                                "returned": "always",
+                                "sample": "CODEPIPELINE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about the output of build artifacts",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "cache": {
+                        "description": "Cache settings for the build project.",
+                        "returned": "when configured",
+                        "type": "dict"
+                    },
+                    "created": {
+                        "description": "Timestamp of the create time of the project",
+                        "returned": "always",
+                        "sample": "2018-04-17T16:56:03.245000+02:00",
+                        "type": "str"
+                    },
+                    "description": {
+                        "description": "A description of the build project",
+                        "returned": "always",
+                        "sample": "My nice little project",
+                        "type": "str"
+                    },
+                    "environment": {
+                        "description": "Environment settings for the build",
+                        "returned": "always",
+                        "type": "dict"
+                    },
+                    "name": {
+                        "description": "Name of the CodeBuild project",
+                        "returned": "always",
+                        "sample": "my_project",
+                        "type": "str"
+                    },
+                    "service_role": {
+                        "description": "IAM role to be used during build to access other AWS services.",
+                        "returned": "always",
+                        "sample": "arn:aws:iam::123123123:role/codebuild-service-role",
+                        "type": "str"
+                    },
+                    "source": {
+                        "contains": {
+                            "auth": {
+                                "description": "Information about the authorization settings for AWS CodeBuild to access the source code to be built.",
+                                "returned": "when configured",
+                                "type": "complex"
+                            },
+                            "build_spec": {
+                                "description": "The build spec declaration to use for the builds in this build project.",
+                                "returned": "always",
+                                "type": "str"
+                            },
+                            "git_clone_depth": {
+                                "description": "The git clone depth",
+                                "returned": "when configured",
+                                "type": "int"
+                            },
+                            "insecure_ssl": {
+                                "description": "True if set to ignore SSL warnings.",
+                                "returned": "when configured",
+                                "type": "bool"
+                            },
+                            "location": {
+                                "description": "Location identifier, depending on the source type.",
+                                "returned": "when configured",
+                                "type": "str"
+                            },
+                            "type": {
+                                "description": "The type of the repository",
+                                "returned": "always",
+                                "sample": "CODEPIPELINE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about the build input source code.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "tags": {
+                        "description": "Tags added to the project",
+                        "returned": "when configured",
+                        "type": "list"
+                    },
+                    "timeout_in_minutes": {
+                        "description": "The timeout of a build in minutes",
+                        "returned": "always",
+                        "sample": 60,
+                        "type": "int"
+                    }
+                },
+                "description": "Returns the dictionary describing the code project configuration.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

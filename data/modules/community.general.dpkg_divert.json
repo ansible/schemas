@@ -1,0 +1,120 @@
+{
+    "community.general.dpkg_divert": {
+        "doc": {
+            "author": [
+                "quidame (@quidame)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "A diversion is for C(dpkg) the knowledge that only a given package (or the local administrator) is allowed to install a file at a given location. Other packages shipping their own version of this file will be forced to I(divert) it, i.e. to install it at another location. It allows one to keep changes in a file provided by a debian package by preventing its overwrite at package upgrade.",
+                "This module manages diversions of debian packages files using the C(dpkg-divert) commandline tool. It can either create or remove a diversion for a given file, but also update an existing diversion to modify its I(holder) and/or its I(divert) location."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/dpkg_divert.py",
+            "has_action": false,
+            "module": "dpkg_divert",
+            "notes": [
+                "This module supports I(check_mode) and I(diff)."
+            ],
+            "options": {
+                "divert": {
+                    "description": [
+                        "The location where the versions of file will be diverted.",
+                        "Default is to add suffix C(.distrib) to the file path.",
+                        "This parameter is ignored when I(state=absent)."
+                    ],
+                    "type": "path"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "When I(rename=true) and I(force=true), renaming is performed even if the target of the renaming exists, i.e. the existing contents of the file at this location will be lost.",
+                        "This parameter is ignored when I(rename=false)."
+                    ],
+                    "type": "bool"
+                },
+                "holder": {
+                    "description": [
+                        "The name of the package whose copy of file is not diverted, also known as the diversion holder or the package the diversion belongs to.",
+                        "The actual package does not have to be installed or even to exist for its name to be valid. If not specified, the diversion is hold by 'LOCAL', that is reserved by/for dpkg for local diversions.",
+                        "This parameter is ignored when I(state=absent)."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The original and absolute path of the file to be diverted or undiverted. This path is unique, i.e. it is not possible to get two diversions for the same I(path)."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "rename": {
+                    "default": false,
+                    "description": [
+                        "Actually move the file aside (when I(state=present)) or back (when I(state=absent)), but only when changing the state of the diversion. This parameter has no effect when attempting to add a diversion that already exists or when removing an unexisting one.",
+                        "Unless I(force=true), renaming fails if the destination file already exists (this lock being a dpkg-divert feature, and bypassing it being a module feature)."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When I(state=absent), remove the diversion of the specified I(path); when I(state=present), create the diversion if it does not exist, or update its package I(holder) or I(divert) location, if it already exists."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "dpkg-divert >= 1.15.0 (Debian family)"
+            ],
+            "short_description": "Override a debian package's version of a file",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Divert /usr/bin/busybox to /usr/bin/busybox.distrib and keep file in place\n  community.general.dpkg_divert:\n    path: /usr/bin/busybox\n\n- name: Divert /usr/bin/busybox by package 'branding'\n  community.general.dpkg_divert:\n    path: /usr/bin/busybox\n    holder: branding\n\n- name: Divert and rename busybox to busybox.dpkg-divert\n  community.general.dpkg_divert:\n    path: /usr/bin/busybox\n    divert: /usr/bin/busybox.dpkg-divert\n    rename: yes\n\n- name: Remove the busybox diversion and move the diverted file back\n  community.general.dpkg_divert:\n    path: /usr/bin/busybox\n    state: absent\n    rename: yes\n    force: yes\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The dpkg-divert commands ran internally by the module.",
+                "elements": "str",
+                "returned": "on_success",
+                "sample": "[\n  \"/usr/bin/dpkg-divert --no-rename --remove /etc/foobarrc\",\n  \"/usr/bin/dpkg-divert --package ansible --no-rename --add /etc/foobarrc\"\n]",
+                "type": "list"
+            },
+            "diversion": {
+                "contains": {
+                    "divert": {
+                        "description": "The location of the diverted file.",
+                        "type": "str"
+                    },
+                    "holder": {
+                        "description": "The package holding the diversion.",
+                        "type": "str"
+                    },
+                    "path": {
+                        "description": "The path of the file to divert/undivert.",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "The state of the diversion.",
+                        "type": "str"
+                    }
+                },
+                "description": "The status of the diversion after task execution.",
+                "returned": "always",
+                "sample": "{\n  \"divert\": \"/etc/foobarrc.distrib\",\n  \"holder\": \"LOCAL\",\n  \"path\": \"/etc/foobarrc\"\n  \"state\": \"present\"\n}",
+                "type": "dict"
+            },
+            "messages": {
+                "description": "The dpkg-divert relevant messages (stdout or stderr).",
+                "elements": "str",
+                "returned": "on_success",
+                "sample": "[\n  \"Removing 'local diversion of /etc/foobarrc to /etc/foobarrc.distrib'\",\n  \"Adding 'diversion of /etc/foobarrc to /etc/foobarrc.distrib by ansible'\"\n]",
+                "type": "list"
+            }
+        }
+    }
+}

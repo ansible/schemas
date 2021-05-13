@@ -1,0 +1,350 @@
+{
+    "community.postgresql.postgresql_sequence": {
+        "doc": {
+            "author": [
+                "Tobias Birkefeld (@tcraxs)",
+                "Thomas O'Donnell (@andytom)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Allows to create, drop or change the definition of a sequence generator."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_sequence.py",
+            "has_action": false,
+            "module": "postgresql_sequence",
+            "notes": [
+                "Supports C(check_mode).",
+                "If you do not pass db parameter, sequence will be created in the database named postgres.",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "cache": {
+                    "description": [
+                        "Cache specifies how many sequence numbers are to be preallocated and stored in memory for faster access. The minimum value is 1 (only one value can be generated at a time, i.e., no cache), and this is also the default."
+                    ],
+                    "type": "int"
+                },
+                "cascade": {
+                    "default": false,
+                    "description": [
+                        "Automatically drop objects that depend on the sequence, and in turn all objects that depend on those objects.",
+                        "Ignored if I(state=present).",
+                        "Only used with I(state=absent)."
+                    ],
+                    "type": "bool"
+                },
+                "cycle": {
+                    "default": false,
+                    "description": [
+                        "The cycle option allows the sequence to wrap around when the I(maxvalue) or I(minvalue) has been reached by an ascending or descending sequence respectively. If the limit is reached, the next number generated will be the minvalue or maxvalue, respectively.",
+                        "If C(false) (NO CYCLE) is specified, any calls to nextval after the sequence has reached its maximum value will return an error. False (NO CYCLE) is the default."
+                    ],
+                    "type": "bool"
+                },
+                "data_type": {
+                    "choices": [
+                        "bigint",
+                        "integer",
+                        "smallint"
+                    ],
+                    "description": [
+                        "Specifies the data type of the sequence. Valid types are bigint, integer, and smallint. bigint is the default. The data type determines the default minimum and maximum values of the sequence. For more info see the documentation U(https://www.postgresql.org/docs/current/sql-createsequence.html).",
+                        "Supported from PostgreSQL 10."
+                    ],
+                    "type": "str"
+                },
+                "db": {
+                    "aliases": [
+                        "database",
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect to and run queries against."
+                    ],
+                    "type": "str"
+                },
+                "increment": {
+                    "description": [
+                        "Increment specifies which value is added to the current sequence value to create a new value.",
+                        "A positive value will make an ascending sequence, a negative one a descending sequence. The default value is 1."
+                    ],
+                    "type": "int"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "maxvalue": {
+                    "aliases": [
+                        "max"
+                    ],
+                    "description": [
+                        "Maxvalue determines the maximum value for the sequence. The default for an ascending sequence is the maximum value of the data type. The default for a descending sequence is -1."
+                    ],
+                    "type": "int"
+                },
+                "minvalue": {
+                    "aliases": [
+                        "min"
+                    ],
+                    "description": [
+                        "Minvalue determines the minimum value a sequence can generate. The default for an ascending sequence is 1. The default for a descending sequence is the minimum value of the data type."
+                    ],
+                    "type": "int"
+                },
+                "newschema": {
+                    "description": [
+                        "The new schema for the I(sequence). Will be used for moving a I(sequence) to another I(schema).",
+                        "Works only for existing sequences."
+                    ],
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Set the owner for the I(sequence)."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "rename_to": {
+                    "description": [
+                        "The new name for the I(sequence).",
+                        "Works only for existing sequences."
+                    ],
+                    "type": "str"
+                },
+                "schema": {
+                    "default": "public",
+                    "description": [
+                        "The schema of the I(sequence). This is be used to create and relocate a I(sequence) in the given schema."
+                    ],
+                    "type": "str"
+                },
+                "sequence": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "The name of the sequence."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting. The specified I(session_role) must be a role that the current I(login_user) is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the I(session_role) were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "start": {
+                    "description": [
+                        "Start allows the sequence to begin anywhere. The default starting value is I(minvalue) for ascending sequences and I(maxvalue) for descending ones."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The sequence state.",
+                        "If I(state=absent) other options will be ignored except of I(name) and I(schema)."
+                    ],
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether values of parameters I(sequence), I(schema), I(rename_to), I(owner), I(newschema), I(session_role) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via the parameters are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.postgresql.postgresql_table"
+                },
+                {
+                    "module": "community.postgresql.postgresql_owner"
+                },
+                {
+                    "module": "community.postgresql.postgresql_privs"
+                },
+                {
+                    "module": "community.postgresql.postgresql_tablespace"
+                },
+                {
+                    "description": "Complete reference of the CREATE SEQUENCE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-createsequence.html",
+                    "name": "CREATE SEQUENCE reference"
+                },
+                {
+                    "description": "Complete reference of the ALTER SEQUENCE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-altersequence.html",
+                    "name": "ALTER SEQUENCE reference"
+                },
+                {
+                    "description": "Complete reference of the DROP SEQUENCE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-dropsequence.html",
+                    "name": "DROP SEQUENCE reference"
+                }
+            ],
+            "short_description": "Create, drop, or alter a PostgreSQL sequence"
+        },
+        "examples": "\n- name: Create an ascending bigint sequence called foobar in the default\n        database\n  community.postgresql.postgresql_sequence:\n    name: foobar\n\n- name: Create an ascending integer sequence called foobar, starting at 101\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    data_type: integer\n    start: 101\n\n- name: Create an descending sequence called foobar, starting at 101 and\n        preallocated 10 sequence numbers in cache\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    increment: -1\n    cache: 10\n    start: 101\n\n- name: Create an ascending sequence called foobar, which cycle between 1 to 10\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    cycle: yes\n    min: 1\n    max: 10\n\n- name: Create an ascending bigint sequence called foobar in the default\n        database with owner foobar\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    owner: foobar\n\n- name: Rename an existing sequence named foo to bar\n  community.postgresql.postgresql_sequence:\n    name: foo\n    rename_to: bar\n\n- name: Change the schema of an existing sequence to foobar\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    newschema: foobar\n\n- name: Change the owner of an existing sequence to foobar\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    owner: foobar\n\n- name: Drop a sequence called foobar\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    state: absent\n\n- name: Drop a sequence called foobar with cascade\n  community.postgresql.postgresql_sequence:\n    name: foobar\n    cascade: yes\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "cycle": {
+                "description": "Shows if the sequence cycle or not.",
+                "returned": "always",
+                "sample": "NO",
+                "type": "str"
+            },
+            "data_type": {
+                "description": "Shows the current data type of the sequence.",
+                "returned": "always",
+                "sample": "bigint",
+                "type": "str"
+            },
+            "increment": {
+                "description": "The value of increment of the sequence. A positive value will make an ascending sequence, a negative one a descending sequence.",
+                "returned": "always",
+                "sample": "-1",
+                "type": "int"
+            },
+            "maxvalue": {
+                "description": "The value of maxvalue of the sequence.",
+                "returned": "always",
+                "sample": "9223372036854775807",
+                "type": "int"
+            },
+            "minvalue": {
+                "description": "The value of minvalue of the sequence.",
+                "returned": "always",
+                "sample": "1",
+                "type": "int"
+            },
+            "newname": {
+                "description": "Shows the new sequence name after rename.",
+                "returned": "on success",
+                "sample": "barfoo",
+                "type": "str"
+            },
+            "newschema": {
+                "description": "Shows the new schema of the sequence after schema change.",
+                "returned": "on success",
+                "sample": "foobar",
+                "type": "str"
+            },
+            "owner": {
+                "description": "Shows the current owner of the sequence after the successful run of the task.",
+                "returned": "always",
+                "sample": "postgres",
+                "type": "str"
+            },
+            "queries": {
+                "description": "List of queries that was tried to be executed.",
+                "returned": "always",
+                "sample": [
+                    "CREATE SEQUENCE \"foo\""
+                ],
+                "type": "str"
+            },
+            "schema": {
+                "description": "Name of the schema of the sequence.",
+                "returned": "always",
+                "sample": "foo",
+                "type": "str"
+            },
+            "sequence": {
+                "description": "Sequence name.",
+                "returned": "always",
+                "sample": "foobar",
+                "type": "str"
+            },
+            "start": {
+                "description": "The value of start of the sequence.",
+                "returned": "always",
+                "sample": "12",
+                "type": "int"
+            },
+            "state": {
+                "description": "Sequence state at the end of execution.",
+                "returned": "always",
+                "sample": "present",
+                "type": "str"
+            }
+        }
+    }
+}

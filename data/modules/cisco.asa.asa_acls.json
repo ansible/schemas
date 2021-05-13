@@ -1,0 +1,564 @@
+{
+    "cisco.asa.asa_acls": {
+        "doc": {
+            "author": "Sumit Jaiswal (@justjais)",
+            "collection": "cisco.asa",
+            "description": "This module configures and manages the named or numbered ACLs on ASA platforms.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/asa/plugins/modules/asa_acls.py",
+            "has_action": true,
+            "module": "asa_acls",
+            "notes": [
+                "Tested against Cisco ASA Version 9.10(1)11",
+                "This module works with connection C(network_cli). See L(ASA Platform Options,../network/user_guide/platform_asa.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of ACL options.",
+                    "suboptions": {
+                        "acls": {
+                            "description": [
+                                "A list of Access Control Lists (ACL)."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "aces": {
+                                    "description": "The entries within the ACL.",
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "destination": {
+                                            "description": "Specify the packet destination.",
+                                            "suboptions": {
+                                                "address": {
+                                                    "description": "Host address to match, or any single host address.",
+                                                    "type": "str"
+                                                },
+                                                "any": {
+                                                    "description": "Match any destination address.",
+                                                    "type": "bool"
+                                                },
+                                                "any4": {
+                                                    "description": [
+                                                        "Match any ipv4 destination address."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "any6": {
+                                                    "description": [
+                                                        "Match any ipv6 destination address."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "host": {
+                                                    "description": "A single destination host",
+                                                    "type": "str"
+                                                },
+                                                "interface": {
+                                                    "description": "Use interface address as destination address",
+                                                    "type": "str"
+                                                },
+                                                "netmask": {
+                                                    "description": "Netmask for destination IP address, valid with IPV4 address.",
+                                                    "type": "str"
+                                                },
+                                                "object_group": {
+                                                    "description": "Network object-group for destination address",
+                                                    "type": "str"
+                                                },
+                                                "port_protocol": {
+                                                    "description": [
+                                                        "Specify the destination port along with protocol.",
+                                                        "Note, Valid with TCP/UDP protocol_options"
+                                                    ],
+                                                    "suboptions": {
+                                                        "eq": {
+                                                            "description": "Match only packets on a given port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "gt": {
+                                                            "description": "Match only packets with a greater port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "lt": {
+                                                            "description": "Match only packets with a lower port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "neq": {
+                                                            "description": "Match only packets not on a given port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "range": {
+                                                            "description": "Port range operator",
+                                                            "suboptions": {
+                                                                "end": {
+                                                                    "description": "Specify the end of the port range.",
+                                                                    "type": "int"
+                                                                },
+                                                                "start": {
+                                                                    "description": "Specify the start of the port range.",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "dict"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "grant": {
+                                            "choices": [
+                                                "permit",
+                                                "deny"
+                                            ],
+                                            "description": "Specify the action.",
+                                            "type": "str"
+                                        },
+                                        "inactive": {
+                                            "description": "Keyword for disabling an ACL element.",
+                                            "type": "bool"
+                                        },
+                                        "line": {
+                                            "description": [
+                                                "Use this to specify line number at which ACE should be entered.",
+                                                "Existing ACE can be updated based on the input line number.",
+                                                "It's not a required param in case of configuring the acl, but in case of Delete operation it's required, else Delete operation won't work as expected.",
+                                                "Refer to vendor documentation for valid values."
+                                            ],
+                                            "type": "int"
+                                        },
+                                        "log": {
+                                            "choices": [
+                                                "default",
+                                                "alerts",
+                                                "critical",
+                                                "debugging",
+                                                "disable",
+                                                "emergencies",
+                                                "errors",
+                                                "informational",
+                                                "interval",
+                                                "notifications",
+                                                "warnings"
+                                            ],
+                                            "description": "Log matches against this entry.",
+                                            "type": "str"
+                                        },
+                                        "protocol": {
+                                            "description": [
+                                                "Specify the protocol to match.",
+                                                "Refer to vendor documentation for valid values."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "protocol_options": {
+                                            "description": "protocol type.",
+                                            "suboptions": {
+                                                "ahp": {
+                                                    "description": "Authentication Header Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "eigrp": {
+                                                    "description": "Cisco's EIGRP routing protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "esp": {
+                                                    "description": "Encapsulation Security Payload.",
+                                                    "type": "bool"
+                                                },
+                                                "gre": {
+                                                    "description": "Cisco's GRE tunneling.",
+                                                    "type": "bool"
+                                                },
+                                                "icmp": {
+                                                    "description": "Internet Control Message Protocol.",
+                                                    "suboptions": {
+                                                        "alternate_address": {
+                                                            "description": "Alternate address",
+                                                            "type": "bool"
+                                                        },
+                                                        "conversion_error": {
+                                                            "description": "Datagram conversion",
+                                                            "type": "bool"
+                                                        },
+                                                        "echo": {
+                                                            "description": "Echo (ping)",
+                                                            "type": "bool"
+                                                        },
+                                                        "echo_reply": {
+                                                            "description": "Echo reply",
+                                                            "type": "bool"
+                                                        },
+                                                        "information_reply": {
+                                                            "description": "Information replies",
+                                                            "type": "bool"
+                                                        },
+                                                        "information_request": {
+                                                            "description": "Information requests",
+                                                            "type": "bool"
+                                                        },
+                                                        "mask_reply": {
+                                                            "description": "Mask replies",
+                                                            "type": "bool"
+                                                        },
+                                                        "mask_request": {
+                                                            "description": "mask_request",
+                                                            "type": "bool"
+                                                        },
+                                                        "mobile_redirect": {
+                                                            "description": "Mobile host redirect",
+                                                            "type": "bool"
+                                                        },
+                                                        "parameter_problem": {
+                                                            "description": "All parameter problems",
+                                                            "type": "bool"
+                                                        },
+                                                        "redirect": {
+                                                            "description": "All redirects",
+                                                            "type": "bool"
+                                                        },
+                                                        "router_advertisement": {
+                                                            "description": "Router discovery advertisements",
+                                                            "type": "bool"
+                                                        },
+                                                        "router_solicitation": {
+                                                            "description": "Router discovery solicitations",
+                                                            "type": "bool"
+                                                        },
+                                                        "source_quench": {
+                                                            "description": "Source quenches",
+                                                            "type": "bool"
+                                                        },
+                                                        "source_route_failed": {
+                                                            "description": "Source route",
+                                                            "type": "bool"
+                                                        },
+                                                        "time_exceeded": {
+                                                            "description": "All time exceededs",
+                                                            "type": "bool"
+                                                        },
+                                                        "timestamp_reply": {
+                                                            "description": "Timestamp replies",
+                                                            "type": "bool"
+                                                        },
+                                                        "timestamp_request": {
+                                                            "description": "Timestamp requests",
+                                                            "type": "bool"
+                                                        },
+                                                        "traceroute": {
+                                                            "description": "Traceroute",
+                                                            "type": "bool"
+                                                        },
+                                                        "unreachable": {
+                                                            "description": "All unreachables",
+                                                            "type": "bool"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                },
+                                                "icmp6": {
+                                                    "description": "Internet Control Message Protocol.",
+                                                    "suboptions": {
+                                                        "echo": {
+                                                            "description": "Echo (ping)",
+                                                            "type": "bool"
+                                                        },
+                                                        "echo_reply": {
+                                                            "description": "Echo reply",
+                                                            "type": "bool"
+                                                        },
+                                                        "membership_query": {
+                                                            "description": "Membership query",
+                                                            "type": "bool"
+                                                        },
+                                                        "membership_reduction": {
+                                                            "description": "Membership reduction",
+                                                            "type": "bool"
+                                                        },
+                                                        "membership_report": {
+                                                            "description": "Membership report",
+                                                            "type": "bool"
+                                                        },
+                                                        "neighbor_advertisement": {
+                                                            "description": "Neighbor advertisement",
+                                                            "type": "bool"
+                                                        },
+                                                        "neighbor_redirect": {
+                                                            "description": "Neighbor redirect",
+                                                            "type": "bool"
+                                                        },
+                                                        "neighbor_solicitation": {
+                                                            "description": "Neighbor_solicitation",
+                                                            "type": "bool"
+                                                        },
+                                                        "packet_too_big": {
+                                                            "description": "Packet too big",
+                                                            "type": "bool"
+                                                        },
+                                                        "parameter_problem": {
+                                                            "description": "Parameter problem",
+                                                            "type": "bool"
+                                                        },
+                                                        "router_advertisement": {
+                                                            "description": "Router discovery advertisements",
+                                                            "type": "bool"
+                                                        },
+                                                        "router_renumbering": {
+                                                            "description": "Router renumbering",
+                                                            "type": "bool"
+                                                        },
+                                                        "router_solicitation": {
+                                                            "description": "Router solicitation",
+                                                            "type": "bool"
+                                                        },
+                                                        "time_exceeded": {
+                                                            "description": "Time exceeded",
+                                                            "type": "bool"
+                                                        },
+                                                        "unreachable": {
+                                                            "description": "All unreachables",
+                                                            "type": "bool"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                },
+                                                "igmp": {
+                                                    "description": "Internet Gateway Message Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "igrp": {
+                                                    "description": "Internet Gateway Routing Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "ip": {
+                                                    "description": "Any Internet Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "ipinip": {
+                                                    "description": "IP in IP tunneling.",
+                                                    "type": "bool"
+                                                },
+                                                "ipsec": {
+                                                    "description": "IP Security.",
+                                                    "type": "bool"
+                                                },
+                                                "nos": {
+                                                    "description": "KA9Q NOS compatible IP over IP tunneling.",
+                                                    "type": "bool"
+                                                },
+                                                "ospf": {
+                                                    "description": "OSPF routing protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "pcp": {
+                                                    "description": "Payload Compression Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "pim": {
+                                                    "description": "Protocol Independent Multicast.",
+                                                    "type": "bool"
+                                                },
+                                                "pptp": {
+                                                    "description": "Point-to-Point Tunneling Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "protocol_number": {
+                                                    "description": "An IP protocol number",
+                                                    "type": "int"
+                                                },
+                                                "sctp": {
+                                                    "description": "Stream Control Transmission Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "snp": {
+                                                    "description": "Simple Network Protocol.",
+                                                    "type": "bool"
+                                                },
+                                                "tcp": {
+                                                    "description": "Match TCP packet flags",
+                                                    "type": "bool"
+                                                },
+                                                "udp": {
+                                                    "description": "User Datagram Protocol.",
+                                                    "type": "bool"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "remark": {
+                                            "description": [
+                                                "Specify a comment (remark) for the access-list after this keyword"
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "source": {
+                                            "description": "Specify the packet source.",
+                                            "suboptions": {
+                                                "address": {
+                                                    "description": "Source network address.",
+                                                    "type": "str"
+                                                },
+                                                "any": {
+                                                    "description": [
+                                                        "Match any source address."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "any4": {
+                                                    "description": [
+                                                        "Match any ipv4 source address."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "any6": {
+                                                    "description": [
+                                                        "Match any ipv6 source address."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "host": {
+                                                    "description": "A single source host",
+                                                    "type": "str"
+                                                },
+                                                "interface": {
+                                                    "description": "Use interface address as source address",
+                                                    "type": "str"
+                                                },
+                                                "netmask": {
+                                                    "description": "Netmask for source IP address, valid with IPV4 address.",
+                                                    "type": "str"
+                                                },
+                                                "object_group": {
+                                                    "description": "Network object-group for source address",
+                                                    "type": "str"
+                                                },
+                                                "port_protocol": {
+                                                    "description": [
+                                                        "Specify the destination port along with protocol.",
+                                                        "Note, Valid with TCP/UDP protocol_options"
+                                                    ],
+                                                    "suboptions": {
+                                                        "eq": {
+                                                            "description": "Match only packets on a given port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "gt": {
+                                                            "description": "Match only packets with a greater port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "lt": {
+                                                            "description": "Match only packets with a lower port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "neq": {
+                                                            "description": "Match only packets not on a given port number.",
+                                                            "type": "str"
+                                                        },
+                                                        "range": {
+                                                            "description": "Port range operator",
+                                                            "suboptions": {
+                                                                "end": {
+                                                                    "description": "Specify the end of the port range.",
+                                                                    "type": "int"
+                                                                },
+                                                                "start": {
+                                                                    "description": "Specify the start of the port range.",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "dict"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "time_range": {
+                                            "description": "Specify a time-range.",
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "acl_type": {
+                                    "choices": [
+                                        "extended",
+                                        "standard"
+                                    ],
+                                    "description": [
+                                        "ACL type"
+                                    ],
+                                    "type": "str"
+                                },
+                                "name": {
+                                    "description": "The name or the number of the ACL.",
+                                    "required": true,
+                                    "type": "str"
+                                },
+                                "rename": {
+                                    "description": [
+                                        "Rename an existing access-list.",
+                                        "If input to rename param is given, it'll take preference over other parameters and only rename config will be matched and computed against."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "running_config": {
+                    "description": [
+                        "The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source. There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The I(running_config) argument allows the implementer to pass in the configuration to use as the base config for comparison."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Access-Lists resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.asa"
+        },
+        "examples": "\n# Using merged\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 2 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list R1_traffic; 1 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n\n- name: Merge provided configuration with device configuration\n  cisco.asa.asa_acls:\n    config:\n      acls:\n        - name: temp_access\n          acl_type: extended\n          aces:\n          - grant: deny\n            line: 1\n            protocol_options:\n              tcp: true\n            source:\n              address: 192.0.2.0\n              netmask: 255.255.255.0\n            destination:\n              address: 192.0.3.0\n              netmask: 255.255.255.0\n              port_protocol:\n                eq: www\n            log: default\n          - grant: deny\n            line: 2\n            protocol_options:\n              igrp: true\n            source:\n              address: 198.51.100.0\n              netmask: 255.255.255.0\n            destination:\n              address: 198.51.110.0\n              netmask: 255.255.255.0\n            time_range: temp\n          - grant: deny\n            line: 3\n            protocol_options:\n              tcp: true\n            source:\n              interface: management\n            destination:\n              interface: management\n              port_protocol:\n                eq: www\n            log: warnings\n          - grant: deny\n            line: 4\n            protocol_options:\n              tcp: true\n            source:\n              object_group: test_og_network\n            destination:\n              object_group: test_network_og\n              port_protocol:\n                eq: www\n            log: default\n        - name: global_access\n          acl_type: extended\n          aces:\n          - line: 3\n            remark: test global access\n          - grant: deny\n            line: 4\n            protocol_options:\n              tcp: true\n            source:\n              any: true\n            destination:\n              any: true\n              port_protocol:\n                eq: www\n            log: errors\n        - name: R1_traffic\n          aces:\n          - line: 1\n            remark: test_v6_acls\n          - grant: deny\n            line: 2\n            protocol_options:\n              tcp: true\n            source:\n              address: 2001:db8:0:3::/64\n              port_protocol:\n                eq: www\n            destination:\n              address: 2001:fc8:0:4::/64\n              port_protocol:\n                eq: telnet\n            inactive: true\n    state: merged\n\n# Commands fired:\n# ---------------\n# access-list global_access line 3 remark test global access\n# access-list global_access line 4 extended deny tcp any any eq www log errors interval 300\n# access-list R1_traffic line 1 remark test_v6_acls\n# access-list R1_traffic line 2 extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet inactive\n# access-list temp_access line 1 extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www log default\n# access-list temp_access line 2 extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp inactive\n# access-list temp_access line 2 extended deny tcp interface management interface management\n#                         eq www log warnings\n# access-list test_access line 3 extended deny tcp object-group test_og_network object-group test_network_og\n#                         eq www log default\n\n# After state:\n# ------------\n#\n# vasa#sh access-lists\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list global_access line 3 remark test global access (hitcnt=0) 0xae78337e\n# access-list global_access line 4 extended deny tcp any any eq www log errors interval 300 (hitcnt=0) 0x605f2421\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1 remark test_v6_acls\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n# access-list test_access line 3\n#                         extended deny tcp interface management interface management eq www log warnings\n#                         interval 300 (hitcnt=0) 0x78aa233d\n# access-list test_access line 2 extended deny tcp object-group test_og_network object-group test_network_og\n#                         eq www log default (hitcnt=0) 0x477aec1e\n#    access-list test_access line 2 extended deny tcp 192.0.2.0 255.255.255.0 host 192.0.3.1 eq www\n#                            log default (hitcnt=0) 0xdc7edff8\n#    access-list test_access line 2 extended deny tcp 192.0.2.0 255.255.255.0 host 192.0.3.2 eq www\n#                            log default (hitcnt=0) 0x7b0e9fde\n#    access-list test_access line 2 extended deny tcp 198.51.100.0 255.255.255.0 2001:db8:3::/64 eq www\n#                            log default (hitcnt=0) 0x97c75adc\n\n# Using Merged to Rename ACLs\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 2 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list R1_traffic; 1 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n\n- name: Rename ACL with different name using Merged state\n  cisco.asa.asa_acls:\n    config:\n      acls:\n        - name: global_access\n          rename: global_access_renamed\n        - name: R1_traffic\n          rename: R1_traffic_renamed\n    state: merged\n\n# Commands fired:\n# ---------------\n# access-list global_access rename global_access_renamed\n# access-list R1_traffic rename R1_traffic_renamed\n\n# After state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access_renamed; 2 elements; name hash: 0xbd6c87a7\n# access-list global_access_renamed line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access_renamed line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list R1_traffic_renamed; 1 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic_renamed line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list global_access line 3 extended deny tcp any any eq www log errors interval 300 (hitcnt=0) 0x605f2421\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n- name: Replaces device configuration of listed acl with provided configuration\n  cisco.asa.asa_acls:\n    config:\n      acls:\n        - name: global_access\n          acl_type: extended\n          aces:\n          - grant: deny\n            line: 1\n            protocol_options:\n              tcp: true\n            source:\n              address: 192.0.4.0\n              netmask: 255.255.255.0\n              port_protocol:\n                eq: telnet\n            destination:\n              address: 192.0.5.0\n              netmask: 255.255.255.0\n              port_protocol:\n                eq: www\n    state: replaced\n\n# Commands fired:\n# ---------------\n# no access-list global_access line 3 extended deny tcp any any eq www log errors interval 300\n# no access-list global_access line 2 extended deny tcp any any eq telnet\n# no access-list global_access line 1 extended permit icmp any any log disable\n# access-list global_access line 1 extended deny tcp 192.0.4.0 255.255.255.0 eq telnet 192.0.5.0 255.255.255.0 eq www\n\n# After state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 1 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended deny tcp 192.0.4.0 255.255.255.0 eq telnet\n#                           192.0.5.0 255.255.255.0 eq www (hitcnt=0) 0x3e5b2757\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n# Using overridden\n\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list global_access line 3 extended deny tcp any any eq www log errors interval 300 (hitcnt=0) 0x605f2421\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n\n- name: Override device configuration of all acl with provided configuration\n  cisco.asa.asa_acls:\n    config:\n      acls:\n        - name: global_access\n          acl_type: extended\n          aces:\n          - grant: deny\n            line: 1\n            protocol_options:\n              tcp: true\n            source:\n              address: 192.0.4.0\n              netmask: 255.255.255.0\n              port_protocol:\n                eq: telnet\n            destination:\n              address: 192.0.5.0\n              netmask: 255.255.255.0\n              port_protocol:\n                eq: www\n    state: overridden\n\n# Commands fired:\n# ---------------\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0 time-range temp\n# no access-list temp_access line 1\n#                            extended grant deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www log default\n# no access-list R1_traffic line 2\n#                           extended grant deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet inactive\n# no access-list R1_traffic line 1\n#                           extended grant deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www log errors\n# no access-list global_access line 3 extended grant deny tcp any any eq www log errors\n# no access-list global_access line 2 extended grant deny tcp any any eq telnet\n# no access-list global_access line 1 extended grant permit icmp any any log disable\n# access-list global_access line 4 extended deny tcp 192.0.4.0 255.255.255.0 eq telnet 192.0.5.0 255.255.255.0 eq www\n\n# After state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 1 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n\n# Using Deleted\n\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list global_access line 3 extended deny tcp any any eq www log errors interval 300 (hitcnt=0) 0x605f2421\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n- name: \"Delete module attributes of given acl (Note: This won't delete ALL of the ACLs configured)\"\n  cisco.asa.asa_acls:\n    config:\n      acls:\n        - name: temp_access\n        - name: global_access\n    state: deleted\n\n# Commands fired:\n# ---------------\n# no access-list temp_access line 2 extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                            time-range temp inactive\n# no access-list temp_access line 1 extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                            log default\n# no access-list global_access line 3 extended deny tcp any any eq www log errors interval 300\n# no access-list global_access line 2 extended deny tcp any any eq telnet\n# no access-list global_access line 1 extended permit icmp any any log disable\n\n# After state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n\n# Using Deleted without any config passed\n#\"(NOTE: This will delete all of configured resource module attributes)\"\n\n# Before state:\n# -------------\n#\n# vasa#sh access-lists\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list global_access line 3 extended deny tcp any any eq www log errors interval 300 (hitcnt=0) 0x605f2421\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n- name: 'Delete ALL ACLs in one go (Note: This WILL delete the ALL of configured ACLs)'\n  cisco.asa.asa_acls:\n    state: deleted\n\n# Commands fired:\n# ---------------\n# no access-list global_access line 1 extended permit icmp any any log disable\n# no access-list global_access line 2 extended deny tcp any any eq telnet\n# no access-list global_access line 3 extended deny tcp any any eq www log errors interval 300\n# no access-list R1_traffic line 1 extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                           log errors interval 300\n# no access-list R1_traffic line 2 extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet inactive\n# no access-list temp_access line 1 extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www log default\n# no access-list temp_access line 2 extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                            time-range temp inactive\n\n\n# After state:\n# -------------\n#\n# vasa#sh access-lists\n\n# Using Gathered\n\n# Before state:\n# -------------\n#\n# access-list global_access; 3 elements; name hash: 0xbd6c87a7\n# access-list global_access line 1 extended permit icmp any any log disable (hitcnt=0) 0xf1efa630\n# access-list global_access line 2 extended deny tcp any any eq telnet (hitcnt=0) 0xae5833af\n# access-list R1_traffic; 2 elements; name hash: 0xaf40d3c2\n# access-list R1_traffic line 1\n#                        extended deny tcp 2001:db8:0:3::/64 eq telnet 2001:fc8:0:4::/64 eq www\n#                        log errors interval 300 (hitcnt=0) 0x4a4660f3\n# access-list R1_traffic line 2\n#                        extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet\n#                        inactive (hitcnt=0) (inactive) 0xe922b432\n# access-list temp_access; 2 elements; name hash: 0xaf1b712e\n# access-list temp_access line 1\n#                         extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www\n#                         log default (hitcnt=0) 0xb58abb0d\n# access-list temp_access line 2\n#                         extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                         time-range temp (hitcnt=0) (inactive) 0xcd6b92ae\n\n\n- name: Gather listed ACLs with provided configurations\n  cisco.asa.asa_acls:\n    config:\n    state: gathered\n\n# Module Execution Result:\n# ------------------------\n#\n# \"gathered\": [\n#         {\n#             \"acls\": [\n#                 {\n#                     \"aces\": [\n#                         {\n#                             \"destination\": {\n#                                 \"any\": true\n#                             },\n#                             \"grant\": \"permit\",\n#                             \"line\": 1,\n#                             \"log\": \"disable\",\n#                             \"protocol\": \"icmp\",\n#                             \"source\": {\n#                                 \"any\": true\n#                             }\n#                         },\n#                         {\n#                             \"destination\": {\n#                                 \"any\": true,\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"telnet\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"line\": 2,\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"any\": true\n#                             }\n#                         }\n#                     ],\n#                     \"acl_type\": \"extended\",\n#                     \"name\": \"global_access\"\n#                 },\n#                 {\n#                     \"aces\": [\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"2001:fc8:0:4::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"www\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"line\": 1,\n#                             \"log\": \"errors\",\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"2001:db8:0:3::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"telnet\"\n#                                 }\n#                             }\n#                         },\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"2001:fc8:0:4::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"telnet\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"inactive\": true,\n#                             \"line\": 2,\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"2001:db8:0:3::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"www\"\n#                                 }\n#                             }\n#                         }\n#                     ],\n#                     \"acl_type\": \"extended\",\n#                     \"name\": \"R1_traffic\"\n#                 },\n#                 {\n#                     \"aces\": [\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"192.0.3.0\",\n#                                 \"netmask\": \"255.255.255.0\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"www\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"line\": 1,\n#                             \"log\": \"default\",\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"192.0.2.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             }\n#                         },\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"198.51.110.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"inactive\": true,\n#                             \"line\": 2,\n#                             \"protocol\": \"igrp\",\n#                             \"protocol_options\": {\n#                                 \"igrp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"198.51.100.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             },\n#                             \"time_range\": \"temp\"\n#                         }\n#                     ],\n#                     \"acl_type\": \"extended\",\n#                     \"name\": \"temp_access\"\n#                 }\n#             ]\n#         }\n#     ]\n\n# Using Rendered\n\n- name: Rendered the provided configuration with the exisiting running configuration\n  cisco.asa.asa_acls:\n  config:\n    acls:\n      - name: temp_access\n        acl_type: extended\n        aces:\n        - grant: deny\n          line: 1\n          protocol_options:\n            tcp: true\n          source:\n            address: 192.0.2.0\n            netmask: 255.255.255.0\n          destination:\n            address: 192.0.3.0\n            netmask: 255.255.255.0\n            port_protocol:\n              eq: www\n          log: default\n        - grant: deny\n          line: 2\n          protocol_options:\n            igrp: true\n          source:\n            address: 198.51.100.0\n            netmask: 255.255.255.0\n          destination:\n            address: 198.51.110.0\n            netmask: 255.255.255.0\n          time_range: temp\n      - name: R1_traffic\n        aces:\n        - grant: deny\n          protocol_options:\n            tcp: true\n          source:\n            address: 2001:db8:0:3::/64\n            port_protocol:\n              eq: www\n          destination:\n            address: 2001:fc8:0:4::/64\n            port_protocol:\n              eq: telnet\n          inactive: true\n    state: rendered\n\n# Module Execution Result:\n# ------------------------\n#\n# \"rendered\": [\n#         \"access-list temp_access line 1\n#                                  extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0\n#                                  eq www log default\"\n#         \"access-list temp_access line 2\n#                                  extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0\n#                                  time-range temp\"\n#         \"access-list R1_traffic\n#                      deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet inactive\"\n#     ]\n\n# Using Parsed\n\n# parsed.cfg\n#\n# access-list test_access; 2 elements; name hash: 0xaf1b712e\n# access-list test_access line 1 extended deny tcp 192.0.2.0 255.255.255.0 192.0.3.0 255.255.255.0 eq www log default\n# access-list test_access line 2 extended deny igrp 198.51.100.0 255.255.255.0 198.51.110.0 255.255.255.0 log errors\n# access-list test_R1_traffic; 1 elements; name hash: 0xaf40d3c2\n# access-list test_R1_traffic line 1 extended deny tcp 2001:db8:0:3::/64 eq www 2001:fc8:0:4::/64 eq telnet inactive\n\n- name: Parse the commands for provided configuration\n  cisco.asa.asa_acls:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# Module Execution Result:\n# ------------------------\n#\n# \"parsed\": [\n#         {\n#             \"acls\": [\n#                 {\n#                     \"aces\": [\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"192.0.3.0\",\n#                                 \"netmask\": \"255.255.255.0\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"www\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"line\": 1,\n#                             \"log\": \"default\",\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"192.0.2.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             }\n#                         },\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"198.51.110.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"line\": 2,\n#                             \"log\": \"errors\",\n#                             \"protocol\": \"igrp\",\n#                             \"protocol_options\": {\n#                                 \"igrp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"198.51.100.0\",\n#                                 \"netmask\": \"255.255.255.0\"\n#                             }\n#                         }\n#                     ],\n#                     \"acl_type\": \"extended\",\n#                     \"name\": \"test_access\"\n#                 },\n#                 {\n#                     \"aces\": [\n#                         {\n#                             \"destination\": {\n#                                 \"address\": \"2001:fc8:0:4::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"telnet\"\n#                                 }\n#                             },\n#                             \"grant\": \"deny\",\n#                             \"inactive\": true,\n#                             \"line\": 1,\n#                             \"protocol\": \"tcp\",\n#                             \"protocol_options\": {\n#                                 \"tcp\": true\n#                             },\n#                             \"source\": {\n#                                 \"address\": \"2001:db8:0:3::/64\",\n#                                 \"port_protocol\": {\n#                                     \"eq\": \"www\"\n#                                 }\n#                             }\n#                         }\n#                     ],\n#                     \"acl_type\": \"extended\",\n#                     \"name\": \"test_R1_TRAFFIC\"\n#                 }\n#             ]\n#         }\n#     ]\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format of the parameters above.",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format of the parameters above.",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device",
+                "returned": "always",
+                "sample": [
+                    "access-list global_access line 1 extended permit icmp any any log disable"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

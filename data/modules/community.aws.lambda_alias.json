@@ -1,0 +1,179 @@
+{
+    "community.aws.lambda_alias": {
+        "doc": {
+            "author": "Pierre Jodouin (@pjodouin), Ryan Scott Brown (@ryansb)",
+            "collection": "community.aws",
+            "description": [
+                "This module allows the management of AWS Lambda functions aliases via the Ansible framework.  It is idempotent and supports \"Check\" mode.    Use module M(community.aws.lambda) to manage the lambda function itself and M(community.aws.lambda_event) to manage event source mappings."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/lambda_alias.py",
+            "has_action": false,
+            "module": "lambda_alias",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "A short, user-defined function alias description."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "function_name": {
+                    "description": [
+                        "The name of the function alias."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "function_version": {
+                    "aliases": [
+                        "version"
+                    ],
+                    "description": [
+                        "Version associated with the Lambda function alias. A value of 0 (or omitted parameter) sets the alias to the $LATEST version."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "aliases": [
+                        "alias_name"
+                    ],
+                    "description": [
+                        "Name of the function alias."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Describes the desired state."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Creates, updates or deletes AWS Lambda function aliases",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n---\n# Simple example to create a lambda function and publish a version\n- hosts: localhost\n  gather_facts: no\n  vars:\n    state: present\n    project_folder: /path/to/deployment/package\n    deployment_package: lambda.zip\n    account: 123456789012\n    production_version: 5\n  tasks:\n  - name: AWS Lambda Function\n    lambda:\n      state: \"{{ state | default('present') }}\"\n      name: myLambdaFunction\n      publish: True\n      description: lambda function description\n      code_s3_bucket: package-bucket\n      code_s3_key: \"lambda/{{ deployment_package }}\"\n      local_path: \"{{ project_folder }}/{{ deployment_package }}\"\n      runtime: python2.7\n      timeout: 5\n      handler: lambda.handler\n      memory_size: 128\n      role: \"arn:aws:iam::{{ account }}:role/API2LambdaExecRole\"\n\n  - name: Get information\n    lambda_info:\n      name: myLambdaFunction\n    register: lambda_info\n  - name: show results\n    ansible.builtin.debug:\n      msg: \"{{ lambda_info['lambda_facts'] }}\"\n\n# The following will set the Dev alias to the latest version ($LATEST) since version is omitted (or = 0)\n  - name: \"alias 'Dev' for function {{ lambda_info.lambda_facts.FunctionName }} \"\n    community.aws.lambda_alias:\n      state: \"{{ state | default('present') }}\"\n      function_name: \"{{ lambda_info.lambda_facts.FunctionName }}\"\n      name: Dev\n      description: Development is $LATEST version\n\n# The QA alias will only be created when a new version is published (i.e. not = '$LATEST')\n  - name: \"alias 'QA' for function {{ lambda_info.lambda_facts.FunctionName }} \"\n    community.aws.lambda_alias:\n      state: \"{{ state | default('present') }}\"\n      function_name: \"{{ lambda_info.lambda_facts.FunctionName }}\"\n      name: QA\n      version: \"{{ lambda_info.lambda_facts.Version }}\"\n      description: \"QA is version {{ lambda_info.lambda_facts.Version }}\"\n    when: lambda_info.lambda_facts.Version != \"$LATEST\"\n\n# The Prod alias will have a fixed version based on a variable\n  - name: \"alias 'Prod' for function {{ lambda_info.lambda_facts.FunctionName }} \"\n    community.aws.lambda_alias:\n      state: \"{{ state | default('present') }}\"\n      function_name: \"{{ lambda_info.lambda_facts.FunctionName }}\"\n      name: Prod\n      version: \"{{ production_version }}\"\n      description: \"Production is version {{ production_version }}\"\n",
+        "metadata": null,
+        "return": {
+            "alias_arn": {
+                "description": "Full ARN of the function, including the alias",
+                "returned": "success",
+                "sample": "arn:aws:lambda:us-west-2:123456789012:function:myFunction:dev",
+                "type": "str"
+            },
+            "description": {
+                "description": "A short description of the alias",
+                "returned": "success",
+                "sample": "The development stage for my hot new app",
+                "type": "str"
+            },
+            "function_version": {
+                "description": "The qualifier that the alias refers to",
+                "returned": "success",
+                "sample": "$LATEST",
+                "type": "str"
+            },
+            "name": {
+                "description": "The name of the alias assigned",
+                "returned": "success",
+                "sample": "dev",
+                "type": "str"
+            },
+            "revision_id": {
+                "description": "A unique identifier that changes when you update the alias.",
+                "returned": "success",
+                "sample": "12345678-1234-1234-1234-123456789abc",
+                "type": "str"
+            }
+        }
+    }
+}

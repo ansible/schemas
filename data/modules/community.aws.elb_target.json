@@ -1,0 +1,182 @@
+{
+    "community.aws.elb_target": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "community.aws",
+            "description": [
+                "Used to register or deregister a target in a target group."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/elb_target.py",
+            "has_action": false,
+            "module": "elb_target",
+            "notes": [
+                "If you specified a port override when you registered a target, you must specify both the target ID and the port when you deregister it.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "deregister_unused": {
+                    "default": false,
+                    "description": [
+                        "The default behaviour for targets that are unused is to leave them registered.",
+                        "If instead you would like to remove them set I(deregister_unused=true)."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Register or deregister the target."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "target_az": {
+                    "description": [
+                        "An Availability Zone or C(all). This determines whether the target receives traffic from the load balancer nodes in the specified Availability Zone or from all enabled Availability Zones for the load balancer. This parameter is not supported if the target type of the target group is instance."
+                    ],
+                    "type": "str"
+                },
+                "target_group_arn": {
+                    "description": [
+                        "The Amazon Resource Name (ARN) of the target group.",
+                        "Mutually exclusive of I(target_group_name)."
+                    ],
+                    "type": "str"
+                },
+                "target_group_name": {
+                    "description": [
+                        "The name of the target group.",
+                        "Mutually exclusive of I(target_group_arn)."
+                    ],
+                    "type": "str"
+                },
+                "target_id": {
+                    "description": [
+                        "The ID of the target."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "target_port": {
+                    "description": [
+                        "The port on which the target is listening. You can specify a port override. If a target is already registered, you can register it again using a different port.",
+                        "The default port for a target is the port for the target group."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "target_status": {
+                    "choices": [
+                        "initial",
+                        "healthy",
+                        "unhealthy",
+                        "unused",
+                        "draining",
+                        "unavailable"
+                    ],
+                    "description": [
+                        "Blocks and waits for the target status to equal given value. For more detail on target status see U(https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-health-checks.html#target-health-states)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "target_status_timeout": {
+                    "default": 60,
+                    "description": [
+                        "Maximum time in seconds to wait for I(target_status) change."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Manage a target in a target group",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Register an IP address target to a target group\n  community.aws.elb_target:\n    target_group_name: myiptargetgroup\n    target_id: i-1234567\n    state: present\n\n- name: Register an instance target to a target group\n  community.aws.elb_target:\n    target_group_name: mytargetgroup\n    target_id: i-1234567\n    state: present\n\n- name: Deregister a target from a target group\n  community.aws.elb_target:\n    target_group_name: mytargetgroup\n    target_id: i-1234567\n    state: absent\n\n# Modify a target to use a different port\n- name: Register a target to a target group\n  community.aws.elb_target:\n    target_group_name: mytargetgroup\n    target_id: i-1234567\n    target_port: 8080\n    state: present\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

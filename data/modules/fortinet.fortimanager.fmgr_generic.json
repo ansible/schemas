@@ -1,0 +1,64 @@
+{
+    "fortinet.fortimanager.fmgr_generic": {
+        "doc": {
+            "author": [
+                "Link Zheng (@zhengl)",
+                "Jie Xue (@JieX19)",
+                "Frank Shen (@fshen01)",
+                "Hongbin Lu (@fgtdev-hblu)"
+            ],
+            "collection": "fortinet.fortimanager",
+            "description": [
+                "This module is for generic fortimanager requests. it receives raw json-rpc data, and sends it to fortimanager, finally returns the response to users.",
+                "This module also rely on fortimanager httpapi plugin as the transport.",
+                "the payload doesn't include session, the httpapi plugin will automatically fill the session later.",
+                "the username and password is not managed by the module, but by the plugin."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/fortinet/fortimanager/plugins/modules/fmgr_generic.py",
+            "has_action": false,
+            "module": "fmgr_generic",
+            "notes": [
+                "two parameters schemes are supported, either in raw json format or in ansible recognnizable top-level parameters format.",
+                "json is defined as string, user is response for make it json-formatted",
+                "method and params should be specified by users if 'json' is not present",
+                "if all three parameters are provided, the 'json' is preferred."
+            ],
+            "options": {
+                "json": {
+                    "description": [
+                        "the raw json-formatted payload to send to fortimanager"
+                    ]
+                },
+                "method": {
+                    "description": [
+                        "the method of the json-rpc",
+                        "it must be in [get, add, set, update, delete, move, clone, exec]"
+                    ]
+                },
+                "params": {
+                    "description": [
+                        "the parameter collection."
+                    ]
+                }
+            },
+            "short_description": "Build and send generic FortiManager API request.",
+            "version_added": "2.10",
+            "version_added_collection": "fortinet.fortimanager"
+        },
+        "examples": "\n- hosts: fortimanager01\n  connection: httpapi\n  vars:\n    adom: \"root\"\n    ansible_httpapi_use_ssl: True\n    ansible_httpapi_validate_certs: False\n    ansible_httpapi_port: 443\n  tasks:\n    -   name: 'login a user'\n        fmgr_generic:\n             method: 'exec'\n             params:\n                - url: 'sys/login/user'\n                  data:\n                   - user: 'APIUser'\n                     passwd: 'Fortinet1!e'\n    -   name: 'login another user'\n        fmgr_generic:\n             json: |\n                  {\n                   \"method\":\"exec\",\n                   \"params\":[\n                    {\n                         \"url\":\"sys/login/user\",\n                         \"data\":[\n                            {\n                               \"user\":\"APIUser\",\n                               \"passwd\":\"Fortinet1!\"\n                            }\n                          ]\n                     }\n                    ]\n                  }\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "api_result": {
+                "description": "full API response, includes status code and message",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

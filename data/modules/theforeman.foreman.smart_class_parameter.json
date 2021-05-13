@@ -1,0 +1,184 @@
+{
+    "theforeman.foreman.smart_class_parameter": {
+        "doc": {
+            "author": [
+                "Baptiste Agasse (@bagasse)"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Update Smart Class Parameters.",
+                "Smart Class Parameters are created/deleted for Puppet classes during import and cannot be created or deleted otherwise."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/smart_class_parameter.py",
+            "has_action": false,
+            "module": "smart_class_parameter",
+            "options": {
+                "avoid_duplicates": {
+                    "description": "Remove duplicate values (only array type)",
+                    "type": "bool"
+                },
+                "default_value": {
+                    "description": "Value to use by default.",
+                    "type": "raw"
+                },
+                "description": {
+                    "description": "Description of the Smart Class Parameter",
+                    "type": "str"
+                },
+                "hidden_value": {
+                    "description": "When enabled the parameter is hidden in the UI.",
+                    "type": "bool"
+                },
+                "merge_default": {
+                    "description": "Include default value when merging all matching values.",
+                    "type": "bool"
+                },
+                "merge_overrides": {
+                    "description": "Merge all matching values (only array/hash type).",
+                    "type": "bool"
+                },
+                "omit": {
+                    "description": [
+                        "Don't send this parameter in classification output.",
+                        "Puppet will use the value defined in the Puppet manifest for this parameter."
+                    ],
+                    "type": "bool"
+                },
+                "override": {
+                    "description": "Whether the smart class parameter value is managed by Foreman",
+                    "type": "bool"
+                },
+                "override_value_order": {
+                    "description": "The order in which values are resolved.",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "override_values": {
+                    "description": "Value overrides",
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "match": {
+                            "description": "Override match",
+                            "required": true,
+                            "type": "str"
+                        },
+                        "omit": {
+                            "description": "Don't send this parameter in classification output, replaces use_puppet_default.",
+                            "type": "bool"
+                        },
+                        "value": {
+                            "description": "Override value, required if omit is false",
+                            "type": "raw"
+                        }
+                    },
+                    "type": "list"
+                },
+                "parameter": {
+                    "description": "Name of the parameter",
+                    "required": true,
+                    "type": "str"
+                },
+                "parameter_type": {
+                    "choices": [
+                        "string",
+                        "boolean",
+                        "integer",
+                        "real",
+                        "array",
+                        "hash",
+                        "yaml",
+                        "json",
+                        "none"
+                    ],
+                    "description": "Types of variable values. If C(none), set the parameter type to empty value.",
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "puppetclass_name": {
+                    "description": "Name of the puppetclass that own the parameter",
+                    "required": true,
+                    "type": "str"
+                },
+                "required": {
+                    "description": "If true, will raise an error if there is no default value and no matcher provide a value.",
+                    "type": "bool"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "present_with_defaults"
+                    ],
+                    "default": "present",
+                    "description": "State of the entity.",
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                },
+                "validator_rule": {
+                    "description": "Used to enforce certain values for the parameter values.",
+                    "type": "str"
+                },
+                "validator_type": {
+                    "choices": [
+                        "regexp",
+                        "list"
+                    ],
+                    "description": "Types of validation values.",
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Manage Smart Class Parameters",
+            "version_added": "1.0.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n- name: \"Update prometheus::server alertmanagers_config param default value\"\n  theforeman.foreman.smart_class_parameter:\n    puppetclass_name: \"prometheus::server\"\n    parameter: alertmanagers_config\n    override: true\n    required: true\n    default_value: /etc/prometheus/alert.yml\n    server_url: \"https://foreman.example.com\"\n    username: \"admin\"\n    password: \"changeme\"\n    state: present\n\n- name: \"Update prometheus::server alertmanagers_config param default value\"\n  theforeman.foreman.smart_class_parameter:\n    puppetclass_name: \"prometheus::server\"\n    parameter: alertmanagers_config\n    override: true\n    override_value_order:\n      - fqdn\n      - hostgroup\n      - domain\n    required: true\n    default_value: /etc/prometheus/alert.yml\n    server_url: \"https://foreman.example.com\"\n    username: \"admin\"\n    password: \"changeme\"\n    override_values:\n      - match: domain=example.com\n        value: foo\n      - match: domain=foo.example.com\n        omit: true\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "smart_class_parameters": {
+                        "description": "List of smart class parameters.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

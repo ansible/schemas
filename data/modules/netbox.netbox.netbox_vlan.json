@@ -1,0 +1,169 @@
+{
+    "netbox.netbox.netbox_vlan": {
+        "doc": {
+            "author": [
+                "Mikhail Yohman (@FragmentedPacket)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates, updates or removes vlans from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_vlan.py",
+            "has_action": false,
+            "module": "netbox_vlan",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the vlan configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "custom_fields": {
+                            "description": [
+                                "must exist in Netbox"
+                            ],
+                            "required": false,
+                            "type": "dict"
+                        },
+                        "description": {
+                            "description": [
+                                "The description of the vlan"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "The name of the vlan"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "site": {
+                            "description": [
+                                "The site the VLAN will be associated to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "status": {
+                            "description": [
+                                "The status of the vlan"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the vlan may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "tenant": {
+                            "description": [
+                                "The tenant that the vlan will be assigned to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "vid": {
+                            "description": [
+                                "The VLAN ID"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "vlan_group": {
+                            "description": [
+                                "The VLAN group the VLAN will be associated to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "vlan_role": {
+                            "description": [
+                                "Required if I(state=present) and the vlan does not exist yet"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Create, update or delete vlans within Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox modules\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n\n  tasks:\n    - name: Create vlan within Netbox with only required information\n      netbox_vlan:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test VLAN\n          vid: 400\n        state: present\n\n    - name: Delete vlan within netbox\n      netbox_vlan:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test VLAN\n          vid: 400\n        state: absent\n\n    - name: Create vlan with all information\n      netbox_vlan:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test VLAN\n          vid: 400\n          site: Test Site\n          group: Test VLAN Group\n          tenant: Test Tenant\n          status: Deprecated\n          vlan_role: Test VLAN Role\n          description: Just a test\n          tags:\n            - Schnozzberry\n        state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            },
+            "vlan": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "success (when I(state=present))",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,332 @@
+{
+    "openstack.cloud.os_ironic": {
+        "doc": {
+            "author": "OpenStack Ansible SIG",
+            "collection": "openstack.cloud",
+            "description": [
+                "Create or Remove Ironic nodes from OpenStack."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/openstack/cloud/plugins/modules/baremetal_node.py",
+            "has_action": false,
+            "module": "baremetal_node",
+            "notes": [
+                "The standard OpenStack environment variables, such as C(OS_USERNAME) may be used instead of providing explicit values.",
+                "Auth information is driven by openstacksdk, which means that values can come from a yaml config file in /etc/ansible/openstack.yaml, /etc/openstack/clouds.yaml or ~/.config/openstack/clouds.yaml, then from standard environment variables, then finally by explicit parameters in plays. More information can be found at U(https://docs.openstack.org/openstacksdk/)"
+            ],
+            "options": {
+                "api_timeout": {
+                    "description": [
+                        "How long should the socket layer wait before timing out for API calls. If this is omitted, nothing will be passed to the requests library."
+                    ],
+                    "type": "int"
+                },
+                "auth": {
+                    "description": [
+                        "Dictionary containing auth information as needed by the cloud's auth plugin strategy. For the default I(password) plugin, this would contain I(auth_url), I(username), I(password), I(project_name) and any information about domains (for example, I(user_domain_name) or I(project_domain_name)) if the cloud supports them. For other plugins, this param will need to contain whatever parameters that auth plugin requires. This parameter is not needed if a named cloud is provided or OpenStack OS_* environment variables are present."
+                    ],
+                    "type": "dict"
+                },
+                "auth_type": {
+                    "description": [
+                        "Name of the auth plugin to use. If the cloud uses something other than password authentication, the name of the plugin should be indicated here and the contents of the I(auth) parameter should be updated accordingly."
+                    ],
+                    "type": "str"
+                },
+                "availability_zone": {
+                    "description": [
+                        "Ignored. Present for backwards compatibility"
+                    ],
+                    "type": "str"
+                },
+                "bios_interface": {
+                    "description": [
+                        "The bios interface for this node, e.g. \"no-bios\"."
+                    ],
+                    "type": "str"
+                },
+                "boot_interface": {
+                    "description": [
+                        "The boot interface for this node, e.g. \"pxe\"."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "cacert"
+                    ],
+                    "description": [
+                        "A path to a CA Cert bundle that can be used as part of verifying SSL API requests."
+                    ],
+                    "type": "str"
+                },
+                "chassis_uuid": {
+                    "description": [
+                        "Associate the node with a pre-defined chassis."
+                    ],
+                    "type": "str"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert"
+                    ],
+                    "description": [
+                        "A path to a client certificate to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key"
+                    ],
+                    "description": [
+                        "A path to a client key to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "cloud": {
+                    "description": [
+                        "Named cloud or cloud config to operate against. If I(cloud) is a string, it references a named cloud config as defined in an OpenStack clouds.yaml file. Provides default values for I(auth) and I(auth_type). This parameter is not needed if I(auth) is provided or if OpenStack OS_* environment variables are present. If I(cloud) is a dict, it contains a complete cloud configuration like would be in a section of clouds.yaml."
+                    ],
+                    "type": "raw"
+                },
+                "console_interface": {
+                    "description": [
+                        "The console interface for this node, e.g. \"no-console\"."
+                    ],
+                    "type": "str"
+                },
+                "deploy_interface": {
+                    "description": [
+                        "The deploy interface for this node, e.g. \"iscsi\"."
+                    ],
+                    "type": "str"
+                },
+                "driver": {
+                    "description": [
+                        "The name of the Ironic Driver to use with this node.",
+                        "Required when I(state=present)"
+                    ],
+                    "type": "str"
+                },
+                "driver_info": {
+                    "description": [
+                        "Information for this server's driver. Will vary based on which driver is in use. Any sub-field which is populated will be validated during creation. For compatibility reasons sub-fields `power`, `deploy`, `management` and `console` are flattened."
+                    ],
+                    "required": true,
+                    "type": "dict"
+                },
+                "inspect_interface": {
+                    "description": [
+                        "The interface used for node inspection, e.g. \"no-inspect\"."
+                    ],
+                    "type": "str"
+                },
+                "interface": {
+                    "aliases": [
+                        "endpoint_type"
+                    ],
+                    "choices": [
+                        "admin",
+                        "internal",
+                        "public"
+                    ],
+                    "default": "public",
+                    "description": [
+                        "Endpoint URL type to fetch from the service catalog."
+                    ],
+                    "type": "str"
+                },
+                "ironic_url": {
+                    "description": [
+                        "If noauth mode is utilized, this is required to be set to the endpoint URL for the Ironic API.  Use with \"auth\" and \"auth_type\" settings set to None."
+                    ],
+                    "type": "str"
+                },
+                "management_interface": {
+                    "description": [
+                        "The interface for out-of-band management of this node, e.g. \"ipmitool\"."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "unique name identifier to be given to the resource."
+                    ],
+                    "type": "str"
+                },
+                "network_interface": {
+                    "description": [
+                        "The network interface provider to use when describing connections for this node."
+                    ],
+                    "type": "str"
+                },
+                "nics": {
+                    "description": [
+                        "A list of network interface cards, eg, \" - mac: aa:bb:cc:aa:bb:cc\""
+                    ],
+                    "elements": "dict",
+                    "required": true,
+                    "suboptions": {
+                        "mac": {
+                            "description": "The MAC address of the network interface card.",
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "power_interface": {
+                    "description": [
+                        "The interface used to manage power actions on this node, e.g. \"ipmitool\"."
+                    ],
+                    "type": "str"
+                },
+                "properties": {
+                    "description": [
+                        "Definition of the physical characteristics of this server, used for scheduling purposes"
+                    ],
+                    "suboptions": {
+                        "capabilities": {
+                            "default": "",
+                            "description": [
+                                "special capabilities for the node, such as boot_option, node_role etc (see U(https://docs.openstack.org/ironic/latest/install/advanced.html) for more information)"
+                            ]
+                        },
+                        "cpu_arch": {
+                            "default": "x86_64",
+                            "description": [
+                                "CPU architecture (x86_64, i686, ...)"
+                            ]
+                        },
+                        "cpus": {
+                            "default": 1,
+                            "description": [
+                                "Number of CPU cores this machine has"
+                            ]
+                        },
+                        "disk_size": {
+                            "default": 1,
+                            "description": [
+                                "size of first storage device in this machine (typically /dev/sda), in GB"
+                            ]
+                        },
+                        "ram": {
+                            "default": 1,
+                            "description": [
+                                "amount of RAM this machine has, in MB"
+                            ]
+                        },
+                        "root_device": {
+                            "default": "",
+                            "description": [
+                                "Root disk device hints for deployment.",
+                                "See U(https://docs.openstack.org/ironic/latest/install/advanced.html#specifying-the-disk-for-deployment-root-device-hints) for allowed hints."
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "raid_interface": {
+                    "description": [
+                        "Interface used for configuring raid on this node."
+                    ],
+                    "type": "str"
+                },
+                "region_name": {
+                    "description": [
+                        "Name of the region."
+                    ],
+                    "type": "str"
+                },
+                "rescue_interface": {
+                    "description": [
+                        "Interface used for node rescue, e.g. \"no-rescue\"."
+                    ],
+                    "type": "str"
+                },
+                "resource_class": {
+                    "description": [
+                        "The specific resource type to which this node belongs."
+                    ],
+                    "type": "str"
+                },
+                "skip_update_of_masked_password": {
+                    "aliases": [
+                        "skip_update_of_driver_password"
+                    ],
+                    "description": [
+                        "Allows the code that would assert changes to nodes to skip the update if the change is a single line consisting of the password field.",
+                        "As of Kilo, by default, passwords are always masked to API requests, which means the logic as a result always attempts to re-assert the password field.",
+                        "C(skip_update_of_driver_password) is deprecated alias and will be removed in openstack.cloud 2.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicates desired state of the resource"
+                    ],
+                    "type": "str"
+                },
+                "storage_interface": {
+                    "description": [
+                        "Interface used for attaching and detaching volumes on this node, e.g. \"cinder\"."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "How long should ansible wait for the requested resource."
+                    ],
+                    "type": "int"
+                },
+                "uuid": {
+                    "description": [
+                        "globally unique identifier (UUID) to be given to the resource. Will be auto-generated if not specified, and name is specified.",
+                        "Definition of a UUID will always take precedence to a name value."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Whether or not SSL API requests should be verified.",
+                        "Before Ansible 2.3 this defaulted to C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "vendor_interface": {
+                    "description": [
+                        "Interface for all vendor-specific actions on this node, e.g. \"no-vendor\"."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "Should ansible wait until the requested resource is complete."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "jsonpatch",
+                "openstacksdk",
+                "openstacksdk >= 0.12.0",
+                "python >= 3.6"
+            ],
+            "short_description": "Create/Delete Bare Metal Resources from OpenStack"
+        },
+        "examples": "\n# Enroll a node with some basic properties and driver info\n- openstack.cloud.baremetal_node:\n    cloud: \"devstack\"\n    driver: \"pxe_ipmitool\"\n    uuid: \"00000000-0000-0000-0000-000000000002\"\n    properties:\n      cpus: 2\n      cpu_arch: \"x86_64\"\n      ram: 8192\n      disk_size: 64\n      capabilities: \"boot_option:local\"\n      root_device:\n        wwn: \"0x4000cca77fc4dba1\"\n    nics:\n      - mac: \"aa:bb:cc:aa:bb:cc\"\n      - mac: \"dd:ee:ff:dd:ee:ff\"\n    driver_info:\n      ipmi_address: \"1.2.3.4\"\n      ipmi_username: \"admin\"\n      ipmi_password: \"adminpass\"\n    chassis_uuid: \"00000000-0000-0000-0000-000000000001\"\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

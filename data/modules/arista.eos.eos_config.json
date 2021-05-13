@@ -1,0 +1,326 @@
+{
+    "arista.eos.eos_config": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "arista.eos",
+            "description": [
+                "Arista EOS configurations use a simple block indent file syntax for segmenting configuration into sections.  This module provides an implementation for working with EOS configuration sections in a deterministic way.  This module works with either CLI or eAPI transports."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/arista/eos/plugins/modules/eos_config.py",
+            "has_action": true,
+            "module": "eos_config",
+            "notes": [
+                "Tested against EOS 4.15",
+                "Abbreviated commands are NOT idempotent, see L(Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).",
+                "To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.",
+                "For information on using CLI, eAPI and privileged mode see the :ref:`EOS Platform Options guide <eos_platform_options>`",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Arista EOS devices see the `Arista integration page <https://www.ansible.com/ansible-arista-networks>`_."
+            ],
+            "options": {
+                "after": {
+                    "description": [
+                        "The ordered set of commands to append to the end of the command stack if a change needs to be made.  Just like with I(before) this allows the playbook designer to append a set of commands to be executed after the command set."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "This argument will cause the module to create a full backup of the current C(running-config) from the remote device before any changes are made. If the C(backup_options) value is not given, the backup file is written to the C(backup) folder in the playbook root directory or role root directory, if playbook is part of an ansible role. If the directory does not exist, it is created."
+                    ],
+                    "type": "bool"
+                },
+                "backup_options": {
+                    "description": [
+                        "This is a dict object containing configurable options related to backup file path. The value of this option is read only when C(backup) is set to I(yes), if C(backup) is set to I(no) this option will be silently ignored."
+                    ],
+                    "suboptions": {
+                        "dir_path": {
+                            "description": [
+                                "This option provides the path ending with directory name in which the backup configuration file will be stored. If the directory does not exist it will be first created and the filename is either the value of C(filename) or default filename as described in C(filename) options description. If the path value is not given in that case a I(backup) directory will be created in the current working directory and backup configuration will be copied in C(filename) within I(backup) directory."
+                            ],
+                            "type": "path"
+                        },
+                        "filename": {
+                            "description": [
+                                "The filename to be used to store the backup configuration. If the filename is not given it will be generated based on the hostname, current time and date in format defined by <hostname>_config.<current-date>@<current-time>"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "before": {
+                    "description": [
+                        "The ordered set of commands to push on to the command stack if a change needs to be made.  This allows the playbook designer the opportunity to perform configuration commands prior to pushing any changes without affecting how the set of commands are matched against the system."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "defaults": {
+                    "default": false,
+                    "description": [
+                        "The I(defaults) argument will influence how the running-config is collected from the device.  When the value is set to true, the command used to collect the running-config is append with the all keyword.  When the value is set to false, the command is issued without the all keyword"
+                    ],
+                    "type": "bool"
+                },
+                "diff_against": {
+                    "choices": [
+                        "startup",
+                        "running",
+                        "intended",
+                        "session"
+                    ],
+                    "default": "session",
+                    "description": [
+                        "When using the C(ansible-playbook --diff) command line argument the module can generate diffs against different sources.",
+                        "When this option is configure as I(startup), the module will return the diff of the running-config against the startup-config.",
+                        "When this option is configured as I(intended), the module will return the diff of the running-config against the configuration provided in the C(intended_config) argument.",
+                        "When this option is configured as I(running), the module will return the before and after diff of the running-config with respect to any changes made to the device configuration.",
+                        "When this option is configured as C(session), the diff returned will be based on the configuration session."
+                    ],
+                    "type": "str"
+                },
+                "diff_ignore_lines": {
+                    "description": [
+                        "Use this argument to specify one or more lines that should be ignored during the diff.  This is used for lines in the configuration that are automatically updated by the system.  This argument takes a list of regular expressions or exact line matches."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "intended_config": {
+                    "description": [
+                        "The C(intended_config) provides the master configuration that the node should conform to and is used to check the final running-config against.   This argument will not modify any settings on the remote device and is strictly used to check the compliance of the current device's configuration against.  When specifying this argument, the task should also modify the C(diff_against) value and set it to I(intended). The configuration lines for this value should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure correct diff."
+                    ],
+                    "type": "str"
+                },
+                "lines": {
+                    "aliases": [
+                        "commands"
+                    ],
+                    "description": [
+                        "The ordered set of commands that should be configured in the section. The commands must be the exact same commands as found in the device running-config as found in the device running-config to ensure idempotency and correct diff. Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "match": {
+                    "choices": [
+                        "line",
+                        "strict",
+                        "exact",
+                        "none"
+                    ],
+                    "default": "line",
+                    "description": [
+                        "Instructs the module on the way to perform the matching of the set of commands against the current device config.  If match is set to I(line), commands are matched line by line.  If match is set to I(strict), command lines are matched with respect to position.  If match is set to I(exact), command lines must be an equal match.  Finally, if match is set to I(none), the module will not attempt to compare the source configuration with the running configuration on the remote device."
+                    ],
+                    "type": "str"
+                },
+                "parents": {
+                    "description": [
+                        "The ordered set of parents that uniquely identify the section or hierarchy the commands should be checked against.  If the parents argument is omitted, the commands are checked against the set of top level or global commands."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "Starting with Ansible 2.6 we recommend using C(connection: httpapi) for eAPI.",
+                        "This option will be removed in a release after 2022-06-01.",
+                        "For more information please see the L(EOS Platform Options guide, ../network/user_guide/platform_eos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "authorize": {
+                            "default": false,
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.  This is a common argument used for either I(cli) or I(eapi) transports. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "default": 0,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device.  This value applies to either I(cli) or I(eapi).",
+                                "The port value will default to the appropriate transport common port if none is provided in the task (cli=22, http=80, https=443)."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH keyfile to use to authenticate the connection to the remote device.  This argument is only used for I(cli) transports. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "eapi"
+                            ],
+                            "default": "cli",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "use_proxy": {
+                            "default": true,
+                            "description": [
+                                "If C(no), the environment variables C(http_proxy) and C(https_proxy) will be ignored."
+                            ],
+                            "type": "bool"
+                        },
+                        "use_ssl": {
+                            "default": true,
+                            "description": [
+                                "Configures the I(transport) to use SSL if set to C(yes) only when the C(transport=eapi).  If the transport argument is not eapi, this value is ignored."
+                            ],
+                            "type": "bool"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate either the CLI login or the eAPI authentication depending on which transport is used. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates.  If the transport argument is not eapi, this value is ignored."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "replace": {
+                    "choices": [
+                        "line",
+                        "block",
+                        "config"
+                    ],
+                    "default": "line",
+                    "description": [
+                        "Instructs the module on the way to perform the configuration on the device.  If the replace argument is set to I(line) then the modified lines are pushed to the device in configuration mode.  If the replace argument is set to I(block) then the entire command block is pushed to the device in configuration mode if any line is not correct."
+                    ],
+                    "type": "str"
+                },
+                "running_config": {
+                    "aliases": [
+                        "config"
+                    ],
+                    "description": [
+                        "The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source.  There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The I(running_config) argument allows the implementer to pass in the configuration to use as the base config for this module. The configuration lines for this option should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff."
+                    ],
+                    "type": "str"
+                },
+                "save_when": {
+                    "choices": [
+                        "always",
+                        "never",
+                        "modified",
+                        "changed"
+                    ],
+                    "default": "never",
+                    "description": [
+                        "When changes are made to the device running-configuration, the changes are not copied to non-volatile storage by default.  Using this argument will change that before.  If the argument is set to I(always), then the running-config will always be copied to the startup-config and the I(modified) flag will always be set to True.  If the argument is set to I(modified), then the running-config will only be copied to the startup-config if it has changed since the last save to startup-config.  If the argument is set to I(never), the running-config will never be copied to the startup-config. If the argument is set to I(changed), then the running-config will only be copied to the startup-config if the task has made a change. I(changed) was added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "The I(src) argument provides a path to the configuration file to load into the remote system.  The path can either be a full system path to the configuration file if the value starts with / or relative to the root of the implemented role or playbook. This argument is mutually exclusive with the I(lines) and I(parents) arguments. It can be a Jinja2 template as well. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration (live switch config) of the device i ncluding the indentation to ensure idempotency and correct diff. Arista EOS device config has 3 spaces indentation."
+                    ],
+                    "type": "path"
+                }
+            },
+            "short_description": "Manage Arista EOS configuration sections",
+            "version_added": "1.0.0",
+            "version_added_collection": "arista.eos"
+        },
+        "examples": "\n- name: configure top level settings\n  arista.eos.eos_config:\n    lines: hostname {{ inventory_hostname }}\n\n- name: load an acl into the device\n  arista.eos.eos_config:\n    lines:\n    - 10 permit ip host 192.0.2.1 any log\n    - 20 permit ip host 192.0.2.2 any log\n    - 30 permit ip host 192.0.2.3 any log\n    - 40 permit ip host 192.0.2.4 any log\n    parents: ip access-list test\n    before: no ip access-list test\n    replace: block\n\n- name: load configuration from file\n  arista.eos.eos_config:\n    src: eos.cfg\n\n- name: render a Jinja2 template onto an Arista switch\n  arista.eos.eos_config:\n    backup: yes\n    src: eos_template.j2\n\n- name: diff the running config against a master config\n  arista.eos.eos_config:\n    diff_against: intended\n    intended_config: \"{{ lookup('file', 'master.cfg') }}\"\n\n- name: for idempotency, use full-form commands\n  arista.eos.eos_config:\n    lines:\n      # - shut\n    - shutdown\n    # parents: int eth1\n    parents: interface Ethernet1\n\n- name: configurable backup path\n  arista.eos.eos_config:\n    src: eos_template.j2\n    backup: yes\n    backup_options:\n      filename: backup.cfg\n      dir_path: /home/user\n",
+        "metadata": null,
+        "return": {
+            "backup_path": {
+                "description": "The full path to the backup file",
+                "returned": "when backup is yes",
+                "sample": "/playbooks/ansible/backup/eos_config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "commands": {
+                "description": "The set of commands that will be pushed to the remote device",
+                "returned": "always",
+                "sample": [
+                    "hostname switch01",
+                    "interface Ethernet1",
+                    "no shutdown"
+                ],
+                "type": "list"
+            },
+            "date": {
+                "description": "The date extracted from the backup file name",
+                "returned": "when backup is yes",
+                "sample": "2016-07-16",
+                "type": "str"
+            },
+            "filename": {
+                "description": "The name of the backup file",
+                "returned": "when backup is yes and filename is not specified in backup options",
+                "sample": "eos_config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "shortname": {
+                "description": "The full path to the backup file excluding the timestamp",
+                "returned": "when backup is yes and filename is not specified in backup options",
+                "sample": "/playbooks/ansible/backup/eos_config",
+                "type": "str"
+            },
+            "time": {
+                "description": "The time extracted from the backup file name",
+                "returned": "when backup is yes",
+                "sample": "22:28:34",
+                "type": "str"
+            },
+            "updates": {
+                "description": "The set of commands that will be pushed to the remote device",
+                "returned": "always",
+                "sample": [
+                    "hostname switch01",
+                    "interface Ethernet1",
+                    "no shutdown"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

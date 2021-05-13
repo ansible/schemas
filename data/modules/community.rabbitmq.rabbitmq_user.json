@@ -1,0 +1,126 @@
+{
+    "community.rabbitmq.rabbitmq_user": {
+        "doc": {
+            "author": "Chris Hoffman (@chrishoffman)",
+            "collection": "community.rabbitmq",
+            "description": [
+                "Add or remove users to RabbitMQ and assign permissions"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/rabbitmq/plugins/modules/rabbitmq_user.py",
+            "has_action": false,
+            "module": "rabbitmq_user",
+            "options": {
+                "configure_priv": {
+                    "default": "^$",
+                    "description": [
+                        "Regular expression to restrict configure actions on a resource for the specified vhost.",
+                        "By default all actions are restricted.",
+                        "This option will be ignored when permissions option is used."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": "no",
+                    "description": [
+                        "Deletes and recreates the user."
+                    ],
+                    "type": "bool"
+                },
+                "node": {
+                    "default": "rabbit",
+                    "description": [
+                        "erlang node name of the rabbit we wish to configure"
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of user to add.",
+                        "To change the password of an existing user, you must also specify C(update_password=always)."
+                    ],
+                    "type": "str"
+                },
+                "permissions": {
+                    "default": [],
+                    "description": [
+                        "a list of dicts, each dict contains vhost, configure_priv, write_priv, and read_priv, and represents a permission rule for that vhost.",
+                        "This option should be preferable when you care about all permissions of the user.",
+                        "You should use vhost, configure_priv, write_priv, and read_priv options instead if you care about permissions for just some vhosts."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "read_priv": {
+                    "default": "^$",
+                    "description": [
+                        "Regular expression to restrict configure actions on a resource for the specified vhost.",
+                        "By default all actions are restricted.",
+                        "This option will be ignored when permissions option is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify if user is to be added or removed"
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "User tags specified as comma delimited"
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "on_create",
+                        "always"
+                    ],
+                    "default": "on_create",
+                    "description": [
+                        "C(on_create) will only set the password for newly created users.  C(always) will update passwords if they differ."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "user": {
+                    "aliases": [
+                        "username",
+                        "name"
+                    ],
+                    "description": [
+                        "Name of user to add"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "vhost": {
+                    "default": "/",
+                    "description": [
+                        "vhost to apply access privileges.",
+                        "This option will be ignored when permissions option is used."
+                    ],
+                    "type": "str"
+                },
+                "write_priv": {
+                    "default": "^$",
+                    "description": [
+                        "Regular expression to restrict configure actions on a resource for the specified vhost.",
+                        "By default all actions are restricted.",
+                        "This option will be ignored when permissions option is used."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage RabbitMQ users"
+        },
+        "examples": "\n# Add user to server and assign full access control on / vhost.\n# The user might have permission rules for other vhost but you don't care.\n- community.rabbitmq.rabbitmq_user:\n    user: joe\n    password: changeme\n    vhost: /\n    configure_priv: .*\n    read_priv: .*\n    write_priv: .*\n    state: present\n\n# Add user to server and assign full access control on / vhost.\n# The user doesn't have permission rules for other vhosts\n- community.rabbitmq.rabbitmq_user:\n    user: joe\n    password: changeme\n    permissions:\n      - vhost: /\n        configure_priv: .*\n        read_priv: .*\n        write_priv: .*\n    state: present\n",
+        "metadata": null,
+        "return": null
+    }
+}

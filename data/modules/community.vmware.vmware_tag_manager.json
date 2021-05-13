@@ -1,0 +1,162 @@
+{
+    "community.vmware.vmware_tag_manager": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)",
+                "Frederic Van Reet (@GBrawl)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to assign / remove VMware tags from the given VMware objects.",
+                "Tag feature is introduced in vSphere 6 version, so this module is not supported in the earlier versions of vSphere.",
+                "All variables and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_tag_manager.py",
+            "has_action": false,
+            "module": "vmware_tag_manager",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "object_name": {
+                    "description": [
+                        "Name of the object to work with.",
+                        "For DistributedVirtualPortgroups the format should be \"switch_name:portgroup_name\""
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "object_type": {
+                    "choices": [
+                        "VirtualMachine",
+                        "Datacenter",
+                        "ClusterComputeResource",
+                        "HostSystem",
+                        "DistributedVirtualSwitch",
+                        "DistributedVirtualPortgroup",
+                        "Datastore",
+                        "DatastoreCluster",
+                        "ResourcePool",
+                        "Folder"
+                    ],
+                    "description": [
+                        "Type of object to work with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead."
+                    ],
+                    "type": "int"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The connection to protocol."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "add",
+                        "remove",
+                        "set"
+                    ],
+                    "default": "add",
+                    "description": [
+                        "If C(state) is set to C(add) or C(present) will add the tags to the existing tag list of the given object.",
+                        "If C(state) is set to C(remove) or C(absent) will remove the tags from the existing tag list of the given object.",
+                        "If C(state) is set to C(set) will replace the tags of the given objects with the user defined list of tags."
+                    ],
+                    "type": "str"
+                },
+                "tag_names": {
+                    "description": [
+                        "List of tag(s) to be managed.",
+                        "User can also specify category name by specifying colon separated value. For example, \"category_name:tag_name\".",
+                        "User can also specify tag and category as dict, when tag or category contains colon. See example for more information. Added in version 2.10.",
+                        "User can skip category name if you have unique tag names."
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid.",
+                        "Set to C(no) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi",
+                "vSphere Automation SDK"
+            ],
+            "short_description": "Manage association of VMware tags with VMware objects"
+        },
+        "examples": "\n- name: Add tags to a virtual machine\n  community.vmware.vmware_tag_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: no\n    tag_names:\n      - Sample_Tag_0002\n      - Category_0001:Sample_Tag_0003\n    object_name: Fedora_VM\n    object_type: VirtualMachine\n    state: add\n  delegate_to: localhost\n\n- name: Specify tag and category as dict\n  community.vmware.vmware_tag_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: no\n    tag_names:\n      - tag: tag_0001\n        category: cat_0001\n      - tag: tag_0002\n        category: cat_0002\n    object_name: Fedora_VM\n    object_type: VirtualMachine\n    state: add\n  delegate_to: localhost\n\n- name: Remove a tag from a virtual machine\n  community.vmware.vmware_tag_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: no\n    tag_names:\n      - Sample_Tag_0002\n    object_name: Fedora_VM\n    object_type: VirtualMachine\n    state: remove\n  delegate_to: localhost\n\n- name: Add tags to a distributed virtual switch\n  community.vmware.vmware_tag_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: no\n    tag_names:\n      - Sample_Tag_0003\n    object_name: Switch_0001\n    object_type: DistributedVirtualSwitch\n    state: add\n  delegate_to: localhost\n\n- name: Add tags to a distributed virtual portgroup\n  community.vmware.vmware_tag_manager:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: no\n    tag_names:\n      - Sample_Tag_0004\n    object_name: Switch_0001:Portgroup_0001\n    object_type: DistributedVirtualPortgroup\n    state: add\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "tag_status": {
+                "description": "metadata about tags related to object configuration",
+                "returned": "on success",
+                "sample": {
+                    "current_tags": [
+                        "backup",
+                        "security"
+                    ],
+                    "desired_tags": [
+                        "security"
+                    ],
+                    "previous_tags": [
+                        "backup",
+                        "security"
+                    ]
+                },
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,97 @@
+{
+    "arista.eos.eos_lldp_interfaces": {
+        "doc": {
+            "author": "Nathaniel Case (@Qalthos)",
+            "collection": "arista.eos",
+            "description": [
+                "This module manages Link Layer Discovery Protocol (LLDP) attributes of interfaces on Arista EOS devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/arista/eos/plugins/modules/eos_lldp_interfaces.py",
+            "has_action": true,
+            "module": "eos_lldp_interfaces",
+            "notes": [
+                "Tested against Arista EOS 4.20.10M",
+                "This module works with connection C(network_cli). See the L(EOS Platform Options,../network/user_guide/platform_eos.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of LLDP interfaces options.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Full name of the interface (i.e. Ethernet1)."
+                            ],
+                            "type": "str"
+                        },
+                        "receive": {
+                            "description": [
+                                "Enable/disable LLDP RX on an interface."
+                            ],
+                            "type": "bool"
+                        },
+                        "transmit": {
+                            "description": [
+                                "Enable/disable LLDP TX on an interface."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the EOS device by executing the command B(show running-config | section ^interface).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "parsed",
+                        "gathered",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LLDP interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "arista.eos"
+        },
+        "examples": "\n# Using merged\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp receive\n# interface Ethernet2\n#    no lldp transmit\n\n- name: Merge provided configuration with running configuration\n  arista.eos.eos_lldp_interfaces:\n    config:\n    - name: Ethernet1\n      transmit: false\n    - name: Ethernet2\n      transmit: false\n    state: merged\n\n#\n# ------------\n# After state\n# ------------\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp transmit\n#    no lldp receive\n# interface Ethernet2\n#    no lldp transmit\n\n\n# Using replaced\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp receive\n# interface Ethernet2\n#    no lldp transmit\n\n- name: Replace existing LLDP configuration of specified interfaces with provided\n    configuration\n  arista.eos.eos_lldp_interfaces:\n    config:\n    - name: Ethernet1\n      transmit: false\n    state: replaced\n\n#\n# ------------\n# After state\n# ------------\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp transmit\n# interface Ethernet2\n#    no lldp transmit\n\n\n# Using overridden\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp receive\n# interface Ethernet2\n#    no lldp transmit\n\n- name: Override the LLDP configuration of all the interfaces with provided configuration\n  arista.eos.eos_lldp_interfaces:\n    config:\n    - name: Ethernet1\n      transmit: false\n    state: overridden\n\n#\n# ------------\n# After state\n# ------------\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp transmit\n# interface Ethernet2\n\n\n# Using deleted\n#\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n#    no lldp receive\n# interface Ethernet2\n#    no lldp transmit\n\n- name: Delete LLDP configuration of specified interfaces (or all interfaces if none\n    are specified)\n  arista.eos.eos_lldp_interfaces:\n    state: deleted\n\n#\n# ------------\n# After state\n# ------------\n#\n# veos#show run | section ^interface\n# interface Ethernet1\n# interface Ethernet2\n\n# using rendered:\n\n- name: Use Rendered to convert the structured data to native config\n  arista.eos.eos_lldp_interfaces:\n    config:\n    - name: Ethernet1\n      transmit: false\n    - name: Ethernet2\n      transmit: false\n    state: rendered\n\n#\n# ------------\n# Output\n# ------------\n#\n# interface Ethernet1\n#    no lldp transmit\n# interface Ethernet2\n#    no lldp transmit\n\n# Using parsed\n# parsed.cfg\n\n# interface Ethernet1\n#    no lldp transmit\n# interface Ethernet2\n#    no lldp transmit\n\n\n- name: Use parsed to convert native configs to structured data\n  arista.eos.lldp_interfaces:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# ------------\n# Output\n# ------------\n\n#   parsed:\n#     - name: Ethernet1\n#       transmit: False\n#     - name: Ethernet2\n#       transmit: False\n\n# Using gathered:\n\n# native config:\n# interface Ethernet1\n#    no lldp transmit\n# interface Ethernet2\n#    no lldp transmit\n\n- name: Gather lldp interfaces facts from the device\n  arista.eos.lldp_interfaces:\n    state: gathered\n\n# ------------\n# Output\n# ------------\n\n#   gathered:\n#     - name: Ethernet1\n#       transmit: False\n#     - name: Ethernet2\n#       transmit: False\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "interface Ethernet1",
+                    "no lldp transmit"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,461 @@
+{
+    "f5networks.f5_modules.bigip_cgnat_lsn_pool": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage CGNAT LSN (Large Scale NAT) Pools."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_cgnat_lsn_pool.py",
+            "has_action": false,
+            "module": "bigip_cgnat_lsn_pool",
+            "notes": [
+                "Requires CGNAT is licensed and enabled on BIG-IP.",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "backup_members": {
+                    "description": [
+                        "Specifies translation IP addresses available for backup members, which are used by Deterministic translation mode if C(deterministic) mode translation fails and falls back to C(napt) mode.",
+                        "This is a collection of IP prefixes with their prefix lengths."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "client_conn_limit": {
+                    "description": [
+                        "Specifies the maximum number of simultaneous translated connections a client or subscriber is allowed to have.",
+                        "Valid range of values is between C(0) and C(4294967295) inclusive."
+                    ],
+                    "type": "int"
+                },
+                "description": {
+                    "description": [
+                        "User created LSN pool description."
+                    ],
+                    "type": "str"
+                },
+                "egress_interfaces": {
+                    "description": [
+                        "Specifies the set of interfaces on which the source address translation is allowed or disallowed, as determined by the C(egress_intf_enabled) setting."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "egress_intf_enabled": {
+                    "description": [
+                        "Specifies how the system handles address translation on the interfaces specified in C(egress_interfaces).",
+                        "When set to C(yes), source address translation is allowed only on the specified C(egress_interfaces).",
+                        "When set to C(no), source address translation is disabled on the specified C(egress_interfaces)."
+                    ],
+                    "type": "bool"
+                },
+                "harpin_mode": {
+                    "description": [
+                        "Enables or disables hairpinning for incoming connections to active translation end-points."
+                    ],
+                    "type": "bool"
+                },
+                "icmp_echo": {
+                    "description": [
+                        "Enables or disables ICMP echo on translated addresses."
+                    ],
+                    "type": "bool"
+                },
+                "inbound_connections": {
+                    "choices": [
+                        "disabled",
+                        "explicit",
+                        "automatic"
+                    ],
+                    "description": [
+                        "Controls whether or not the BIG-IP system supports inbound connections for each outbound mapping.",
+                        "When C(disabled), system does not support inbound connections for outbound mappings, which prevents Port Control Protocol C(pcp) from functioning.",
+                        "When C(explicit), the system supports inbound connections for explicit outbound mappings.",
+                        "When C(automatic) the system supports inbound connections for every outbound mapping as it gets used."
+                    ],
+                    "type": "str"
+                },
+                "log_profile": {
+                    "description": [
+                        "Specifies the name of the logging profile the pool uses."
+                    ],
+                    "type": "str"
+                },
+                "log_publisher": {
+                    "description": [
+                        "Specifies the name of the log publisher that logs translation events."
+                    ],
+                    "type": "str"
+                },
+                "members": {
+                    "description": [
+                        "Specifies the set of translation IP addresses available in the pool. This is a collection of IP prefixes with their prefix lengths.",
+                        "All public-side addresses come from the addresses in this group of subnets. Members of two or more deterministic LSN pools must not overlap. Every external address used for deterministic mapping must occur only in one LSN pool."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "mode": {
+                    "choices": [
+                        "napt",
+                        "deterministic",
+                        "pba"
+                    ],
+                    "description": [
+                        "Specifies the translation address mapping mode.",
+                        "The C(napt) mode provides standard address and port translation allowing multiple clients in a private network to access remote networks using the single IP address assigned to their router.",
+                        "The C(deterministic) address translation mode provides address translation that eliminates the logging of every address mapping, while still allowing internal client address tracking using only an external address and port, and a destination address and port.",
+                        "The C(pba) mode logs the allocation and release of port blocks for subscriber translation requests, instead of separately logging each translation request."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the LSN pool to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition on which to manage resources."
+                    ],
+                    "type": "str"
+                },
+                "pba_block_idle_timeout": {
+                    "description": [
+                        "Specifies the timeout duration subsequent to the point when the port block becomes idle.",
+                        "Valid range of values is between C(0) and C(4294967295) inclusive.\""
+                    ],
+                    "type": "int"
+                },
+                "pba_block_lifetime": {
+                    "description": [
+                        "Specifies the timeout for the port block, after which the block is not used for new port allocations.",
+                        "Valid range of values is between C(0) and C(4294967295) inclusive.",
+                        "The value of C(0) corresponds to an infinite timeout."
+                    ],
+                    "type": "int"
+                },
+                "pba_block_size": {
+                    "description": [
+                        "Specifies the number of ports in a block.",
+                        "Valid range of values is between C(0) and C(65535) inclusive.",
+                        "The C(pba_block_size) value should be less than or equal to the LSN pool range, i.e the range of ports defined by C(port_range_low) and C(port_range_high) values."
+                    ],
+                    "type": "int"
+                },
+                "pba_client_block_limit": {
+                    "description": [
+                        "Specifies the number of blocks that can be assigned to a single subscriber IP address."
+                    ],
+                    "type": "int"
+                },
+                "pba_zombie_timeout": {
+                    "description": [
+                        "Specifies the timeout duration for a zombie port block, which is a timed out port block with one or more active connections. When the timeout duration expires, connections using the zombie block are killed and the zombie port block becomes an available port block.",
+                        "The value of C(0) corresponds to an infinite timeout.",
+                        "System ignores this parameter value if C(pba_block_lifetime) is C(0)."
+                    ],
+                    "type": "int"
+                },
+                "persistence_mode": {
+                    "choices": [
+                        "address",
+                        "address-port",
+                        "none"
+                    ],
+                    "description": [
+                        "Specifies the persistence settings for LSN translation entries.",
+                        "When C(address), the translation attempts to reuse the address mapping, but not the port mapping.",
+                        "When C(address-port), the translation attempts to reuse both the address and port mapping for subsequent packets sent from the same internal IP address and port.",
+                        "When C(none), peristence is disabled."
+                    ],
+                    "type": "str"
+                },
+                "persistence_timeout": {
+                    "description": [
+                        "Specifies the persistence timeout value for LSN translation entries.",
+                        "If a particular mapping is unused for this length of time, the mapping expires and the public-side address/port pair is free for use in other mappings.",
+                        "Valid range of values is between C(0) and C(31536000) inclusive."
+                    ],
+                    "type": "int"
+                },
+                "port_range_high": {
+                    "description": [
+                        "Specifies the high end of the range of port numbers available for use with translation IP addresses.",
+                        "The C(port_range_high) must always be higher or equal to C(port_range_high) value.",
+                        "Valid range of values is between C(0) and C(65535) inclusive."
+                    ],
+                    "type": "int"
+                },
+                "port_range_low": {
+                    "description": [
+                        "Specifies the low end of the range of port numbers available for use with translation IP addresses.",
+                        "The C(port_range_low) must always be lower or equal to C(port_range_high) value.",
+                        "Valid range of values is between C(0) and C(65535) inclusive."
+                    ],
+                    "type": "int"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "route_advertisement": {
+                    "description": [
+                        "Specifies whether the translation addresses are passed to the Advanced Routing Module for advertisement through dynamic routing protocols."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state) is C(present), ensures the LSN pool exists.",
+                        "When C(state) is C(absent), ensures the LSN pool is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage CGNAT LSN Pools",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create an lsn pool\n  bigip_cgnat_lsn_pool:\n    name: foo\n    mode: napt\n    client_conn_limit: 100\n    log_profile: foo_profile\n    log_publisher: foo_publisher\n    members:\n      - 10.1.1.0/24\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Update lsn pool\n  bigip_cgnat_lsn_pool:\n    name: foo\n    mode: pba\n    pba_block_size: 128\n    pba_block_lifetime: 7200\n    pba_block_idle_timeout: 1800\n    pba_zombie_timeout: 900\n    log_profile: foo_profile\n    log_publisher: foo_publisher\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove lsn pool\n  bigip_cgnat_lsn_pool:\n    name: foo\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "backup_members": {
+                "description": "The translation IP addresses available for backup members.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/10.10.10.0/24",
+                    "/Common/11.11.11.0/25"
+                ],
+                "type": "list"
+            },
+            "client_conn_limit": {
+                "description": "The maximum number of simultaneous translated connections a client or subscriber is allowed to have.",
+                "returned": "changed",
+                "sample": 50,
+                "type": "int"
+            },
+            "description": {
+                "description": "User created LSN pool description.",
+                "returned": "changed",
+                "sample": "some description",
+                "type": "str"
+            },
+            "egress_interfaces": {
+                "description": "The set of interfaces on which source address translation is allowed or disallowed.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/tunnel1",
+                    "/Common/tunnel2"
+                ],
+                "type": "list"
+            },
+            "egress_intf_enabled": {
+                "description": "Specifies how the system handles address translation on the egress interfaces.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "harpin_mode": {
+                "description": "Enables or disables hairpinning for incoming connections to active translation end-points.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "icmp_echo": {
+                "description": "Enables or disables ICMP echo on translated addresses.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "inbound_connections": {
+                "description": "Controls BIG-IP system support of inbound connections for each outbound mapping.",
+                "returned": "changed",
+                "sample": "explicit",
+                "type": "str"
+            },
+            "log_profile": {
+                "description": "The name of the logging profile the pool uses.",
+                "returned": "changed",
+                "sample": "/Common/foo_log_profile",
+                "type": "str"
+            },
+            "log_publisher": {
+                "description": "The name of the log publisher that logs translation events.",
+                "returned": "changed",
+                "sample": "/Common/publisher_1",
+                "type": "list"
+            },
+            "members": {
+                "description": "The set of translation IP addresses available in the pool.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/10.10.10.0/24",
+                    "/Common/11.11.11.0/25"
+                ],
+                "type": "list"
+            },
+            "mode": {
+                "description": "Specifies the translation address mapping mode.",
+                "returned": "changed",
+                "sample": "napt",
+                "type": "str"
+            },
+            "pba_block_idle_timeout": {
+                "description": "The timeout duration subsequent to the point when the port block becomes idle.",
+                "returned": "changed",
+                "sample": 3600,
+                "type": "int"
+            },
+            "pba_block_lifetime": {
+                "description": "The timeout for the port block.",
+                "returned": "changed",
+                "sample": 7200,
+                "type": "int"
+            },
+            "pba_block_size": {
+                "description": "The number of ports in a block.",
+                "returned": "changed",
+                "sample": 128,
+                "type": "int"
+            },
+            "pba_client_block_limit": {
+                "description": "The number of blocks that can be assigned to a single subscriber IP address.",
+                "returned": "changed",
+                "sample": 3,
+                "type": "int"
+            },
+            "pba_zombie_timeout": {
+                "description": "The timeout duration for a zombie port block.",
+                "returned": "changed",
+                "sample": 180,
+                "type": "int"
+            },
+            "persistence_mode": {
+                "description": "Specifies the persistence settings for LSN translation entries.",
+                "returned": "changed",
+                "sample": "address",
+                "type": "str"
+            },
+            "persistence_timeout": {
+                "description": "Specifies the persistence timeout value for LSN translation entries.",
+                "returned": "changed",
+                "sample": 500,
+                "type": "int"
+            },
+            "port_range_high": {
+                "description": "The high end of the range of port numbers available for use with translation IP addresses.",
+                "returned": "changed",
+                "sample": 65535,
+                "type": "int"
+            },
+            "port_range_low": {
+                "description": "The low end of the range of port numbers available for use with translation IP addresses.",
+                "returned": "changed",
+                "sample": 1025,
+                "type": "int"
+            },
+            "route_advertisement": {
+                "description": "Specifies whether the translation addresses are advertised through dynamic routing protocols.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

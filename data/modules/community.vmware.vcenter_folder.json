@@ -1,0 +1,180 @@
+{
+    "community.vmware.vcenter_folder": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)",
+                "Christian Kotte (@ckotte) <christian.kotte@gmx.de>",
+                "Jan Meerkamp (@meerkampdvv)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to create, delete, move and rename folder on then given datacenter.",
+                "This module is only supported for vCenter."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vcenter_folder.py",
+            "has_action": false,
+            "module": "vcenter_folder",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "datacenter": {
+                    "aliases": [
+                        "datacenter_name"
+                    ],
+                    "description": [
+                        "Name of the datacenter."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "folder_name": {
+                    "description": [
+                        "Name of folder to be managed.",
+                        "This is case sensitive parameter.",
+                        "Folder name should be under 80 characters. This is a VMware restriction."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "folder_type": {
+                    "choices": [
+                        "datastore",
+                        "host",
+                        "network",
+                        "vm"
+                    ],
+                    "default": "vm",
+                    "description": [
+                        "This is type of folder.",
+                        "If set to C(vm), then 'VM and Template Folder' is created under datacenter.",
+                        "If set to C(host), then 'Host and Cluster Folder' is created under datacenter.",
+                        "If set to C(datastore), then 'Storage Folder' is created under datacenter.",
+                        "If set to C(network), then 'Network Folder' is created under datacenter.",
+                        "This parameter is required, if C(state) is set to C(present) and parent_folder is absent.",
+                        "This option is ignored, if C(parent_folder) is set."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "parent_folder": {
+                    "description": [
+                        "Name of the parent folder under which new folder needs to be created.",
+                        "This is case sensitive parameter.",
+                        "If user wants to create a folder under '/DC0/vm/vm_folder', this value will be 'vm_folder'.",
+                        "If user wants to create a folder under '/DC0/vm/folder1/folder2', this value will be 'folder1/folder2'."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of folder.",
+                        "If set to C(present) without parent folder parameter, then folder with C(folder_type) is created.",
+                        "If set to C(present) with parent folder parameter,  then folder in created under parent folder. C(folder_type) is ignored.",
+                        "If set to C(absent), then folder is unregistered and destroyed."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Manage folders on given datacenter"
+        },
+        "examples": "\n- name: Create a VM folder on given datacenter\n  community.vmware.vcenter_folder:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter_name: datacenter_name\n    folder_name: sample_vm_folder\n    folder_type: vm\n    state: present\n  register: vm_folder_creation_result\n  delegate_to: localhost\n\n- name: Create a datastore folder on given datacenter\n  community.vmware.vcenter_folder:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter_name: datacenter_name\n    folder_name: sample_datastore_folder\n    folder_type: datastore\n    state: present\n  register: datastore_folder_creation_result\n  delegate_to: localhost\n\n- name: Create a sub folder under VM folder on given datacenter\n  community.vmware.vcenter_folder:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter_name: datacenter_name\n    folder_name: sample_sub_folder\n    parent_folder: vm_folder\n    state: present\n  register: sub_folder_creation_result\n  delegate_to: localhost\n\n- name: Delete a VM folder on given datacenter\n  community.vmware.vcenter_folder:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter_name: datacenter_name\n    folder_name: sample_vm_folder\n    folder_type: vm\n    state: absent\n  register: vm_folder_deletion_result\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "contains": {
+                    "msg": {
+                        "description": "string stating about result",
+                        "type": "str"
+                    },
+                    "path": {
+                        "description": "the full path of the new folder",
+                        "type": "str"
+                    }
+                },
+                "description": "The detail about the new folder",
+                "returned": "On success",
+                "type": "complex"
+            }
+        }
+    }
+}

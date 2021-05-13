@@ -1,0 +1,252 @@
+{
+    "ovirt.ovirt.ovirt_permission": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage permissions of users/groups in oVirt/RHV."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_permission.py",
+            "has_action": false,
+            "module": "ovirt_permission",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "authz_name": {
+                    "aliases": [
+                        "domain"
+                    ],
+                    "description": [
+                        "Authorization provider of the user/group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "group_name": {
+                    "description": [
+                        "Name of the group to manage.",
+                        "Note that if group does not exist in the system this module will fail, you should ensure the group exists by using M(ovirt.ovirt.ovirt_groups) module."
+                    ],
+                    "type": "str"
+                },
+                "namespace": {
+                    "description": [
+                        "Namespace of the authorization provider, where user/group resides."
+                    ],
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "object_id": {
+                    "description": [
+                        "ID of the object where the permissions should be managed."
+                    ],
+                    "type": "str"
+                },
+                "object_name": {
+                    "description": [
+                        "Name of the object where the permissions should be managed."
+                    ],
+                    "type": "str"
+                },
+                "object_type": {
+                    "choices": [
+                        "cluster",
+                        "cpu_profile",
+                        "data_center",
+                        "disk",
+                        "disk_profile",
+                        "host",
+                        "network",
+                        "storage_domain",
+                        "system",
+                        "template",
+                        "vm",
+                        "vm_pool",
+                        "vnic_profile"
+                    ],
+                    "default": "vm",
+                    "description": [
+                        "The object where the permissions should be managed."
+                    ],
+                    "type": "str"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "quota_name": {
+                    "description": [
+                        "Name of the quota to assign permission. Works only with C(object_type) I(data_center)."
+                    ],
+                    "type": "str"
+                },
+                "role": {
+                    "default": "UserRole",
+                    "description": [
+                        "Name of the role to be assigned to user/group on specific object."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the permission be present/absent."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "user_name": {
+                    "description": [
+                        "Username of the user to manage. In most LDAPs it's I(uid) of the user, but in Active Directory you must specify I(UPN) of the user.",
+                        "Note that if user does not exist in the system this module will fail, you should ensure the user exists by using M(ovirt.ovirt.ovirt_users) module."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage permissions of users/groups in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n- name: Add user user1 from authorization provider example.com-authz\n  ovirt.ovirt.ovirt_permission:\n    user_name: user1\n    authz_name: example.com-authz\n    object_type: vm\n    object_name: myvm\n    role: UserVmManager\n\n- name: Remove permission from user\n  ovirt.ovirt.ovirt_permission:\n    state: absent\n    user_name: user1\n    authz_name: example.com-authz\n    object_type: cluster\n    object_name: mycluster\n    role: ClusterAdmin\n\n- name: Assign QuotaConsumer role to user\n  ovirt.ovirt.ovirt_permissions:\n    state: present\n    user_name: user1\n    authz_name: example.com-authz\n    object_type: data_center\n    object_name: mydatacenter\n    quota_name: myquota\n    role: QuotaConsumer\n\n- name: Assign QuotaConsumer role to group\n  ovirt.ovirt.ovirt_permissions:\n    state: present\n    group_name: group1\n    authz_name: example.com-authz\n    object_type: data_center\n    object_name: mydatacenter\n    quota_name: myquota\n    role: QuotaConsumer\n",
+        "metadata": null,
+        "return": {
+            "id": {
+                "description": "ID of the permission which is managed",
+                "returned": "On success if permission is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            },
+            "permission": {
+                "description": "Dictionary of all the permission attributes. Permission attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/permission.",
+                "returned": "On success if permission is found.",
+                "type": "dict"
+            }
+        }
+    }
+}

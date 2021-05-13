@@ -1,0 +1,128 @@
+{
+    "ansible.windows.win_share": {
+        "doc": {
+            "author": [
+                "Hans-Joachim Kliemeck (@h0nIg)",
+                "David Baumann (@daBONDi)",
+                "Shachaf Goldstein (@Shachaf92)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "Add, modify or remove Windows share and set share permissions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_share.py",
+            "has_action": false,
+            "module": "win_share",
+            "options": {
+                "caching_mode": {
+                    "choices": [
+                        "BranchCache",
+                        "Documents",
+                        "Manual",
+                        "None",
+                        "Programs",
+                        "Unknown"
+                    ],
+                    "default": "Manual",
+                    "description": [
+                        "Set the CachingMode for this share."
+                    ],
+                    "type": "str"
+                },
+                "change": {
+                    "description": [
+                        "Specify user list that should get read and write access on share, separated by comma."
+                    ],
+                    "type": "str"
+                },
+                "deny": {
+                    "description": [
+                        "Specify user list that should get no access, regardless of implied access on share, separated by comma."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Share description."
+                    ],
+                    "type": "str"
+                },
+                "encrypt": {
+                    "default": false,
+                    "description": "Sets whether to encrypt the traffic to the share or not.",
+                    "type": "bool"
+                },
+                "full": {
+                    "description": [
+                        "Specify user list that should get full access on share, separated by comma."
+                    ],
+                    "type": "str"
+                },
+                "list": {
+                    "default": false,
+                    "description": [
+                        "Specify whether to allow or deny file listing, in case user has no permission on share. Also known as Access-Based Enumeration."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Share name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Share directory."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "read": {
+                    "description": [
+                        "Specify user list that should get read access on share, separated by comma."
+                    ],
+                    "type": "str"
+                },
+                "rule_action": {
+                    "choices": [
+                        "set",
+                        "add"
+                    ],
+                    "default": "set",
+                    "description": "Whether to add or set (replace) access control entries.",
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify whether to add C(present) or remove C(absent) the specified share."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "As this module used newer cmdlets like New-SmbShare this can only run on Windows 8 / Windows 2012 or newer.",
+                "This is due to the reliance on the WMI provider MSFT_SmbShare U(https://msdn.microsoft.com/en-us/library/hh830471) which was only added with these Windows releases."
+            ],
+            "short_description": "Manage Windows shares"
+        },
+        "examples": "\n- name: Add secret share\n  ansible.windows.win_share:\n    name: internal\n    description: top secret share\n    path: C:\\shares\\internal\n    list: no\n    full: Administrators,CEO\n    read: HR-Global\n    deny: HR-External\n\n- name: Add public company share\n  ansible.windows.win_share:\n    name: company\n    description: top secret share\n    path: C:\\shares\\company\n    list: yes\n    full: Administrators,CEO\n    read: Global\n\n- name: Remove previously added share\n  ansible.windows.win_share:\n    name: internal\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "actions": {
+                "description": "A list of action cmdlets that were run by the module.",
+                "returned": "success",
+                "sample": [
+                    "New-SmbShare -Name share -Path C:\\temp"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

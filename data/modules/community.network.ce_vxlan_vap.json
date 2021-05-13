@@ -1,0 +1,126 @@
+{
+    "community.network.ce_vxlan_vap": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages VXLAN Virtual access point on HUAWEI CloudEngine Devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_vxlan_vap.py",
+            "has_action": false,
+            "module": "ce_vxlan_vap",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "bind_vlan_id": {
+                    "description": [
+                        "Specifies the VLAN binding to a BD(Bridge Domain). The value is an integer ranging ranging from 1 to 4094."
+                    ]
+                },
+                "bridge_domain_id": {
+                    "description": [
+                        "Specifies a bridge domain ID. The value is an integer ranging from 1 to 16777215."
+                    ]
+                },
+                "ce_vid": {
+                    "description": [
+                        "When I(encapsulation) is 'dot1q', specifies a VLAN ID in the outer VLAN tag. When I(encapsulation) is 'qinq', specifies an outer VLAN ID for double-tagged packets to be received by a Layer 2 sub-interface. The value is an integer ranging from 1 to 4094."
+                    ]
+                },
+                "encapsulation": {
+                    "choices": [
+                        "dot1q",
+                        "default",
+                        "untag",
+                        "qinq",
+                        "none"
+                    ],
+                    "description": [
+                        "Specifies an encapsulation type of packets allowed to pass through a Layer 2 sub-interface."
+                    ]
+                },
+                "l2_sub_interface": {
+                    "description": [
+                        "Specifies an Sub-Interface full name, i.e. \"10GE1/0/41.1\". The value is a string of 1 to 63 case-insensitive characters, spaces supported."
+                    ]
+                },
+                "pe_vid": {
+                    "description": [
+                        "When I(encapsulation) is 'qinq', specifies an inner VLAN ID for double-tagged packets to be received by a Layer 2 sub-interface. The value is an integer ranging from 1 to 4094."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                }
+            },
+            "short_description": "Manages VXLAN virtual access point on HUAWEI CloudEngine Devices."
+        },
+        "examples": "\n- name: Vxlan vap module test\n  hosts: ce128\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: Create a mapping between a VLAN and a BD\n    community.network.ce_vxlan_vap:\n      bridge_domain_id: 100\n      bind_vlan_id: 99\n      provider: \"{{ cli }}\"\n\n  - name: Bind a Layer 2 sub-interface to a BD\n    community.network.ce_vxlan_vap:\n      bridge_domain_id: 100\n      l2_sub_interface: 10GE2/0/20.1\n      provider: \"{{ cli }}\"\n\n  - name: Configure an encapsulation type on a Layer 2 sub-interface\n    community.network.ce_vxlan_vap:\n      l2_sub_interface: 10GE2/0/20.1\n      encapsulation: dot1q\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "verbose mode",
+                "sample": {
+                    "bind_intf_list": [
+                        "110GE2/0/20.1",
+                        "10GE2/0/20.2"
+                    ],
+                    "bind_vlan_list": [
+                        "99"
+                    ],
+                    "bridge_domain_id": "100"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "verbose mode",
+                "sample": {
+                    "bind_intf_list": [
+                        "10GE2/0/20.1",
+                        "10GE2/0/20.2"
+                    ],
+                    "bind_vlan_list": [],
+                    "bridge_domain_id": "100"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "verbose mode",
+                "sample": {
+                    "bind_vlan_id": "99",
+                    "bridge_domain_id": "100",
+                    "state=\"present\"": null
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "bridge-domain 100",
+                    "l2 binding vlan 99"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,176 @@
+{
+    "netapp_eseries.santricity.na_santricity_ldap": {
+        "doc": {
+            "author": [
+                "Michael Price (@lmprice)",
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "Configure an E-Series system to allow authentication via an LDAP server"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/na_santricity_ldap.py",
+            "has_action": false,
+            "module": "na_santricity_ldap",
+            "notes": [
+                "Check mode is supported",
+                "This module allows you to define one or more LDAP domains identified uniquely by I(identifier) to use for authentication. Authorization is determined by I(role_mappings), in that different groups of users may be given different (or no), access to certain aspects of the system and API.",
+                "The local user accounts will still be available if the LDAP server becomes unavailable/inaccessible.",
+                "Generally, you\"ll need to get the details of your organization\"s LDAP server before you\"ll be able to configure the system for using LDAP authentication; every implementation is likely to be very different.",
+                "This API is currently only supported with the Embedded Web Services API v2.0 and higher, or the Web Services Proxy v3.0 and higher.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API.",
+                        "Example https://prod-1.wahoo.acme.com:8443/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "bind_password": {
+                    "description": [
+                        "This is the password for the bind user account.",
+                        "Required when I(bind_user) is specified."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "bind_user": {
+                    "description": [
+                        "This is the user account that will be used for querying the LDAP server.",
+                        "Required when I(bind_password) is specified.",
+                        "Example: CN=MyBindAcct,OU=ServiceAccounts,DC=example,DC=com"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "group_attributes": {
+                    "default": [
+                        "memberOf"
+                    ],
+                    "description": [
+                        "The user attributes that should be considered for the group to role mapping.",
+                        "Typically this is used with something like \"memberOf\", and a user\"s access is tested against group membership or lack thereof."
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "identifier": {
+                    "default": "default",
+                    "description": [
+                        "This is a unique identifier for the configuration (for cases where there are multiple domains configured)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "names": {
+                    "description": [
+                        "The domain name[s] that will be utilized when authenticating to identify which domain to utilize.",
+                        "Default to use the DNS name of the I(server).",
+                        "The only requirement is that the name[s] be resolvable.",
+                        "Example: user@example.com"
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "role_mappings": {
+                    "description": [
+                        "This is where you specify which groups should have access to what permissions for the storage-system.",
+                        "For example, all users in group A will be assigned all 4 available roles, which will allow access to all the management functionality of the system (super-user). Those in group B only have the storage.monitor role, which will allow only read-only access.",
+                        "This is specified as a mapping of regular expressions to a list of roles. See the examples.",
+                        "The roles that will be assigned to to the group/groups matching the provided regex.",
+                        "storage.admin allows users full read/write access to storage objects and operations.",
+                        "storage.monitor allows users read-only access to storage objects and operations.",
+                        "support.admin allows users access to hardware, diagnostic information, the Major Event Log, and other critical support-related functionality, but not the storage configuration.",
+                        "security.admin allows users access to authentication/authorization configuration, as well as the audit log configuration, and certification management."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "search_base": {
+                    "description": [
+                        "The search base is used to find group memberships of the user.",
+                        "Example: ou=users,dc=example,dc=com"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "This is the LDAP server url.",
+                        "The connection string should be specified as using the ldap or ldaps protocol along with the port information."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "disabled"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When I(state==\"present\") the defined LDAP domain will be added to the storage system.",
+                        "When I(state==\"absent\") the domain specified will be removed from the storage system.",
+                        "I(state==\"disabled\") will result in deleting all existing LDAP domains on the storage system."
+                    ],
+                    "type": "str"
+                },
+                "user_attribute": {
+                    "default": "sAMAccountName",
+                    "description": [
+                        "This is the attribute we will use to match the provided username when a user attempts to authenticate."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage LDAP integration to use for authentication"
+        },
+        "examples": "\n    - name: Disable LDAP authentication\n      na_santricity_ldap:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        state: absent\n\n    - name: Remove the \"default\" LDAP domain configuration\n      na_santricity_ldap:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        state: absent\n        identifier: default\n\n    - name: Define a new LDAP domain, utilizing defaults where possible\n      na_santricity_ldap:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        state: enabled\n        bind_username: \"CN=MyBindAccount,OU=ServiceAccounts,DC=example,DC=com\"\n        bind_password: \"mySecretPass\"\n        server: \"ldap://example.com:389\"\n        search_base: \"OU=Users,DC=example,DC=com\"\n        role_mappings:\n          \".*dist-dev-storage.*\":\n            - storage.admin\n            - security.admin\n            - support.admin\n            - storage.monitor\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": "The ldap settings have been updated.",
+                "type": "str"
+            }
+        }
+    }
+}

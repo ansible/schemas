@@ -1,0 +1,174 @@
+{
+    "community.general.oci_vcn": {
+        "doc": {
+            "author": "Rohit Chaware (@rohitChaware)",
+            "collection": "community.general",
+            "description": [
+                "This module allows the user to create, delete and update virtual cloud networks(VCNs) in OCI. The complete Oracle Cloud Infrastructure Ansible Modules can be downloaded from U(https://github.com/oracle/oci-ansible-modules/releases)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/oci_vcn.py",
+            "has_action": false,
+            "module": "oci_vcn",
+            "notes": [
+                "For OCI python sdk configuration, please refer to U(https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/configuration.html)"
+            ],
+            "options": {
+                "api_user": {
+                    "description": [
+                        "The OCID of the user, on whose behalf, OCI APIs are invoked. If not set, then the value of the OCI_USER_OCID environment variable, if any, is used. This option is required if the user is not specified through a configuration file (See C(config_file_location)). To get the user's OCID, please refer U(https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/apisigningkey.htm)."
+                    ],
+                    "type": "str"
+                },
+                "api_user_fingerprint": {
+                    "description": [
+                        "Fingerprint for the key pair being used. If not set, then the value of the OCI_USER_FINGERPRINT environment variable, if any, is used. This option is required if the key fingerprint is not specified through a configuration file (See C(config_file_location)). To get the key pair's fingerprint value please refer U(https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/apisigningkey.htm)."
+                    ],
+                    "type": "str"
+                },
+                "api_user_key_file": {
+                    "description": [
+                        "Full path and filename of the private key (in PEM format). If not set, then the value of the OCI_USER_KEY_FILE variable, if any, is used. This option is required if the private key is not specified through a configuration file (See C(config_file_location)). If the key is encrypted with a pass-phrase, the C(api_user_key_pass_phrase) option must also be provided."
+                    ],
+                    "type": "path"
+                },
+                "api_user_key_pass_phrase": {
+                    "description": [
+                        "Passphrase used by the key referenced in C(api_user_key_file), if it is encrypted. If not set, then the value of the OCI_USER_KEY_PASS_PHRASE variable, if any, is used. This option is required if the key passphrase is not specified through a configuration file (See C(config_file_location))."
+                    ],
+                    "type": "str"
+                },
+                "auth_type": {
+                    "choices": [
+                        "api_key",
+                        "instance_principal"
+                    ],
+                    "default": "api_key",
+                    "description": [
+                        "The type of authentication to use for making API requests. By default C(auth_type=\"api_key\") based authentication is performed and the API key (see I(api_user_key_file)) in your config file will be used. If this 'auth_type' module option is not specified, the value of the OCI_ANSIBLE_AUTH_TYPE, if any, is used. Use C(auth_type=\"instance_principal\") to use instance principal based authentication when running ansible playbooks within an OCI compute instance."
+                    ],
+                    "type": "str"
+                },
+                "cidr_block": {
+                    "description": "The CIDR IP address block of the VCN. Required when creating a VCN with I(state=present).",
+                    "required": false,
+                    "type": "str"
+                },
+                "compartment_id": {
+                    "description": "The OCID of the compartment to contain the VCN. Required when creating a VCN with I(state=present). This option is mutually exclusive with I(vcn_id).",
+                    "type": "str"
+                },
+                "config_file_location": {
+                    "description": [
+                        "Path to configuration file. If not set then the value of the OCI_CONFIG_FILE environment variable, if any, is used. Otherwise, defaults to ~/.oci/config."
+                    ],
+                    "type": "str"
+                },
+                "config_profile_name": {
+                    "default": "DEFAULT",
+                    "description": [
+                        "The profile to load from the config file referenced by C(config_file_location). If not set, then the value of the OCI_CONFIG_PROFILE environment variable, if any, is used. Otherwise, defaults to the \"DEFAULT\" profile in C(config_file_location)."
+                    ],
+                    "type": "str"
+                },
+                "defined_tags": {
+                    "description": "Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see U(https://docs.us-phoenix-1.oraclecloud.com/Content/General/Concepts/resourcetags.htm).",
+                    "type": "dict"
+                },
+                "display_name": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": "A user-friendly name. Does not have to be unique, and it's changeable.",
+                    "type": "str"
+                },
+                "dns_label": {
+                    "description": "A DNS label for the VCN, used in conjunction with the VNIC's hostname and subnet's DNS label to form a fully qualified domain name (FQDN) for each VNIC within this subnet (for example, bminstance-1.subnet123.vcn1.oraclevcn.com). Not required to be unique, but it's a best practice to set unique DNS labels for VCNs in your tenancy. Must be an alphanumeric string that begins with a letter. The value cannot be changed.",
+                    "type": "str"
+                },
+                "force_create": {
+                    "default": false,
+                    "description": "Whether to attempt non-idempotent creation of a resource. By default, create resource is an idempotent operation, and doesn't create the resource if it already exists. Setting this option to true, forcefully creates a copy of the resource, even if it already exists.This option is mutually exclusive with I(key_by).",
+                    "type": "bool"
+                },
+                "freeform_tags": {
+                    "description": "Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see U(https://docs.us-phoenix-1.oraclecloud.com/Content/General/Concepts/resourcetags.htm).",
+                    "type": "dict"
+                },
+                "key_by": {
+                    "description": "The list of comma-separated attributes of this resource which should be used to uniquely identify an instance of the resource. By default, all the attributes of a resource except I(freeform_tags) are used to uniquely identify a resource.",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "region": {
+                    "description": [
+                        "The Oracle Cloud Infrastructure region to use for all OCI API requests. If not set, then the value of the OCI_REGION variable, if any, is used. This option is required if the region is not specified through a configuration file (See C(config_file_location)). Please refer to U(https://docs.us-phoenix-1.oraclecloud.com/Content/General/Concepts/regions.htm) for more information on OCI regions."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "Create or update a VCN with I(state=present). Use I(state=absent) to delete a VCN.",
+                    "type": "str"
+                },
+                "tenancy": {
+                    "description": [
+                        "OCID of your tenancy. If not set, then the value of the OCI_TENANCY variable, if any, is used. This option is required if the tenancy OCID is not specified through a configuration file (See C(config_file_location)). To get the tenancy OCID, please refer U(https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/apisigningkey.htm)"
+                    ],
+                    "type": "str"
+                },
+                "vcn_id": {
+                    "aliases": [
+                        "id"
+                    ],
+                    "description": "The OCID of the VCN. Required when deleting a VCN with I(state=absent) or updating a VCN with I(state=present). This option is mutually exclusive with I(compartment_id).",
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": "Whether to wait for create or delete operation to complete.",
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 1200,
+                    "description": "Time, in seconds, to wait when I(wait=yes).",
+                    "type": "int"
+                },
+                "wait_until": {
+                    "description": "The lifecycle state to wait for the resource to transition into when I(wait=yes). By default, when I(wait=yes), we wait for the resource to get into ACTIVE/ATTACHED/AVAILABLE/PROVISIONED/ RUNNING applicable lifecycle state during create operation & to get into DELETED/DETACHED/ TERMINATED lifecycle state during delete operation.",
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "Python SDK for Oracle Cloud Infrastructure U(https://oracle-cloud-infrastructure-python-sdk.readthedocs.io)"
+            ],
+            "short_description": "Manage Virtual Cloud Networks(VCN) in OCI"
+        },
+        "examples": "\n- name: Create a VCN\n  community.general.oci_vcn:\n    cidr_block: '10.0.0.0/16'\n    compartment_id: 'ocid1.compartment.oc1..xxxxxEXAMPLExxxxx'\n    display_name: my_vcn\n    dns_label: ansiblevcn\n\n- name: Updates the specified VCN's display name\n  community.general.oci_vcn:\n    vcn_id: ocid1.vcn.oc1.phx.xxxxxEXAMPLExxxxx\n    display_name: ansible_vcn\n\n- name: Delete the specified VCN\n  community.general.oci_vcn:\n    vcn_id: ocid1.vcn.oc1.phx.xxxxxEXAMPLExxxxx\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "vcn": {
+                "description": "Information about the VCN",
+                "returned": "On successful create and update operation",
+                "sample": {
+                    "cidr_block": "10.0.0.0/16",
+                    "compartment_id\"": "ocid1.compartment.oc1..xxxxxEXAMPLExxxxx",
+                    "default_dhcp_options_id": "ocid1.dhcpoptions.oc1.phx.xxxxxEXAMPLExxxxx",
+                    "default_route_table_id": "ocid1.routetable.oc1.phx.xxxxxEXAMPLExxxxx",
+                    "default_security_list_id": "ocid1.securitylist.oc1.phx.xxxxxEXAMPLExxxxx",
+                    "display_name": "ansible_vcn",
+                    "dns_label": "ansiblevcn",
+                    "id": "ocid1.vcn.oc1.phx.xxxxxEXAMPLExxxxx",
+                    "lifecycle_state": "AVAILABLE",
+                    "time_created": "2017-11-13T20:22:40.626000+00:00",
+                    "vcn_domain_name": "ansiblevcn.oraclevcn.com"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

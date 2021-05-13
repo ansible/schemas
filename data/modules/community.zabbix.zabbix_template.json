@@ -1,0 +1,247 @@
+{
+    "community.zabbix.zabbix_template": {
+        "doc": {
+            "author": [
+                "sookido (@sookido)",
+                "Logan Vig (@logan2211)",
+                "Dusan Matejka (@D3DeFi)"
+            ],
+            "collection": "community.zabbix",
+            "description": [
+                "This module allows you to create, modify, delete and dump Zabbix templates.",
+                "Multiple templates can be created or modified at once if passing JSON or XML to module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/zabbix/plugins/modules/zabbix_template.py",
+            "has_action": false,
+            "module": "zabbix_template",
+            "notes": [
+                "If you use I(login_password=zabbix), the word \"zabbix\" is replaced by \"********\" in all module output, because I(login_password) uses C(no_log). See L(this FAQ,https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-is-my-output-sometimes-replaced-with) for more information."
+            ],
+            "options": {
+                "clear_templates": {
+                    "description": [
+                        "List of template names to be unlinked and cleared from the template.",
+                        "This option is ignored if template is being created for the first time."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "dump_format": {
+                    "choices": [
+                        "json",
+                        "xml"
+                    ],
+                    "default": "json",
+                    "description": [
+                        "Format to use when dumping template with C(state=dump).",
+                        "This option is deprecated and will eventually be removed in 2.14."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "http_login_password": {
+                    "description": [
+                        "Basic Auth password"
+                    ],
+                    "type": "str"
+                },
+                "http_login_user": {
+                    "description": [
+                        "Basic Auth login"
+                    ],
+                    "type": "str"
+                },
+                "link_templates": {
+                    "description": [
+                        "List of template names to be linked to the template.",
+                        "Templates that are not specified and are linked to the existing template will be only unlinked and not cleared from the template."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "login_password": {
+                    "description": [
+                        "Zabbix user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "Zabbix user name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "macros": {
+                    "description": [
+                        "List of user macros to create for the template.",
+                        "Macros that are not specified and are present on the existing template will be replaced.",
+                        "See examples on how to pass macros."
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "macro": {
+                            "description": [
+                                "Name of the macro.",
+                                "Must be specified in {$NAME} format."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "value": {
+                            "description": [
+                                "Value of the macro."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "omit_date": {
+                    "default": false,
+                    "description": [
+                        "Removes the date field for the exported/dumped template",
+                        "Requires C(state=dump)"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "server_url": {
+                    "aliases": [
+                        "url"
+                    ],
+                    "description": [
+                        "URL of Zabbix server, with protocol (http or https). C(url) is an alias for C(server_url)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "dump"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Required state of the template.",
+                        "On C(state=present) template will be created/imported or updated depending if it is already present.",
+                        "On C(state=dump) template content will get dumped into required format specified in I(dump_format).",
+                        "On C(state=absent) template will be deleted.",
+                        "The C(state=dump) is deprecated and will be removed in 2.14. The M(community.zabbix.zabbix_template_info) module should be used instead."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "template_groups": {
+                    "description": [
+                        "List of host groups to add template to when template is created.",
+                        "Replaces the current host groups the template belongs to if the template is already present.",
+                        "Required when creating a new template with C(state=present) and I(template_name) is used. Not required when updating an existing template."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "template_json": {
+                    "description": [
+                        "JSON dump of templates to import.",
+                        "Multiple templates can be imported this way.",
+                        "Mutually exclusive with I(template_name) and I(template_xml)."
+                    ],
+                    "required": false,
+                    "type": "json"
+                },
+                "template_name": {
+                    "description": [
+                        "Name of Zabbix template.",
+                        "Required when I(template_json) or I(template_xml) are not used.",
+                        "Mutually exclusive with I(template_json) and I(template_xml)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "template_xml": {
+                    "description": [
+                        "XML dump of templates to import.",
+                        "Multiple templates can be imported this way.",
+                        "You are advised to pass XML structure matching the structure used by your version of Zabbix server.",
+                        "Custom XML structure can be imported as long as it is valid, but may not yield consistent idempotent results on subsequent runs.",
+                        "Mutually exclusive with I(template_name) and I(template_json)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The timeout of API request (seconds)."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to False, SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "zabbix-api >= 0.5.4"
+            ],
+            "short_description": "Create/update/delete/dump Zabbix template"
+        },
+        "examples": "\n---\n- name: Create a new Zabbix template linked to groups, macros and templates\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: ExampleHost\n    template_groups:\n      - Role\n      - Role2\n    link_templates:\n      - Example template1\n      - Example template2\n    macros:\n      - macro: '{$EXAMPLE_MACRO1}'\n        value: 30000\n      - macro: '{$EXAMPLE_MACRO2}'\n        value: 3\n      - macro: '{$EXAMPLE_MACRO3}'\n        value: 'Example'\n    state: present\n\n- name: Unlink and clear templates from the existing Zabbix template\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: ExampleHost\n    clear_templates:\n      - Example template3\n      - Example template4\n    state: present\n\n- name: Import Zabbix templates from JSON\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_json: \"{{ lookup('file', 'zabbix_apache2.json') }}\"\n    state: present\n\n- name: Import Zabbix templates from XML\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_xml: \"{{ lookup('file', 'zabbix_apache2.json') }}\"\n    state: present\n\n- name: Import Zabbix template from Ansible dict variable\n  community.zabbix.zabbix_template:\n    login_user: username\n    login_password: password\n    server_url: http://127.0.0.1\n    template_json:\n      zabbix_export:\n        version: '3.2'\n        templates:\n          - name: Template for Testing\n            description: 'Testing template import'\n            template: Test Template\n            groups:\n              - name: Templates\n            applications:\n              - name: Test Application\n    state: present\n\n- name: Configure macros on the existing Zabbix template\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: Template\n    macros:\n      - macro: '{$TEST_MACRO}'\n        value: 'Example'\n    state: present\n\n- name: Delete Zabbix template\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: Template\n    state: absent\n\n- name: Dump Zabbix template as JSON\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: Template\n    omit_date: yes\n    state: dump\n  register: template_dump\n\n- name: Dump Zabbix template as XML\n  local_action:\n    module: community.zabbix.zabbix_template\n    server_url: http://127.0.0.1\n    login_user: username\n    login_password: password\n    template_name: Template\n    dump_format: xml\n    omit_date: false\n    state: dump\n  register: template_dump\n",
+        "metadata": null,
+        "return": {
+            "template_json": {
+                "description": "The JSON dump of the template",
+                "returned": "when state is dump and omit_date is no",
+                "sample": {
+                    "zabbix_export": {
+                        "date": "2017-11-29T16:37:24Z",
+                        "groups": [
+                            {
+                                "name": "Templates"
+                            }
+                        ],
+                        "templates": [
+                            {
+                                "applications": [],
+                                "description": "",
+                                "discovery_rules": [],
+                                "groups": [
+                                    {
+                                        "name": "Templates"
+                                    }
+                                ],
+                                "httptests": [],
+                                "items": [],
+                                "macros": [],
+                                "name": "Test Template",
+                                "screens": [],
+                                "template": "test",
+                                "templates": []
+                            }
+                        ],
+                        "version": "3.2"
+                    }
+                },
+                "type": "str"
+            },
+            "template_xml": {
+                "description": "dump of the template in XML representation",
+                "returned": "when state is dump, dump_format is xml and omit_date is yes",
+                "sample": "<?xml version=\"1.0\" ?>\n<zabbix_export>\n    <version>4.2</version>\n    <groups>\n        <group>\n            <name>Templates</name>\n        </group>\n    </groups>\n    <templates>\n        <template>\n            <template>test</template>\n            <name>Test Template</name>\n            <description/>\n            <groups>\n                <group>\n                    <name>Templates</name>\n                </group>\n            </groups>\n            <applications/>\n            <items/>\n            <discovery_rules/>\n            <httptests/>\n            <macros/>\n            <templates/>\n            <screens/>\n            <tags/>\n        </template>\n    </templates>\n</zabbix_export>",
+                "type": "str"
+            }
+        }
+    }
+}

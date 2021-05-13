@@ -1,0 +1,165 @@
+{
+    "ansible.posix.authorized_key": {
+        "doc": {
+            "author": "Ansible Core Team",
+            "collection": "ansible.posix",
+            "description": [
+                "Adds or removes SSH authorized keys for particular user accounts."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/posix/plugins/modules/authorized_key.py",
+            "has_action": false,
+            "module": "authorized_key",
+            "options": {
+                "comment": {
+                    "description": [
+                        "Change the comment on the public key.",
+                        "Rewriting the comment is useful in cases such as fetching it from GitHub or GitLab.",
+                        "If no comment is specified, the existing comment will be kept."
+                    ],
+                    "type": "str"
+                },
+                "exclusive": {
+                    "default": false,
+                    "description": [
+                        "Whether to remove all other non-specified keys from the authorized_keys file.",
+                        "Multiple keys can be specified in a single C(key) string value by separating them by newlines.",
+                        "This option is not loop aware, so if you use C(with_) , it will be exclusive per iteration of the loop.",
+                        "If you want multiple keys in the file you need to pass them all to C(key) in a single batch as mentioned above."
+                    ],
+                    "type": "bool"
+                },
+                "follow": {
+                    "default": false,
+                    "description": [
+                        "Follow path symlink instead of replacing it."
+                    ],
+                    "type": "bool"
+                },
+                "key": {
+                    "description": [
+                        "The SSH public key(s), as a string or (since Ansible 1.9) url (https://github.com/username.keys)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "key_options": {
+                    "description": [
+                        "A string of ssh key options to be prepended to the key in the authorized_keys file."
+                    ]
+                },
+                "manage_dir": {
+                    "default": true,
+                    "description": [
+                        "Whether this module should manage the directory of the authorized key file.",
+                        "If set to C(yes), the module will create the directory, as well as set the owner and permissions of an existing directory.",
+                        "Be sure to set C(manage_dir=no) if you are using an alternate directory for authorized_keys, as set with C(path), since you could lock yourself out of SSH access.",
+                        "See the example below."
+                    ],
+                    "type": "bool"
+                },
+                "path": {
+                    "description": [
+                        "Alternate path to the authorized_keys file.",
+                        "When unset, this value defaults to I(~/.ssh/authorized_keys)."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the given key (with the given key_options) should or should not be in the file."
+                    ],
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "The username on the remote host whose authorized_keys file will be modified."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "This only applies if using a https url as the source of the keys.",
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates as it avoids verifying the source site.",
+                        "Prior to 2.1 the code worked as if this was set to C(yes)."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Adds or removes an SSH authorized key",
+            "version_added": "1.0.0",
+            "version_added_collection": "ansible.posix"
+        },
+        "examples": "\n- name: Set authorized key taken from file\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n\n- name: Set authorized keys taken from url\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: https://github.com/charlie.keys\n\n- name: Set authorized key in alternate location\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n    path: /etc/ssh/authorized_keys/charlie\n    manage_dir: False\n\n- name: Set up multiple authorized keys\n  ansible.posix.authorized_key:\n    user: deploy\n    state: present\n    key: '{{ item }}'\n  with_file:\n    - public_keys/doe-jane\n    - public_keys/doe-john\n\n- name: Set authorized key defining key options\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: \"{{ lookup('file', '/home/charlie/.ssh/id_rsa.pub') }}\"\n    key_options: 'no-port-forwarding,from=\"10.0.1.1\"'\n\n- name: Set authorized key without validating the TLS/SSL certificates\n  ansible.posix.authorized_key:\n    user: charlie\n    state: present\n    key: https://github.com/user.keys\n    validate_certs: False\n\n- name: Set authorized key, removing all the authorized keys already set\n  ansible.posix.authorized_key:\n    user: root\n    key: \"{{ lookup('file', 'public_keys/doe-jane') }}\"\n    state: present\n    exclusive: True\n\n- name: Set authorized key for user ubuntu copying it from current user\n  ansible.posix.authorized_key:\n    user: ubuntu\n    state: present\n    key: \"{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}\"\n",
+        "metadata": null,
+        "return": {
+            "exclusive": {
+                "description": "If the key has been forced to be exclusive or not.",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "key": {
+                "description": "The key that the module was running against.",
+                "returned": "success",
+                "sample": "https://github.com/user.keys",
+                "type": "str"
+            },
+            "key_option": {
+                "description": "Key options related to the key.",
+                "returned": "success",
+                "sample": null,
+                "type": "str"
+            },
+            "keyfile": {
+                "description": "Path for authorized key file.",
+                "returned": "success",
+                "sample": "/home/user/.ssh/authorized_keys",
+                "type": "str"
+            },
+            "manage_dir": {
+                "description": "Whether this module managed the directory of the authorized key file.",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "path": {
+                "description": "Alternate path to the authorized_keys file",
+                "returned": "success",
+                "sample": null,
+                "type": "str"
+            },
+            "state": {
+                "description": "Whether the given key (with the given key_options) should or should not be in the file",
+                "returned": "success",
+                "sample": "present",
+                "type": "str"
+            },
+            "unique": {
+                "description": "Whether the key is unique",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "user": {
+                "description": "The username on the remote host whose authorized_keys file will be modified",
+                "returned": "success",
+                "sample": "user",
+                "type": "str"
+            },
+            "validate_certs": {
+                "description": "This only applies if using a https url as the source of the keys. If set to C(no), the SSL certificates will not be validated.",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

@@ -1,0 +1,127 @@
+{
+    "community.general.rax_keypair": {
+        "doc": {
+            "author": "Matt Martz (@sivel)",
+            "collection": "community.general",
+            "description": [
+                "Create a keypair for use with Rackspace Cloud Servers"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/rax_keypair.py",
+            "has_action": false,
+            "module": "rax_keypair",
+            "notes": [
+                "Keypairs cannot be manipulated, only created and deleted. To \"update\" a keypair you must first delete and then recreate.",
+                "The ability to specify a file path for the public key was added in 1.7",
+                "The following environment variables can be used, C(RAX_USERNAME), C(RAX_API_KEY), C(RAX_CREDS_FILE), C(RAX_CREDENTIALS), C(RAX_REGION).",
+                "C(RAX_CREDENTIALS) and C(RAX_CREDS_FILE) points to a credentials file appropriate for pyrax. See U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)",
+                "C(RAX_USERNAME) and C(RAX_API_KEY) obviate the use of a credentials file",
+                "C(RAX_REGION) defines a Rackspace Public Cloud region (DFW, ORD, LON, ...)"
+            ],
+            "options": {
+                "api_key": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "Rackspace API key, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "auth_endpoint": {
+                    "description": [
+                        "The URI of the authentication service.",
+                        "If not specified will be set to U(https://identity.api.rackspacecloud.com/v2.0/)"
+                    ],
+                    "type": "str"
+                },
+                "credentials": {
+                    "aliases": [
+                        "creds_file"
+                    ],
+                    "description": [
+                        "File to find the Rackspace credentials in. Ignored if I(api_key) and I(username) are provided."
+                    ],
+                    "type": "path"
+                },
+                "env": {
+                    "description": [
+                        "Environment as configured in I(~/.pyrax.cfg), see U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#pyrax-configuration)."
+                    ],
+                    "type": "str"
+                },
+                "identity_type": {
+                    "default": "rackspace",
+                    "description": [
+                        "Authentication mechanism to use, such as rackspace or keystone."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of keypair"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "public_key": {
+                    "description": [
+                        "Public Key string to upload. Can be a file path or string"
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "Region to create an instance in."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the resource"
+                    ],
+                    "type": "str"
+                },
+                "tenant_id": {
+                    "description": [
+                        "The tenant ID used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "tenant_name": {
+                    "description": [
+                        "The tenant name used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Rackspace username, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to require SSL validation of API endpoints."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "pyrax"
+            ],
+            "short_description": "Create a keypair for use with Rackspace Cloud Servers"
+        },
+        "examples": "\n- name: Create a keypair\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Keypair request\n      local_action:\n        module: rax_keypair\n        credentials: ~/.raxpub\n        name: my_keypair\n        region: DFW\n      register: keypair\n    - name: Create local public key\n      local_action:\n        module: copy\n        content: \"{{ keypair.keypair.public_key }}\"\n        dest: \"{{ inventory_dir }}/{{ keypair.keypair.name }}.pub\"\n    - name: Create local private key\n      local_action:\n        module: copy\n        content: \"{{ keypair.keypair.private_key }}\"\n        dest: \"{{ inventory_dir }}/{{ keypair.keypair.name }}\"\n\n- name: Create a keypair\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Keypair request\n      local_action:\n        module: rax_keypair\n        credentials: ~/.raxpub\n        name: my_keypair\n        public_key: \"{{ lookup('file', 'authorized_keys/id_rsa.pub') }}\"\n        region: DFW\n      register: keypair\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,137 @@
+{
+    "ansible.windows.win_domain": {
+        "doc": {
+            "author": [
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "Ensure that the domain named by C(dns_domain_name) exists and is reachable.",
+                "If the domain is not reachable, the domain is created in a new forest on the target Windows Server 2012R2+ host.",
+                "This module may require subsequent use of the M(ansible.windows.win_reboot) action if changes are made."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_domain.py",
+            "has_action": false,
+            "module": "win_domain",
+            "options": {
+                "create_dns_delegation": {
+                    "description": [
+                        "Whether to create a DNS delegation that references the new DNS server that you install along with the domain controller.",
+                        "Valid for Active Directory-integrated DNS only.",
+                        "The default is computed automatically based on the environment."
+                    ],
+                    "type": "bool"
+                },
+                "database_path": {
+                    "description": [
+                        "The path to a directory on a fixed disk of the Windows host where the domain database will be created.",
+                        "If not set then the default path is C(%SYSTEMROOT%\\NTDS)."
+                    ],
+                    "type": "path"
+                },
+                "dns_domain_name": {
+                    "description": [
+                        "The DNS name of the domain which should exist and be reachable or reside on the target Windows host."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "domain_mode": {
+                    "choices": [
+                        "Win2003",
+                        "Win2008",
+                        "Win2008R2",
+                        "Win2012",
+                        "Win2012R2",
+                        "WinThreshold"
+                    ],
+                    "description": [
+                        "Specifies the domain functional level of the first domain in the creation of a new forest.",
+                        "The domain functional level cannot be lower than the forest functional level, but it can be higher.",
+                        "The default is automatically computed and set."
+                    ],
+                    "type": "str"
+                },
+                "domain_netbios_name": {
+                    "description": [
+                        "The NetBIOS name for the root domain in the new forest.",
+                        "For NetBIOS names to be valid for use with this parameter they must be single label names of 15 characters or less, if not it will fail.",
+                        "If this parameter is not set, then the default is automatically computed from the value of the I(domain_name) parameter."
+                    ],
+                    "type": "str"
+                },
+                "forest_mode": {
+                    "choices": [
+                        "Win2003",
+                        "Win2008",
+                        "Win2008R2",
+                        "Win2012",
+                        "Win2012R2",
+                        "WinThreshold"
+                    ],
+                    "description": [
+                        "Specifies the forest functional level for the new forest.",
+                        "The default forest functional level in Windows Server is typically the same as the version you are running."
+                    ],
+                    "type": "str"
+                },
+                "install_dns": {
+                    "default": true,
+                    "description": [
+                        "Whether to install the DNS service when creating the domain controller."
+                    ],
+                    "type": "bool"
+                },
+                "log_path": {
+                    "description": [
+                        "Specifies the fully qualified, non-UNC path to a directory on a fixed disk of the local computer where the log file for this operation is written.",
+                        "If not set then the default path is C(%SYSTEMROOT%\\NTDS)."
+                    ],
+                    "type": "path"
+                },
+                "safe_mode_password": {
+                    "description": [
+                        "Safe mode password for the domain controller."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "sysvol_path": {
+                    "description": [
+                        "The path to a directory on a fixed disk of the Windows host where the Sysvol file will be created.",
+                        "If not set then the default path is C(%SYSTEMROOT%\\SYSVOL)."
+                    ],
+                    "type": "path"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_domain_controller"
+                },
+                {
+                    "module": "community.windows.win_domain_computer"
+                },
+                {
+                    "module": "community.windows.win_domain_group"
+                },
+                {
+                    "module": "ansible.windows.win_domain_membership"
+                },
+                {
+                    "module": "community.windows.win_domain_user"
+                }
+            ],
+            "short_description": "Ensures the existence of a Windows domain"
+        },
+        "examples": "\n- name: Create new domain in a new forest on the target host\n  ansible.windows.win_domain:\n    dns_domain_name: ansible.vagrant\n    safe_mode_password: password123!\n\n- name: Create new Windows domain in a new forest with specific parameters\n  ansible.windows.win_domain:\n    create_dns_delegation: no\n    database_path: C:\\Windows\\NTDS\n    dns_domain_name: ansible.vagrant\n    domain_mode: Win2012R2\n    domain_netbios_name: ANSIBLE\n    forest_mode: Win2012R2\n    safe_mode_password: password123!\n    sysvol_path: C:\\Windows\\SYSVOL\n  register: domain_install\n",
+        "metadata": null,
+        "return": {
+            "reboot_required": {
+                "description": "True if changes were made that require a reboot.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

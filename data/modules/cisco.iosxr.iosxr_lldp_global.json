@@ -1,0 +1,140 @@
+{
+    "cisco.iosxr.iosxr_lldp_global": {
+        "doc": {
+            "author": "Nilashish Chakraborty (@NilashishC)",
+            "collection": "cisco.iosxr",
+            "description": [
+                "This module manages Global Link Layer Discovery Protocol (LLDP) settings on IOS-XR devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/iosxr/plugins/modules/iosxr_lldp_global.py",
+            "has_action": true,
+            "module": "iosxr_lldp_global",
+            "notes": [
+                "Tested against IOS-XR 6.1.3.",
+                "This module works with connection C(network_cli). See L(the IOS-XR Platform Options,../network/user_guide/platform_iosxr.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "The provided global LLDP configuration.",
+                    "suboptions": {
+                        "holdtime": {
+                            "description": [
+                                "Specifies the holdtime (in sec) to be sent in packets."
+                            ],
+                            "type": "int"
+                        },
+                        "reinit": {
+                            "description": [
+                                "Specifies the delay (in sec) for LLDP initialization on any interface."
+                            ],
+                            "type": "int"
+                        },
+                        "subinterfaces": {
+                            "description": [
+                                "Enable or disable LLDP over sub-interfaces."
+                            ],
+                            "type": "bool"
+                        },
+                        "timer": {
+                            "description": [
+                                "Specifies the rate at which LLDP packets are sent (in sec)."
+                            ],
+                            "type": "int"
+                        },
+                        "tlv_select": {
+                            "description": [
+                                "Specifies the LLDP TLVs to enable or disable."
+                            ],
+                            "suboptions": {
+                                "management_address": {
+                                    "description": [
+                                        "Enable or disable management address TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "port_description": {
+                                    "description": [
+                                        "Enable or disable port description TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_capabilities": {
+                                    "description": [
+                                        "Enable or disable system capabilities TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_description": {
+                                    "description": [
+                                        "Enable or disable system description TLV."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "system_name": {
+                                    "description": [
+                                        "Enable or disable system name TLV."
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS-XR device by executing the command B(show running-config lldp).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "deleted",
+                        "parsed",
+                        "gathered",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LLDP resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.iosxr"
+        },
+        "examples": "\n# Using merged\n#\n#\n# -------------\n# Before State\n# -------------\n#\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 19:27:54.933 UTC\n# % No such configuration item(s)\n#\n#\n\n- name: Merge provided LLDP configuration with the existing configuration\n  cisco.iosxr.iosxr_lldp_global:\n    config:\n      holdtime: 100\n      reinit: 2\n      timer: 3000\n      subinterfaces: true\n      tlv_select:\n        management_address: false\n        system_description: false\n    state: merged\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": {}\n#\n#  \"commands\": [\n#        \"lldp subinterfaces enable\",\n#        \"lldp holdtime 100\",\n#        \"lldp reinit 2\",\n#        \"lldp tlv-select system-description disable\",\n#        \"lldp tlv-select management-address disable\",\n#        \"lldp timer 3000\"\n#  ]\n#\n#  \"after\": {\n#        \"holdtime\": 100,\n#        \"reinit\": 2,\n#        \"subinterfaces\": true,\n#        \"timer\": 3000,\n#        \"tlv_select\": {\n#            \"management_address\": false,\n#            \"system_description\": false\n#        }\n#  }\n#\n#\n# ------------\n# After state\n# ------------\n#\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 21:31:10.587 UTC\n# lldp\n#  timer 3000\n#  reinit 2\n#  subinterfaces enable\n#  holdtime 100\n#  tlv-select\n#   management-address disable\n#   system-description disable\n#  !\n# !\n#\n#\n\n\n# Using replaced\n#\n#\n# -------------\n# Before State\n# -------------\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 21:31:10.587 UTC\n# lldp\n#  timer 3000\n#  reinit 2\n#  subinterfaces enable\n#  holdtime 100\n#  tlv-select\n#   management-address disable\n#   system-description disable\n#  !\n# !\n#\n#\n\n- name: Replace existing LLDP device configuration with provided configuration\n  cisco.iosxr.iosxr_lldp_global:\n    config:\n      holdtime: 100\n      tlv_select:\n        port_description: false\n        system_description: true\n        management_description: true\n    state: replaced\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": {\n#        \"holdtime\": 100,\n#        \"reinit\": 2,\n#        \"subinterfaces\": true,\n#        \"timer\": 3000,\n#        \"tlv_select\": {\n#            \"management_address\": false,\n#            \"system_description\": false\n#        }\n#  }\n#\n#  \"commands\": [\n#        \"no lldp reinit 2\",\n#        \"no lldp subinterfaces enable\",\n#        \"no lldp timer 3000\",\n#        \"no lldp tlv-select management-address disable\",\n#        \"no lldp tlv-select system-description disable\",\n#        \"lldp tlv-select port-description disable\"\n#  ]\n#\n#  \"after\": {\n#        \"holdtime\": 100,\n#        \"tlv_select\": {\n#            \"port_description\": false\n#        }\n#  }\n#\n#\n# ------------\n# After state\n# ------------\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 21:53:08.407 UTC\n# lldp\n#  holdtime 100\n#  tlv-select\n#   port-description disable\n#  !\n# !\n#\n#\n\n\n# Using deleted\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 21:31:10.587 UTC\n# lldp\n#  timer 3000\n#  reinit 2\n#  subinterfaces enable\n#  holdtime 100\n#  tlv-select\n#   management-address disable\n#   system-description disable\n#  !\n# !\n#\n#\n\n- name: Deleted existing LLDP configurations from the device\n  cisco.iosxr.iosxr_lldp_global:\n    state: deleted\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": {\n#        \"holdtime\": 100,\n#        \"reinit\": 2,\n#        \"subinterfaces\": true,\n#        \"timer\": 3000,\n#        \"tlv_select\": {\n#            \"management_address\": false,\n#            \"system_description\": false\n#        }\n#  },\n#\n#  \"commands\": [\n#        \"no lldp holdtime 100\",\n#        \"no lldp reinit 2\",\n#        \"no lldp subinterfaces enable\",\n#        \"no lldp timer 3000\",\n#        \"no lldp tlv-select management-address disable\",\n#        \"no lldp tlv-select system-description disable\"\n#  ]\n#\n#  \"after\": {}\n#\n#\n# -----------\n# After state\n# -----------\n#\n# RP/0/0/CPU0:an-iosxr#sh run lldp\n# Tue Aug  6 21:38:31.187 UTC\n# lldp\n# !\n#\n# Using parsed:\n\n# parsed.cfg\n# lldp\n#  timer 3000\n#  reinit 2\n#  subinterfaces enable\n#  holdtime 100\n#  tlv-select\n#   management-address disable\n#   system-description disable\n#  !\n# !\n\n- name: Convert lldp global config to argspec without connecting to the appliance\n  cisco.iosxr.iosxr_lldp_global:\n    running_config: \"{{ lookup('file', './parsed.cfg') }}\"\n    state: parsed\n\n# ------------------------\n# Module Execution Result\n# ------------------------\n# parsed:\n#     holdtime: 100\n#     reinit: 2\n#     timer: 3000\n#     subinterfaces: True\n#     tlv_select:\n#       management_address: False\n#       system_description: False\n\n# using gathered:\n\n# Device config:\n# lldp\n#  timer 3000\n#  reinit 2\n#  subinterfaces enable\n#  holdtime 100\n#  tlv-select\n#   management-address disable\n#   system-description disable\n#  !\n# !\n\n- name: Gather IOSXR lldp global configuration\n  cisco.iosxr.iosxr_lldp_global:\n    config:\n    state: gathered\n\n\n# ------------------------\n# Module Execution Result\n# ------------------------\n# gathered:\n#     holdtime: 100\n#     reinit: 2\n#     timer: 3000\n#     subinterfaces: True\n#     tlv_select:\n#       management_address: False\n#       system_description: False\n\n# using rendered:\n\n- name: Render platform specific commands from task input using rendered state\n  cisco.iosxr.iosxr_lldp_global:\n    config:\n      holdtime: 100\n      reinit: 2\n      timer: 3000\n      subinterfaces: true\n      tlv_select:\n        management_address: false\n        system_description: false\n    state: rendered\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"rendered\": [\n#        \"lldp subinterfaces enable\",\n#        \"lldp holdtime 100\",\n#        \"lldp reinit 2\",\n#        \"lldp tlv-select system-description disable\",\n#        \"lldp tlv-select management-address disable\",\n#        \"lldp timer 3000\"\n#  ]\n\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "lldp subinterfaces enable",
+                    "lldp holdtime 100",
+                    "no lldp tlv-select management-address disable"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

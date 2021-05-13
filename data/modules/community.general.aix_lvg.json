@@ -1,0 +1,80 @@
+{
+    "community.general.aix_lvg": {
+        "doc": {
+            "author": [
+                "Kairo Araujo (@kairoaraujo)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module creates, removes or resize volume groups on AIX LVM."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/aix_lvg.py",
+            "has_action": false,
+            "module": "aix_lvg",
+            "notes": [
+                "AIX will permit remove VG only if all LV/Filesystems are not busy.",
+                "Module does not modify PP size for already present volume group."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Force volume group creation."
+                    ],
+                    "type": "bool"
+                },
+                "pp_size": {
+                    "description": [
+                        "The size of the physical partition in megabytes."
+                    ],
+                    "type": "int"
+                },
+                "pvs": {
+                    "description": [
+                        "List of comma-separated devices to use as physical devices in this volume group.",
+                        "Required when creating or extending (C(present) state) the volume group.",
+                        "If not informed reducing (C(absent) state) the volume group will be removed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "varyoff",
+                        "varyon"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Control if the volume group exists and volume group AIX state varyonvg C(varyon) or varyoffvg C(varyoff)."
+                    ],
+                    "type": "str"
+                },
+                "vg": {
+                    "description": [
+                        "The name of the volume group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "vg_type": {
+                    "choices": [
+                        "big",
+                        "normal",
+                        "scalable"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "The type of the volume group."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage LVM volume groups on AIX"
+        },
+        "examples": "\n- name: Create a volume group datavg\n  community.general.aix_lvg:\n    vg: datavg\n    pp_size: 128\n    vg_type: scalable\n    state: present\n\n- name: Removing a volume group datavg\n  community.general.aix_lvg:\n    vg: datavg\n    state: absent\n\n- name: Extending rootvg\n  community.general.aix_lvg:\n    vg: rootvg\n    pvs: hdisk1\n    state: present\n\n- name: Reducing rootvg\n  community.general.aix_lvg:\n    vg: rootvg\n    pvs: hdisk1\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,354 @@
+{
+    "netapp.ontap.na_ontap_aggregate": {
+        "doc": {
+            "author": "NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>",
+            "collection": "netapp.ontap",
+            "description": [
+                "Create, delete, or manage aggregates on ONTAP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp/ontap/plugins/modules/na_ontap_aggregate.py",
+            "has_action": false,
+            "module": "na_ontap_aggregate",
+            "notes": [
+                "The modules prefixed with na\\\\_ontap are built to support the ONTAP storage platform."
+            ],
+            "options": {
+                "cert_filepath": {
+                    "description": [
+                        "path to SSL client cert file (.pem).",
+                        "not supported with python 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "20.6.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "disk_count": {
+                    "description": [
+                        "Number of disks to place into the aggregate, including parity disks.",
+                        "The disks in this newly-created aggregate come from the spare disk pool.",
+                        "The smallest disks in this pool join the aggregate first, unless the C(disk-size) argument is provided.",
+                        "Either C(disk-count) or C(disks) must be supplied. Range [0..2^31-1].",
+                        "Required when C(state=present).",
+                        "Modifiable only if specified disk_count is larger than current disk_count.",
+                        "Cannot create raidgroup with 1 disk when using raid type raid4.",
+                        "If the disk_count % raid_size == 1, only disk_count/raid_size * raid_size will be added.",
+                        "If disk_count is 6, raid_type is raid4, raid_size 4, all 6 disks will be added.",
+                        "If disk_count is 5, raid_type is raid4, raid_size 4, 5/4 * 4 = 4 will be added. 1 will not be added."
+                    ],
+                    "type": "int"
+                },
+                "disk_size": {
+                    "description": [
+                        "Disk size to use in 4K block size.  Disks within 10% of specified size will be used."
+                    ],
+                    "type": "int",
+                    "version_added": "2.7.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "disk_size_with_unit": {
+                    "description": [
+                        "Disk size to use in the specified unit.",
+                        "It is a positive integer number followed by unit of T/G/M/K. For example, 72G, 1T and 32M.",
+                        "This option is ignored if a specific list of disks is specified through the \"disks\" parameter.",
+                        "You must only use one of either \"disk-size\" or \"disk-size-with-unit\" parameters."
+                    ],
+                    "type": "str"
+                },
+                "disk_type": {
+                    "choices": [
+                        "ATA",
+                        "BSAS",
+                        "FCAL",
+                        "FSAS",
+                        "LUN",
+                        "MSATA",
+                        "SAS",
+                        "SSD",
+                        "VMDISK"
+                    ],
+                    "description": [
+                        "Type of disk to use to build aggregate"
+                    ],
+                    "type": "str",
+                    "version_added": "2.7.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "disks": {
+                    "description": [
+                        "Specific list of disks to use for the new aggregate.",
+                        "To create a \"mirrored\" aggregate with a specific list of disks, both 'disks' and 'mirror_disks' options must be supplied. Additionally, the same number of disks must be supplied in both lists."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "feature_flags": {
+                    "description": [
+                        "Enable or disable a new feature.",
+                        "This can be used to enable an experimental feature or disable a new feature that breaks backward compatibility.",
+                        "Supported keys and values are subject to change without notice.  Unknown keys are ignored."
+                    ],
+                    "type": "dict",
+                    "version_added": "20.5.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "from_name": {
+                    "description": [
+                        "Name of the aggregate to be renamed."
+                    ],
+                    "type": "str",
+                    "version_added": "2.7.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the ONTAP instance."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "http_port": {
+                    "description": [
+                        "Override the default port (80 or 443) with this port"
+                    ],
+                    "type": "int"
+                },
+                "https": {
+                    "default": false,
+                    "description": [
+                        "Enable and disable https.",
+                        "Ignored when using REST as only https is supported.",
+                        "Ignored when using SSL certificate authentication as it requires SSL."
+                    ],
+                    "type": "bool"
+                },
+                "ignore_pool_checks": {
+                    "description": [
+                        "only valid when I(disks) option is used.",
+                        "disks in a plex should belong to the same spare pool, and mirror disks to another spare pool.",
+                        "when set to true, these checks are ignored."
+                    ],
+                    "type": "bool",
+                    "version_added": "20.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "is_mirrored": {
+                    "description": [
+                        "Specifies that the new aggregate be mirrored (have two plexes).",
+                        "If set to true, then the indicated disks will be split across the two plexes. By default, the new aggregate will not be mirrored.",
+                        "This option cannot be used when a specific list of disks is supplied with either the 'disks' or 'mirror_disks' options."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "key_filepath": {
+                    "description": [
+                        "path to SSL client key file."
+                    ],
+                    "type": "str",
+                    "version_added": "20.6.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "mirror_disks": {
+                    "description": [
+                        "List of mirror disks to use. It must contain the same number of disks specified in 'disks'."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "name": {
+                    "description": [
+                        "The name of the aggregate to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nodes": {
+                    "description": [
+                        "Node(s) for the aggregate to be created on.  If no node specified, mgmt lif home will be used.",
+                        "If multiple nodes specified an aggr stripe will be made."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "object_store_name": {
+                    "description": [
+                        "Name of the object store configuration attached to the aggregate"
+                    ],
+                    "type": "str",
+                    "version_added": "2.9.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "ontapi": {
+                    "description": [
+                        "The ontap api version to use"
+                    ],
+                    "type": "int"
+                },
+                "password": {
+                    "aliases": [
+                        "pass"
+                    ],
+                    "description": [
+                        "Password for the specified user."
+                    ],
+                    "type": "str"
+                },
+                "raid_size": {
+                    "description": [
+                        "Sets the maximum number of drives per raid group."
+                    ],
+                    "type": "int",
+                    "version_added": "2.7.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "raid_type": {
+                    "choices": [
+                        "raid4",
+                        "raid_dp",
+                        "raid_tec",
+                        "raid_0"
+                    ],
+                    "description": [
+                        "Specifies the type of RAID groups to use in the new aggregate.",
+                        "raid_0 is only available on ONTAP Select."
+                    ],
+                    "type": "str",
+                    "version_added": "2.7.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "service_state": {
+                    "choices": [
+                        "online",
+                        "offline"
+                    ],
+                    "description": [
+                        "Whether the specified aggregate should be enabled or disabled. Creates aggregate if doesnt exist."
+                    ],
+                    "type": "str"
+                },
+                "snaplock_type": {
+                    "choices": [
+                        "compliance",
+                        "enterprise",
+                        "non_snaplock"
+                    ],
+                    "description": [
+                        "Type of snaplock for the aggregate being created."
+                    ],
+                    "type": "str",
+                    "version_added": "20.1.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "spare_pool": {
+                    "choices": [
+                        "Pool0",
+                        "Pool1"
+                    ],
+                    "description": [
+                        "Specifies the spare pool from which to select spare disks to use in creation of a new aggregate."
+                    ],
+                    "type": "str",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the specified aggregate should exist or not."
+                    ],
+                    "type": "str"
+                },
+                "time_out": {
+                    "default": 100,
+                    "description": [
+                        "time to wait for aggregate creation in seconds",
+                        "default is set to 100 seconds"
+                    ],
+                    "type": "int",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                },
+                "unmount_volumes": {
+                    "description": [
+                        "If set to \"TRUE\", this option specifies that all of the volumes hosted by the given aggregate are to be unmounted",
+                        "before the offline operation is executed.",
+                        "By default, the system will reject any attempt to offline an aggregate that hosts one or more online volumes."
+                    ],
+                    "type": "bool"
+                },
+                "use_rest": {
+                    "default": "auto",
+                    "description": [
+                        "REST API if supported by the target system for all the resources and attributes the module requires. Otherwise will revert to ZAPI.",
+                        "always -- will always use the REST API",
+                        "never -- will always use the ZAPI",
+                        "auto -- will try to use the REST Api"
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "This can be a Cluster-scoped or SVM-scoped account, depending on whether a Cluster-level or SVM-level API is required.",
+                        "For more information, please read the documentation U(https://mysupport.netapp.com/NOW/download/software/nmsdk/9.4/).",
+                        "Two authentication methods are supported",
+                        "1. basic authentication, using username and password,",
+                        "2. SSL certificate authentication, using a ssl client cert file, and optionally a private key file.",
+                        "To use a certificate, the certificate must have been installed in the ONTAP cluster, and cert authentication must have been enabled."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(False) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "wait_for_online": {
+                    "default": false,
+                    "description": [
+                        "Set this parameter to 'true' for synchronous execution during create (wait until aggregate status is online)",
+                        "Set this parameter to 'false' for asynchronous execution",
+                        "For asynchronous, execution exits as soon as the request is sent, without checking aggregate status"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.8.0",
+                    "version_added_collection": "netapp.ontap"
+                }
+            },
+            "requirements": [
+                "Ansible 2.9",
+                "Python3 netapp-lib (2018.11.13) or later. Install using 'pip install netapp-lib'",
+                "netapp-lib 2020.3.12 is strongly recommended as it provides better error reporting for connection issues.",
+                "A physical or virtual clustered Data ONTAP system. The modules support Data ONTAP 9.1 and onward.",
+                "REST support requires ONTAP 9.6 or later.",
+                "To enable http on the cluster you must run the following commands 'set -privilege advanced;' 'system services web modify -http-enabled true;'"
+            ],
+            "short_description": "NetApp ONTAP manage aggregates.",
+            "version_added": "2.6.0",
+            "version_added_collection": "netapp.ontap"
+        },
+        "examples": "\n- name: Create Aggregates and wait 5 minutes until aggregate is online\n  na_ontap_aggregate:\n    state: present\n    service_state: online\n    name: ansibleAggr\n    disk_count: 1\n    wait_for_online: True\n    time_out: 300\n    snaplock_type: non_snaplock\n    hostname: \"{{ netapp_hostname }}\"\n    username: \"{{ netapp_username }}\"\n    password: \"{{ netapp_password }}\"\n\n- name: Manage Aggregates\n  na_ontap_aggregate:\n    state: present\n    service_state: offline\n    unmount_volumes: true\n    name: ansibleAggr\n    disk_count: 1\n    hostname: \"{{ netapp_hostname }}\"\n    username: \"{{ netapp_username }}\"\n    password: \"{{ netapp_password }}\"\n\n- name: Attach object store\n  na_ontap_aggregate:\n    state: present\n    name: aggr4\n    object_store_name: sgws_305\n    hostname: \"{{ netapp_hostname }}\"\n    username: \"{{ netapp_username }}\"\n    password: \"{{ netapp_password }}\"\n\n- name: Rename Aggregates\n  na_ontap_aggregate:\n    state: present\n    service_state: online\n    from_name: ansibleAggr\n    name: ansibleAggr2\n    disk_count: 1\n    hostname: \"{{ netapp_hostname }}\"\n    username: \"{{ netapp_username }}\"\n    password: \"{{ netapp_password }}\"\n\n- name: Delete Aggregates\n  na_ontap_aggregate:\n    state: absent\n    service_state: offline\n    unmount_volumes: true\n    name: ansibleAggr\n    hostname: \"{{ netapp_hostname }}\"\n    username: \"{{ netapp_username }}\"\n    password: \"{{ netapp_password }}\"\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "certified"
+        },
+        "return": null
+    }
+}

@@ -1,0 +1,664 @@
+{
+    "community.aws.rds": {
+        "doc": {
+            "author": [
+                "Bruce Pennypacker (@bpennypacker)",
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Creates, deletes, or modifies rds resources.",
+                "When creating an instance it can be either a new instance or a read-only replica of an existing instance.",
+                "This module has a dependency on python-boto >= 2.5 and will soon be deprecated.",
+                "The 'promote' command requires boto >= 2.18.0. Certain features such as tags rely on boto.rds2 (boto >= 2.26.0).",
+                "Please use boto3 based M(community.aws.rds_instance) instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/rds.py",
+            "has_action": false,
+            "module": "rds",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "apply_immediately": {
+                    "default": false,
+                    "description": [
+                        "When I(apply_immediately=true), the modifications will be applied as soon as possible rather than waiting for the next preferred maintenance window.",
+                        "Used only when I(command=modify)."
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "backup_retention": {
+                    "description": [
+                        "Number of days backups are retained.",
+                        "Set to 0 to disable backups.",
+                        "Default is 1 day.",
+                        "Valid range: 0-35.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "backup_window": {
+                    "description": [
+                        "Backup window in format of C(hh24:mi-hh24:mi). (Example: C(18:00-20:30))",
+                        "Times are specified in UTC.",
+                        "If not specified then a random backup window is assigned.",
+                        "Used only when command=create or command=modify."
+                    ],
+                    "type": "str"
+                },
+                "character_set_name": {
+                    "description": [
+                        "Associate the DB instance with a specified character set.",
+                        "Used with I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "command": {
+                    "choices": [
+                        "create",
+                        "replicate",
+                        "delete",
+                        "facts",
+                        "modify",
+                        "promote",
+                        "snapshot",
+                        "reboot",
+                        "restore"
+                    ],
+                    "description": [
+                        "Specifies the action to take. The 'reboot' option is available starting at version 2.0."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "db_engine": {
+                    "choices": [
+                        "mariadb",
+                        "MySQL",
+                        "oracle-se1",
+                        "oracle-se2",
+                        "oracle-se",
+                        "oracle-ee",
+                        "sqlserver-ee",
+                        "sqlserver-se",
+                        "sqlserver-ex",
+                        "sqlserver-web",
+                        "postgres",
+                        "aurora"
+                    ],
+                    "description": [
+                        "The type of database.",
+                        "Used only when I(command=create).",
+                        "mariadb was added in version 2.2."
+                    ],
+                    "type": "str"
+                },
+                "db_name": {
+                    "description": [
+                        "Name of a database to create within the instance.",
+                        "If not specified then no database is created.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "engine_version": {
+                    "description": [
+                        "Version number of the database engine to use.",
+                        "If not specified then the current Amazon RDS default engine version is used",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "force_failover": {
+                    "default": false,
+                    "description": [
+                        "If enabled, the reboot is done using a MultiAZ failover.",
+                        "Used only when I(command=reboot)."
+                    ],
+                    "type": "bool"
+                },
+                "instance_name": {
+                    "description": [
+                        "Database instance identifier.",
+                        "Required except when using I(command=facts) or I(command=delete) on just a snapshot."
+                    ],
+                    "type": "str"
+                },
+                "instance_type": {
+                    "aliases": [
+                        "type"
+                    ],
+                    "description": [
+                        "The instance type of the database.",
+                        "If not specified then the replica inherits the same instance type as the source instance.",
+                        "Required when I(command=create).",
+                        "Optional when I(command=replicate), I(command=modify) or I(command=restore)."
+                    ],
+                    "type": "str"
+                },
+                "iops": {
+                    "description": [
+                        "Specifies the number of IOPS for the instance.",
+                        "Used only when I(command=create) or I(command=modify).",
+                        "Must be an integer greater than 1000."
+                    ],
+                    "type": "str"
+                },
+                "license_model": {
+                    "choices": [
+                        "license-included",
+                        "bring-your-own-license",
+                        "general-public-license",
+                        "postgresql-license"
+                    ],
+                    "description": [
+                        "The license model for this DB instance.",
+                        "Used only when I(command=create) or I(command=restore)."
+                    ],
+                    "type": "str"
+                },
+                "maint_window": {
+                    "description": [
+                        "Maintenance window in format of C(ddd:hh24:mi-ddd:hh24:mi).  (Example: C(Mon:22:00-Mon:23:15))",
+                        "Times are specified in UTC.",
+                        "If not specified then a random maintenance window is assigned.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "multi_zone": {
+                    "description": [
+                        "Specifies if this is a Multi-availability-zone deployment.",
+                        "Can not be used in conjunction with I(zone) parameter.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "bool"
+                },
+                "new_instance_name": {
+                    "description": [
+                        "Name to rename an instance to.",
+                        "Used only when I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "option_group": {
+                    "description": [
+                        "The name of the option group to use.",
+                        "If not specified then the default option group is used.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "parameter_group": {
+                    "description": [
+                        "Name of the DB parameter group to associate with this instance.",
+                        "If omitted then the RDS default DBParameterGroup will be used.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password for the master database username.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Port number that the DB instance uses for connections.",
+                        "Used only when I(command=create) or I(command=replicate).",
+                        "Defaults to the standard ports for each I(db_engine): C(3306) for MySQL and MariaDB, C(1521) for Oracle C(1433) for SQL Server, C(5432) for PostgreSQL."
+                    ],
+                    "type": "int"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "publicly_accessible": {
+                    "description": [
+                        "Explicitly set whether the resource should be publicly accessible or not.",
+                        "Used with I(command=create), I(command=replicate).",
+                        "Requires boto >= 2.26.0"
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_groups": {
+                    "description": [
+                        "Comma separated list of one or more security groups.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "size": {
+                    "description": [
+                        "Size in gigabytes of the initial storage for the DB instance.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "type": "str"
+                },
+                "snapshot": {
+                    "description": [
+                        "Name of snapshot to take.",
+                        "When I(command=delete), if no I(snapshot) name is provided then no snapshot is taken.",
+                        "When I(command=delete), if no I(instance_name) is provided the snapshot is deleted.",
+                        "Used with I(command=facts), I(command=delete) or I(command=snapshot)."
+                    ],
+                    "type": "str"
+                },
+                "source_instance": {
+                    "description": [
+                        "Name of the database to replicate.",
+                        "Used only when I(command=replicate)."
+                    ],
+                    "type": "str"
+                },
+                "subnet": {
+                    "description": [
+                        "VPC subnet group.",
+                        "If specified then a VPC instance is created.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "tags dict to apply to a resource.",
+                        "Used with I(command=create), I(command=replicate), I(command=restore).",
+                        "Requires boto >= 2.26.0"
+                    ],
+                    "type": "dict"
+                },
+                "upgrade": {
+                    "default": false,
+                    "description": [
+                        "Indicates that minor version upgrades should be applied automatically.",
+                        "Used only when I(command=create) or I(command=modify) or I(command=restore) or I(command=replicate)."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "description": [
+                        "Master database username.",
+                        "Used only when I(command=create)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_security_groups": {
+                    "description": [
+                        "Comma separated list of one or more vpc security group ids.",
+                        "Also requires I(subnet) to be specified.",
+                        "Used only when I(command=create) or I(command=modify)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "When I(command=create), replicate, modify or restore then wait for the database to enter the 'available' state.",
+                        "When I(command=delete), wait for the database to be terminated."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "How long before wait gives up, in seconds.",
+                        "Used when I(wait=true)."
+                    ],
+                    "type": "int"
+                },
+                "zone": {
+                    "aliases": [
+                        "aws_zone",
+                        "ec2_zone"
+                    ],
+                    "description": [
+                        "availability zone in which to launch the instance.",
+                        "Used only when I(command=create), I(command=replicate) or I(command=restore).",
+                        "Can not be used in conjunction with I(multi_zone) parameter."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "python >= 2.6"
+            ],
+            "short_description": "create, delete, or modify Amazon rds instances, rds snapshots, and related facts",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Basic mysql provisioning example\n  community.aws.rds:\n    command: create\n    instance_name: new-database\n    db_engine: MySQL\n    size: 10\n    instance_type: db.m1.small\n    username: mysql_admin\n    password: 1nsecure\n    tags:\n      Environment: testing\n      Application: cms\n\n- name: Create a read-only replica and wait for it to become available\n  community.aws.rds:\n    command: replicate\n    instance_name: new-database-replica\n    source_instance: new_database\n    wait: yes\n    wait_timeout: 600\n\n- name: Delete an instance, but create a snapshot before doing so\n  community.aws.rds:\n    command: delete\n    instance_name: new-database\n    snapshot: new_database_snapshot\n\n- name: Get facts about an instance\n  community.aws.rds:\n    command: facts\n    instance_name: new-database\n  register: new_database_facts\n\n- name: Rename an instance and wait for the change to take effect\n  community.aws.rds:\n    command: modify\n    instance_name: new-database\n    new_instance_name: renamed-database\n    wait: yes\n\n- name: Reboot an instance and wait for it to become available again\n  community.aws.rds:\n    command: reboot\n    instance_name: database\n    wait: yes\n\n# Restore a Postgres db instance from a snapshot, wait for it to become available again, and\n#  then modify it to add your security group. Also, display the new endpoint.\n#  Note that the \"publicly_accessible\" option is allowed here just as it is in the AWS CLI\n- community.aws.rds:\n    command: restore\n    snapshot: mypostgres-snapshot\n    instance_name: MyNewInstanceName\n    region: us-west-2\n    zone: us-west-2b\n    subnet: default-vpc-xx441xxx\n    publicly_accessible: yes\n    wait: yes\n    wait_timeout: 600\n    tags:\n        Name: pg1_test_name_tag\n  register: rds\n\n- community.aws.rds:\n    command: modify\n    instance_name: MyNewInstanceName\n    region: us-west-2\n    vpc_security_groups: sg-xxx945xx\n\n- ansible.builtin.debug:\n    msg: \"The new db endpoint is {{ rds.instance.endpoint }}\"\n",
+        "metadata": null,
+        "return": {
+            "instance": {
+                "contains": {
+                    "allocated_storage": {
+                        "description": "the allocated storage size in gigabytes (GB)",
+                        "returned": "when RDS instance exists",
+                        "sample": "100",
+                        "type": "str"
+                    },
+                    "auto_minor_version_upgrade": {
+                        "description": "indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window",
+                        "returned": "when RDS instance exists",
+                        "sample": "true",
+                        "type": "bool"
+                    },
+                    "backup_window": {
+                        "description": "the daily time range during which automated backups are created if automated backups are enabled",
+                        "returned": "when RDS instance exists and automated backups are enabled",
+                        "sample": "03:00-03:30",
+                        "type": "str"
+                    },
+                    "character_set_name": {
+                        "description": "the name of the character set that this instance is associated with",
+                        "returned": "when RDS instance exists",
+                        "sample": "AL32UTF8",
+                        "type": "str"
+                    },
+                    "db_name": {
+                        "description": "the name of the database to create when the DB instance is created",
+                        "returned": "when RDS instance exists",
+                        "sample": "ASERTG",
+                        "type": "str"
+                    },
+                    "db_subnet_groups": {
+                        "contains": {
+                            "description": {
+                                "description": "the subnet group associated with the DB instance",
+                                "returned": "when RDS instance exists",
+                                "sample": "Subnets for the UAT RDS SQL DB Instance",
+                                "type": "str"
+                            },
+                            "name": {
+                                "description": "the name of the DB subnet group",
+                                "returned": "when RDS instance exists",
+                                "sample": "samplesubnetgrouprds-j6paiqkxqp4z",
+                                "type": "str"
+                            },
+                            "status": {
+                                "description": "the status of the DB subnet group",
+                                "returned": "when RDS instance exists",
+                                "sample": "complete",
+                                "type": "str"
+                            },
+                            "subnets": {
+                                "contains": {
+                                    "availability_zone": {
+                                        "contains": {
+                                            "name": {
+                                                "description": "availability zone",
+                                                "returned": "when RDS instance exists",
+                                                "sample": "eu-west-1b",
+                                                "type": "str"
+                                            },
+                                            "provisioned_iops_capable": {
+                                                "description": "whether provisioned iops are available in AZ subnet",
+                                                "returned": "when RDS instance exists",
+                                                "sample": "false",
+                                                "type": "bool"
+                                            }
+                                        },
+                                        "description": "subnet availability zone information",
+                                        "returned": "when RDS instance exists",
+                                        "type": "complex"
+                                    },
+                                    "identifier": {
+                                        "description": "the identifier of the subnet",
+                                        "returned": "when RDS instance exists",
+                                        "sample": "subnet-3fdba63e",
+                                        "type": "str"
+                                    },
+                                    "status": {
+                                        "description": "the status of the subnet",
+                                        "returned": "when RDS instance exists",
+                                        "sample": "active",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "the description of the DB subnet group",
+                                "returned": "when RDS instance exists",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "information on the subnet group associated with this RDS instance",
+                        "returned": "when RDS instance exists",
+                        "type": "complex"
+                    },
+                    "endpoint": {
+                        "description": "the endpoint uri of the database instance",
+                        "returned": "when RDS instance exists",
+                        "sample": "my-ansible-database.asdfaosdgih.us-east-1.rds.amazonaws.com",
+                        "type": "str"
+                    },
+                    "engine": {
+                        "description": "the name of the database engine",
+                        "returned": "when RDS instance exists",
+                        "sample": "oracle-se",
+                        "type": "str"
+                    },
+                    "engine_version": {
+                        "description": "the version of the database engine",
+                        "returned": "when RDS instance exists",
+                        "sample": "11.2.0.4.v6",
+                        "type": "str"
+                    },
+                    "latest_restorable_time": {
+                        "description": "the latest time to which a database can be restored with point-in-time restore",
+                        "returned": "when RDS instance exists",
+                        "sample": "1489707802.0",
+                        "type": "str"
+                    },
+                    "license_model": {
+                        "description": "the license model information",
+                        "returned": "when RDS instance exists",
+                        "sample": "bring-your-own-license",
+                        "type": "str"
+                    },
+                    "option_groups": {
+                        "contains": {
+                            "option_group_name": {
+                                "description": "the option group name for this RDS instance",
+                                "returned": "when RDS instance exists",
+                                "sample": "default:oracle-se-11-2",
+                                "type": "str"
+                            },
+                            "status": {
+                                "description": "the status of the RDS instance's option group membership",
+                                "returned": "when RDS instance exists",
+                                "sample": "in-sync",
+                                "type": "str"
+                            }
+                        },
+                        "description": "the list of option group memberships for this RDS instance",
+                        "returned": "when RDS instance exists",
+                        "type": "complex"
+                    },
+                    "parameter_groups": {
+                        "contains": {
+                            "parameter_apply_status": {
+                                "description": "the status of parameter updates",
+                                "returned": "when RDS instance exists",
+                                "sample": "in-sync",
+                                "type": "str"
+                            },
+                            "parameter_group_name": {
+                                "description": "the name of the DP parameter group",
+                                "returned": "when RDS instance exists",
+                                "sample": "testawsrpprodb01spfile-1ujg7nrs7sgyz",
+                                "type": "str"
+                            }
+                        },
+                        "description": "the list of DB parameter groups applied to this RDS instance",
+                        "returned": "when RDS instance exists and parameter groups are defined",
+                        "type": "complex"
+                    },
+                    "pending_modified_values": {
+                        "contains": {
+                            "allocated_storage": {
+                                "description": "the new allocated storage size for this RDS instance that will be applied or is in progress",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "backup_retention_period": {
+                                "description": "the pending number of days for which automated backups are retained",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "db_instance_class": {
+                                "description": "the new DB instance class for this RDS instance that will be applied or is in progress",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "db_instance_identifier": {
+                                "description": "the new DB instance identifier this RDS instance that will be applied or is in progress",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "engine_version": {
+                                "description": "indicates the database engine version",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "iops": {
+                                "description": "the new provisioned IOPS value for this RDS instance that will be applied or is being applied",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "master_user_password": {
+                                "description": "the pending or in-progress change of the master credentials for this RDS instance",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "multi_az": {
+                                "description": "indicates that the single-AZ RDS instance is to change to a multi-AZ deployment",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            },
+                            "port": {
+                                "description": "specifies the pending port for this RDS instance",
+                                "returned": "when RDS instance exists",
+                                "sample": "null",
+                                "type": "str"
+                            }
+                        },
+                        "description": "a dictionary of changes to the RDS instance that are pending",
+                        "returned": "when RDS instance exists",
+                        "type": "complex"
+                    },
+                    "port": {
+                        "description": "the listening port of the database instance",
+                        "returned": "when RDS instance exists",
+                        "sample": 3306,
+                        "type": "int"
+                    },
+                    "publicly_accessible": {
+                        "description": "the accessibility options for the DB instance",
+                        "returned": "when RDS instance exists",
+                        "sample": "true",
+                        "type": "bool"
+                    },
+                    "read_replica_source_dbinstance_identifier": {
+                        "description": "the identifier of the source DB instance if this RDS instance is a read replica",
+                        "returned": "when read replica RDS instance exists",
+                        "sample": "null",
+                        "type": "str"
+                    },
+                    "secondary_availability_zone": {
+                        "description": "the name of the secondary AZ for a DB instance with multi-AZ support",
+                        "returned": "when RDS instance exists and is multi-AZ",
+                        "sample": "eu-west-1b",
+                        "type": "str"
+                    }
+                },
+                "description": "the rds instance",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

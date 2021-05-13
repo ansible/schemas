@@ -1,0 +1,169 @@
+{
+    "community.digitalocean.digital_ocean": {
+        "doc": {
+            "author": "Vincent Viallet (@zbal)",
+            "collection": "community.digitalocean",
+            "deprecated": {
+                "alternative": "Use M(community.digitalocean.digital_ocean_droplet) instead.",
+                "removed_from_collection": "community.digitalocean",
+                "removed_in": "2.0.0",
+                "why": "Updated module to remove external dependency with increased functionality."
+            },
+            "description": [
+                "Create/delete a droplet in DigitalOcean and optionally wait for it to be 'running', or deploy an SSH key."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/digitalocean/plugins/modules/digital_ocean.py",
+            "has_action": false,
+            "module": "digital_ocean",
+            "notes": [
+                "Two environment variables can be used, DO_API_KEY and DO_API_TOKEN. They both refer to the v2 token.",
+                "As of Ansible 1.9.5 and 2.0, Version 2 of the DigitalOcean API is used, this removes C(client_id) and C(api_key) options in favor of C(api_token).",
+                "If you are running Ansible 1.9.4 or earlier you might not be able to use the included version of this module as the API version used has been retired. Upgrade Ansible or, if unable to, try downloading the latest version of this module from github and putting it into a 'library' directory."
+            ],
+            "options": {
+                "api_token": {
+                    "aliases": [
+                        "API_TOKEN"
+                    ],
+                    "description": [
+                        "DigitalOcean api token."
+                    ],
+                    "type": "str"
+                },
+                "backups_enabled": {
+                    "default": "no",
+                    "description": [
+                        "Optional, Boolean, enables backups for your droplet."
+                    ],
+                    "type": "bool"
+                },
+                "command": {
+                    "choices": [
+                        "droplet",
+                        "ssh"
+                    ],
+                    "default": "droplet",
+                    "description": [
+                        "Which target you want to operate on."
+                    ],
+                    "type": "str"
+                },
+                "id": {
+                    "aliases": [
+                        "droplet_id"
+                    ],
+                    "description": [
+                        "Numeric, the droplet id you want to operate on."
+                    ],
+                    "type": "int"
+                },
+                "image_id": {
+                    "description": [
+                        "This is the slug of the image you would like the droplet created with."
+                    ],
+                    "type": "str"
+                },
+                "ipv6": {
+                    "default": "no",
+                    "description": [
+                        "Optional, Boolean, enable IPv6 for your droplet."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "String, this is the name of the droplet - must be formatted by hostname rules, or the name of a SSH key."
+                    ],
+                    "type": "str"
+                },
+                "private_networking": {
+                    "default": "no",
+                    "description": [
+                        "Bool, add an additional, private network interface to droplet for inter-droplet communication."
+                    ],
+                    "type": "bool"
+                },
+                "region_id": {
+                    "description": [
+                        "This is the slug of the region you would like your server to be created in."
+                    ],
+                    "type": "str"
+                },
+                "size_id": {
+                    "description": [
+                        "This is the slug of the size you would like the droplet created with."
+                    ],
+                    "type": "str"
+                },
+                "ssh_key_ids": {
+                    "description": [
+                        "Optional, array of SSH key (numeric) ID that you would like to be added to the server."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ssh_pub_key": {
+                    "description": [
+                        "The public SSH key you want to add to your account."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "active",
+                        "absent",
+                        "deleted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the target."
+                    ],
+                    "type": "str"
+                },
+                "unique_name": {
+                    "default": "no",
+                    "description": [
+                        "Bool, require unique hostnames.  By default, DigitalOcean allows multiple hosts with the same name.  Setting this to \"yes\" allows only one host per name.  Useful for idempotence."
+                    ],
+                    "type": "bool"
+                },
+                "user_data": {
+                    "description": [
+                        "opaque blob of data which is made available to the droplet"
+                    ],
+                    "type": "str"
+                },
+                "virtio": {
+                    "default": "yes",
+                    "description": [
+                        "Bool, turn on virtio driver in droplet for improved network and storage I/O."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": "yes",
+                    "description": [
+                        "Wait for the droplet to be in state 'running' before returning.  If wait is \"no\" an ip_address may not be returned."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "How long before wait gives up, in seconds."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "dopy"
+            ],
+            "short_description": "Create/delete a droplet/SSH_key in DigitalOcean"
+        },
+        "examples": "\n# Ensure a SSH key is present\n# If a key matches this name, will return the ssh key id and changed = False\n# If no existing key matches this name, a new key is created, the ssh key id is returned and changed = False\n\n- name: Ensure a SSH key is present\n  community.digitalocean.digital_ocean:\n    state: present\n    command: ssh\n    name: my_ssh_key\n    ssh_pub_key: 'ssh-rsa AAAA...'\n    api_token: XXX\n\n# Will return the droplet details including the droplet id (used for idempotence)\n- name: Create a new Droplet\n  community.digitalocean.digital_ocean:\n    state: present\n    command: droplet\n    name: mydroplet\n    api_token: XXX\n    size_id: 2gb\n    region_id: ams2\n    image_id: fedora-19-x64\n    wait_timeout: 500\n  register: my_droplet\n\n- debug:\n    msg: \"ID is {{ my_droplet.droplet.id }}\"\n\n- debug:\n    msg: \"IP is {{ my_droplet.droplet.ip_address }}\"\n\n# Ensure a droplet is present\n# If droplet id already exist, will return the droplet details and changed = False\n# If no droplet matches the id, a new droplet will be created and the droplet details (including the new id) are returned, changed = True.\n\n- name: Ensure a droplet is present\n  community.digitalocean.digital_ocean:\n    state: present\n    command: droplet\n    id: 123\n    name: mydroplet\n    api_token: XXX\n    size_id: 2gb\n    region_id: ams2\n    image_id: fedora-19-x64\n    wait_timeout: 500\n\n# Create a droplet with ssh key\n# The ssh key id can be passed as argument at the creation of a droplet (see ssh_key_ids).\n# Several keys can be added to ssh_key_ids as id1,id2,id3\n# The keys are used to connect as root to the droplet.\n\n- name: Create a droplet with ssh key\n  community.digitalocean.digital_ocean:\n    state: present\n    ssh_key_ids: 123,456\n    name: mydroplet\n    api_token: XXX\n    size_id: 2gb\n    region_id: ams2\n    image_id: fedora-19-x64\n",
+        "metadata": null,
+        "return": null
+    }
+}

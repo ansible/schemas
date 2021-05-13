@@ -1,0 +1,215 @@
+{
+    "community.general.datadog_monitor": {
+        "doc": {
+            "author": "Sebastian Kornehl (@skornehl)",
+            "collection": "community.general",
+            "description": [
+                "Manages monitors within Datadog.",
+                "Options as described on https://docs.datadoghq.com/api/."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/datadog_monitor.py",
+            "has_action": false,
+            "module": "datadog_monitor",
+            "options": {
+                "api_host": {
+                    "description": [
+                        "The URL to the Datadog API. Default value is C(https://api.datadoghq.com).",
+                        "This value can also be set with the C(DATADOG_HOST) environment variable."
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_key": {
+                    "description": [
+                        "Your Datadog API key."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "app_key": {
+                    "description": [
+                        "Your Datadog app key."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "escalation_message": {
+                    "description": [
+                        "A message to include with a re-notification. Supports the '@username' notification we allow elsewhere.",
+                        "Not applicable if I(renotify_interval=None)."
+                    ],
+                    "type": "str"
+                },
+                "evaluation_delay": {
+                    "description": [
+                        "Time to delay evaluation (in seconds).",
+                        "Effective for sparse values."
+                    ],
+                    "type": "str"
+                },
+                "id": {
+                    "description": [
+                        "The ID of the alert.",
+                        "If set, will be used instead of the name to locate the alert."
+                    ],
+                    "type": "str"
+                },
+                "include_tags": {
+                    "default": true,
+                    "description": [
+                        "Whether notifications from this monitor automatically inserts its triggering tags into the title."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "locked": {
+                    "default": "no",
+                    "description": [
+                        "Whether changes to this monitor should be restricted to the creator or admins."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the alert."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_host_delay": {
+                    "description": [
+                        "A positive integer representing the number of seconds to wait before evaluating the monitor for new hosts.",
+                        "This gives the host time to fully initialize."
+                    ],
+                    "type": "str"
+                },
+                "no_data_timeframe": {
+                    "description": [
+                        "The number of minutes before a monitor will notify when data stops reporting.",
+                        "Must be at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
+                        "If not specified, it defaults to 2x timeframe for metric, 2 minutes for service."
+                    ],
+                    "type": "str"
+                },
+                "notification_message": {
+                    "aliases": [
+                        "message"
+                    ],
+                    "description": [
+                        "A message to include with notifications for this monitor.",
+                        "Email notifications can be sent to specific users by using the same '@username' notation as events.",
+                        "Monitor message template variables can be accessed by using double square brackets, i.e '[[' and ']]'.",
+                        "C(message) alias is deprecated in community.general 0.2.0, since it is used internally by Ansible Core Engine."
+                    ],
+                    "type": "str"
+                },
+                "notify_audit": {
+                    "default": "no",
+                    "description": [
+                        "Whether tagged users will be notified on changes to this monitor."
+                    ],
+                    "type": "bool"
+                },
+                "notify_no_data": {
+                    "default": "no",
+                    "description": [
+                        "Whether this monitor will notify when data stops reporting."
+                    ],
+                    "type": "bool"
+                },
+                "query": {
+                    "description": [
+                        "The monitor query to notify on.",
+                        "Syntax varies depending on what type of monitor you are creating."
+                    ],
+                    "type": "str"
+                },
+                "renotify_interval": {
+                    "description": [
+                        "The number of minutes after the last notification before a monitor will re-notify on the current status.",
+                        "It will only re-notify if it is not resolved."
+                    ],
+                    "type": "str"
+                },
+                "require_full_window": {
+                    "description": [
+                        "Whether this monitor needs a full window of data before it gets evaluated.",
+                        "We highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped."
+                    ],
+                    "type": "bool"
+                },
+                "silenced": {
+                    "default": "",
+                    "description": [
+                        "Dictionary of scopes to silence, with timestamps or None.",
+                        "Each scope will be muted until the given POSIX timestamp or forever if the value is None."
+                    ],
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "mute",
+                        "unmute"
+                    ],
+                    "description": [
+                        "The designated state of the monitor."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "A list of tags to associate with your monitor when creating or updating.",
+                        "This can help you categorize and filter monitors."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "thresholds": {
+                    "description": [
+                        "A dictionary of thresholds by status.",
+                        "Only available for service checks and metric alerts.",
+                        "Because each of them can have multiple thresholds, we do not define them directly in the query.",
+                        "If not specified, it defaults to: C({'ok': 1, 'critical': 1, 'warning': 1})."
+                    ],
+                    "type": "dict"
+                },
+                "timeout_h": {
+                    "description": [
+                        "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "metric alert",
+                        "service check",
+                        "event alert",
+                        "process alert",
+                        "log alert",
+                        "query alert",
+                        "trace-analytics alert",
+                        "rum alert"
+                    ],
+                    "description": [
+                        "The type of the monitor.",
+                        "The types C(query alert), C(trace-analytics alert) and C(rum alert) were added in community.general 2.1.0."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "datadog"
+            ],
+            "short_description": "Manages Datadog monitors"
+        },
+        "examples": "\n- name: Create a metric monitor\n  community.general.datadog_monitor:\n    type: \"metric alert\"\n    name: \"Test monitor\"\n    state: \"present\"\n    query: \"datadog.agent.up.over('host:host1').last(2).count_by_status()\"\n    notification_message: \"Host [[host.name]] with IP [[host.ip]] is failing to report to datadog.\"\n    api_key: \"9775a026f1ca7d1c6c5af9d94d9595a4\"\n    app_key: \"87ce4a24b5553d2e482ea8a8500e71b8ad4554ff\"\n\n- name: Deletes a monitor\n  community.general.datadog_monitor:\n    name: \"Test monitor\"\n    state: \"absent\"\n    api_key: \"9775a026f1ca7d1c6c5af9d94d9595a4\"\n    app_key: \"87ce4a24b5553d2e482ea8a8500e71b8ad4554ff\"\n\n- name: Mutes a monitor\n  community.general.datadog_monitor:\n    name: \"Test monitor\"\n    state: \"mute\"\n    silenced: '{\"*\":None}'\n    api_key: \"9775a026f1ca7d1c6c5af9d94d9595a4\"\n    app_key: \"87ce4a24b5553d2e482ea8a8500e71b8ad4554ff\"\n\n- name: Unmutes a monitor\n  community.general.datadog_monitor:\n    name: \"Test monitor\"\n    state: \"unmute\"\n    api_key: \"9775a026f1ca7d1c6c5af9d94d9595a4\"\n    app_key: \"87ce4a24b5553d2e482ea8a8500e71b8ad4554ff\"\n\n- name: Use datadoghq.eu platform instead of datadoghq.com\n  community.general.datadog_monitor:\n    name: \"Test monitor\"\n    state: \"absent\"\n    api_host: https://api.datadoghq.eu\n    api_key: \"9775a026f1ca7d1c6c5af9d94d9595a4\"\n    app_key: \"87ce4a24b5553d2e482ea8a8500e71b8ad4554ff\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,172 @@
+{
+    "community.general.rax_cdb": {
+        "doc": {
+            "author": "Simon JAILLET (@jails)",
+            "collection": "community.general",
+            "description": [
+                "creates / deletes or resize a Rackspace Cloud Databases instance and optionally waits for it to be 'running'. The name option needs to be unique since it's used to identify the instance."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/rax_cdb.py",
+            "has_action": false,
+            "module": "rax_cdb",
+            "notes": [
+                "The following environment variables can be used, C(RAX_USERNAME), C(RAX_API_KEY), C(RAX_CREDS_FILE), C(RAX_CREDENTIALS), C(RAX_REGION).",
+                "C(RAX_CREDENTIALS) and C(RAX_CREDS_FILE) points to a credentials file appropriate for pyrax. See U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)",
+                "C(RAX_USERNAME) and C(RAX_API_KEY) obviate the use of a credentials file",
+                "C(RAX_REGION) defines a Rackspace Public Cloud region (DFW, ORD, LON, ...)",
+                "The following environment variables can be used, C(RAX_USERNAME), C(RAX_API_KEY), C(RAX_CREDS_FILE), C(RAX_CREDENTIALS), C(RAX_REGION).",
+                "C(RAX_CREDENTIALS) and C(RAX_CREDS_FILE) points to a credentials file appropriate for pyrax. See U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)",
+                "C(RAX_USERNAME) and C(RAX_API_KEY) obviate the use of a credentials file",
+                "C(RAX_REGION) defines a Rackspace Public Cloud region (DFW, ORD, LON, ...)"
+            ],
+            "options": {
+                "api_key": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "Rackspace API key, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "auth_endpoint": {
+                    "description": [
+                        "The URI of the authentication service.",
+                        "If not specified will be set to U(https://identity.api.rackspacecloud.com/v2.0/)"
+                    ],
+                    "type": "str"
+                },
+                "cdb_type": {
+                    "aliases": [
+                        "type"
+                    ],
+                    "default": "MySQL",
+                    "description": [
+                        "type of instance (i.e. MySQL, MariaDB, Percona)"
+                    ],
+                    "type": "str"
+                },
+                "cdb_version": {
+                    "aliases": [
+                        "version"
+                    ],
+                    "default": 5.6,
+                    "description": [
+                        "version of database (MySQL supports 5.1 and 5.6, MariaDB supports 10, Percona supports 5.6)",
+                        "The available choices are: C(5.1), C(5.6) and  C(10)."
+                    ],
+                    "type": "str"
+                },
+                "credentials": {
+                    "aliases": [
+                        "creds_file"
+                    ],
+                    "description": [
+                        "File to find the Rackspace credentials in. Ignored if I(api_key) and I(username) are provided."
+                    ],
+                    "type": "path"
+                },
+                "env": {
+                    "description": [
+                        "Environment as configured in I(~/.pyrax.cfg), see U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#pyrax-configuration)."
+                    ],
+                    "type": "str"
+                },
+                "flavor": {
+                    "default": 1,
+                    "description": [
+                        "flavor to use for the instance 1 to 6 (i.e. 512MB to 16GB)"
+                    ],
+                    "type": "int"
+                },
+                "identity_type": {
+                    "default": "rackspace",
+                    "description": [
+                        "Authentication mechanism to use, such as rackspace or keystone."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the databases server instance"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "Region to create an instance in."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the resource"
+                    ],
+                    "type": "str"
+                },
+                "tenant_id": {
+                    "description": [
+                        "The tenant ID used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "tenant_name": {
+                    "description": [
+                        "The tenant name used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Rackspace username, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to require SSL validation of API endpoints."
+                    ],
+                    "type": "bool"
+                },
+                "volume": {
+                    "default": 2,
+                    "description": [
+                        "Volume size of the database 1-150GB"
+                    ],
+                    "type": "int"
+                },
+                "wait": {
+                    "default": "no",
+                    "description": [
+                        "wait for the instance to be in state 'running' before returning"
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "how long before wait gives up, in seconds"
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "pyrax",
+                "python >= 2.6"
+            ],
+            "short_description": "create/delete or resize a Rackspace Cloud Databases instance"
+        },
+        "examples": "\n- name: Build a Cloud Databases\n  gather_facts: False\n  tasks:\n    - name: Server build request\n      local_action:\n        module: rax_cdb\n        credentials: ~/.raxpub\n        region: IAD\n        name: db-server1\n        flavor: 1\n        volume: 2\n        cdb_type: MySQL\n        cdb_version: 5.6\n        wait: yes\n        state: present\n      register: rax_db_server\n",
+        "metadata": null,
+        "return": null
+    }
+}

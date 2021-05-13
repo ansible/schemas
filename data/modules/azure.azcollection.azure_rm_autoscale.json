@@ -1,0 +1,498 @@
+{
+    "azure.azcollection.azure_rm_autoscale": {
+        "doc": {
+            "author": [
+                "Yuwei Zhou (@yuwzho)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, delete an autoscale setting."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_autoscale.py",
+            "has_action": false,
+            "module": "azure_rm_autoscale",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "enabled": {
+                    "default": true,
+                    "description": [
+                        "Specifies whether automatic scaling is enabled for the resource."
+                    ],
+                    "type": "bool"
+                },
+                "location": {
+                    "description": [
+                        "location of the resource."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "name of the resource."
+                    ],
+                    "required": true
+                },
+                "notifications": {
+                    "description": [
+                        "The collection of notifications."
+                    ],
+                    "suboptions": {
+                        "custom_emails": {
+                            "description": [
+                                "The custom e-mails list. This value can be null or empty, in which case this attribute will be ignored."
+                            ]
+                        },
+                        "send_to_subscription_administrator": {
+                            "default": false,
+                            "description": [
+                                "A value indicating whether to send email to subscription administrator."
+                            ],
+                            "type": "bool"
+                        },
+                        "send_to_subscription_co_administrators": {
+                            "default": false,
+                            "description": [
+                                "A value indicating whether to send email to subscription co-administrators."
+                            ],
+                            "type": "bool"
+                        },
+                        "webhooks": {
+                            "description": [
+                                "The list of webhook notifications service uri."
+                            ]
+                        }
+                    }
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "profiles": {
+                    "description": [
+                        "The collection of automatic scaling profiles that specify different scaling parameters for different time periods.",
+                        "A maximum of 20 profiles can be specified."
+                    ],
+                    "suboptions": {
+                        "count": {
+                            "description": [
+                                "The number of instances that will be set if metrics are not available for evaluation.",
+                                "The default is only used if the current instance count is lower than the default."
+                            ],
+                            "required": true
+                        },
+                        "fixed_date_end": {
+                            "description": [
+                                "The specific date-time end for the profile.",
+                                "This element is not used if the Recurrence element is used."
+                            ]
+                        },
+                        "fixed_date_start": {
+                            "description": [
+                                "The specific date-time start for the profile.",
+                                "This element is not used if the Recurrence element is used."
+                            ]
+                        },
+                        "fixed_date_timezone": {
+                            "description": [
+                                "The specific date-time timezone for the profile.",
+                                "This element is not used if the Recurrence element is used."
+                            ]
+                        },
+                        "max_count": {
+                            "description": [
+                                "The maximum number of instances for the resource.",
+                                "The actual maximum number of instances is limited by the cores that are available in the subscription."
+                            ]
+                        },
+                        "min_count": {
+                            "description": [
+                                "The minimum number of instances for the resource."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "The name of the profile."
+                            ],
+                            "required": true
+                        },
+                        "recurrence_days": {
+                            "description": [
+                                "The days of repeating times at which this profile begins.",
+                                "This element is not used if the FixedDate element is used."
+                            ]
+                        },
+                        "recurrence_frequency": {
+                            "choices": [
+                                "None",
+                                "Second",
+                                "Minute",
+                                "Hour",
+                                "Day",
+                                "Week",
+                                "Month",
+                                "Year"
+                            ],
+                            "default": "None",
+                            "description": [
+                                "How often the schedule profile should take effect.",
+                                "If this value is C(Week), meaning each week will have the same set of profiles.",
+                                "This element is not used if the FixedDate element is used."
+                            ]
+                        },
+                        "recurrence_hours": {
+                            "description": [
+                                "The hours of repeating times at which this profile begins.",
+                                "This element is not used if the FixedDate element is used."
+                            ]
+                        },
+                        "recurrence_mins": {
+                            "description": [
+                                "The mins of repeating times at which this profile begins.",
+                                "This element is not used if the FixedDate element is used."
+                            ]
+                        },
+                        "recurrence_timezone": {
+                            "description": [
+                                "The timezone of repeating times at which this profile begins.",
+                                "This element is not used if the FixedDate element is used."
+                            ]
+                        },
+                        "rules": {
+                            "description": [
+                                "The collection of rules that provide the triggers and parameters for the scaling action.",
+                                "A maximum of 10 rules can be specified."
+                            ],
+                            "suboptions": {
+                                "cooldown": {
+                                    "description": [
+                                        "The amount of time (minutes) to wait since the last scaling action before this action occurs.",
+                                        "It must be between 1 ~ 10080."
+                                    ]
+                                },
+                                "direction": {
+                                    "choices": [
+                                        "Increase",
+                                        "Decrease"
+                                    ],
+                                    "description": [
+                                        "Whether the scaling action increases or decreases the number of instances."
+                                    ]
+                                },
+                                "metric_name": {
+                                    "description": [
+                                        "The name of the metric that defines what the rule monitors."
+                                    ],
+                                    "required": true
+                                },
+                                "metric_resource_uri": {
+                                    "description": [
+                                        "The resource identifier of the resource the rule monitors."
+                                    ]
+                                },
+                                "operator": {
+                                    "choices": [
+                                        "Equals",
+                                        "NotEquals",
+                                        "GreaterThan",
+                                        "GreaterThanOrEqual",
+                                        "LessThan",
+                                        "LessThanOrEqual"
+                                    ],
+                                    "default": "GreaterThan",
+                                    "description": [
+                                        "The operator that is used to compare the metric data and the threshold."
+                                    ]
+                                },
+                                "statistic": {
+                                    "choices": [
+                                        "Average",
+                                        "Min",
+                                        "Max",
+                                        "Sum"
+                                    ],
+                                    "default": "Average",
+                                    "description": [
+                                        "How the metrics from multiple instances are combined."
+                                    ]
+                                },
+                                "threshold": {
+                                    "default": 70,
+                                    "description": [
+                                        "The threshold of the metric that triggers the scale action."
+                                    ]
+                                },
+                                "time_aggregation": {
+                                    "choices": [
+                                        "Average",
+                                        "Minimum",
+                                        "Maximum",
+                                        "Total",
+                                        "Count"
+                                    ],
+                                    "default": "Average",
+                                    "description": [
+                                        "How the data that is collected should be combined over time."
+                                    ]
+                                },
+                                "time_grain": {
+                                    "description": [
+                                        "The granularity(minutes) of metrics the rule monitors.",
+                                        "Must be one of the predefined values returned from metric definitions for the metric.",
+                                        "Must be between 1 ~ 720."
+                                    ],
+                                    "required": true
+                                },
+                                "time_window": {
+                                    "description": [
+                                        "The range of time(minutes) in which instance data is collected.",
+                                        "This value must be greater than the delay in metric collection, which can vary from resource-to-resource.",
+                                        "Must be between 5 ~ 720."
+                                    ],
+                                    "required": true
+                                },
+                                "type": {
+                                    "choices": [
+                                        "PercentChangeCount",
+                                        "ExactCount",
+                                        "ChangeCount"
+                                    ],
+                                    "description": [
+                                        "The type of action that should occur when the scale rule fires."
+                                    ]
+                                },
+                                "value": {
+                                    "description": [
+                                        "The number of instances that are involved in the scaling action.",
+                                        "This value must be 1 or greater."
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "resource_group": {
+                    "description": [
+                        "Resource group of the resource."
+                    ],
+                    "required": true
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the virtual network. Use C(present) to create or update and C(absent) to delete."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "target": {
+                    "description": [
+                        "The identifier of the resource to apply autoscale setting.",
+                        "It could be the resource id string.",
+                        "It also could be a dict contains the C(name), C(subscription_id), C(namespace), C(types), C(resource_group) of the resource."
+                    ]
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Azure autoscale setting",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n- name: Create an auto scale\n  azure_rm_autoscale:\n      target: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets/myVmss\"\n      enabled: true\n      profiles:\n      - count: '1'\n        recurrence_days:\n        - Monday\n        name: Auto created scale condition\n        recurrence_timezone: China Standard Time\n        recurrence_mins:\n        - '0'\n        min_count: '1'\n        max_count: '1'\n        recurrence_frequency: Week\n        recurrence_hours:\n        - '18'\n      name: scale\n      resource_group: myResourceGroup\n\n- name: Create an auto scale with complicated profile\n  azure_rm_autoscale:\n      target: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScaleSets\n               /myVmss\"\n      enabled: true\n      profiles:\n      - count: '1'\n        recurrence_days:\n        - Monday\n        name: Auto created scale condition 0\n        rules:\n        - time_aggregation: Average\n          time_window: 10\n          direction: Increase\n          metric_name: Percentage CPU\n          metric_resource_uri: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtua\n                                lMachineScaleSets/vmss\"\n          value: '1'\n          threshold: 70\n          cooldown: 5\n          time_grain: 1\n          statistic: Average\n          operator: GreaterThan\n          type: ChangeCount\n        max_count: '1'\n        recurrence_mins:\n        - '0'\n        min_count: '1'\n        recurrence_timezone: China Standard Time\n        recurrence_frequency: Week\n        recurrence_hours:\n        - '6'\n      notifications:\n      - email_admin: True\n        email_co_admin: False\n        custom_emails:\n        - yuwzho@microsoft.com\n      name: scale\n      resource_group: myResourceGroup\n\n- name: Delete an Azure Auto Scale Setting\n  azure_rm_autoscale:\n    state: absent\n    resource_group: myResourceGroup\n    name: scale\n",
+        "metadata": null,
+        "return": {
+            "state": {
+                "description": "Current state of the resource.",
+                "returned": "always",
+                "sample": {
+                    "changed": false,
+                    "enabled": true,
+                    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/microsoft.insights/autoscalesettings/scale",
+                    "location": "eastus",
+                    "name": "scale",
+                    "notifications": [
+                        {
+                            "custom_emails": [
+                                "yuwzho@microsoft.com"
+                            ],
+                            "send_to_subscription_administrator": true,
+                            "send_to_subscription_co_administrators": false,
+                            "webhooks": []
+                        }
+                    ],
+                    "profiles": [
+                        {
+                            "count": "1",
+                            "max_count": "1",
+                            "min_count": "1",
+                            "name": "Auto created scale condition 0",
+                            "recurrence_days": [
+                                "Monday"
+                            ],
+                            "recurrence_frequency": "Week",
+                            "recurrence_hours": [
+                                "6"
+                            ],
+                            "recurrence_mins": [
+                                "0"
+                            ],
+                            "recurrence_timezone": "China Standard Time",
+                            "rules": [
+                                {
+                                    "cooldown": 5.0,
+                                    "direction": "Increase",
+                                    "metric_name": "Percentage CPU",
+                                    "metric_resource_uri": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsof t.Compute/virtualMachineScaleSets/MyVmss",
+                                    "operator": "GreaterThan",
+                                    "statistic": "Average",
+                                    "threshold": 70.0,
+                                    "time_aggregation": "Average",
+                                    "time_grain": 1.0,
+                                    "time_window": 10.0,
+                                    "type": "ChangeCount",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    ],
+                    "target": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachineScale Sets/myVmss"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

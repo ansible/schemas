@@ -1,0 +1,188 @@
+{
+    "t_systems_mms.icinga_director.icinga_command": {
+        "doc": {
+            "author": "Sebastian Gumprich (@rndmh3ro)",
+            "collection": "t_systems_mms.icinga_director",
+            "description": [
+                "Add or remove a command to Icinga2 through the director API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/t_systems_mms/icinga_director/plugins/modules/icinga_command.py",
+            "has_action": false,
+            "module": "icinga_command",
+            "notes": [
+                "This module supports check mode."
+            ],
+            "options": {
+                "arguments": {
+                    "description": [
+                        "Arguments of the command."
+                    ],
+                    "type": "dict"
+                },
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, C(client_key) is not required."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If C(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path"
+                },
+                "command": {
+                    "description": [
+                        "The command Icinga should run. Required when state is C(present).",
+                        "Absolute paths are accepted as provided, relative paths are prefixed with \"PluginDir + \", similar Constant prefixes are allowed.",
+                        "Spaces will lead to separation of command path and standalone arguments.",
+                        "Please note that this means that we do not support spaces in plugin names and paths right now."
+                    ],
+                    "type": "str"
+                },
+                "command_type": {
+                    "choices": [
+                        "PluginCheck",
+                        "PluginNotification",
+                        "PluginEvent"
+                    ],
+                    "default": "PluginCheck",
+                    "description": [
+                        "Plugin Check commands are what you need when running checks against your infrastructure.",
+                        "Notification commands will be used when it comes to notify your users.",
+                        "Event commands allow you to trigger specific actions when problems occur.",
+                        "Some people use them for auto-healing mechanisms, like restarting services or rebooting systems at specific thresholds."
+                    ],
+                    "type": "str"
+                },
+                "disabled": {
+                    "choices": [
+                        true,
+                        false
+                    ],
+                    "default": false,
+                    "description": [
+                        "Disabled objects will not be deployed."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "aliases": [
+                        "thirsty"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If C(yes) do not get a cached copy.",
+                        "Alias C(thirsty) has been deprecated and will be removed in 2.13."
+                    ],
+                    "type": "bool"
+                },
+                "force_basic_auth": {
+                    "default": false,
+                    "description": [
+                        "Credentials specified with I(url_username) and I(url_password) should be passed in HTTP Header."
+                    ],
+                    "type": "bool"
+                },
+                "http_agent": {
+                    "default": "ansible-httpget",
+                    "description": [
+                        "Header to identify as, generally appears in web server logs."
+                    ],
+                    "type": "str"
+                },
+                "imports": {
+                    "description": [
+                        "Importable templates, add as many as you want. Please note that order matters when importing properties from multiple templates - last one wins."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "object_name": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Name of the command."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Apply feature state."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "description": [
+                        "Optional command timeout. Allowed values are seconds or durations postfixed with a specific unit (for example 1m or also 3m 30s)."
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "description": [
+                        "The password for use in HTTP basic authentication.",
+                        "If the I(url_username) parameter is not specified, the I(url_password) parameter will not be used."
+                    ],
+                    "type": "str"
+                },
+                "url_username": {
+                    "description": [
+                        "The username for use in HTTP basic authentication.",
+                        "This parameter can be used without I(url_password) for sites that allow empty passwords"
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "vars": {
+                    "description": [
+                        "Custom properties of the command."
+                    ],
+                    "type": "dict"
+                },
+                "zone": {
+                    "description": [
+                        "Icinga cluster zone. Allows to manually override Directors decisions of where to deploy your config to.",
+                        "You should consider not doing so unless you gained deep understanding of how an Icinga Cluster stack works."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage commands in Icinga2",
+            "version_added": "1.0.0",
+            "version_added_collection": "t_systems_mms.icinga_director"
+        },
+        "examples": "\n- name: Create command\n  t_systems_mms.icinga_director.icinga_command:\n    state: present\n    url: \"{{ icinga_url }}\"\n    url_username: \"{{ icinga_user }}\"\n    url_password: \"{{ icinga_pass }}\"\n    arguments:\n      '--authpassphrase':\n        value: $snmpv3_priv_key$\n      '--authprotocol':\n        value: $snmpv3_auth_protocol$\n      '--critical':\n        value: $centreon_critical$\n      '--filter':\n        value: $centreon_filter$\n      '--hostname':\n        value: $snmp_address$\n      '--maxrepetitions':\n        value: $centreon_maxrepetitions$\n      '--mode':\n        value: $centreon_mode$\n      '--plugin':\n        value: $centreon_plugin$\n      '--privpassphrase':\n        value: $snmpv3_auth_key$\n      '--privprotocol':\n        value: $snmpv3_priv_protocol$\n      '--snmp-community':\n        value: $snmp_community$\n      '--snmp-timeout':\n        value: $snmp_timeout$\n      '--snmp-username':\n        value: $snmpv3_user$\n      '--snmp-version':\n        value: $snmp_version$\n      '--subsetleef':\n        value: $centreon_subsetleef$\n      '--verbose':\n        set_if: $centreon_verbose$\n      '--warning':\n        value: $centreon_warning$\n    command: \"/opt/centreon-plugins/centreon_plugins.pl\"\n    command_type: \"PluginCheck\"\n    disabled: false\n    object_name: centreon-plugins\n    imports:\n      - centreon-plugins-template\n    timeout: \"1m\"\n    vars:\n      centreon_maxrepetitions: 20\n      centreon_subsetleef: 20\n      centreon_verbose: false\n      snmp_address: $address$\n      snmp_timeout: 60\n      snmp_version: '2'\n      snmpv3_auth_key: authkey\n      snmpv3_priv_key: privkey\n      snmpv3_user: user\n\n- name: Create command\n  t_systems_mms.icinga_director.icinga_command:\n    state: present\n    url: \"{{ icinga_url }}\"\n    url_username: \"{{ icinga_user }}\"\n    url_password: \"{{ icinga_pass }}\"\n    command: \"/opt/centreon-plugins/centreon_plugins_2.pl\"\n    object_name: centreon-plugins_2\n\n- name: Create event command\n  t_systems_mms.icinga_director.icinga_command:\n    state: present\n    url: \"{{ icinga_url }}\"\n    url_username: \"{{ icinga_user }}\"\n    url_password: \"{{ icinga_pass }}\"\n    command: \"/opt/scripts/restart_httpd\"\n    object_name: \"restart_httpd\"\n    arguments:\n      '-s':\n        value: $service.state$\n      '-t':\n        value: $service.state_type$\n      '-a':\n        set_if: $service.check_attempt$\n        value: $restart_service$\n",
+        "metadata": null,
+        "return": null
+    }
+}

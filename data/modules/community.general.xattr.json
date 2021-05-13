@@ -1,0 +1,77 @@
+{
+    "community.general.xattr": {
+        "doc": {
+            "author": [
+                "Brian Coca (@bcoca)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manages filesystem user defined extended attributes.",
+                "Requires that extended attributes are enabled on the target filesystem and that the setfattr/getfattr utilities are present."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/xattr.py",
+            "has_action": false,
+            "module": "xattr",
+            "notes": [
+                "As of Ansible 2.3, the I(name) option has been changed to I(path) as default, but I(name) still works as well."
+            ],
+            "options": {
+                "follow": {
+                    "default": true,
+                    "description": [
+                        "If C(yes), dereferences symlinks and sets/gets attributes on symlink target, otherwise acts on symlink itself."
+                    ],
+                    "type": "bool"
+                },
+                "key": {
+                    "description": [
+                        "The name of a specific Extended attribute key to set/retrieve."
+                    ],
+                    "type": "str"
+                },
+                "namespace": {
+                    "default": "user",
+                    "description": [
+                        "Namespace of the named name/key."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "The full path of the file/object to get the facts of.",
+                        "Before 2.3 this option was only usable as I(name)."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "all",
+                        "keys",
+                        "present",
+                        "read"
+                    ],
+                    "default": "read",
+                    "description": [
+                        "defines which state you want to do. C(read) retrieves the current value for a C(key) (default) C(present) sets C(name) to C(value), default if value is set C(all) dumps all data C(keys) retrieves all keys C(absent) deletes the key"
+                    ],
+                    "type": "str"
+                },
+                "value": {
+                    "description": [
+                        "The value to set the named name/key to, it automatically sets the C(state) to 'set'."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage user defined extended attributes"
+        },
+        "examples": "\n- name: Obtain the extended attributes  of /etc/foo.conf\n  community.general.xattr:\n    path: /etc/foo.conf\n\n- name: Set the key 'user.foo' to value 'bar'\n  community.general.xattr:\n    path: /etc/foo.conf\n    key: foo\n    value: bar\n\n- name: Set the key 'trusted.glusterfs.volume-id' to value '0x817b94343f164f199e5b573b4ea1f914'\n  community.general.xattr:\n    path: /mnt/bricks/brick1\n    namespace: trusted\n    key: glusterfs.volume-id\n    value: \"0x817b94343f164f199e5b573b4ea1f914\"\n\n- name: Remove the key 'user.foo'\n  community.general.xattr:\n    path: /etc/foo.conf\n    key: foo\n    state: absent\n\n- name: Remove the key 'trusted.glusterfs.volume-id'\n  community.general.xattr:\n    path: /mnt/bricks/brick1\n    namespace: trusted\n    key: glusterfs.volume-id\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

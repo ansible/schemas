@@ -1,0 +1,134 @@
+{
+    "community.google.gc_storage": {
+        "doc": {
+            "author": [
+                "Benno Joy (@bennojoy)",
+                "Lukas Beumer (@Nitaco)"
+            ],
+            "collection": "community.google",
+            "description": [
+                "This module allows users to manage their objects/buckets in Google Cloud Storage.  It allows upload and download operations and can set some canned permissions. It also allows retrieval of URLs for objects for use in playbooks, and retrieval of string contents of objects.  This module requires setting the default project in GCS prior to playbook usage.  See U(https://developers.google.com/storage/docs/reference/v1/apiversion1) for information about setting the default project."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/google/plugins/modules/gc_storage.py",
+            "has_action": false,
+            "module": "gc_storage",
+            "options": {
+                "bucket": {
+                    "description": [
+                        "Bucket name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "dest": {
+                    "description": [
+                        "The destination file path when downloading an object/key with a GET operation."
+                    ],
+                    "type": "path"
+                },
+                "expiration": {
+                    "aliases": [
+                        "expiry"
+                    ],
+                    "default": 600,
+                    "description": [
+                        "Time limit (in seconds) for the URL generated and returned by GCA when performing a mode=put or mode=get_url operation. This url is only available when public-read is the acl for the object."
+                    ],
+                    "type": "int"
+                },
+                "gs_access_key": {
+                    "description": [
+                        "GS access key. If not set then the value of the GS_ACCESS_KEY_ID environment variable is used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "gs_secret_key": {
+                    "description": [
+                        "GS secret key. If not set then the value of the GS_SECRET_ACCESS_KEY environment variable is used."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "headers": {
+                    "default": {},
+                    "description": [
+                        "Headers to attach to object."
+                    ],
+                    "type": "dict"
+                },
+                "mode": {
+                    "choices": [
+                        "get",
+                        "put",
+                        "get_url",
+                        "get_str",
+                        "delete",
+                        "create"
+                    ],
+                    "description": [
+                        "Switches the module behaviour between upload, download, get_url (return download url) , get_str (download object as string), create (bucket) and delete (bucket)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "object": {
+                    "description": [
+                        "Keyname of the object inside the bucket. Can be also be used to create \"virtual directories\" (see examples)."
+                    ],
+                    "type": "path"
+                },
+                "overwrite": {
+                    "aliases": [
+                        "force"
+                    ],
+                    "default": "yes",
+                    "description": [
+                        "Forces an overwrite either locally on the filesystem or remotely with the object/key. Used with PUT and GET operations."
+                    ],
+                    "type": "bool"
+                },
+                "permission": {
+                    "choices": [
+                        "private",
+                        "public-read",
+                        "authenticated-read"
+                    ],
+                    "default": "private",
+                    "description": [
+                        "This option let's the user set the canned permissions on the object/bucket that are created. The permissions that can be set are 'private', 'public-read', 'authenticated-read'."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "default": "US",
+                    "description": [
+                        "The gs region to use. If not defined then the value 'US' will be used. See U(https://cloud.google.com/storage/docs/bucket-locations)"
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "The source file path when performing a PUT operation."
+                    ],
+                    "type": "str"
+                },
+                "versioning": {
+                    "default": false,
+                    "description": [
+                        "Whether versioning is enabled or disabled (note that once versioning is enabled, it can only be suspended)"
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto >= 2.9"
+            ],
+            "short_description": "This module manages objects/buckets in Google Cloud Storage."
+        },
+        "examples": "\n- name: Upload some content\n  community.google.gc_storage:\n    bucket: mybucket\n    object: key.txt\n    src: /usr/local/myfile.txt\n    mode: put\n    permission: public-read\n\n- name: Upload some headers\n  community.google.gc_storage:\n    bucket: mybucket\n    object: key.txt\n    src: /usr/local/myfile.txt\n    headers: '{\"Content-Encoding\": \"gzip\"}'\n\n- name: Download some content\n  community.google.gc_storage:\n    bucket: mybucket\n    object: key.txt\n    dest: /usr/local/myfile.txt\n    mode: get\n\n- name: Download an object as a string to use else where in your playbook\n  community.google.gc_storage:\n    bucket: mybucket\n    object: key.txt\n    mode: get_str\n\n- name: Create an empty bucket\n  community.google.gc_storage:\n    bucket: mybucket\n    mode: create\n\n- name: Create a bucket with key as directory\n  community.google.gc_storage:\n    bucket: mybucket\n    object: /my/directory/path\n    mode: create\n\n- name: Delete a bucket and all contents\n  community.google.gc_storage:\n    bucket: mybucket\n    mode: delete\n\n- name: Create a bucket with versioning enabled\n  community.google.gc_storage:\n    bucket: \"mybucket\"\n    versioning: yes\n    mode: create\n\n- name: Create a bucket located in the eu\n  community.google.gc_storage:\n    bucket: \"mybucket\"\n    region: \"europe-west3\"\n    mode: create\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,175 @@
+{
+    "community.vmware.vmware_guest_custom_attributes": {
+        "doc": {
+            "author": [
+                "Jimmy Conner (@cigamit)",
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to add, remove and update custom attributes for the given virtual machine."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_custom_attributes.py",
+            "has_action": false,
+            "module": "vmware_guest_custom_attributes",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "attributes": {
+                    "default": [],
+                    "description": [
+                        "A list of name and value of custom attributes that needs to be manage.",
+                        "Value of custom attribute is not required and will be ignored, if C(state) is set to C(absent)."
+                    ],
+                    "type": "list"
+                },
+                "datacenter": {
+                    "description": [
+                        "Datacenter name where the virtual machine is located in."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Absolute path to find an existing guest.",
+                        "This is required parameter, if C(name) is supplied and multiple virtual machines with same name are found."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "moid": {
+                    "description": [
+                        "Managed Object ID of the instance to manage if known, this is a unique identifier only within a single vCenter instance.",
+                        "This is required if C(name) or C(uuid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the virtual machine to work with.",
+                        "This is required parameter, if C(uuid) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The action to take.",
+                        "If set to C(present), then custom attribute is added or updated.",
+                        "If set to C(absent), then custom attribute is removed."
+                    ],
+                    "type": "str"
+                },
+                "use_instance_uuid": {
+                    "default": false,
+                    "description": [
+                        "Whether to use the VMware instance UUID rather than the BIOS UUID."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the virtual machine to manage if known. This is VMware's unique identifier.",
+                        "This is required parameter, if C(name) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Manage custom attributes from VMware for the given virtual machine"
+        },
+        "examples": "\n- name: Add virtual machine custom attributes\n  community.vmware.vmware_guest_custom_attributes:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    uuid: 421e4592-c069-924d-ce20-7e7533fab926\n    state: present\n    attributes:\n      - name: MyAttribute\n        value: MyValue\n  delegate_to: localhost\n  register: attributes\n\n- name: Add multiple virtual machine custom attributes\n  community.vmware.vmware_guest_custom_attributes:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    uuid: 421e4592-c069-924d-ce20-7e7533fab926\n    state: present\n    attributes:\n      - name: MyAttribute\n        value: MyValue\n      - name: MyAttribute2\n        value: MyValue2\n  delegate_to: localhost\n  register: attributes\n\n- name: Remove virtual machine Attribute\n  community.vmware.vmware_guest_custom_attributes:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    uuid: 421e4592-c069-924d-ce20-7e7533fab926\n    state: absent\n    attributes:\n      - name: MyAttribute\n  delegate_to: localhost\n  register: attributes\n\n- name: Remove virtual machine Attribute using Virtual Machine MoID\n  community.vmware.vmware_guest_custom_attributes:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    moid: vm-42\n    state: absent\n    attributes:\n      - name: MyAttribute\n  delegate_to: localhost\n  register: attributes\n",
+        "metadata": null,
+        "return": {
+            "custom_attributes": {
+                "description": "metadata about the virtual machine attributes",
+                "returned": "always",
+                "sample": {
+                    "mycustom": "my_custom_value",
+                    "mycustom_2": "my_custom_value_2",
+                    "sample_1": "sample_1_value",
+                    "sample_2": "sample_2_value",
+                    "sample_3": "sample_3_value"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,582 @@
+{
+    "azure.azcollection.azure_rm_storageaccount": {
+        "doc": {
+            "author": [
+                "Chris Houseknecht (@chouseknecht)",
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update or delete a storage account."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_storageaccount.py",
+            "has_action": false,
+            "module": "azure_rm_storageaccount",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "access_tier": {
+                    "choices": [
+                        "Hot",
+                        "Cool"
+                    ],
+                    "description": [
+                        "The access tier for this storage account. Required when I(kind=BlobStorage)."
+                    ]
+                },
+                "account_type": {
+                    "aliases": [
+                        "type"
+                    ],
+                    "choices": [
+                        "Premium_LRS",
+                        "Standard_GRS",
+                        "Standard_LRS",
+                        "Standard_RAGRS",
+                        "Standard_ZRS",
+                        "Premium_ZRS"
+                    ],
+                    "description": [
+                        "Type of storage account. Required when creating a storage account.",
+                        "C(Standard_ZRS) and C(Premium_LRS) accounts cannot be changed to other account types.",
+                        "Other account types cannot be changed to C(Standard_ZRS) or C(Premium_LRS)."
+                    ]
+                },
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "allow_blob_public_access": {
+                    "description": [
+                        "Allows blob containers in account to be set for anonymous public access.",
+                        "If set to false, no containers in this account will be able to allow anonymous public access.",
+                        "If omitted, new account creation will default to null which is currently interpreted to True. Existing accounts will not be modified."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "blob_cors": {
+                    "description": [
+                        "Specifies CORS rules for the Blob service.",
+                        "You can include up to five CorsRule elements in the request.",
+                        "If no blob_cors elements are included in the argument list, nothing about CORS will be changed.",
+                        "If you want to delete all CORS rules and disable CORS for the Blob service, explicitly set I(blob_cors=[])."
+                    ],
+                    "suboptions": {
+                        "allowed_headers": {
+                            "description": [
+                                "A list of headers allowed to be part of the cross-origin request."
+                            ],
+                            "required": true,
+                            "type": "list"
+                        },
+                        "allowed_methods": {
+                            "description": [
+                                "A list of HTTP methods that are allowed to be executed by the origin."
+                            ],
+                            "required": true,
+                            "type": "list"
+                        },
+                        "allowed_origins": {
+                            "description": [
+                                "A list of origin domains that will be allowed via CORS, or \"*\" to allow all domains."
+                            ],
+                            "required": true,
+                            "type": "list"
+                        },
+                        "exposed_headers": {
+                            "description": [
+                                "A list of response headers to expose to CORS clients."
+                            ],
+                            "required": true,
+                            "type": "list"
+                        },
+                        "max_age_in_seconds": {
+                            "description": [
+                                "The number of seconds that the client/browser should cache a preflight response."
+                            ],
+                            "required": true,
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "custom_domain": {
+                    "aliases": [
+                        "custom_dns_domain_suffix"
+                    ],
+                    "description": [
+                        "User domain assigned to the storage account.",
+                        "Must be a dictionary with I(name) and I(use_sub_domain) keys where I(name) is the CNAME source.",
+                        "Only one custom domain is supported per storage account at this time.",
+                        "To clear the existing custom domain, use an empty string for the custom domain name property.",
+                        "Can be added to an existing storage account. Will be ignored during storage account creation."
+                    ]
+                },
+                "force_delete_nonempty": {
+                    "aliases": [
+                        "force"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Attempt deletion if resource already exists and cannot be updated."
+                    ],
+                    "type": "bool"
+                },
+                "https_only": {
+                    "description": [
+                        "Allows https traffic only to storage service when set to C(True).",
+                        "If omitted, new account creation will default to True, while existing accounts will not be change."
+                    ],
+                    "type": "bool"
+                },
+                "kind": {
+                    "choices": [
+                        "Storage",
+                        "StorageV2",
+                        "BlobStorage",
+                        "BlockBlobStorage",
+                        "FileStorage"
+                    ],
+                    "default": "Storage",
+                    "description": [
+                        "The kind of storage.",
+                        "The C(FileStorage) and (BlockBlobStorage) only used when I(account_type=Premium_LRS)."
+                    ]
+                },
+                "location": {
+                    "description": [
+                        "Valid Azure location. Defaults to location of the resource group."
+                    ]
+                },
+                "minimum_tls_version": {
+                    "choices": [
+                        "TLS1_0",
+                        "TLS1_1",
+                        "TLS1_2"
+                    ],
+                    "description": [
+                        "The minimum required version of Transport Layer Security (TLS) for requests to a storage account.",
+                        "If omitted, new account creation will default to null which is currently interpreted to TLS1_0. Existing accounts will not be modified."
+                    ],
+                    "version_added": "1.0.0",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "name": {
+                    "description": [
+                        "Name of the storage account to update or create."
+                    ]
+                },
+                "network_acls": {
+                    "description": [
+                        "Manages the Firewall and virtual networks settings of the storage account."
+                    ],
+                    "suboptions": {
+                        "bypass": {
+                            "default": "AzureServices",
+                            "description": [
+                                "When I(default_action=Deny) this controls which Azure components can still reach the Storage Account.",
+                                "The list is comma separated.",
+                                "It can be any combination of the example C(AzureServices), C(Logging), C(Metrics).",
+                                "If no Azure components are allowed, explicitly set I(bypass=\"\")."
+                            ]
+                        },
+                        "default_action": {
+                            "choices": [
+                                "Allow",
+                                "Deny"
+                            ],
+                            "default": "Allow",
+                            "description": [
+                                "Default firewall traffic rule.",
+                                "If I(default_action=Allow) no other settings have effect."
+                            ]
+                        },
+                        "ip_rules": {
+                            "description": [
+                                "A list of IP addresses or ranges in CIDR format."
+                            ],
+                            "suboptions": {
+                                "action": {
+                                    "default": "Allow",
+                                    "description": [
+                                        "The only logical I(action=Allow) because this setting is only accessible when I(default_action=Deny)."
+                                    ]
+                                },
+                                "value": {
+                                    "description": [
+                                        "The IP address or range."
+                                    ]
+                                }
+                            }
+                        },
+                        "virtual_network_rules": {
+                            "description": [
+                                "A list of subnets and their actions."
+                            ],
+                            "suboptions": {
+                                "action": {
+                                    "default": "Allow",
+                                    "description": [
+                                        "The only logical I(action=Allow) because this setting is only accessible when I(default_action=Deny)."
+                                    ]
+                                },
+                                "id": {
+                                    "description": [
+                                        "The complete path to the subnet."
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "type": "dict"
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "resource_group": {
+                    "aliases": [
+                        "resource_group_name"
+                    ],
+                    "description": [
+                        "Name of the resource group to use."
+                    ],
+                    "required": true
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the storage account. Use C(present) to create or update a storage account and use C(absent) to delete an account."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Azure storage accounts",
+            "version_added": "0.1.0",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n    - name: remove account, if it exists\n      azure_rm_storageaccount:\n        resource_group: myResourceGroup\n        name: clh0002\n        state: absent\n\n    - name: create an account\n      azure_rm_storageaccount:\n        resource_group: myResourceGroup\n        name: clh0002\n        type: Standard_RAGRS\n        tags:\n          testing: testing\n          delete: on-exit\n\n    - name: Create an account with kind of FileStorage\n      azure_rm_storageaccount:\n        resource_group: myResourceGroup\n        name: c1h0002\n        type: Premium_LRS\n        kind: FileStorage\n        tags:\n          testing: testing\n\n    - name: configure firewall and virtual networks\n      azure_rm_storageaccount:\n        resource_group: myResourceGroup\n        name: clh0002\n        type: Standard_RAGRS\n        network_acls:\n          bypass: AzureServices,Metrics\n          default_action: Deny\n          virtual_network_rules:\n            - id: /subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet\n              action: Allow\n          ip_rules:\n            - value: 1.2.3.4\n              action: Allow\n            - value: 123.234.123.0/24\n              action: Allow\n\n    - name: create an account with blob CORS\n      azure_rm_storageaccount:\n        resource_group: myResourceGroup\n        name: clh002\n        type: Standard_RAGRS\n        blob_cors:\n            - allowed_origins:\n                - http://www.example.com/\n              allowed_methods:\n                - GET\n                - POST\n              allowed_headers:\n                - x-ms-meta-data*\n                - x-ms-meta-target*\n                - x-ms-meta-abc\n              exposed_headers:\n                - x-ms-meta-*\n              max_age_in_seconds: 200\n",
+        "metadata": null,
+        "return": {
+            "state": {
+                "contains": {
+                    "account_type": {
+                        "description": [
+                            "Type of storage account."
+                        ],
+                        "returned": "always",
+                        "sample": "Standard_RAGRS",
+                        "type": "str"
+                    },
+                    "custom_domain": {
+                        "contains": {
+                            "name": {
+                                "description": [
+                                    "CNAME source."
+                                ],
+                                "returned": "always",
+                                "sample": "testaccount",
+                                "type": "str"
+                            },
+                            "use_sub_domain": {
+                                "description": [
+                                    "Whether to use sub domain."
+                                ],
+                                "returned": "always",
+                                "sample": true,
+                                "type": "bool"
+                            }
+                        },
+                        "description": [
+                            "User domain assigned to the storage account."
+                        ],
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "id": {
+                        "description": [
+                            "Resource ID."
+                        ],
+                        "returned": "always",
+                        "sample": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Storage/storageAccounts/clh0003",
+                        "type": "str"
+                    },
+                    "location": {
+                        "description": [
+                            "Valid Azure location. Defaults to location of the resource group."
+                        ],
+                        "returned": "always",
+                        "sample": "eastus2",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": [
+                            "Name of the storage account to update or create."
+                        ],
+                        "returned": "always",
+                        "sample": "clh0003",
+                        "type": "str"
+                    },
+                    "network_acls": {
+                        "description": [
+                            "A set of firewall and virtual network rules"
+                        ],
+                        "returned": "always",
+                        "sample": {
+                            "bypass": "AzureServices",
+                            "default_action": "Deny",
+                            "ip_rules": [
+                                {
+                                    "action": "Allow",
+                                    "value": "1.2.3.4"
+                                },
+                                {
+                                    "action": "Allow",
+                                    "value": "123.234.123.0/24"
+                                }
+                            ],
+                            "virtual_network_rules": [
+                                {
+                                    "action": "Allow",
+                                    "id": "/subscriptions/mySubscriptionId/resourceGroups/myResourceGroup/                                    providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet"
+                                }
+                            ]
+                        },
+                        "type": "dict"
+                    },
+                    "primary_endpoints": {
+                        "description": [
+                            "The URLs to retrieve the public I(blob), I(queue), or I(table) object from the primary location."
+                        ],
+                        "returned": "always",
+                        "sample": {
+                            "blob": "https://clh0003.blob.core.windows.net/",
+                            "queue": "https://clh0003.queue.core.windows.net/",
+                            "table": "https://clh0003.table.core.windows.net/"
+                        },
+                        "type": "dict"
+                    },
+                    "primary_location": {
+                        "description": [
+                            "The location of the primary data center for the storage account."
+                        ],
+                        "returned": "always",
+                        "sample": "eastus2",
+                        "type": "str"
+                    },
+                    "provisioning_state": {
+                        "description": [
+                            "The status of the storage account.",
+                            "Possible values include C(Creating), C(ResolvingDNS), C(Succeeded)."
+                        ],
+                        "returned": "always",
+                        "sample": "Succeeded",
+                        "type": "str"
+                    },
+                    "resource_group": {
+                        "description": [
+                            "The resource group's name."
+                        ],
+                        "returned": "always",
+                        "sample": "Testing",
+                        "type": "str"
+                    },
+                    "secondary_endpoints": {
+                        "description": [
+                            "The URLs to retrieve the public I(blob), I(queue), or I(table) object from the secondary location."
+                        ],
+                        "returned": "always",
+                        "sample": {
+                            "blob": "https://clh0003-secondary.blob.core.windows.net/",
+                            "queue": "https://clh0003-secondary.queue.core.windows.net/",
+                            "table": "https://clh0003-secondary.table.core.windows.net/"
+                        },
+                        "type": "dict"
+                    },
+                    "secondary_location": {
+                        "description": [
+                            "The location of the geo-replicated secondary for the storage account."
+                        ],
+                        "returned": "always",
+                        "sample": "centralus",
+                        "type": "str"
+                    },
+                    "status_of_primary": {
+                        "description": [
+                            "The status of the primary location of the storage account; either C(available) or C(unavailable)."
+                        ],
+                        "returned": "always",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "status_of_secondary": {
+                        "description": [
+                            "The status of the secondary location of the storage account; either C(available) or C(unavailable)."
+                        ],
+                        "returned": "always",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": [
+                            "Resource tags."
+                        ],
+                        "returned": "always",
+                        "sample": {
+                            "tags1": "value1"
+                        },
+                        "type": "dict"
+                    },
+                    "type": {
+                        "description": [
+                            "The storage account type."
+                        ],
+                        "returned": "always",
+                        "sample": "Microsoft.Storage/storageAccounts",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Current state of the storage account."
+                ],
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,298 @@
+{
+    "community.aws.ec2_vpc_route_table": {
+        "doc": {
+            "author": [
+                "Robert Estelle (@erydo)",
+                "Rob White (@wimnat)",
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Manage route tables for AWS virtual private clouds"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_vpc_route_table.py",
+            "has_action": false,
+            "module": "ec2_vpc_route_table",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "lookup": {
+                    "choices": [
+                        "tag",
+                        "id"
+                    ],
+                    "default": "tag",
+                    "description": "Look up route table by either tags or by route table ID. Non-unique tag lookup will fail. If no tags are specified then no lookup for an existing route table is performed and a new route table will be created. To change tags of a route table you must look up by id.",
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "propagating_vgw_ids": {
+                    "description": "Enable route propagation from virtual gateways specified by ID.",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "purge_routes": {
+                    "default": "yes",
+                    "description": "Purge existing routes that are not found in routes.",
+                    "type": "bool"
+                },
+                "purge_subnets": {
+                    "default": "true",
+                    "description": "Purge existing subnets that are not found in subnets. Ignored unless the subnets option is supplied.",
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": "no",
+                    "description": "Purge existing tags that are not found in route table.",
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "route_table_id": {
+                    "description": [
+                        "The ID of the route table to update or delete.",
+                        "Required when I(lookup=id)."
+                    ],
+                    "type": "str"
+                },
+                "routes": {
+                    "description": "List of routes in the route table. Routes are specified as dicts containing the keys 'dest' and one of 'gateway_id', 'instance_id', 'network_interface_id', or 'vpc_peering_connection_id'. If 'gateway_id' is specified, you can refer to the VPC's IGW by using the value 'igw'. Routes are required for present states.",
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "Create or destroy the VPC route table.",
+                    "type": "str"
+                },
+                "subnets": {
+                    "description": "An array of subnets to add to this route table. Subnets may be specified by either subnet ID, Name tag, or by a CIDR such as '10.0.0.0/24'.",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "tags": {
+                    "aliases": [
+                        "resource_tags"
+                    ],
+                    "description": "A dictionary of resource tags of the form: C({ tag1: value1, tag2: value2 }). Tags are used to uniquely identify route tables within a VPC when the route_table_id is not supplied.\n",
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_id": {
+                    "description": [
+                        "VPC ID of the VPC in which to create the route table.",
+                        "Required when I(state=present) or I(lookup=tag)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Manage route tables for AWS virtual private clouds",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Basic creation example:\n- name: Set up public subnet route table\n  community.aws.ec2_vpc_route_table:\n    vpc_id: vpc-1245678\n    region: us-west-1\n    tags:\n      Name: Public\n    subnets:\n      - \"{{ jumpbox_subnet.subnet.id }}\"\n      - \"{{ frontend_subnet.subnet.id }}\"\n      - \"{{ vpn_subnet.subnet_id }}\"\n    routes:\n      - dest: 0.0.0.0/0\n        gateway_id: \"{{ igw.gateway_id }}\"\n  register: public_route_table\n\n- name: Set up NAT-protected route table\n  community.aws.ec2_vpc_route_table:\n    vpc_id: vpc-1245678\n    region: us-west-1\n    tags:\n      Name: Internal\n    subnets:\n      - \"{{ application_subnet.subnet.id }}\"\n      - 'Database Subnet'\n      - '10.0.0.0/8'\n    routes:\n      - dest: 0.0.0.0/0\n        instance_id: \"{{ nat.instance_id }}\"\n  register: nat_route_table\n\n- name: delete route table\n  community.aws.ec2_vpc_route_table:\n    vpc_id: vpc-1245678\n    region: us-west-1\n    route_table_id: \"{{ route_table.id }}\"\n    lookup: id\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "route_table": {
+                "contains": {
+                    "associations": {
+                        "contains": {
+                            "main": {
+                                "description": "Whether this is the main route table",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "route_table_association_id": {
+                                "description": "ID of association between route table and subnet",
+                                "returned": "always",
+                                "sample": "rtbassoc-ab47cfc3",
+                                "type": "str"
+                            },
+                            "route_table_id": {
+                                "description": "ID of the route table",
+                                "returned": "always",
+                                "sample": "rtb-bf779ed7",
+                                "type": "str"
+                            },
+                            "subnet_id": {
+                                "description": "ID of the subnet",
+                                "returned": "always",
+                                "sample": "subnet-82055af9",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of subnets associated with the route table",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "id": {
+                        "description": "ID of the route table (same as route_table_id for backwards compatibility)",
+                        "returned": "always",
+                        "sample": "rtb-bf779ed7",
+                        "type": "str"
+                    },
+                    "propagating_vgws": {
+                        "description": "List of Virtual Private Gateways propagating routes",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "route_table_id": {
+                        "description": "ID of the route table",
+                        "returned": "always",
+                        "sample": "rtb-bf779ed7",
+                        "type": "str"
+                    },
+                    "routes": {
+                        "contains": {
+                            "destination_cidr_block": {
+                                "description": "CIDR block of destination",
+                                "returned": "always",
+                                "sample": "10.228.228.0/22",
+                                "type": "str"
+                            },
+                            "gateway_id": {
+                                "description": "ID of the gateway",
+                                "returned": "when gateway is local or internet gateway",
+                                "sample": "local",
+                                "type": "str"
+                            },
+                            "instance_id": {
+                                "description": "ID of a NAT instance",
+                                "returned": "when the route is via an EC2 instance",
+                                "sample": "i-abcd123456789",
+                                "type": "str"
+                            },
+                            "instance_owner_id": {
+                                "description": "AWS account owning the NAT instance",
+                                "returned": "when the route is via an EC2 instance",
+                                "sample": 123456789012,
+                                "type": "str"
+                            },
+                            "nat_gateway_id": {
+                                "description": "ID of the NAT gateway",
+                                "returned": "when the route is via a NAT gateway",
+                                "sample": "local",
+                                "type": "str"
+                            },
+                            "origin": {
+                                "description": "mechanism through which the route is in the table",
+                                "returned": "always",
+                                "sample": "CreateRouteTable",
+                                "type": "str"
+                            },
+                            "state": {
+                                "description": "state of the route",
+                                "returned": "always",
+                                "sample": "active",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of routes in the route table",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "tags": {
+                        "description": "Tags applied to the route table",
+                        "returned": "always",
+                        "sample": {
+                            "Name": "Public route table",
+                            "Public": "true"
+                        },
+                        "type": "dict"
+                    },
+                    "vpc_id": {
+                        "description": "ID for the VPC in which the route lives",
+                        "returned": "always",
+                        "sample": "vpc-6e2d2407",
+                        "type": "str"
+                    }
+                },
+                "description": "Route Table result",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

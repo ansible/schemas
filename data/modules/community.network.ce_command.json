@@ -1,0 +1,89 @@
+{
+    "community.network.ce_command": {
+        "doc": {
+            "author": "JackyGao2016 (@CloudEngine-Ansible)",
+            "collection": "community.network",
+            "description": [
+                "Sends an arbitrary command to an HUAWEI CloudEngine node and returns the results read from the device.  The ce_command module includes an argument that will cause the module to wait for a specific condition before returning or timing out if the condition is not met."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_command.py",
+            "has_action": false,
+            "module": "ce_command",
+            "notes": [
+                "Recommended connection is C(network_cli).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "commands": {
+                    "description": [
+                        "The commands to send to the remote HUAWEI CloudEngine device over the configured provider.  The resulting output from the command is returned. If the I(wait_for) argument is provided, the module is not returned until the condition is satisfied or the number of I(retries) has been exceeded."
+                    ],
+                    "required": true
+                },
+                "interval": {
+                    "default": 1,
+                    "description": [
+                        "Configures the interval in seconds to wait between retries of the command.  If the command does not pass the specified conditional, the interval indicates how to long to wait before trying the command again."
+                    ]
+                },
+                "match": {
+                    "default": "all",
+                    "description": [
+                        "The I(match) argument is used in conjunction with the I(wait_for) argument to specify the match policy.  Valid values are C(all) or C(any).  If the value is set to C(all) then all conditionals in the I(wait_for) must be satisfied.  If the value is set to C(any) then only one of the values must be satisfied."
+                    ]
+                },
+                "retries": {
+                    "default": 10,
+                    "description": [
+                        "Specifies the number of retries a command should by tried before it is considered failed.  The command is run on the target device every retry and evaluated against the I(wait_for) conditionals."
+                    ]
+                },
+                "wait_for": {
+                    "description": [
+                        "Specifies what to evaluate from the output of the command and what conditionals to apply.  This argument will cause the task to wait for a particular conditional to be true before moving forward.   If the conditional is not true by the configured retries, the task fails.  See examples."
+                    ]
+                }
+            },
+            "short_description": "Run arbitrary command on HUAWEI CloudEngine devices."
+        },
+        "examples": "\n# Note: examples below use the following provider dict to handle\n#       transport and authentication to the node.\n\n- name: CloudEngine command test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n  - name: \"Run display version on remote devices\"\n    community.network.ce_command:\n      commands: display version\n      provider: \"{{ cli }}\"\n\n  - name: \"Run display version and check to see if output contains HUAWEI\"\n    community.network.ce_command:\n      commands: display version\n      wait_for: result[0] contains HUAWEI\n      provider: \"{{ cli }}\"\n\n  - name: \"Run multiple commands on remote nodes\"\n    community.network.ce_command:\n      commands:\n        - display version\n        - display device\n      provider: \"{{ cli }}\"\n\n  - name: \"Run multiple commands and evaluate the output\"\n    community.network.ce_command:\n      commands:\n        - display version\n        - display device\n      wait_for:\n        - result[0] contains HUAWEI\n        - result[1] contains Device\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "failed_conditions": {
+                "description": "the conditionals that failed",
+                "returned": "failed",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout": {
+                "description": "the set of responses from the commands",
+                "returned": "always",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout_lines": {
+                "description": "The value of stdout split into a list",
+                "returned": "always",
+                "sample": [
+                    [
+                        "...",
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ]
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

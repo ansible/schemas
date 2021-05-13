@@ -1,0 +1,102 @@
+{
+    "purestorage.flasharray.purefa_user": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Create, modify or delete local users on a Pure Stoage FlashArray."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_user.py",
+            "has_action": false,
+            "module": "purefa_user",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api": {
+                    "default": false,
+                    "description": [
+                        "Define whether to create an API token for this user",
+                        "Token can be exposed using the I(debug) module"
+                    ],
+                    "type": "bool"
+                },
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the local user account"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "old_password": {
+                    "description": [
+                        "If changing an existing password, you must provide the old password for security"
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password for the local user."
+                    ],
+                    "type": "str"
+                },
+                "role": {
+                    "choices": [
+                        "readonly",
+                        "storage_admin",
+                        "array_admin"
+                    ],
+                    "description": [
+                        "Sets the local user's access level to the array"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create, delete or update local user account"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Create, modify or delete FlashArray local user account",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Create new user ansible with API token\n  purefa_user:\n    name: ansible\n    password: apassword\n    role: storage_admin\n    api: true\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n  register: result\n\n  debug:\n    msg: \"API Token: {{ result['user_info']['user_api'] }}\"\n\n- name: Change role type for existing user\n  purefa_user:\n    name: ansible\n    role: array_admin\n    state: update\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Change password type for existing user (NOT IDEMPOTENT)\n  purefa_user:\n    name: ansible\n    password: anewpassword\n    old_password: apassword\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Change API token for existing user\n  purefa_user:\n    name: ansible\n    api: true\n    state: update\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n  register: result\n\n  debug:\n    msg: \"API Token: {{ result['user_info']['user_api'] }}\"\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

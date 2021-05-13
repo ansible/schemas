@@ -1,0 +1,207 @@
+{
+    "theforeman.foreman.job_invocation": {
+        "doc": {
+            "author": [
+                "Peter Ondrejka (@pondrejk)"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Invoke and schedule Remote Execution Jobs"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/job_invocation.py",
+            "has_action": false,
+            "module": "job_invocation",
+            "options": {
+                "bookmark": {
+                    "description": [
+                        "Bookmark to infer the search query from"
+                    ],
+                    "type": "str"
+                },
+                "command": {
+                    "description": [
+                        "Command to be executed on host. Required for command templates"
+                    ],
+                    "type": "str"
+                },
+                "concurrency_control": {
+                    "description": [
+                        "Control concurrency level and distribution over time"
+                    ],
+                    "suboptions": {
+                        "concurrency_level": {
+                            "description": [
+                                "Maximum jobs to be executed at once"
+                            ],
+                            "type": "int"
+                        },
+                        "time_span": {
+                            "description": [
+                                "Distribute tasks over given number of seconds"
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "execution_timeout_interval": {
+                    "description": [
+                        "Override the timeout interval from the template for this invocation only"
+                    ],
+                    "type": "int"
+                },
+                "inputs": {
+                    "description": [
+                        "Inputs to use"
+                    ],
+                    "type": "dict"
+                },
+                "job_template": {
+                    "description": [
+                        "Job template to execute"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "randomized_ordering": {
+                    "description": [
+                        "Whether to order the selected hosts randomly"
+                    ],
+                    "type": "bool"
+                },
+                "recurrence": {
+                    "description": [
+                        "Schedule a recurring job"
+                    ],
+                    "suboptions": {
+                        "cron_line": {
+                            "description": [
+                                "How often the job should occur, in the cron format"
+                            ],
+                            "type": "str"
+                        },
+                        "end_time": {
+                            "description": [
+                                "Perform no more executions after this time"
+                            ],
+                            "type": "str"
+                        },
+                        "max_iteration": {
+                            "description": [
+                                "Repeat a maximum of N times"
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "scheduling": {
+                    "description": [
+                        "Schedule the job to start at a later time"
+                    ],
+                    "suboptions": {
+                        "start_at": {
+                            "description": [
+                                "Schedule the job for a future time"
+                            ],
+                            "type": "str"
+                        },
+                        "start_before": {
+                            "description": [
+                                "Indicates that the action should be cancelled if it cannot be started before this time."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "search_query": {
+                    "description": [
+                        "Search query to identify hosts"
+                    ],
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ssh": {
+                    "description": [
+                        "ssh related options"
+                    ],
+                    "suboptions": {
+                        "effective_user": {
+                            "description": [
+                                "What user should be used to run the script (using sudo-like mechanisms)",
+                                "Defaults to a template parameter or global setting"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "targeting_type": {
+                    "choices": [
+                        "static_query",
+                        "dynamic_query"
+                    ],
+                    "default": "static_query",
+                    "description": [
+                        "Dynamic query updates the search results before execution (useful for scheduled jobs)"
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Invoke Remote Execution Jobs",
+            "version_added": "1.4.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n\n- name: \"Run remote command on a single host once\"\n  job_invocation:\n    search_query: \"name ^ (foreman.example.com)\"\n    command: 'ls'\n    job_template: \"Run Command - SSH Default\"\n    ssh:\n      effective_user: \"tester\"\n\n- name: \"Run ansible command on active hosts once a day\"\n  job_invocation:\n    bookmark: 'active'\n    command: 'pwd'\n    job_template: \"Run Command - Ansible Default\"\n    recurrence:\n      cron_line: \"30 2 * * *\"\n    concurrency_control:\n      concurrency_level: 2\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "job_invocations": {
+                        "description": "List of job invocations",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

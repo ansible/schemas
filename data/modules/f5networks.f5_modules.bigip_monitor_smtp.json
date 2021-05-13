@@ -1,0 +1,309 @@
+{
+    "f5networks.f5_modules.bigip_monitor_smtp": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage SMTP monitors on a BIG-IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_monitor_smtp.py",
+            "has_action": false,
+            "module": "bigip_monitor_smtp",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "app_service": {
+                    "description": [
+                        "The iApp service to be associated with this profile. When no service is specified, the default is None."
+                    ],
+                    "type": "str"
+                },
+                "debug": {
+                    "description": [
+                        "Specifies whether the monitor sends error messages and additional information to a log file created and labeled specifically for this monitor.",
+                        "When C(yes) the system redirects error messages and additional information to the C(/var/log/monitors/<monitor_name>-<node_name>-<port>.log) file."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "The description of the monitor."
+                    ],
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "Specifies the domain name to check."
+                    ],
+                    "type": "str"
+                },
+                "interval": {
+                    "description": [
+                        "The interval specifying how frequently the monitor instance of this template will run.",
+                        "This value B(must) be less than the C(timeout) value.",
+                        "When creating a new monitor, if this parameter is not provided, the default C(5) will be used."
+                    ],
+                    "type": "int"
+                },
+                "ip": {
+                    "description": [
+                        "IP address part of the IP/port definition. If this parameter is not provided when creating a new monitor, the default value is '*'."
+                    ],
+                    "type": "str"
+                },
+                "manual_resume": {
+                    "description": [
+                        "Specifies whether the system automatically changes the status of a resource to B(enabled) at the next successful monitor check.",
+                        "If you set this option to C(yes), you must manually re-enable the resource before the system can use it for load balancing connections.",
+                        "When creating a new monitor, if this parameter is not specified, the default value is C(no).",
+                        "When C(yes), specifies you must manually re-enable the resource after an unsuccessful monitor check.",
+                        "When C(no), specifies the system automatically changes the status of a resource to B(enabled) at the next successful monitor check."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the monitor."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent": {
+                    "description": [
+                        "The parent template of this monitor template. Once this value has been set, it cannot be changed.",
+                        "When creating a new monitor, if this parameter is not specified, the default is the system-supplied C(smtp) monitor."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Port address part of the IP/port definition. If this parameter is not provided when creating a new monitor, the default value is '*'. If specifying an IP address, you must specify a value between 1 and 65535."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the monitor exists.",
+                        "When C(absent), ensures the monitor is removed."
+                    ],
+                    "type": "str"
+                },
+                "time_until_up": {
+                    "description": [
+                        "Specifies the amount of time in seconds after the first successful response before a node will be marked up.",
+                        "A value of C(0) will cause a node to be marked up immediately after a valid response is received from the node.",
+                        "If this parameter is not provided when creating a new monitor, then the default value will be C(0)."
+                    ],
+                    "type": "int"
+                },
+                "timeout": {
+                    "description": [
+                        "The number of seconds in which the node or service must respond to the monitor request.",
+                        "If the target responds within the set time period, it is considered up.",
+                        "If the target does not respond within the set time period, it is considered down.",
+                        "You can change this to any number, however, it should be 3 times the interval number of seconds plus 1 second.",
+                        "If this parameter is not provided when creating a new monitor, the default value will be C(31)."
+                    ],
+                    "type": "int"
+                },
+                "up_interval": {
+                    "description": [
+                        "Specifies the interval for the system to use to perform the health check when a resource is up.",
+                        "When C(0), specifies the system uses the interval specified in C(interval) to check the health of the resource.",
+                        "When any other number, enables you to specify a different interval to use when checking the health of a resource that is up.",
+                        "When creating a new monitor, if this parameter is not provided, the default C(0) will be used."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manage SMTP monitors on a BIG-IP",
+            "version_added": "1.1.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create SMTP Monitor\n  bigip_monitor_smtp:\n    state: present\n    ip: 10.10.10.10\n    name: my_smtp_monitor\n    domain: foo.com\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Remove SMTP Monitor\n  bigip_monitor_smtp:\n    state: absent\n    name: my_smtp_monitor\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "app_service": {
+                "description": "The iApp service associated with this monitor.",
+                "returned": "changed",
+                "sample": "/Common/good_service.app/good_service",
+                "type": "str"
+            },
+            "debug": {
+                "description": [
+                    "Whether the monitor sends error messages and additional information to a log file created and labeled specifically for this monitor."
+                ],
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "description": {
+                "description": "The description of the monitor.",
+                "returned": "changed",
+                "sample": "Important Monitor",
+                "type": "str"
+            },
+            "domain": {
+                "description": "Specifies the domain name to check.",
+                "returned": "changed",
+                "sample": "bigipinternal.com",
+                "type": "str"
+            },
+            "interval": {
+                "description": "The new interval in which to run the monitor check.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "ip": {
+                "description": "The new IP of IP/port definition.",
+                "returned": "changed",
+                "sample": "10.12.13.14",
+                "type": "str"
+            },
+            "manual_resume": {
+                "description": [
+                    "Specifies whether the system automatically changes the status of a resource to up at the next successful monitor check."
+                ],
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "parent": {
+                "description": "The parent monitor.",
+                "returned": "changed",
+                "sample": "/Common/foo_smtp",
+                "type": "str"
+            },
+            "port": {
+                "description": [
+                    "Alias port or service for the monitor to check, on behalf of the pools or pool members with which the monitor is associated."
+                ],
+                "returned": "changed",
+                "sample": 80,
+                "type": "str"
+            },
+            "time_until_up": {
+                "description": "The new time in which to mark a system as up after first successful response.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "timeout": {
+                "description": "The new timeout in which the remote system must respond to the monitor.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "up_interval": {
+                "description": "Interval for the system to use to perform the health check when a resource is up.",
+                "returned": "changed",
+                "sample": 0,
+                "type": "int"
+            }
+        }
+    }
+}

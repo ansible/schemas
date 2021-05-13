@@ -1,0 +1,195 @@
+{
+    "vyos.vyos.vyos_config": {
+        "doc": {
+            "author": "Nathaniel Case (@Qalthos)",
+            "collection": "vyos.vyos",
+            "description": [
+                "This module provides configuration file management of VyOS devices. It provides arguments for managing both the configuration file and state of the active configuration. All configuration statements are based on `set` and `delete` commands in the device configuration."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/vyos/vyos/plugins/modules/vyos_config.py",
+            "has_action": true,
+            "module": "vyos_config",
+            "notes": [
+                "Tested against VyOS 1.1.8 (helium).",
+                "This module works with connection C(network_cli). See L(the VyOS OS Platform Options,../network/user_guide/platform_vyos.html).",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`"
+            ],
+            "options": {
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "The C(backup) argument will backup the current devices active configuration to the Ansible control host prior to making any changes. If the C(backup_options) value is not given, the backup file will be located in the backup folder in the playbook root directory or role root directory, if playbook is part of an ansible role. If the directory does not exist, it is created."
+                    ],
+                    "type": "bool"
+                },
+                "backup_options": {
+                    "description": [
+                        "This is a dict object containing configurable options related to backup file path. The value of this option is read only when C(backup) is set to I(yes), if C(backup) is set to I(no) this option will be silently ignored."
+                    ],
+                    "suboptions": {
+                        "dir_path": {
+                            "description": [
+                                "This option provides the path ending with directory name in which the backup configuration file will be stored. If the directory does not exist it will be first created and the filename is either the value of C(filename) or default filename as described in C(filename) options description. If the path value is not given in that case a I(backup) directory will be created in the current working directory and backup configuration will be copied in C(filename) within I(backup) directory."
+                            ],
+                            "type": "path"
+                        },
+                        "filename": {
+                            "description": [
+                                "The filename to be used to store the backup configuration. If the filename is not given it will be generated based on the hostname, current time and date in format defined by <hostname>_config.<current-date>@<current-time>"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "comment": {
+                    "default": "configured by vyos_config",
+                    "description": [
+                        "Allows a commit description to be specified to be included when the configuration is committed.  If the configuration is not changed or committed, this argument is ignored."
+                    ],
+                    "type": "str"
+                },
+                "config": {
+                    "description": [
+                        "The C(config) argument specifies the base configuration to use to compare against the desired configuration.  If this value is not specified, the module will automatically retrieve the current active configuration from the remote device."
+                    ],
+                    "type": "str"
+                },
+                "lines": {
+                    "description": [
+                        "The ordered set of configuration lines to be managed and compared with the existing configuration on the remote device."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "match": {
+                    "choices": [
+                        "line",
+                        "none"
+                    ],
+                    "default": "line",
+                    "description": [
+                        "The C(match) argument controls the method used to match against the current active configuration.  By default, the desired config is matched against the active config and the deltas are loaded.  If the C(match) argument is set to C(none) the active configuration is ignored and the configuration is always loaded."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(Network Guide, ../network/getting_started/network_differences.html#multiple-communication-protocols).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "save": {
+                    "default": false,
+                    "description": [
+                        "The C(save) argument controls whether or not changes made to the active configuration are saved to disk.  This is independent of committing the config.  When set to True, the active configuration is saved."
+                    ],
+                    "type": "bool"
+                },
+                "src": {
+                    "description": [
+                        "The C(src) argument specifies the path to the source config file to load.  The source config file can either be in bracket format or set format.  The source file can include Jinja2 template variables."
+                    ],
+                    "type": "path"
+                }
+            },
+            "short_description": "Manage VyOS configuration on remote device",
+            "version_added": "1.0.0",
+            "version_added_collection": "vyos.vyos"
+        },
+        "examples": "\n- name: configure the remote device\n  vyos.vyos.vyos_config:\n    lines:\n    - set system host-name {{ inventory_hostname }}\n    - set service lldp\n    - delete service dhcp-server\n\n- name: backup and load from file\n  vyos.vyos.vyos_config:\n    src: vyos.cfg\n    backup: yes\n\n- name: render a Jinja2 template onto the VyOS router\n  vyos.vyos.vyos_config:\n    src: vyos_template.j2\n\n- name: for idempotency, use full-form commands\n  vyos.vyos.vyos_config:\n    lines:\n      # - set int eth eth2 description 'OUTSIDE'\n    - set interface ethernet eth2 description 'OUTSIDE'\n\n- name: configurable backup path\n  vyos.vyos.vyos_config:\n    backup: yes\n    backup_options:\n      filename: backup.cfg\n      dir_path: /home/user\n",
+        "metadata": null,
+        "return": {
+            "backup_path": {
+                "description": "The full path to the backup file",
+                "returned": "when backup is yes",
+                "sample": "/playbooks/ansible/backup/vyos_config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "commands": {
+                "description": "The list of configuration commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "date": {
+                "description": "The date extracted from the backup file name",
+                "returned": "when backup is yes",
+                "sample": "2016-07-16",
+                "type": "str"
+            },
+            "filename": {
+                "description": "The name of the backup file",
+                "returned": "when backup is yes and filename is not specified in backup options",
+                "sample": "vyos_config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "filtered": {
+                "description": "The list of configuration commands removed to avoid a load failure",
+                "returned": "always",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "shortname": {
+                "description": "The full path to the backup file excluding the timestamp",
+                "returned": "when backup is yes and filename is not specified in backup options",
+                "sample": "/playbooks/ansible/backup/vyos_config",
+                "type": "str"
+            },
+            "time": {
+                "description": "The time extracted from the backup file name",
+                "returned": "when backup is yes",
+                "sample": "22:28:34",
+                "type": "str"
+            }
+        }
+    }
+}

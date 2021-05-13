@@ -1,0 +1,653 @@
+{
+    "cisco.iosxr.iosxr_ospf_interfaces": {
+        "doc": {
+            "author": "Rohit Thakur (@rohitthakur2590)",
+            "collection": "cisco.iosxr",
+            "description": [
+                "This module manages OSPF(v2/v3) configuration of interfaces on devices running Cisco IOS-XR."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/iosxr/plugins/modules/iosxr_ospf_interfaces.py",
+            "has_action": true,
+            "module": "iosxr_ospf_interfaces",
+            "notes": [
+                "Tested against IOS-XR 6.1.3",
+                "This module works with connection C(network_cli). See L(the IOS-XR Platform Options,../network/user_guide/platform_iosxr.html)"
+            ],
+            "options": {
+                "config": {
+                    "description": "A list of OSPF configuration for interfaces.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "address_family": {
+                            "description": [
+                                "OSPF settings on the interfaces in address-family context."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "afi": {
+                                    "choices": [
+                                        "ipv4",
+                                        "ipv6"
+                                    ],
+                                    "description": [
+                                        "Address Family Identifier (AFI) for OSPF settings on the interfaces."
+                                    ],
+                                    "required": true,
+                                    "type": "str"
+                                },
+                                "apply_group_option": {
+                                    "description": "Specify configuration from a group",
+                                    "suboptions": {
+                                        "group_name": {
+                                            "description": "Specify the name of the group",
+                                            "type": "str"
+                                        },
+                                        "operation": {
+                                            "choices": [
+                                                "add",
+                                                "remove",
+                                                "append"
+                                            ],
+                                            "description": "Specify the group config operation",
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "authentication": {
+                                    "description": "Enable authentication",
+                                    "suboptions": {
+                                        "message_digest": {
+                                            "description": "Use message-digest authentication",
+                                            "suboptions": {
+                                                "keychain": {
+                                                    "description": "Specify keychain name",
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "null_auth": {
+                                            "description": "Use no authentication",
+                                            "type": "bool"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "authentication_key": {
+                                    "description": "Specify authentication password (key)",
+                                    "suboptions": {
+                                        "clear": {
+                                            "description": "Specifies an UNENCRYPTED password (key) will follow",
+                                            "type": "str"
+                                        },
+                                        "encrypted": {
+                                            "description": "Specifies an ENCRYPTED password (key) will follow",
+                                            "type": "str"
+                                        },
+                                        "password": {
+                                            "description": "The OSPFv2 password (key)",
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "bfd": {
+                                    "description": "Configure BFD parameters",
+                                    "suboptions": {
+                                        "fast_detect": {
+                                            "description": "Configure fast detection",
+                                            "suboptions": {
+                                                "set": {
+                                                    "description": "Enable fast detection only",
+                                                    "type": "bool"
+                                                },
+                                                "strict_mode": {
+                                                    "description": "Hold down neighbor session until BFD session is up",
+                                                    "type": "bool"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "minimum_interval": {
+                                            "description": "Hello interval in milli-seconds",
+                                            "type": "int"
+                                        },
+                                        "multiplier": {
+                                            "description": "Detect multiplier",
+                                            "type": "int"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "cost": {
+                                    "description": "Specify Interface cost",
+                                    "type": "int"
+                                },
+                                "cost_fallback": {
+                                    "description": "Specify Cost when cumulative bandwidth goes below the theshold",
+                                    "suboptions": {
+                                        "cost": {
+                                            "description": "Specify cost w.r.t cummulative bandwidth",
+                                            "type": "int"
+                                        },
+                                        "threshold": {
+                                            "description": "Specify threshold bandwidth when cost-fallback is applied",
+                                            "type": "int"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "database_filter": {
+                                    "description": "Filter OSPF LSAs during synchronization and flooding",
+                                    "suboptions": {
+                                        "all_outgoing_lsa": {
+                                            "description": "Filter all outgoing LSA",
+                                            "type": "bool"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "dead_interval": {
+                                    "description": "Specify interval after which a neighbor is declared dead",
+                                    "type": "int"
+                                },
+                                "demand_circuit": {
+                                    "description": "Enable/Disable demand circuits",
+                                    "type": "bool"
+                                },
+                                "fast_reroute": {
+                                    "description": "Specify IP Fast Reroute",
+                                    "suboptions": {
+                                        "disabled": {
+                                            "description": "Disable IP fast reroute",
+                                            "type": "bool"
+                                        },
+                                        "per_link": {
+                                            "description": "Specify per-prefix computation",
+                                            "suboptions": {
+                                                "information_type": {
+                                                    "choices": [
+                                                        "exclude",
+                                                        "lfa_candidate"
+                                                    ],
+                                                    "description": "Specify per-link LFA exclusion or FRR LFA candidate information",
+                                                    "type": "str"
+                                                },
+                                                "interface": {
+                                                    "description": "Specify Per-link LFA exclusion information",
+                                                    "suboptions": {
+                                                        "bundle_ether": {
+                                                            "description": "Specify Aggregated Ethernet interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "bvi": {
+                                                            "description": "Specify Bridge-Group Virtual Interface",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "fast_ethernet": {
+                                                            "description": "Specify FastEthernet/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "fiftygige": {
+                                                            "description": "Specify FiftyGigE/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "fortygige": {
+                                                            "description": "Specify FortyGigE/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "fourhundredgige": {
+                                                            "description": "Specify FourHundredGigE/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "gigabitethernet": {
+                                                            "description": "Specify GigabitEthernet/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "hundredgige": {
+                                                            "description": "Specify HundredGigE/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "mgmteth": {
+                                                            "description": "Specify MgmtEth/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "multilink": {
+                                                            "description": "Specify Multilink network interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "nve": {
+                                                            "description": "Specify Network Virtualization Endpoint Interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "pos_int": {
+                                                            "description": "Specify Aggregated pos interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "pw_ether": {
+                                                            "description": "Specify PWHE Ethernet Interface",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "pw_iw": {
+                                                            "description": "Specify PWHE VC11 IP Interworking Interface",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "serial": {
+                                                            "description": "Specify Serial network interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "srp": {
+                                                            "description": "Specify SRP interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "tengige": {
+                                                            "description": "Specify TenGigabitEthernet/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "tunnel_ip": {
+                                                            "description": "Specify GRE/IPinIP Tunnel Interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "tunnel_ipsec": {
+                                                            "description": "Specify IPSec Tunnel interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "tunnel_mpls": {
+                                                            "description": "MPLS Transport Protocol Tunnel interface",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "tunnel_mte": {
+                                                            "description": "Specify MPLS Traffic Engineering P2MP Tunnel interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "int"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "twentyfivegige": {
+                                                            "description": "Specify TwentyFiveGigabitEthernet/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        },
+                                                        "twohundredgige": {
+                                                            "description": "Specify TwoHundredGigE/IEEE 802.3 interface(s)",
+                                                            "elements": "dict",
+                                                            "suboptions": {
+                                                                "name": {
+                                                                    "description": "Specify the interface id",
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                            "type": "list"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                },
+                                                "use_candidate_only": {
+                                                    "description": "Enable/Disable backup selection from candidate-list only",
+                                                    "type": "bool"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "flood_reduction": {
+                                    "description": "Enable/Disable flood reduction",
+                                    "type": "bool"
+                                },
+                                "hello_interval": {
+                                    "description": "Specify Time between HELLO packets",
+                                    "type": "int"
+                                },
+                                "link_down_fast_detect": {
+                                    "description": "Configure interface down parameters",
+                                    "type": "bool"
+                                },
+                                "message_digest_key": {
+                                    "description": "Message digest authentication password (key)",
+                                    "suboptions": {
+                                        "id": {
+                                            "description": "Key ID",
+                                            "required": true,
+                                            "type": "int"
+                                        },
+                                        "md5": {
+                                            "description": "Use MD5 Algorithm",
+                                            "required": true,
+                                            "suboptions": {
+                                                "clear": {
+                                                    "description": "Specifies an UNENCRYPTED password (key) will follow",
+                                                    "type": "bool"
+                                                },
+                                                "encrypted": {
+                                                    "description": "Specifies an ENCRYPTED password (key) will follow",
+                                                    "type": "bool"
+                                                },
+                                                "password": {
+                                                    "description": "The OSPFv2 password (key)",
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "mpls_ldp_sync": {
+                                    "description": "Enable/Disable MPLS LDP Sync",
+                                    "type": "bool"
+                                },
+                                "mtu_ignore": {
+                                    "description": "Enable/Disable ignoring of MTU in DBD packets",
+                                    "type": "bool"
+                                },
+                                "neighbors": {
+                                    "description": "Specify a neighbor routers",
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "cost": {
+                                            "description": "Specify OSPF cost for point-to-multipoint neighbor",
+                                            "type": "int"
+                                        },
+                                        "db_filter_all_out": {
+                                            "description": "Specify Filter OSPF LSA during synchronization and flooding for point-to-multipoint neighbor",
+                                            "type": "bool"
+                                        },
+                                        "neighbor_id": {
+                                            "description": "Specify Neighbor address (name)",
+                                            "type": "str"
+                                        },
+                                        "poll_interval": {
+                                            "description": "Specify OSPF dead-router polling interval",
+                                            "type": "int"
+                                        },
+                                        "priority": {
+                                            "description": "Specify OSPF priority of non-broadcast neighbor",
+                                            "type": "int"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "network": {
+                                    "choices": [
+                                        "broadcast",
+                                        "non-broadcast",
+                                        "point-to-multipoint",
+                                        "point-to-point"
+                                    ],
+                                    "description": "Specify Network type",
+                                    "type": "str"
+                                },
+                                "packet_size": {
+                                    "description": "Customize size of OSPF packets upto MTU",
+                                    "type": "int"
+                                },
+                                "passive": {
+                                    "description": "Enable/Disable passive",
+                                    "type": "bool"
+                                },
+                                "prefix_suppression": {
+                                    "description": "Suppress advertisement of the prefixes",
+                                    "type": "bool"
+                                },
+                                "priority": {
+                                    "description": "Specify Router priority",
+                                    "type": "int"
+                                },
+                                "processes": {
+                                    "description": [
+                                        "Interfaces configuration for an OSPF process."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "area": {
+                                            "description": "Specify the area-id",
+                                            "suboptions": {
+                                                "area_id": {
+                                                    "description": [
+                                                        "OSPF interfaces area ID as a decimal value. Please refer vendor documentation of Valid values.",
+                                                        "OSPF interfaces area ID in IP address format(e.g. A.B.C.D)"
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "process_id": {
+                                            "description": [
+                                                "OSPF process tag."
+                                            ],
+                                            "required": true,
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "retransmit_interval": {
+                                    "description": "Specify time between retransmitting lost link state advertisements",
+                                    "type": "int"
+                                },
+                                "security_ttl": {
+                                    "description": "Enable security",
+                                    "suboptions": {
+                                        "hops": {
+                                            "description": "Maximum number of IP hops allowed <1-254>",
+                                            "type": "int"
+                                        },
+                                        "set": {
+                                            "description": "Enable ttl security",
+                                            "type": "bool"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "transmit_delay": {
+                                    "description": "Specify estimated time needed to send link-state update packet",
+                                    "type": "int"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "name": {
+                            "description": [
+                                "Name/Identifier of the interface."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "Type of the interface."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS-XR device by executing the command B(show running-config router ospf').",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "parsed",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "OSPF Interfaces Resource Module.",
+            "version_added": "1.2.0",
+            "version_added_collection": "cisco.iosxr"
+        },
+        "examples": "\n# Using merged\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:anton#show running-config router ospf\n# % No such configuration item(s)\n#\n\n- name: Merge provided OSPF interfaces configuration with the existing configuration\n  cisco.iosxr.iosxr_ospf_interfaces:\n    config:\n      - name: GigabitEthernet0/0/0/0\n        type: gigabitethernet\n        address_family:\n          - afi: ipv4\n            processes:\n              - process_id: \"LAB3\"\n                area:\n                  area_id: 0.0.0.3\n            cost: 20\n            authentication:\n              message_digest:\n                keychain: cisco\n          - afi: ipv6\n            processes:\n              - process_id: \"LAB3\"\n                area:\n                  area_id: 0.0.0.2\n            cost: 30\n    state: merged\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": []\n#\n#  \"commands\": [\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 cost 20\",\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest\",\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest keychain cisco\",\n#        \"router ospfv3 LAB3 area 0.0.0.2 interface GigabitEthernet 0/0/0/0 cost 30\"\n#     ]\n#\n#  \"after\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"cisco\"\n#                         }\n#                     },\n#                     \"cost\": 20,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.2\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n#\n# ------------\n# After state\n# ------------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:00:57.217 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/0\n#    cost 20\n#    authentication message-digest keychain cisco\n#   !\n#  !\n# !\n# router ospf ipv4\n# !\n\n# Using replaced\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:00:57.217 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/0\n#    cost 20\n#    authentication message-digest keychain cisco\n#   !\n#  !\n# !\n# router ospf ipv4\n# !\n\n- name: Replace OSPF interfaces configuration\n  cisco.iosxr.iosxr_ospf_interfaces:\n    config:\n      - name: GigabitEthernet0/0/0/0\n        type: gigabitethernet\n        address_family:\n          - afi: ipv4\n            processes:\n              - process_id: \"LAB3\"\n                area:\n                  area_id: 0.0.0.3\n            cost: 30\n            authentication:\n              message_digest:\n                keychain: ciscoiosxr\n          - afi: ipv6\n            processes:\n              - process_id: \"LAB3\"\n                area:\n                  area_id: 0.0.0.2\n            cost: 30\n    state: replaced\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"cisco\"\n#                         }\n#                     },\n#                     \"cost\": 20,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.2\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n#  \"commands\": [\n#    \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 cost 30\",\n#    \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest\",\n#    \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest keychain ciscoiosxr\"\n#     ]\n#\n#  \"after\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"ciscoiosxr\"\n#                         }\n#                     },\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.2\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n#\n# -----------\n# After state\n# -----------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:10:39.827 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/0\n#    cost 30\n#    authentication message-digest keychain ciscoiosxr\n#   !\n#  !\n# !\n# router ospf ipv4\n# !\n\n- name: Override existing OSPF interfaces configuration\n  cisco.iosxr.iosxr_ospf_interfaces:\n    config:\n      - name: GigabitEthernet0/0/0/1\n        type: gigabitethernet\n        address_family:\n          - afi: ipv4\n            processes:\n              - process_id: \"LAB1\"\n                area:\n                  area_id: 0.0.0.3\n            cost: 10\n            authentication:\n              message_digest:\n                keychain: iosxr\n    state: overridden\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"ciscoiosxr\"\n#                         }\n#                     },\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.2\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n#  \"commands\": [\n#         \"no router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0\",\n#         \"no router ospfv3 LAB3 area 0.0.0.2 interface GigabitEthernet 0/0/0/0\",\n#         \"router ospf LAB1 area 0.0.0.3 interface GigabitEthernet 0/0/0/1 cost 10\",\n#         \"router ospf LAB1 area 0.0.0.3 interface GigabitEthernet 0/0/0/1 authentication message-digest\",\n#         \"router ospf LAB1 area 0.0.0.3 interface GigabitEthernet 0/0/0/1 authentication message-digest keychain iosxr\"\n#     ]\n#\n#  \"after\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"iosxr\"\n#                         }\n#                     },\n#                     \"cost\": 10,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB1\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/1\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n#\n# -----------\n# After state\n# -----------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:28:15.025 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/1\n#    cost 10\n#    authentication message-digest keychain iosxr\n#   !\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#  !\n# !\n# router ospf ipv4\n# !\n\n# Using deleted\n#\n# ------------\n# Before state\n# ------------\n#\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:28:15.025 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/1\n#    cost 10\n#    authentication message-digest keychain iosxr\n#   !\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#  !\n# !\n# router ospf ipv4\n# !\n\n- name: Deleted existing OSPF interfaces from the device\n  cisco.iosxr.iosxr_ospf_interfaces:\n    config:\n      - name: GigabitEthernet0/0/0/1\n        type: gigabitethernet\n    state: deleted\n\n#\n#\n# ------------------------\n# Module Execution Result\n# ------------------------\n#\n#  \"before\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"iosxr\"\n#                         }\n#                     },\n#                     \"cost\": 10,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB1\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/1\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ],\n#\n#  \"commands\": [\n#         \"no router ospf LAB1 area 0.0.0.3 interface GigabitEthernet 0/0/0/1\"\n#     ]\n#\n#  \"after\": []\n#\n#\n# -----------\n# After state\n# -----------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:34:38.319 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#  !\n# !\n# router ospf ipv4\n# !\n\n# Using parsed\n# parsed.cfg\n# ------------\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/0\n#    cost 20\n#    authentication message-digest keychain cisco\n#   !\n#  !\n# !\n# router ospf ipv4\n# !\n- name: Parsed the device configuration to get output commands\n  cisco.iosxr.iosxr_ospf_interfaces:\n    running_config: \"{{ lookup('file', './parsed.cfg') }}\"\n    state: parsed\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#\n# \"parsed\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"cisco\"\n#                         }\n#                     },\n#                     \"cost\": 20,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n# Using rendered\n#\n#\n- name: Render the commands for provided  configuration\n  cisco.iosxr.iosxr_ospf_interfaces:\n    config:\n      - name: GigabitEthernet0/0/0/0\n        type: gigabitethernet\n        address_family:\n          - afi: ipv4\n            processes:\n             - process_id: \"LAB3\"\n               area:\n                 area_id: 0.0.0.3\n            cost: 20\n            authentication:\n              message_digest:\n                keychain: cisco\n          - afi: ipv6\n            processes:\n             - process_id: \"LAB3\"\n               area:\n                 area_id: 0.0.0.2\n            cost: 30\n    state: rendered\n\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#\n# \"rendered\": [\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 cost 20\",\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest\",\n#        \"router ospf LAB3 area 0.0.0.3 interface GigabitEthernet 0/0/0/0 authentication message-digest keychain cisco\",\n#        \"router ospfv3 LAB3 area 0.0.0.2 interface GigabitEthernet 0/0/0/0 cost 30\"\n#     ]\n\n\n# Using gathered\n#\n# Before state:\n# -------------\n#\n# RP/0/0/CPU0:an-iosxr-02#show running-config router ospf\n# Thu Oct 23 06:50:38.743 UTC\n# router ospf LAB\n#  area 0.0.0.0\n#  !\n#  area 0.0.0.9\n#  !\n# !\n# router ospf LAB1\n#  area 0.0.0.1\n#  !\n#  area 0.0.0.3\n#  !\n# !\n# router ospf LAB3\n#  area 0.0.0.3\n#   interface GigabitEthernet0/0/0/0\n#    cost 20\n#    authentication message-digest keychain cisco\n#   !\n#  !\n# !\n# router ospf ipv4\n# !\n\n\n- name: Gather ospf_interfaces routes configuration\n  cisco.iosxr.iosxr_ospf_interfaces:\n    state: gathered\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#    \"gathered\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"message_digest\": {\n#                             \"keychain\": \"cisco\"\n#                         }\n#                     },\n#                     \"cost\": 20,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.3\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"cost\": 30,\n#                     \"processes\": [\n#                         {\n#                             \"area\": {\n#                                 \"area_id\": \"0.0.0.2\"\n#                             },\n#                             \"process_id\": \"LAB3\"\n#                         }\n#                     ]\n#                 }\n#             ],\n#             \"name\": \"GigabitEthernet0/0/0/0\",\n#             \"type\": \"gigabitethernet\"\n#         }\n#     ]\n#\n",
+        "metadata": null,
+        "return": null
+    }
+}

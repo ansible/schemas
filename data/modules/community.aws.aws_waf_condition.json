@@ -1,0 +1,523 @@
+{
+    "community.aws.aws_waf_condition": {
+        "doc": {
+            "author": [
+                "Will Thames (@willthames)",
+                "Mike Mochan (@mmochan)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Read the AWS documentation for WAF U(https://aws.amazon.com/documentation/waf/)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_waf_condition.py",
+            "has_action": false,
+            "module": "aws_waf_condition",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "description": [
+                        "A list of the filters against which to match.",
+                        "For I(type=byte), valid keys are I(field_to_match), I(position), I(header), I(transformation) and I(target_string).",
+                        "For I(type=geo), the only valid key is I(country).",
+                        "For I(type=ip), the only valid key is I(ip_address).",
+                        "For I(type=regex), valid keys are I(field_to_match), I(transformation) and I(regex_pattern).",
+                        "For I(type=size), valid keys are I(field_to_match), I(transformation), I(comparison) and I(size).",
+                        "For I(type=sql), valid keys are I(field_to_match) and I(transformation).",
+                        "For I(type=xss), valid keys are I(field_to_match) and I(transformation).",
+                        "Required when I(state=present)."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "comparison": {
+                            "choices": [
+                                "EQ",
+                                "NE",
+                                "LE",
+                                "LT",
+                                "GE",
+                                "GT"
+                            ],
+                            "description": [
+                                "What type of comparison to perform.",
+                                "Only valid key when I(type=size)."
+                            ],
+                            "type": "str"
+                        },
+                        "country": {
+                            "description": [
+                                "Value of geo constraint (typically a two letter country code).",
+                                "The only valid key when I(type=geo)."
+                            ],
+                            "type": "str"
+                        },
+                        "field_to_match": {
+                            "choices": [
+                                "uri",
+                                "query_string",
+                                "header",
+                                "method",
+                                "body"
+                            ],
+                            "description": [
+                                "The field upon which to perform the match.",
+                                "Valid when I(type=byte), I(type=regex), I(type=sql) or I(type=xss)."
+                            ],
+                            "type": "str"
+                        },
+                        "header": {
+                            "description": [
+                                "Which specific header should be matched.",
+                                "Required when I(field_to_match=header).",
+                                "Valid when I(type=byte)."
+                            ],
+                            "type": "str"
+                        },
+                        "ip_address": {
+                            "description": [
+                                "An IP Address or CIDR to match.",
+                                "The only valid key when I(type=ip)."
+                            ],
+                            "type": "str"
+                        },
+                        "position": {
+                            "choices": [
+                                "exactly",
+                                "starts_with",
+                                "ends_with",
+                                "contains",
+                                "contains_word"
+                            ],
+                            "description": [
+                                "Where in the field the match needs to occur.",
+                                "Only valid when I(type=byte)."
+                            ],
+                            "type": "str"
+                        },
+                        "regex_pattern": {
+                            "description": [
+                                "A dict describing the regular expressions used to perform the match.",
+                                "Only valid when I(type=regex)."
+                            ],
+                            "suboptions": {
+                                "name": {
+                                    "description": "A name to describe the set of patterns.",
+                                    "type": "str"
+                                },
+                                "regex_strings": {
+                                    "description": "A list of regular expressions to match.",
+                                    "elements": "str",
+                                    "type": "list"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "size": {
+                            "description": [
+                                "The size of the field (in bytes).",
+                                "Only valid key when I(type=size)."
+                            ],
+                            "type": "int"
+                        },
+                        "target_string": {
+                            "description": [
+                                "The string to search for.",
+                                "May be up to 50 bytes.",
+                                "Valid when I(type=byte)."
+                            ],
+                            "type": "str"
+                        },
+                        "transformation": {
+                            "choices": [
+                                "none",
+                                "compress_white_space",
+                                "html_entity_decode",
+                                "lowercase",
+                                "cmd_line",
+                                "url_decode"
+                            ],
+                            "description": [
+                                "A transform to apply on the field prior to performing the match.",
+                                "Valid when I(type=byte), I(type=regex), I(type=sql) or I(type=xss)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "name": {
+                    "description": "Name of the Web Application Firewall condition to manage.",
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_filters": {
+                    "default": false,
+                    "description": [
+                        "Whether to remove existing filters from a condition if not passed in I(filters)."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "Whether the condition should be C(present) or C(absent).",
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "byte",
+                        "geo",
+                        "ip",
+                        "regex",
+                        "size",
+                        "sql",
+                        "xss"
+                    ],
+                    "description": "The type of matching to perform.",
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "waf_regional": {
+                    "default": false,
+                    "description": "Whether to use waf-regional module.",
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Create and delete WAF Conditions",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n  - name: create WAF byte condition\n    community.aws.aws_waf_condition:\n      name: my_byte_condition\n      filters:\n      - field_to_match: header\n        position: STARTS_WITH\n        target_string: Hello\n        header: Content-type\n      type: byte\n\n  - name: create WAF geo condition\n    community.aws.aws_waf_condition:\n      name: my_geo_condition\n      filters:\n        - country: US\n        - country: AU\n        - country: AT\n      type: geo\n\n  - name: create IP address condition\n    community.aws.aws_waf_condition:\n      name: \"{{ resource_prefix }}_ip_condition\"\n      filters:\n        - ip_address: \"10.0.0.0/8\"\n        - ip_address: \"192.168.0.0/24\"\n      type: ip\n\n  - name: create WAF regex condition\n    community.aws.aws_waf_condition:\n      name: my_regex_condition\n      filters:\n        - field_to_match: query_string\n          regex_pattern:\n            name: greetings\n            regex_strings:\n              - '[hH]ello'\n              - '^Hi there'\n              - '.*Good Day to You'\n      type: regex\n\n  - name: create WAF size condition\n    community.aws.aws_waf_condition:\n      name: my_size_condition\n      filters:\n        - field_to_match: query_string\n          size: 300\n          comparison: GT\n      type: size\n\n  - name: create WAF sql injection condition\n    community.aws.aws_waf_condition:\n      name: my_sql_condition\n      filters:\n        - field_to_match: query_string\n          transformation: url_decode\n      type: sql\n\n  - name: create WAF xss condition\n    community.aws.aws_waf_condition:\n      name: my_xss_condition\n      filters:\n        - field_to_match: query_string\n          transformation: url_decode\n      type: xss\n\n",
+        "metadata": null,
+        "return": {
+            "condition": {
+                "contains": {
+                    "byte_match_set_id": {
+                        "description": "ID for byte match set.",
+                        "returned": "always",
+                        "sample": "c4882c96-837b-44a2-a762-4ea87dbf812b",
+                        "type": "str"
+                    },
+                    "byte_match_tuples": {
+                        "contains": {
+                            "field_to_match": {
+                                "contains": {
+                                    "data": {
+                                        "description": "Which specific header (if type is header).",
+                                        "sample": "content-type",
+                                        "type": "str"
+                                    },
+                                    "type": {
+                                        "description": "Type of field",
+                                        "sample": "HEADER",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Field to match.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "positional_constraint": {
+                                "description": "Position in the field to match.",
+                                "sample": "STARTS_WITH",
+                                "type": "str"
+                            },
+                            "target_string": {
+                                "description": "String to look for.",
+                                "sample": "Hello",
+                                "type": "str"
+                            },
+                            "text_transformation": {
+                                "description": "Transformation to apply to the field before matching.",
+                                "sample": "NONE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of byte match tuples.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "condition_id": {
+                        "description": "Type-agnostic ID for the condition.",
+                        "returned": "when state is present",
+                        "sample": "dd74b1ff-8c06-4a4f-897a-6b23605de413",
+                        "type": "str"
+                    },
+                    "geo_match_constraints": {
+                        "contains": {
+                            "type": {
+                                "description": "Type of geo constraint.",
+                                "sample": "Country",
+                                "type": "str"
+                            },
+                            "value": {
+                                "description": "Value of geo constraint (typically a country code).",
+                                "sample": "AT",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of geographical constraints.",
+                        "returned": "when type is geo and state is present",
+                        "type": "complex"
+                    },
+                    "geo_match_set_id": {
+                        "description": "ID of the geo match set.",
+                        "returned": "when type is geo and state is present",
+                        "sample": "dd74b1ff-8c06-4a4f-897a-6b23605de413",
+                        "type": "str"
+                    },
+                    "ip_set_descriptors": {
+                        "contains": {
+                            "type": {
+                                "description": "Type of IP address (IPV4 or IPV6).",
+                                "returned": "always",
+                                "sample": "IPV4",
+                                "type": "str"
+                            },
+                            "value": {
+                                "description": "IP address.",
+                                "returned": "always",
+                                "sample": "10.0.0.0/8",
+                                "type": "str"
+                            }
+                        },
+                        "description": "list of IP address filters",
+                        "returned": "when type is ip and state is present",
+                        "type": "complex"
+                    },
+                    "ip_set_id": {
+                        "description": "ID of condition.",
+                        "returned": "when type is ip and state is present",
+                        "sample": "78ad334a-3535-4036-85e6-8e11e745217b",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "Name of condition.",
+                        "returned": "when state is present",
+                        "sample": "my_waf_condition",
+                        "type": "str"
+                    },
+                    "regex_match_set_id": {
+                        "description": "ID of the regex match set.",
+                        "returned": "when type is regex and state is present",
+                        "sample": "5ea3f6a8-3cd3-488b-b637-17b79ce7089c",
+                        "type": "str"
+                    },
+                    "regex_match_tuples": {
+                        "contains": {
+                            "field_to_match": {
+                                "contains": {
+                                    "type": {
+                                        "description": "The field name.",
+                                        "returned": "when type is regex and state is present",
+                                        "sample": "QUERY_STRING",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Field on which the regex match is applied.",
+                                "type": "complex"
+                            },
+                            "regex_pattern_set_id": {
+                                "description": "ID of the regex pattern.",
+                                "sample": "6fdf7f2d-9091-445c-aef2-98f3c051ac9e",
+                                "type": "str"
+                            },
+                            "text_transformation": {
+                                "description": "transformation applied to the text before matching",
+                                "sample": "NONE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of regex matches.",
+                        "returned": "when type is regex and state is present",
+                        "type": "complex"
+                    },
+                    "size_constraint_set_id": {
+                        "description": "ID of the size constraint set.",
+                        "returned": "when type is size and state is present",
+                        "sample": "de84b4b3-578b-447e-a9a0-0db35c995656",
+                        "type": "str"
+                    },
+                    "size_constraints": {
+                        "contains": {
+                            "comparison_operator": {
+                                "description": "Comparison operator to apply.",
+                                "sample": "GT",
+                                "type": "str"
+                            },
+                            "field_to_match": {
+                                "contains": {
+                                    "type": {
+                                        "description": "Field name.",
+                                        "sample": "QUERY_STRING",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Field on which the size constraint is applied.",
+                                "type": "complex"
+                            },
+                            "size": {
+                                "description": "Size to compare against the field.",
+                                "sample": 300,
+                                "type": "int"
+                            },
+                            "text_transformation": {
+                                "description": "Transformation applied to the text before matching.",
+                                "sample": "NONE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of size constraints to apply.",
+                        "returned": "when type is size and state is present",
+                        "type": "complex"
+                    },
+                    "sql_injection_match_set_id": {
+                        "description": "ID of the SQL injection match set.",
+                        "returned": "when type is sql and state is present",
+                        "sample": "de84b4b3-578b-447e-a9a0-0db35c995656",
+                        "type": "str"
+                    },
+                    "sql_injection_match_tuples": {
+                        "contains": {
+                            "field_to_match": {
+                                "contains": {
+                                    "type": {
+                                        "description": "Field name.",
+                                        "sample": "QUERY_STRING",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Field on which the SQL injection match is applied.",
+                                "type": "complex"
+                            },
+                            "text_transformation": {
+                                "description": "Transformation applied to the text before matching.",
+                                "sample": "URL_DECODE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of SQL injection match sets.",
+                        "returned": "when type is sql and state is present",
+                        "type": "complex"
+                    },
+                    "xss_match_set_id": {
+                        "description": "ID of the XSS match set.",
+                        "returned": "when type is xss and state is present",
+                        "sample": "de84b4b3-578b-447e-a9a0-0db35c995656",
+                        "type": "str"
+                    },
+                    "xss_match_tuples": {
+                        "contains": {
+                            "field_to_match": {
+                                "contains": {
+                                    "type": {
+                                        "description": "Field name",
+                                        "sample": "QUERY_STRING",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Field on which the XSS match is applied.",
+                                "type": "complex"
+                            },
+                            "text_transformation": {
+                                "description": "transformation applied to the text before matching.",
+                                "sample": "URL_DECODE",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of XSS match sets.",
+                        "returned": "when type is xss and state is present",
+                        "type": "complex"
+                    }
+                },
+                "description": "Condition returned by operation.",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

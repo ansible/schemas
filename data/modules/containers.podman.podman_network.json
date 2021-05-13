@@ -1,0 +1,183 @@
+{
+    "containers.podman.podman_network": {
+        "doc": {
+            "author": [
+                "Sagi Shnaidman (@sshnaidm)"
+            ],
+            "collection": "containers.podman",
+            "description": [
+                "Manage podman networks with podman network command."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/containers/podman/plugins/modules/podman_network.py",
+            "has_action": false,
+            "module": "podman_network",
+            "notes": [],
+            "options": {
+                "debug": {
+                    "default": false,
+                    "description": [
+                        "Return additional information which can be helpful for investigations."
+                    ],
+                    "type": "bool"
+                },
+                "disable_dns": {
+                    "description": [
+                        "disable dns plugin (default \"false\")"
+                    ],
+                    "type": "bool"
+                },
+                "driver": {
+                    "description": [
+                        "Driver to manage the network (default \"bridge\")"
+                    ],
+                    "type": "str"
+                },
+                "executable": {
+                    "default": "podman",
+                    "description": [
+                        "Path to C(podman) executable if it is not in the C($PATH) on the machine running C(podman)"
+                    ],
+                    "type": "str"
+                },
+                "gateway": {
+                    "description": [
+                        "IPv4 or IPv6 gateway for the subnet"
+                    ],
+                    "type": "str"
+                },
+                "internal": {
+                    "description": [
+                        "Restrict external access from this network (default \"false\")"
+                    ],
+                    "type": "bool"
+                },
+                "ip_range": {
+                    "description": [
+                        "Allocate container IP from range"
+                    ],
+                    "type": "str"
+                },
+                "ipv6": {
+                    "description": [
+                        "Enable IPv6 (Dual Stack) networking. You must pass a IPv6 subnet. The subnet option must be used with the ipv6 option."
+                    ],
+                    "type": "bool"
+                },
+                "macvlan": {
+                    "description": [
+                        "Create a Macvlan connection based on this device"
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the network"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "opt": {
+                    "description": [
+                        "Add network options. Currently 'vlan' and 'mtu' are supported."
+                    ],
+                    "suboptions": {
+                        "mtu": {
+                            "description": [
+                                "MTU size for bridge network interface."
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "vlan": {
+                            "description": [
+                                "VLAN tag for bridge which enables vlan_filtering."
+                            ],
+                            "required": false,
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "recreate": {
+                    "default": false,
+                    "description": [
+                        "Recreate network even if exists."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of network, default 'present'"
+                    ],
+                    "type": "str"
+                },
+                "subnet": {
+                    "description": [
+                        "Subnet in CIDR format"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "podman"
+            ],
+            "short_description": "Manage podman networks",
+            "version_added": "1.0.0",
+            "version_added_collection": "containers.podman"
+        },
+        "examples": "\n- name: Create a podman network\n  containers.podman.podman_network:\n    name: podman_network\n  become: true\n\n- name: Create internal podman network\n  containers.podman.podman_network:\n    name: podman_internal\n    internal: true\n    ip_range: 192.168.22.128/25\n    subnet: 192.168.22.0/24\n    gateway: 192.168.22.1\n  become: true\n",
+        "metadata": null,
+        "return": {
+            "network": {
+                "description": "Facts from created or updated networks",
+                "returned": "always",
+                "sample": [
+                    {
+                        "cniVersion": "0.4.0",
+                        "name": "podman",
+                        "plugins": [
+                            {
+                                "bridge": "cni-podman0",
+                                "ipMasq": true,
+                                "ipam": {
+                                    "ranges": [
+                                        [
+                                            {
+                                                "gateway": "10.88.0.1",
+                                                "subnet": "10.88.0.0/16"
+                                            }
+                                        ]
+                                    ],
+                                    "routes": [
+                                        {
+                                            "dst": "0.0.0.0/0"
+                                        }
+                                    ],
+                                    "type": "host-local"
+                                },
+                                "isGateway": true,
+                                "type": "bridge"
+                            },
+                            {
+                                "capabilities": {
+                                    "portMappings": true
+                                },
+                                "type": "portmap"
+                            },
+                            {
+                                "backend": "iptables",
+                                "type": "firewall"
+                            }
+                        ]
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

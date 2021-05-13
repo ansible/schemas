@@ -1,0 +1,200 @@
+{
+    "community.google.gce_net": {
+        "doc": {
+            "author": "Eric Johnson (@erjohnso) <erjohnso@google.com>, Tom Melendez (@supertom) <supertom@google.com>",
+            "collection": "community.google",
+            "description": [
+                "This module can create and destroy Google Compute Engine networks and firewall rules U(https://cloud.google.com/compute/docs/networking). The I(name) parameter is reserved for referencing a network while the I(fwname) parameter is used to reference firewall rules. IPv4 Address ranges must be specified using the CIDR U(http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) format. Full install/configuration instructions for the gce* modules can be found in the comments of ansible/test/gce_tests.py."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/google/plugins/modules/gce_net.py",
+            "has_action": false,
+            "module": "gce_net",
+            "options": {
+                "allowed": {
+                    "description": [
+                        "the protocol:ports to allow (I(tcp:80) or I(tcp:80,443) or I(tcp:80-800;udp:1-25)) this parameter is mandatory when creating or updating a firewall rule"
+                    ],
+                    "type": "str"
+                },
+                "credentials_file": {
+                    "description": [
+                        "path to the JSON file associated with the service account email"
+                    ],
+                    "type": "path"
+                },
+                "fwname": {
+                    "description": [
+                        "name of the firewall rule"
+                    ],
+                    "type": "str"
+                },
+                "ipv4_range": {
+                    "description": [
+                        "the IPv4 address range in CIDR notation for the network this parameter is not mandatory when you specified existing network in name parameter, but when you create new network, this parameter is mandatory"
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "choices": [
+                        "legacy",
+                        "auto",
+                        "custom"
+                    ],
+                    "default": "legacy",
+                    "description": [
+                        "network mode for Google Cloud C(legacy) indicates a network with an IP address range; C(auto) automatically generates subnetworks in different regions; C(custom) uses networks to group subnets of user specified IP address ranges https://cloud.google.com/compute/docs/networking#network_types"
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "name of the network"
+                    ],
+                    "type": "str"
+                },
+                "pem_file": {
+                    "description": [
+                        "path to the pem file associated with the service account email This option is deprecated. Use C(credentials_file)."
+                    ],
+                    "type": "path"
+                },
+                "project_id": {
+                    "description": [
+                        "your GCE project ID"
+                    ],
+                    "type": "str"
+                },
+                "service_account_email": {
+                    "description": [
+                        "service account email"
+                    ],
+                    "type": "str"
+                },
+                "src_range": {
+                    "default": [],
+                    "description": [
+                        "the source IPv4 address range in CIDR notation"
+                    ],
+                    "type": "list"
+                },
+                "src_tags": {
+                    "default": [],
+                    "description": [
+                        "the source instance tags for creating a firewall rule"
+                    ],
+                    "type": "list"
+                },
+                "state": {
+                    "default": "present",
+                    "description": [
+                        "desired state of the network or firewall",
+                        "Available choices are: C(active), C(present), C(absent), C(deleted)."
+                    ],
+                    "type": "str"
+                },
+                "subnet_desc": {
+                    "description": [
+                        "description of subnet to create"
+                    ],
+                    "type": "str"
+                },
+                "subnet_name": {
+                    "description": [
+                        "name of subnet to create"
+                    ],
+                    "type": "str"
+                },
+                "subnet_region": {
+                    "description": [
+                        "region of subnet to create"
+                    ],
+                    "type": "str"
+                },
+                "target_tags": {
+                    "default": [],
+                    "description": [
+                        "the target instance tags for creating a firewall rule"
+                    ],
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "apache-libcloud >= 0.13.3, >= 0.17.0 if using JSON credentials"
+            ],
+            "short_description": "create/destroy GCE networks and firewall rules"
+        },
+        "examples": "\n# Create a 'legacy' Network\n- name: Create Legacy Network\n  community.google.gce_net:\n    name: legacynet\n    ipv4_range: '10.24.17.0/24'\n    mode: legacy\n    state: present\n\n# Create an 'auto' Network\n- name: Create Auto Network\n  community.google.gce_net:\n    name: autonet\n    mode: auto\n    state: present\n\n# Create a 'custom' Network\n- name: Create Custom Network\n  community.google.gce_net:\n    name: customnet\n    mode: custom\n    subnet_name: \"customsubnet\"\n    subnet_region: us-east1\n    ipv4_range: '10.240.16.0/24'\n    state: \"present\"\n\n# Create Firewall Rule with Source Tags\n- name: Create Firewall Rule w/Source Tags\n  community.google.gce_net:\n    name: default\n    fwname: \"my-firewall-rule\"\n    allowed: tcp:80\n    state: \"present\"\n    src_tags: \"foo,bar\"\n\n# Create Firewall Rule with Source Range\n- name: Create Firewall Rule w/Source Range\n  community.google.gce_net:\n    name: default\n    fwname: \"my-firewall-rule\"\n    allowed: tcp:80\n    state: \"present\"\n    src_range: ['10.1.1.1/32']\n\n# Create Custom Subnetwork\n- name: Create Custom Subnetwork\n  community.google.gce_net:\n    name: privatenet\n    mode: custom\n    subnet_name: subnet_example\n    subnet_region: us-central1\n    ipv4_range: '10.0.0.0/16'\n",
+        "metadata": null,
+        "return": {
+            "allowed": {
+                "description": "Rules (ports and protocols) specified by this firewall rule.",
+                "returned": "When specified",
+                "sample": "tcp:80;icmp",
+                "type": "str"
+            },
+            "fwname": {
+                "description": "Name of the firewall rule.",
+                "returned": "When specified",
+                "sample": "my-fwname",
+                "type": "str"
+            },
+            "ipv4_range": {
+                "description": "IPv4 range of the specified network or subnetwork.",
+                "returned": "when specified or when a subnetwork is created",
+                "sample": "10.0.0.0/16",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the network.",
+                "returned": "always",
+                "sample": "my-network",
+                "type": "str"
+            },
+            "src_range": {
+                "description": "IP address blocks a firewall rule applies to.",
+                "returned": "when specified",
+                "sample": [
+                    "10.1.1.12/8"
+                ],
+                "type": "list"
+            },
+            "src_tags": {
+                "description": "Instance Tags firewall rule applies to.",
+                "returned": "when specified while creating a firewall rule",
+                "sample": [
+                    "foo",
+                    "bar"
+                ],
+                "type": "list"
+            },
+            "state": {
+                "description": "State of the item operated on.",
+                "returned": "always",
+                "sample": "present",
+                "type": "str"
+            },
+            "subnet_name": {
+                "description": "Name of the subnetwork.",
+                "returned": "when specified or when a subnetwork is created",
+                "sample": "my-subnetwork",
+                "type": "str"
+            },
+            "subnet_region": {
+                "description": "Region of the specified subnet.",
+                "returned": "when specified or when a subnetwork is created",
+                "sample": "us-east1",
+                "type": "str"
+            },
+            "target_tags": {
+                "description": "Instance Tags with these tags receive traffic allowed by firewall rule.",
+                "returned": "when specified while creating a firewall rule",
+                "sample": [
+                    "foo",
+                    "bar"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

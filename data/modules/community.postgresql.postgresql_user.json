@@ -1,0 +1,273 @@
+{
+    "community.postgresql.postgresql_user": {
+        "doc": {
+            "author": [
+                "Ansible Core Team"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Creates, alters, or removes a user (role) from a PostgreSQL server instance (\"cluster\" in PostgreSQL terminology) and, optionally, grants the user access to an existing database or tables.",
+                "A user is a role with login privilege.",
+                "You can also use it to grant or revoke user's privileges in a particular database.",
+                "You cannot remove a user while it still has any privileges granted to it in any database.",
+                "Set I(fail_on_user) to C(no) to make the module ignore failures when trying to remove a user. In this case, the module reports if changes happened as usual and separately reports whether the user has been removed or not."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_user.py",
+            "has_action": false,
+            "module": "postgresql_user",
+            "notes": [
+                "The module creates a user (role) with login privilege by default. Use C(NOLOGIN) I(role_attr_flags) to change this behaviour.",
+                "If you specify C(PUBLIC) as the user (role), then the privilege changes apply to all users (roles). You may not specify password or role_attr_flags when the C(PUBLIC) user is specified.",
+                "SCRAM-SHA-256-hashed passwords (SASL Authentication) require PostgreSQL version 10 or newer. On the previous versions the whole hashed string is used as a password.",
+                "Working with SCRAM-SHA-256-hashed passwords, be sure you use the I(environment:) variable C(PGOPTIONS: \"-c password_encryption=scram-sha-256\") (see the provided example).",
+                "On some systems (such as AWS RDS), C(pg_authid) is not accessible, thus, the module cannot compare the current and desired C(password). In this case, the module assumes that the passwords are different and changes it reporting that the state has been changed. To skip all password related checks for existing users, use I(no_password_changes=yes).",
+                "Supports ``check_mode``.",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, verifies that the server's certificate is signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "comment": {
+                    "description": [
+                        "Adds a comment on the user (equivalent to the C(COMMENT ON ROLE) statement)."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                },
+                "conn_limit": {
+                    "description": [
+                        "Specifies the user (role) connection limit."
+                    ],
+                    "type": "int"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect to and where user's permissions are granted."
+                    ],
+                    "type": "str"
+                },
+                "encrypted": {
+                    "default": true,
+                    "description": [
+                        "Whether the password is stored hashed in the database.",
+                        "You can specify an unhashed password, and PostgreSQL ensures the stored password is hashed when I(encrypted=yes) is set. If you specify a hashed password, the module uses it as-is, regardless of the setting of I(encrypted).",
+                        "Note: Postgresql 10 and newer does not support unhashed passwords.",
+                        "Previous to Ansible 2.6, this was C(no) by default."
+                    ],
+                    "type": "bool"
+                },
+                "expires": {
+                    "description": [
+                        "The date at which the user's password is to expire.",
+                        "If set to C('infinity'), user's password never expires.",
+                        "Note that this value must be a valid SQL date and time type."
+                    ],
+                    "type": "str"
+                },
+                "fail_on_user": {
+                    "aliases": [
+                        "fail_on_role"
+                    ],
+                    "default": true,
+                    "description": [
+                        "If C(yes), fails when the user (role) cannot be removed. Otherwise just log and continue."
+                    ],
+                    "type": "bool"
+                },
+                "groups": {
+                    "description": [
+                        "The list of groups (roles) that you want to grant to the user."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "Name of the user (role) to add or remove."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "no_password_changes": {
+                    "default": false,
+                    "description": [
+                        "If C(yes), does not inspect the database for password changes. If the user already exists, skips all password related checks. Useful when C(pg_authid) is not accessible (such as in AWS RDS). Otherwise, makes password changes as necessary."
+                    ],
+                    "type": "bool"
+                },
+                "password": {
+                    "description": [
+                        "Set the user's password, before 1.4 this was required.",
+                        "Password can be passed unhashed or hashed (MD5-hashed).",
+                        "An unhashed password is automatically hashed when saved into the database if I(encrypted) is set, otherwise it is saved in plain text format.",
+                        "When passing an MD5-hashed password, you must generate it with the format C('str[\"md5\"] + md5[ password + username ]'), resulting in a total of 35 characters. An easy way to do this is C(echo \"md5`echo -n 'verysecretpasswordJOE' | md5sum | awk '{print $1}'`\").",
+                        "Note that if the provided password string is already in MD5-hashed format, then it is used as-is, regardless of I(encrypted) option."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "priv": {
+                    "description": [
+                        "Slash-separated PostgreSQL privileges string: C(priv1/priv2), where you can define the user's privileges for the database ( allowed options - 'CREATE', 'CONNECT', 'TEMPORARY', 'TEMP', 'ALL'. For example C(CONNECT) ) or for table ( allowed options - 'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER', 'ALL'. For example C(table:SELECT) ). Mixed example of this string: C(CONNECT/CREATE/table1:SELECT/table2:INSERT)."
+                    ],
+                    "type": "str"
+                },
+                "role_attr_flags": {
+                    "choices": [
+                        "[NO]SUPERUSER",
+                        "[NO]CREATEROLE",
+                        "[NO]CREATEDB",
+                        "[NO]INHERIT",
+                        "[NO]LOGIN",
+                        "[NO]REPLICATION",
+                        "[NO]BYPASSRLS"
+                    ],
+                    "description": [
+                        "PostgreSQL user attributes string in the format: CREATEDB,CREATEROLE,SUPERUSER.",
+                        "Note that '[NO]CREATEUSER' is deprecated.",
+                        "To create a simple role for using it like a group, use C(NOLOGIN) flag."
+                    ],
+                    "type": "str"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session role after connecting.",
+                        "The specified session role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session role were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines how an SSL session is negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The user (role) state."
+                    ],
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), checks whether values of options I(name), I(password), I(privs), I(expires), I(role_attr_flags), I(groups), I(comment), I(session_role) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections through the options are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.postgresql.postgresql_privs"
+                },
+                {
+                    "module": "community.postgresql.postgresql_membership"
+                },
+                {
+                    "module": "community.postgresql.postgresql_owner"
+                },
+                {
+                    "description": "Complete reference of the PostgreSQL database roles documentation.",
+                    "link": "https://www.postgresql.org/docs/current/user-manag.html",
+                    "name": "PostgreSQL database roles"
+                },
+                {
+                    "description": "Complete reference of the PostgreSQL SASL Authentication.",
+                    "link": "https://www.postgresql.org/docs/current/sasl-authentication.html",
+                    "name": "PostgreSQL SASL Authentication"
+                }
+            ],
+            "short_description": "Create, alter, or remove a user (role) from a PostgreSQL server instance"
+        },
+        "examples": "\n- name: Connect to acme database, create django user, and grant access to database and products table\n  community.postgresql.postgresql_user:\n    db: acme\n    name: django\n    password: ceec4eif7ya\n    priv: \"CONNECT/products:ALL\"\n    expires: \"Jan 31 2020\"\n\n- name: Add a comment on django user\n  community.postgresql.postgresql_user:\n    db: acme\n    name: django\n    comment: This is a test user\n\n# Connect to default database, create rails user, set its password (MD5-hashed),\n# and grant privilege to create other databases and demote rails from super user status if user exists\n- name: Create rails user, set MD5-hashed password, grant privs\n  community.postgresql.postgresql_user:\n    name: rails\n    password: md59543f1d82624df2b31672ec0f7050460\n    role_attr_flags: CREATEDB,NOSUPERUSER\n\n- name: Connect to acme database and remove test user privileges from there\n  community.postgresql.postgresql_user:\n    db: acme\n    name: test\n    priv: \"ALL/products:ALL\"\n    state: absent\n    fail_on_user: no\n\n- name: Connect to test database, remove test user from cluster\n  community.postgresql.postgresql_user:\n    db: test\n    name: test\n    priv: ALL\n    state: absent\n\n- name: Connect to acme database and set user's password with no expire date\n  community.postgresql.postgresql_user:\n    db: acme\n    name: django\n    password: mysupersecretword\n    priv: \"CONNECT/products:ALL\"\n    expires: infinity\n\n# Example privileges string format\n# INSERT,UPDATE/table:SELECT/anothertable:ALL\n\n- name: Connect to test database and remove an existing user's password\n  community.postgresql.postgresql_user:\n    db: test\n    user: test\n    password: \"\"\n\n- name: Create user test and grant group user_ro and user_rw to it\n  community.postgresql.postgresql_user:\n    name: test\n    groups:\n    - user_ro\n    - user_rw\n\n# Create user with a cleartext password if it does not exist or update its password.\n# The password will be encrypted with SCRAM algorithm (available since PostgreSQL 10)\n- name: Create appclient user with SCRAM-hashed password\n  community.postgresql.postgresql_user:\n    name: appclient\n    password: \"secret123\"\n  environment:\n    PGOPTIONS: \"-c password_encryption=scram-sha-256\"\n",
+        "metadata": null,
+        "return": {
+            "queries": {
+                "description": "List of executed queries.",
+                "returned": "always",
+                "sample": [
+                    "CREATE USER \"alice\"",
+                    "GRANT CONNECT ON DATABASE \"acme\" TO \"alice\""
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

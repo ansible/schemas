@@ -1,0 +1,155 @@
+{
+    "community.general.apache2_mod_proxy": {
+        "doc": {
+            "author": "Olivier Boukili (@oboukili)",
+            "collection": "community.general",
+            "description": [
+                "Set and/or get members' attributes of an Apache httpd 2.4 mod_proxy balancer pool, using HTTP POST and GET requests. The httpd mod_proxy balancer-member status page has to be enabled and accessible, as this module relies on parsing this page. This module supports ansible check_mode, and requires BeautifulSoup python module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/apache2_mod_proxy.py",
+            "has_action": false,
+            "module": "apache2_mod_proxy",
+            "options": {
+                "balancer_url_suffix": {
+                    "default": "/balancer-manager/",
+                    "description": [
+                        "Suffix of the balancer pool url required to access the balancer pool status page (e.g. balancer_vhost[:port]/balancer_url_suffix)."
+                    ],
+                    "type": "str"
+                },
+                "balancer_vhost": {
+                    "description": [
+                        "(ipv4|ipv6|fqdn):port of the Apache httpd 2.4 mod_proxy balancer pool."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "member_host": {
+                    "description": [
+                        "(ipv4|ipv6|fqdn) of the balancer member to get or to set attributes to. Port number is autodetected and should not be specified here. If undefined, apache2_mod_proxy module will return a members list of dictionaries of all the current balancer pool members' attributes."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "description": [
+                        "Desired state of the member host. (absent|disabled),drained,hot_standby,ignore_errors can be simultaneously invoked by separating them with a comma (e.g. state=drained,ignore_errors).",
+                        "Accepted state values: [\"present\", \"absent\", \"enabled\", \"disabled\", \"drained\", \"hot_standby\", \"ignore_errors\"]"
+                    ],
+                    "type": "str"
+                },
+                "tls": {
+                    "default": "no",
+                    "description": [
+                        "Use https to access balancer management page."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "Validate ssl/tls certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Set and/or get members' attributes of an Apache httpd 2.4 mod_proxy balancer pool"
+        },
+        "examples": "\n- name: Get all current balancer pool members attributes\n  community.general.apache2_mod_proxy:\n    balancer_vhost: 10.0.0.2\n\n- name: Get a specific member attributes\n  community.general.apache2_mod_proxy:\n    balancer_vhost: myws.mydomain.org\n    balancer_suffix: /lb/\n    member_host: node1.myws.mydomain.org\n\n# Enable all balancer pool members:\n- name: Get attributes\n  community.general.apache2_mod_proxy:\n    balancer_vhost: '{{ myloadbalancer_host }}'\n  register: result\n\n- name: Enable all balancer pool members\n  community.general.apache2_mod_proxy:\n    balancer_vhost: '{{ myloadbalancer_host }}'\n    member_host: '{{ item.host }}'\n    state: present\n  with_items: '{{ result.members }}'\n\n# Gracefully disable a member from a loadbalancer node:\n- name: Step 1\n  community.general.apache2_mod_proxy:\n    balancer_vhost: '{{ vhost_host }}'\n    member_host: '{{ member.host }}'\n    state: drained\n  delegate_to: myloadbalancernode\n\n- name: Step 2\n  ansible.builtin.wait_for:\n    host: '{{ member.host }}'\n    port: '{{ member.port }}'\n    state: drained\n  delegate_to: myloadbalancernode\n\n- name: Step 3\n  community.general.apache2_mod_proxy:\n    balancer_vhost: '{{ vhost_host }}'\n    member_host: '{{ member.host }}'\n    state: absent\n  delegate_to: myloadbalancernode\n",
+        "metadata": null,
+        "return": {
+            "member": {
+                "description": "specific balancer member information dictionary, returned when apache2_mod_proxy module is invoked with member_host parameter.",
+                "returned": "success",
+                "sample": {
+                    "attributes": {
+                        "Busy": "0",
+                        "Elected": "42",
+                        "Factor": "1",
+                        "From": "136K",
+                        "Load": "0",
+                        "Route": null,
+                        "RouteRedir": null,
+                        "Set": "0",
+                        "Status": "Init Ok ",
+                        "To": " 47K",
+                        "Worker URL": null
+                    },
+                    "balancer_url": "http://10.10.0.2/balancer-manager/",
+                    "host": "10.10.0.20",
+                    "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+                    "path": "/ws",
+                    "port": 8080,
+                    "protocol": "http",
+                    "status": {
+                        "disabled": false,
+                        "drained": false,
+                        "hot_standby": false,
+                        "ignore_errors": false
+                    }
+                },
+                "type": "dict"
+            },
+            "members": {
+                "description": "list of member (defined above) dictionaries, returned when apache2_mod_proxy is invoked with no member_host and state args.",
+                "returned": "success",
+                "sample": [
+                    {
+                        "attributes": {
+                            "Busy": "0",
+                            "Elected": "42",
+                            "Factor": "1",
+                            "From": "136K",
+                            "Load": "0",
+                            "Route": null,
+                            "RouteRedir": null,
+                            "Set": "0",
+                            "Status": "Init Ok ",
+                            "To": " 47K",
+                            "Worker URL": null
+                        },
+                        "balancer_url": "http://10.10.0.2/balancer-manager/",
+                        "host": "10.10.0.20",
+                        "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.20:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+                        "path": "/ws",
+                        "port": 8080,
+                        "protocol": "http",
+                        "status": {
+                            "disabled": false,
+                            "drained": false,
+                            "hot_standby": false,
+                            "ignore_errors": false
+                        }
+                    },
+                    {
+                        "attributes": {
+                            "Busy": "0",
+                            "Elected": "42",
+                            "Factor": "1",
+                            "From": "136K",
+                            "Load": "0",
+                            "Route": null,
+                            "RouteRedir": null,
+                            "Set": "0",
+                            "Status": "Init Ok ",
+                            "To": " 47K",
+                            "Worker URL": null
+                        },
+                        "balancer_url": "http://10.10.0.2/balancer-manager/",
+                        "host": "10.10.0.21",
+                        "management_url": "http://10.10.0.2/lb/?b=mywsbalancer&w=http://10.10.0.21:8080/ws&nonce=8925436c-79c6-4841-8936-e7d13b79239b",
+                        "path": "/ws",
+                        "port": 8080,
+                        "protocol": "http",
+                        "status": {
+                            "disabled": false,
+                            "drained": false,
+                            "hot_standby": false,
+                            "ignore_errors": false
+                        }
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

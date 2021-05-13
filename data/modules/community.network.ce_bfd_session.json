@@ -1,0 +1,152 @@
+{
+    "community.network.ce_bfd_session": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages BFD session configuration, creates a BFD session or deletes a specified BFD session on HUAWEI CloudEngine devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_bfd_session.py",
+            "has_action": false,
+            "module": "ce_bfd_session",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "addr_type": {
+                    "choices": [
+                        "ipv4"
+                    ],
+                    "description": [
+                        "Specifies the peer IP address type."
+                    ]
+                },
+                "create_type": {
+                    "choices": [
+                        "static",
+                        "auto"
+                    ],
+                    "default": "static",
+                    "description": [
+                        "BFD session creation mode, the currently created BFD session only supports static or static auto-negotiation mode."
+                    ]
+                },
+                "dest_addr": {
+                    "description": [
+                        "Specifies the peer IP address bound to the BFD session."
+                    ]
+                },
+                "local_discr": {
+                    "description": [
+                        "The BFD session local identifier does not need to be configured when the mode is auto."
+                    ]
+                },
+                "out_if_name": {
+                    "description": [
+                        "Specifies the type and number of the interface bound to the BFD session."
+                    ]
+                },
+                "remote_discr": {
+                    "description": [
+                        "The BFD session remote identifier does not need to be configured when the mode is auto."
+                    ]
+                },
+                "session_name": {
+                    "description": [
+                        "Specifies the name of a BFD session. The value is a string of 1 to 15 case-sensitive characters without spaces."
+                    ],
+                    "required": true
+                },
+                "src_addr": {
+                    "description": [
+                        "Indicates the source IP address carried in BFD packets."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                },
+                "use_default_ip": {
+                    "default": "no",
+                    "description": [
+                        "Indicates the default multicast IP address that is bound to a BFD session. By default, BFD uses the multicast IP address 224.0.0.184. You can set the multicast IP address by running the default-ip-address command. The value is a bool type."
+                    ],
+                    "type": "bool"
+                },
+                "vrf_name": {
+                    "description": [
+                        "Specifies the name of a Virtual Private Network (VPN) instance that is bound to a BFD session. The value is a string of 1 to 31 case-sensitive characters, spaces not supported. When double quotation marks are used around the string, spaces are allowed in the string. The value _public_ is reserved and cannot be used as the VPN instance name."
+                    ]
+                }
+            },
+            "short_description": "Manages BFD session configuration on HUAWEI CloudEngine devices."
+        },
+        "examples": "\n- name: Bfd session module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n  - name: Configuring Single-hop BFD for Detecting Faults on a Layer 2 Link\n    community.network.ce_bfd_session:\n      session_name: bfd_l2link\n      use_default_ip: true\n      out_if_name: 10GE1/0/1\n      local_discr: 163\n      remote_discr: 163\n      provider: '{{ cli }}'\n\n  - name: Configuring Single-Hop BFD on a VLANIF Interface\n    community.network.ce_bfd_session:\n      session_name: bfd_vlanif\n      dest_addr: 10.1.1.6\n      out_if_name: Vlanif100\n      local_discr: 163\n      remote_discr: 163\n      provider: '{{ cli }}'\n\n  - name: Configuring Multi-Hop BFD\n    community.network.ce_bfd_session:\n      session_name: bfd_multi_hop\n      dest_addr: 10.1.1.1\n      local_discr: 163\n      remote_discr: 163\n      provider: '{{ cli }}'\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "always",
+                "sample": {
+                    "session": {
+                        "addrType": "IPV4",
+                        "createType": "SESS_STATIC",
+                        "destAddr": null,
+                        "outIfName": "10GE1/0/1",
+                        "sessName": "bfd_l2link",
+                        "srcAddr": null,
+                        "useDefaultIp": "true",
+                        "vrfName": null
+                    }
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "always",
+                "sample": {
+                    "session": {}
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "addr_type": null,
+                    "create_type": null,
+                    "dest_addr": null,
+                    "out_if_name": "10GE1/0/1",
+                    "session_name": "bfd_l2link",
+                    "src_addr": null,
+                    "state": "present",
+                    "use_default_ip": true,
+                    "vrf_name": null
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "bfd bfd_l2link bind peer-ip default-ip interface 10ge1/0/1"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

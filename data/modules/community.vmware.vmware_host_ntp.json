@@ -1,0 +1,183 @@
+{
+    "community.vmware.vmware_host_ntp": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)",
+                "Christian Kotte (@ckotte)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to configure, add or remove NTP servers from an ESXi host.",
+                "If C(state) is not given, the NTP servers will be configured in the exact sequence.",
+                "User can specify an ESXi hostname or Cluster name. In case of cluster name, all ESXi hosts are updated."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_host_ntp.py",
+            "has_action": false,
+            "module": "vmware_host_ntp",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster from which all host systems will be used.",
+                        "This parameter is required if C(esxi_hostname) is not specified."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "Name of the host system to work with.",
+                        "This parameter is required if C(cluster_name) is not specified."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "ntp_servers": {
+                    "description": [
+                        "IP or FQDN of NTP server(s).",
+                        "This accepts a list of NTP servers. For multiple servers, please look at the examples."
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "present: Add NTP server(s), if specified server(s) are absent else do nothing.",
+                        "absent: Remove NTP server(s), if specified server(s) are present else do nothing.",
+                        "Specified NTP server(s) will be configured if C(state) isn't specified."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "verbose": {
+                    "default": false,
+                    "description": [
+                        "Verbose output of the configuration change.",
+                        "Explains if an NTP server was added, removed, or if the NTP server sequence was changed."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Manage NTP server configuration of an ESXi host"
+        },
+        "examples": "\n- name: Configure NTP servers for an ESXi Host\n  community.vmware.vmware_host_ntp:\n    hostname: vcenter01.example.local\n    username: administrator@vsphere.local\n    password: SuperSecretPassword\n    esxi_hostname: esx01.example.local\n    ntp_servers:\n        - 0.pool.ntp.org\n        - 1.pool.ntp.org\n  delegate_to: localhost\n\n- name: Set NTP servers for all ESXi Host in given Cluster\n  community.vmware.vmware_host_ntp:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    cluster_name: '{{ cluster_name }}'\n    state: present\n    ntp_servers:\n        - 0.pool.ntp.org\n        - 1.pool.ntp.org\n  delegate_to: localhost\n\n- name: Set NTP servers for an ESXi Host\n  community.vmware.vmware_host_ntp:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n    state: present\n    ntp_servers:\n        - 0.pool.ntp.org\n        - 1.pool.ntp.org\n  delegate_to: localhost\n\n- name: Remove NTP servers for an ESXi Host\n  community.vmware.vmware_host_ntp:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n    state: absent\n    ntp_servers:\n        - bad.server.ntp.org\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "host_ntp_status": {
+                "description": "metadata about host system's NTP configuration",
+                "returned": "always",
+                "sample": {
+                    "esx01.example.local": {
+                        "ntp_servers": [
+                            "time3.example.local",
+                            "time4.example.local"
+                        ],
+                        "ntp_servers_changed": [
+                            "time1.example.local",
+                            "time2.example.local",
+                            "time3.example.local",
+                            "time4.example.local"
+                        ],
+                        "ntp_servers_previous": [
+                            "time1.example.local",
+                            "time2.example.local"
+                        ]
+                    },
+                    "esx02.example.local": {
+                        "ntp_servers_changed": [
+                            "time3.example.local"
+                        ],
+                        "ntp_servers_current": [
+                            "time1.example.local",
+                            "time2.example.local",
+                            "time3.example.local"
+                        ],
+                        "ntp_servers_previous": [
+                            "time1.example.local",
+                            "time2.example.local"
+                        ],
+                        "state": "present"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

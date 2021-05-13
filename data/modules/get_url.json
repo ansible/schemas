@@ -1,0 +1,391 @@
+{
+    "get_url": {
+        "doc": {
+            "author": [
+                "Jan-Piet Mens (@jpmens)"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "Downloads files from HTTP, HTTPS, or FTP to the remote server. The remote server I(must) have direct access to the remote resource.",
+                "By default, if an environment variable C(<protocol>_proxy) is set on the target host, requests will be sent through that proxy. This behaviour can be overridden by setting a variable for this task (see `setting the environment <https://docs.ansible.com/playbooks_environment.html>`_), or by using the use_proxy option.",
+                "HTTP redirects can redirect from HTTP to HTTPS so you should be sure that your proxy environment for both protocols is correct.",
+                "From Ansible 2.4 when run with C(--check), it will do a HEAD request to validate the URL but will not download the entire file or verify it against hashes.",
+                "For Windows targets, use the M(ansible.windows.win_get_url) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/get_url.py",
+            "has_action": false,
+            "module": "get_url",
+            "notes": [
+                "For Windows targets, use the M(ansible.windows.win_get_url) module instead."
+            ],
+            "options": {
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "backup": {
+                    "default": false,
+                    "description": [
+                        "Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.1",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "checksum": {
+                    "default": "",
+                    "description": [
+                        "If a checksum is passed to this parameter, the digest of the destination file will be calculated after it is downloaded to ensure its integrity and verify that the transfer completed successfully. Format: <algorithm>:<checksum|url>, e.g. checksum=\"sha256:D98291AC[...]B6DC7B97\", checksum=\"sha256:http://example.com/path/sha256sum.txt\"",
+                        "If you worry about portability, only the sha1 algorithm is available on all platforms and python versions.",
+                        "The third party hashlib library can be installed for access to additional algorithms.",
+                        "Additionally, if a checksum is passed to this parameter, and the file exist under the C(dest) location, the I(destination_checksum) would be calculated, and if checksum equals I(destination_checksum), the file download would be skipped (unless C(force) is true). If the checksum does not equal I(destination_checksum), the destination file is deleted."
+                    ],
+                    "type": "str",
+                    "version_added": "2.0",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, C(client_key) is not required."
+                    ],
+                    "type": "path",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If C(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "dest": {
+                    "description": [
+                        "Absolute path of where to download the file to.",
+                        "If C(dest) is a directory, either the server provided filename or, if none provided, the base name of the URL on the remote server will be used. If a directory, C(force) has no effect.",
+                        "If C(dest) is a directory, the file will always be downloaded (regardless of the C(force) option), but replaced only if the contents changed.."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "force": {
+                    "aliases": [
+                        "thirsty"
+                    ],
+                    "default": false,
+                    "description": [
+                        "If C(yes) and C(dest) is not a directory, will download the file every time and replace the file if the contents change. If C(no), the file will only be downloaded if the destination does not exist. Generally should be C(yes) only for small local files.",
+                        "Prior to 0.6, this module behaved as if C(yes) was the default.",
+                        "Alias C(thirsty) has been deprecated and will be removed in 2.13."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.7",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "force_basic_auth": {
+                    "default": false,
+                    "description": [
+                        "Force the sending of the Basic authentication header upon initial request.",
+                        "httplib2, the library used by the uri module only sends authentication information when a webservice responds to an initial request with a 401 status. Since some basic auth services do not properly send a 401, logins will fail."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.0",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "headers": {
+                    "description": [
+                        "Add custom HTTP headers to a request in hash/dict format.",
+                        "The hash/dict format was added in Ansible 2.6.",
+                        "Previous versions used a C(\"key:value,key:value\") string format.",
+                        "The C(\"key:value,key:value\") string format is deprecated and has been removed in version 2.10."
+                    ],
+                    "type": "dict",
+                    "version_added": "2.0",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "http_agent": {
+                    "default": "ansible-httpget",
+                    "description": [
+                        "Header to identify as, generally appears in web server logs."
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "sha256sum": {
+                    "default": "",
+                    "description": [
+                        "If a SHA-256 checksum is passed to this parameter, the digest of the destination file will be calculated after it is downloaded to ensure its integrity and verify that the transfer completed successfully. This option is deprecated and will be removed in version 2.14. Use option C(checksum) instead."
+                    ],
+                    "version_added": "1.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "Timeout in seconds for URL request."
+                    ],
+                    "type": "int",
+                    "version_added": "1.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "tmp_dest": {
+                    "description": [
+                        "Absolute path of where temporary file is downloaded to.",
+                        "When run on Ansible 2.5 or greater, path defaults to ansible's remote_tmp setting",
+                        "When run on Ansible prior to 2.5, it defaults to C(TMPDIR), C(TEMP) or C(TMP) env variables or a platform specific value.",
+                        "U(https://docs.python.org/2/library/tempfile.html#tempfile.tempdir)"
+                    ],
+                    "type": "path",
+                    "version_added": "2.1",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "url": {
+                    "description": [
+                        "HTTP, HTTPS, or FTP URL in the form (http|https|ftp)://[user[:pass]]@host.domain[:port]/path"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "The password for use in HTTP basic authentication.",
+                        "If the C(url_username) parameter is not specified, the C(url_password) parameter will not be used.",
+                        "Since version 2.8 you can also use the 'password' alias for this option."
+                    ],
+                    "type": "str",
+                    "version_added": "1.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "url_username": {
+                    "aliases": [
+                        "username"
+                    ],
+                    "description": [
+                        "The username for use in HTTP basic authentication.",
+                        "This parameter can be used without C(url_password) for sites that allow empty passwords.",
+                        "Since version 2.8 you can also use the C(username) alias for this option."
+                    ],
+                    "type": "str",
+                    "version_added": "1.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "if C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.uri"
+                },
+                {
+                    "module": "ansible.windows.win_get_url"
+                }
+            ],
+            "short_description": "Downloads files from HTTP, HTTPS, or FTP to node",
+            "version_added": "0.6",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Download foo.conf\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    mode: '0440'\n\n- name: Download file and force basic auth\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    force_basic_auth: yes\n\n- name: Download file with custom HTTP headers\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    headers:\n      key1: one\n      key2: two\n\n- name: Download file with check (sha256)\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    checksum: sha256:b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c\n\n- name: Download file with check (md5)\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    checksum: md5:66dffb5228a211e61d6d7ef4a86f5758\n\n- name: Download file with checksum url (sha256)\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    checksum: sha256:http://example.com/path/sha256sum.txt\n\n- name: Download file from a file path\n  get_url:\n    url: file:///tmp/afile.txt\n    dest: /tmp/afilecopy.txt\n\n- name: < Fetch file that requires authentication.\n        username/password only available since 2.8, in older versions you need to use url_username/url_password\n  get_url:\n    url: http://example.com/path/file.conf\n    dest: /etc/foo.conf\n    username: bar\n    password: '{{ mysecret }}'\n",
+        "metadata": null,
+        "return": {
+            "backup_file": {
+                "description": "name of backup file created after download",
+                "returned": "changed and if backup=yes",
+                "sample": "/path/to/file.txt.2015-02-12@22:09~",
+                "type": "str"
+            },
+            "checksum_dest": {
+                "description": "sha1 checksum of the file after copy",
+                "returned": "success",
+                "sample": "6e642bb8dd5c2e027bf21dd923337cbb4214f827",
+                "type": "str"
+            },
+            "checksum_src": {
+                "description": "sha1 checksum of the file",
+                "returned": "success",
+                "sample": "6e642bb8dd5c2e027bf21dd923337cbb4214f827",
+                "type": "str"
+            },
+            "dest": {
+                "description": "destination file/path",
+                "returned": "success",
+                "sample": "/path/to/file.txt",
+                "type": "str"
+            },
+            "elapsed": {
+                "description": "The number of seconds that elapsed while performing the download",
+                "returned": "always",
+                "sample": 23,
+                "type": "int"
+            },
+            "gid": {
+                "description": "group id of the file",
+                "returned": "success",
+                "sample": 100,
+                "type": "int"
+            },
+            "group": {
+                "description": "group of the file",
+                "returned": "success",
+                "sample": "httpd",
+                "type": "str"
+            },
+            "md5sum": {
+                "description": "md5 checksum of the file after download",
+                "returned": "when supported",
+                "sample": "2a5aeecc61dc98c4d780b14b330e3282",
+                "type": "str"
+            },
+            "mode": {
+                "description": "permissions of the target",
+                "returned": "success",
+                "sample": "0644",
+                "type": "str"
+            },
+            "msg": {
+                "description": "the HTTP message from the request",
+                "returned": "always",
+                "sample": "OK (unknown bytes)",
+                "type": "str"
+            },
+            "owner": {
+                "description": "owner of the file",
+                "returned": "success",
+                "sample": "httpd",
+                "type": "str"
+            },
+            "secontext": {
+                "description": "the SELinux security context of the file",
+                "returned": "success",
+                "sample": "unconfined_u:object_r:user_tmp_t:s0",
+                "type": "str"
+            },
+            "size": {
+                "description": "size of the target",
+                "returned": "success",
+                "sample": 1220,
+                "type": "int"
+            },
+            "src": {
+                "description": "source file used after download",
+                "returned": "always",
+                "sample": "/tmp/tmpAdFLdV",
+                "type": "str"
+            },
+            "state": {
+                "description": "state of the target",
+                "returned": "success",
+                "sample": "file",
+                "type": "str"
+            },
+            "status_code": {
+                "description": "the HTTP status code from the request",
+                "returned": "always",
+                "sample": 200,
+                "type": "int"
+            },
+            "uid": {
+                "description": "owner id of the file, after execution",
+                "returned": "success",
+                "sample": 100,
+                "type": "int"
+            },
+            "url": {
+                "description": "the actual URL used for the request",
+                "returned": "always",
+                "sample": "https://www.ansible.com/",
+                "type": "str"
+            }
+        }
+    }
+}

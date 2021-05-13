@@ -1,0 +1,138 @@
+{
+    "community.vmware.vmware_evc_mode": {
+        "doc": {
+            "author": [
+                "Michael Tipton (@castawayegr)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to enable/disable EVC mode on vCenter."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_evc_mode.py",
+            "has_action": false,
+            "module": "vmware_evc_mode",
+            "notes": [
+                "Tested on vSphere 6.7"
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "The name of the cluster to enable or disable EVC mode on."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "datacenter_name": {
+                    "description": [
+                        "The name of the datacenter the cluster belongs to that you want to enable or disable EVC mode on."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "evc_mode": {
+                    "description": [
+                        "Required for C(state=present).",
+                        "The EVC mode to enable or disable on the cluster. (intel-broadwell, intel-nehalem, intel-merom, etc.)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Add or remove EVC mode."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Enable/Disable EVC mode on vCenter"
+        },
+        "examples": "\n    - name: Enable EVC Mode\n      community.vmware.vmware_evc_mode:\n         hostname: \"{{ groups['vcsa'][0] }}\"\n         username: \"{{ vcenter_username }}\"\n         password: \"{{ site_password }}\"\n         datacenter_name: \"{{ datacenter_name }}\"\n         cluster_name: \"{{ cluster_name }}\"\n         evc_mode: \"intel-broadwell\"\n         state: present\n      delegate_to: localhost\n      register: enable_evc\n\n    - name: Disable EVC Mode\n      community.vmware.vmware_evc_mode:\n         hostname: \"{{ groups['vcsa'][0] }}\"\n         username: \"{{ vcenter_username }}\"\n         password: \"{{ site_password }}\"\n         datacenter_name: \"{{ datacenter_name }}\"\n         cluster_name: \"{{ cluster_name }}\"\n         state: absent\n      delegate_to: localhost\n      register: disable_evc\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "description": "information about performed operation",
+                "returned": "always",
+                "sample": "EVC Mode for 'intel-broadwell' has been enabled.",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,250 @@
+{
+    "community.postgresql.postgresql_tablespace": {
+        "doc": {
+            "author": [
+                "Flavien Chantelot (@Dorn-)",
+                "Antoine Levy-Lambert (@antoinell)",
+                "Andrew Klychkov (@Andersson007)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Adds or removes PostgreSQL tablespaces from remote hosts."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_tablespace.py",
+            "has_action": false,
+            "module": "postgresql_tablespace",
+            "notes": [
+                "I(state=absent) and I(state=present) (the second one if the tablespace doesn't exist) do not support check mode because the corresponding PostgreSQL DROP and CREATE TABLESPACE commands can not be run inside the transaction block.",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect to and run queries against."
+                    ],
+                    "type": "str"
+                },
+                "location": {
+                    "aliases": [
+                        "path"
+                    ],
+                    "description": [
+                        "Path to the tablespace directory in the file system.",
+                        "Ensure that the location exists and has right privileges."
+                    ],
+                    "type": "path"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the role to set as an owner of the tablespace.",
+                        "If this option is not specified, the tablespace owner is a role that creates the tablespace."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "rename_to": {
+                    "description": [
+                        "New name of the tablespace.",
+                        "The new name cannot begin with pg_, as such names are reserved for system tablespaces."
+                    ],
+                    "type": "str"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting. The specified session_role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session_role were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "set": {
+                    "description": [
+                        "Dict of tablespace options to set. Supported from PostgreSQL 9.0.",
+                        "For more information see U(https://www.postgresql.org/docs/current/sql-createtablespace.html).",
+                        "When reset is passed as an option's value, if the option was set previously, it will be removed."
+                    ],
+                    "type": "dict"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Tablespace state.",
+                        "I(state=present) implies the tablespace must be created if it doesn't exist.",
+                        "I(state=absent) implies the tablespace must be removed if present. I(state=absent) is mutually exclusive with I(location), I(owner), i(set).",
+                        "See the Notes section for information about check mode restrictions."
+                    ],
+                    "type": "str"
+                },
+                "tablespace": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "Name of the tablespace to add or remove."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether values of parameters I(tablespace), I(location), I(owner), I(rename_to), I(session_role), I(settings_list) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via the parameters are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "description": "General information about PostgreSQL tablespaces.",
+                    "link": "https://www.postgresql.org/docs/current/manage-ag-tablespaces.html",
+                    "name": "PostgreSQL tablespaces"
+                },
+                {
+                    "description": "Complete reference of the CREATE TABLESPACE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-createtablespace.html",
+                    "name": "CREATE TABLESPACE reference"
+                },
+                {
+                    "description": "Complete reference of the ALTER TABLESPACE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-altertablespace.html",
+                    "name": "ALTER TABLESPACE reference"
+                },
+                {
+                    "description": "Complete reference of the DROP TABLESPACE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-droptablespace.html",
+                    "name": "DROP TABLESPACE reference"
+                }
+            ],
+            "short_description": "Add or remove PostgreSQL tablespaces from remote hosts"
+        },
+        "examples": "\n- name: Create a new tablespace called acme and set bob as an its owner\n  community.postgresql.postgresql_tablespace:\n    name: acme\n    owner: bob\n    location: /data/foo\n\n- name: Create a new tablespace called bar with tablespace options\n  community.postgresql.postgresql_tablespace:\n    name: bar\n    set:\n      random_page_cost: 1\n      seq_page_cost: 1\n\n- name: Reset random_page_cost option\n  community.postgresql.postgresql_tablespace:\n    name: bar\n    set:\n      random_page_cost: reset\n\n- name: Rename the tablespace from bar to pcie_ssd\n  community.postgresql.postgresql_tablespace:\n    name: bar\n    rename_to: pcie_ssd\n\n- name: Drop tablespace called bloat\n  community.postgresql.postgresql_tablespace:\n    name: bloat\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "location": {
+                "description": "Path to the tablespace in the file system.",
+                "returned": "always",
+                "sample": "/incredible/fast/ssd",
+                "type": "str"
+            },
+            "newname": {
+                "description": "New tablespace name.",
+                "returned": "if existent",
+                "sample": "new_ssd",
+                "type": "str"
+            },
+            "options": {
+                "description": "Tablespace options.",
+                "returned": "always",
+                "sample": {
+                    "random_page_cost": 1,
+                    "seq_page_cost": 1
+                },
+                "type": "dict"
+            },
+            "owner": {
+                "description": "Tablespace owner.",
+                "returned": "always",
+                "sample": "Bob",
+                "type": "str"
+            },
+            "queries": {
+                "description": "List of queries that was tried to be executed.",
+                "returned": "always",
+                "sample": [
+                    "CREATE TABLESPACE bar LOCATION '/incredible/ssd'"
+                ],
+                "type": "str"
+            },
+            "state": {
+                "description": "Tablespace state at the end of execution.",
+                "returned": "always",
+                "sample": "present",
+                "type": "str"
+            },
+            "tablespace": {
+                "description": "Tablespace name.",
+                "returned": "always",
+                "sample": "ssd",
+                "type": "str"
+            }
+        }
+    }
+}

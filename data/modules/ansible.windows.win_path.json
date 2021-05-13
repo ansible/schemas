@@ -1,0 +1,72 @@
+{
+    "ansible.windows.win_path": {
+        "doc": {
+            "author": [
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "Allows element-based ordering, addition, and removal of Windows path environment variables."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_path.py",
+            "has_action": false,
+            "module": "win_path",
+            "notes": [
+                "This module is for modifying individual elements of path-like environment variables. For general-purpose management of other environment vars, use the M(ansible.windows.win_environment) module.",
+                "This module does not broadcast change events. This means that the minority of windows applications which can have their environment changed without restarting will not be notified and therefore will need restarting to pick up new environment settings.",
+                "User level environment variables will require an interactive user to log out and in again before they become available."
+            ],
+            "options": {
+                "elements": {
+                    "description": [
+                        "A single path element, or a list of path elements (ie, directories) to add or remove.",
+                        "When multiple elements are included in the list (and C(state) is C(present)), the elements are guaranteed to appear in the same relative order in the resultant path value.",
+                        "Variable expansions (eg, C(%VARNAME%)) are allowed, and are stored unexpanded in the target path element.",
+                        "Any existing path elements not mentioned in C(elements) are always preserved in their current order.",
+                        "New path elements are appended to the path, and existing path elements may be moved closer to the end to satisfy the requested ordering.",
+                        "Paths are compared in a case-insensitive fashion, and trailing backslashes are ignored for comparison purposes. However, note that trailing backslashes in YAML require quotes."
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "name": {
+                    "default": "PATH",
+                    "description": [
+                        "Target path environment variable name."
+                    ],
+                    "type": "str"
+                },
+                "scope": {
+                    "choices": [
+                        "machine",
+                        "user"
+                    ],
+                    "default": "machine",
+                    "description": [
+                        "The level at which the environment variable specified by C(name) should be managed (either for the current user or global machine scope)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "description": [
+                        "Whether the path elements specified in C(elements) should be present or absent."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_environment"
+                }
+            ],
+            "short_description": "Manage Windows path environment variables"
+        },
+        "examples": "\n- name: Ensure that system32 and Powershell are present on the global system path, and in the specified order\n  ansible.windows.win_path:\n    elements:\n    - '%SystemRoot%\\system32'\n    - '%SystemRoot%\\system32\\WindowsPowerShell\\v1.0'\n\n- name: Ensure that C:\\Program Files\\MyJavaThing is not on the current user's CLASSPATH\n  ansible.windows.win_path:\n    name: CLASSPATH\n    elements: C:\\Program Files\\MyJavaThing\n    scope: user\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

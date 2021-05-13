@@ -1,0 +1,41 @@
+{
+    "dellemc.os10.wiring_validate": {
+        "doc": {
+            "author": "Senthil Kumar Ganesan (@skg-net)",
+            "collection": "dellemc.os10",
+            "description": [
+                "Get the wiring info using lldp output and show system network summary."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/os10/plugins/modules/wiring_validate.py",
+            "has_action": false,
+            "module": "wiring_validate",
+            "options": {
+                "planned_neighbors": {
+                    "description": [
+                        "planned neighbours input from group_var to compare actual"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_lldp_neighbors_list": {
+                    "description": [
+                        "show lldp neighbor output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_system_network_summary": {
+                    "description": [
+                        "show system network summary output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                }
+            },
+            "short_description": "Validate the wiring based on the planned wiring details"
+        },
+        "examples": "\nCopy below YAML into a playbook (e.g. play.yml) and run as follows:\n\n#$ ansible-playbook -i inv play.yml\nname: show system Configuration\nhosts: localhost\nconnection: local\ngather_facts: False\ntasks:\n- name: \"Get Dell EMC OS10 Show lldp\"\n  os10_command:\n    commands:\n      - command: \"show lldp neighbors\"\n    provider: \"{{ hostvars[item].cli }}\"\n  with_items: \"{{ groups['all'] }}\"\n  register: show_lldp\n- local_action: copy content={{ show_lldp }} dest=show\n- set_fact:\n     output_lldp:  \"{{ output_lldp|default([])+ [{'host': item.invocation.module_args.provider.host, 'inv_name': item.item,\n                                                  'stdout_show_lldp': item.stdout}] }}\"\n  loop: \"{{ show_lldp.results }}\"\n- debug: var=output_lldp\n- name: \"Get Dell EMC OS10 Show system\"\n  import_role:\n    name: os10_fabric_summary\n  register: show_system_network_summary\n- debug: var=show_system_network_summary\n- name: call lib to process\n  wiring_validate:\n    show_lldp_neighbors_list: \"{{ output_lldp }}\"\n    show_system_network_summary: \"{{ show_system_network_summary.msg.results }}\"\n    planned_neighbors: \"{{ intended_neighbors }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

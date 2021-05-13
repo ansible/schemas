@@ -1,0 +1,338 @@
+{
+    "community.mysql.mysql_replication": {
+        "doc": {
+            "author": [
+                "Balazs Pocze (@banyek)",
+                "Andrew Klychkov (@Andersson007)"
+            ],
+            "collection": "community.mysql",
+            "description": [
+                "Manages MySQL server replication, replica, master status, get and change master host."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/mysql/plugins/modules/mysql_replication.py",
+            "has_action": false,
+            "module": "mysql_replication",
+            "notes": [
+                "If an empty value for the parameter of string type is needed, use an empty string.",
+                "Requires the PyMySQL (Python 2.7 and Python 3.X) or MySQL-python (Python 2.X) package installed on the remote host. The Python package may be installed with apt-get install python-pymysql (Ubuntu; see M(ansible.builtin.apt)) or yum install python2-PyMySQL (RHEL/CentOS/Fedora; see M(ansible.builtin.yum)). You can also use dnf install python2-PyMySQL for newer versions of Fedora; see M(ansible.builtin.dnf).",
+                "Be sure you have PyMySQL or MySQLdb library installed on the target machine for the Python interpreter Ansible uses, for example, if it is Python 3, you must install the library for Python 3. You can also change the interpreter. For more information, see U(https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html).",
+                "Both C(login_password) and C(login_user) are required when you are passing credentials. If none are present, the module will attempt to read the credentials from C(~/.my.cnf), and finally fall back to using the MySQL default login of 'root' with no password.",
+                "If there are problems with local connections, using I(login_unix_socket=/path/to/mysqld/socket) instead of I(login_host=localhost) might help. As an example, the default MariaDB installation of version 10.4 and later uses the unix_socket authentication plugin by default that without using I(login_unix_socket=/var/run/mysqld/mysqld.sock) (the default path) causes the error ``Host '127.0.0.1' is not allowed to connect to this MariaDB server``.",
+                "Alternatively, you can use the mysqlclient library instead of MySQL-python (MySQLdb) which supports both Python 2.X and Python >=3.5. See U(https://pypi.org/project/mysqlclient/) how to install it."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca"
+                    ],
+                    "description": [
+                        "The path to a Certificate Authority (CA) certificate. This option, if used, must specify the same certificate as used by the server."
+                    ],
+                    "type": "path"
+                },
+                "channel": {
+                    "description": [
+                        "Name of replication channel.",
+                        "Multi-source replication is supported from MySQL 5.7.",
+                        "Mutually exclusive with I(connection_name).",
+                        "For more information see U(https://dev.mysql.com/doc/refman/8.0/en/replication-multi-source.html)."
+                    ],
+                    "type": "str",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "check_hostname": {
+                    "description": [
+                        "Whether to validate the server host name when an SSL connection is required. Corresponds to MySQL CLIs C(--ssl) switch.",
+                        "Setting this to C(false) disables hostname verification. Use with caution.",
+                        "Requires pymysql >= 0.7.11.",
+                        "This optoin has no effect on MySQLdb."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "ssl_cert"
+                    ],
+                    "description": [
+                        "The path to a client public key certificate."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "ssl_key"
+                    ],
+                    "description": [
+                        "The path to the client private key."
+                    ],
+                    "type": "path"
+                },
+                "config_file": {
+                    "default": "~/.my.cnf",
+                    "description": [
+                        "Specify a config file from which user and password are to be read."
+                    ],
+                    "type": "path"
+                },
+                "connect_timeout": {
+                    "default": 30,
+                    "description": [
+                        "The connection timeout when connecting to the MySQL server."
+                    ],
+                    "type": "int"
+                },
+                "connection_name": {
+                    "description": [
+                        "Name of the master connection.",
+                        "Supported from MariaDB 10.0.1.",
+                        "Mutually exclusive with I(channel).",
+                        "For more information see U(https://mariadb.com/kb/en/library/multi-source-replication/)."
+                    ],
+                    "type": "str",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "fail_on_error": {
+                    "default": false,
+                    "description": [
+                        "Fails on error when calling mysql."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "login_host": {
+                    "default": "localhost",
+                    "description": [
+                        "Host running the database.",
+                        "In some cases for local connections the I(login_unix_socket=/path/to/mysqld/socket), that is usually C(/var/run/mysqld/mysqld.sock), needs to be used instead of I(login_host=localhost)."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_port": {
+                    "default": 3306,
+                    "description": [
+                        "Port of the MySQL server. Requires I(login_host) be defined as other than localhost if login_port is used."
+                    ],
+                    "type": "int"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "The path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "master_auto_position": {
+                    "default": false,
+                    "description": [
+                        "Whether the host uses GTID based replication or not."
+                    ],
+                    "type": "bool"
+                },
+                "master_connect_retry": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "int"
+                },
+                "master_delay": {
+                    "description": [
+                        "Time lag behind the master's state (in seconds).",
+                        "Available from MySQL 5.6.",
+                        "For more information see U(https://dev.mysql.com/doc/refman/8.0/en/replication-delayed.html)."
+                    ],
+                    "type": "int",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "master_host": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "str"
+                },
+                "master_log_file": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "str"
+                },
+                "master_log_pos": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "int"
+                },
+                "master_password": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "str"
+                },
+                "master_port": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "int"
+                },
+                "master_ssl": {
+                    "default": false,
+                    "description": [
+                        "Same as the C(MASTER_SSL) mysql variable.",
+                        "When setting it to C(yes), the connection attempt only succeeds if an encrypted connection can be established.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "bool"
+                },
+                "master_ssl_ca": {
+                    "description": [
+                        "Same as the C(MASTER_SSL_CA) mysql variable.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "str"
+                },
+                "master_ssl_capath": {
+                    "description": [
+                        "Same as the C(MASTER_SSL_CAPATH) mysql variable.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "str"
+                },
+                "master_ssl_cert": {
+                    "description": [
+                        "Same as the C(MASTER_SSL_CERT) mysql variable.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "str"
+                },
+                "master_ssl_cipher": {
+                    "description": [
+                        "Same as the C(MASTER_SSL_CIPHER) mysql variable.",
+                        "Specifies a colon-separated list of one or more ciphers permitted by the replica for the replication connection.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "str"
+                },
+                "master_ssl_key": {
+                    "description": [
+                        "Same as the C(MASTER_SSL_KEY) mysql variable.",
+                        "For details, refer to L(MySQL encrypted replication documentation,https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html)."
+                    ],
+                    "type": "str"
+                },
+                "master_use_gtid": {
+                    "choices": [
+                        "current_pos",
+                        "replica_pos",
+                        "slave_pos",
+                        "disabled"
+                    ],
+                    "description": [
+                        "Configures the replica to use the MariaDB Global Transaction ID.",
+                        "C(disabled) equals MASTER_USE_GTID=no command.",
+                        "To find information about available values see U(https://mariadb.com/kb/en/library/change-master-to/#master_use_gtid).",
+                        "Available since MariaDB 10.0.2.",
+                        "C(replica_pos) has been introduced in MariaDB 10.5.1 and it is an alias for C(slave_pos)."
+                    ],
+                    "type": "str",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "master_user": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "choices": [
+                        "changemaster",
+                        "getmaster",
+                        "getreplica",
+                        "getslave",
+                        "startreplica",
+                        "startslave",
+                        "stopreplica",
+                        "stopslave",
+                        "resetmaster",
+                        "resetreplica",
+                        "resetslave",
+                        "resetreplicaall",
+                        "resetslaveall"
+                    ],
+                    "default": "getreplica",
+                    "description": [
+                        "Module operating mode. Could be C(changemaster) (CHANGE MASTER TO), C(getmaster) (SHOW MASTER STATUS), C(getreplica | getslave) (SHOW REPLICA | SLAVE STATUS), C(startreplica | startslave) (START REPLICA | SLAVE), C(stopreplica | stopslave) (STOP REPLICA | SLAVE), C(resetmaster) (RESET MASTER) - supported since community.mysql 0.1.0, C(resetreplica, resetslave) (RESET REPLICA | SLAVE), C(resetreplicaall, resetslave) (RESET REPLICA | SLAVE ALL)."
+                    ],
+                    "type": "str"
+                },
+                "relay_log_file": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "str"
+                },
+                "relay_log_pos": {
+                    "description": [
+                        "Same as mysql variable."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "PyMySQL (Python 2.7 and Python 3.X), or",
+                "MySQLdb (Python 2.x)"
+            ],
+            "seealso": [
+                {
+                    "module": "community.mysql.mysql_info"
+                },
+                {
+                    "description": "Complete reference of the MySQL replication documentation.",
+                    "link": "https://dev.mysql.com/doc/refman/8.0/en/replication.html",
+                    "name": "MySQL replication reference"
+                },
+                {
+                    "description": "Setting up MySQL replication to use encrypted connection.",
+                    "link": "https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-encrypted-connections.html",
+                    "name": "MySQL encrypted replication reference."
+                },
+                {
+                    "description": "Complete reference of the MariaDB replication documentation.",
+                    "link": "https://mariadb.com/kb/en/library/setting-up-replication/",
+                    "name": "MariaDB replication reference"
+                }
+            ],
+            "short_description": "Manage MySQL replication"
+        },
+        "examples": "\n- name: Stop mysql replica thread\n  community.mysql.mysql_replication:\n    mode: stopreplica\n\n- name: Get master binlog file name and binlog position\n  community.mysql.mysql_replication:\n    mode: getmaster\n\n- name: Change master to master server 192.0.2.1 and use binary log 'mysql-bin.000009' with position 4578\n  community.mysql.mysql_replication:\n    mode: changemaster\n    master_host: 192.0.2.1\n    master_log_file: mysql-bin.000009\n    master_log_pos: 4578\n\n- name: Check replica status using port 3308\n  community.mysql.mysql_replication:\n    mode: getreplica\n    login_host: ansible.example.com\n    login_port: 3308\n\n- name: On MariaDB change master to use GTID current_pos\n  community.mysql.mysql_replication:\n    mode: changemaster\n    master_use_gtid: current_pos\n\n- name: Change master to use replication delay 3600 seconds\n  community.mysql.mysql_replication:\n    mode: changemaster\n    master_host: 192.0.2.1\n    master_delay: 3600\n\n- name: Start MariaDB replica with connection name master-1\n  community.mysql.mysql_replication:\n    mode: startreplica\n    connection_name: master-1\n\n- name: Stop replication in channel master-1\n  community.mysql.mysql_replication:\n    mode: stopreplica\n    channel: master-1\n\n- name: >\n    Run RESET MASTER command which will delete all existing binary log files\n    and reset the binary log index file on the master\n  community.mysql.mysql_replication:\n    mode: resetmaster\n\n- name: Run start replica and fail the task on errors\n  community.mysql.mysql_replication:\n    mode: startreplica\n    connection_name: master-1\n    fail_on_error: yes\n\n- name: Change master and fail on error (like when replica thread is running)\n  community.mysql.mysql_replication:\n    mode: changemaster\n    fail_on_error: yes\n\n",
+        "metadata": null,
+        "return": {
+            "queries": {
+                "description": "List of executed queries which modified DB's state.",
+                "returned": "always",
+                "sample": [
+                    "CHANGE MASTER TO MASTER_HOST='master2.example.com',MASTER_PORT=3306"
+                ],
+                "type": "list",
+                "version_added": "0.1.0",
+                "version_added_collection": "community.mysql"
+            }
+        }
+    }
+}

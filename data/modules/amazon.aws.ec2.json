@@ -1,0 +1,448 @@
+{
+    "amazon.aws.ec2": {
+        "doc": {
+            "author": [
+                "Tim Gerla (@tgerla)",
+                "Lester Wade (@lwade)",
+                "Seth Vidal (@skvidal)"
+            ],
+            "collection": "amazon.aws",
+            "description": [
+                "Creates or terminates ec2 instances.",
+                "Note: This module uses the older boto Python module to interact with the EC2 API. M(ec2) will still receive bug fixes, but no new features. Consider using the M(ec2_instance) module instead. If M(ec2_instance) does not support a feature you need that is available in M(ec2), please file a feature request.\n"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2.py",
+            "has_action": false,
+            "module": "ec2",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "assign_public_ip": {
+                    "description": [
+                        "When provisioning within vpc, assign a public IP address. Boto library must be 2.13.0+."
+                    ],
+                    "type": "bool"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "count": {
+                    "default": 1,
+                    "description": [
+                        "Number of instances to launch."
+                    ],
+                    "type": "int"
+                },
+                "count_tag": {
+                    "description": [
+                        "Used with I(exact_count) to determine how many nodes based on a specific tag criteria should be running. This can be expressed in multiple ways and is shown in the EXAMPLES section.  For instance, one can request 25 servers that are tagged with \"class=webserver\". The specified tag must already exist or be passed in as the I(instance_tags) option."
+                    ],
+                    "type": "raw"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ebs_optimized": {
+                    "default": false,
+                    "description": [
+                        "Whether instance is using optimized EBS volumes, see U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSOptimized.html)."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "exact_count": {
+                    "description": [
+                        "An integer value which indicates how many instances that match the 'count_tag' parameter should be running. Instances are either created or terminated based on this value."
+                    ],
+                    "type": "int"
+                },
+                "group": {
+                    "aliases": [
+                        "groups"
+                    ],
+                    "description": [
+                        "Security group (or list of groups) to use with the instance."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "group_id": {
+                    "description": [
+                        "Security group id (or list of ids) to use with the instance."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "id": {
+                    "description": [
+                        "Identifier for this instance or set of instances, so that the module will be idempotent with respect to EC2 instances.",
+                        "This identifier is valid for at least 24 hours after the termination of the instance, and should not be reused for another call later on.",
+                        "For details, see the description of client token at U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Run_Instance_Idempotency.html)."
+                    ],
+                    "type": "str"
+                },
+                "image": {
+                    "description": [
+                        "I(ami) ID to use for the instance.",
+                        "Required when I(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "instance_ids": {
+                    "aliases": [
+                        "instance_id"
+                    ],
+                    "description": [
+                        "list of instance ids, currently used for states: absent, running, stopped"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "instance_initiated_shutdown_behavior": {
+                    "choices": [
+                        "stop",
+                        "terminate"
+                    ],
+                    "default": "stop",
+                    "description": [
+                        "Set whether AWS will Stop or Terminate an instance on shutdown. This parameter is ignored when using instance-store. images (which require termination on shutdown)."
+                    ],
+                    "type": "str"
+                },
+                "instance_profile_name": {
+                    "description": [
+                        "Name of the IAM instance profile (i.e. what the EC2 console refers to as an \"IAM Role\") to use. Boto library must be 2.5.0+."
+                    ],
+                    "type": "str"
+                },
+                "instance_tags": {
+                    "description": [
+                        "A hash/dictionary of tags to add to the new instance or for starting/stopping instance by tag; '{\"key\":\"value\"}' and '{\"key\":\"value\",\"key\":\"value\"}'."
+                    ],
+                    "type": "dict"
+                },
+                "instance_type": {
+                    "aliases": [
+                        "type"
+                    ],
+                    "description": [
+                        "Instance type to use for the instance, see U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html).",
+                        "Required when creating a new instance."
+                    ],
+                    "type": "str"
+                },
+                "kernel": {
+                    "description": [
+                        "Kernel eki to use for the instance."
+                    ],
+                    "type": "str"
+                },
+                "key_name": {
+                    "aliases": [
+                        "keypair"
+                    ],
+                    "description": [
+                        "Key pair to use on the instance.",
+                        "The SSH key must already exist in AWS in order to use this argument.",
+                        "Keys can be created / deleted using the M(ec2_key) module."
+                    ],
+                    "type": "str"
+                },
+                "monitoring": {
+                    "default": false,
+                    "description": [
+                        "Enable detailed monitoring (CloudWatch) for instance."
+                    ],
+                    "type": "bool"
+                },
+                "network_interfaces": {
+                    "aliases": [
+                        "network_interface"
+                    ],
+                    "description": [
+                        "A list of existing network interfaces to attach to the instance at launch. When specifying existing network interfaces, none of the I(assign_public_ip), I(private_ip), I(vpc_subnet_id), I(group), or I(group_id) parameters may be used. (Those parameters are for creating a new network interface at launch.)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "placement_group": {
+                    "description": [
+                        "Placement group for the instance when using EC2 Clustered Compute."
+                    ],
+                    "type": "str"
+                },
+                "private_ip": {
+                    "description": [
+                        "The private ip address to assign the instance (from the vpc subnet)."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "ramdisk": {
+                    "description": [
+                        "Ramdisk eri to use for the instance."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "source_dest_check": {
+                    "description": [
+                        "Enable or Disable the Source/Destination checks (for NAT instances and Virtual Routers). When initially creating an instance the EC2 API defaults this to C(True)."
+                    ],
+                    "type": "bool"
+                },
+                "spot_launch_group": {
+                    "description": [
+                        "Launch group for spot requests, see U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-spot-instances-work.html#spot-launch-group)."
+                    ],
+                    "type": "str"
+                },
+                "spot_price": {
+                    "description": [
+                        "Maximum spot price to bid. If not set, a regular on-demand instance is requested.",
+                        "A spot request is made with this maximum bid. When it is filled, the instance is started."
+                    ],
+                    "type": "str"
+                },
+                "spot_type": {
+                    "choices": [
+                        "one-time",
+                        "persistent"
+                    ],
+                    "default": "one-time",
+                    "description": [
+                        "The type of spot request.",
+                        "After being interrupted a C(persistent) spot instance will be started once there is capacity to fill the request again."
+                    ],
+                    "type": "str"
+                },
+                "spot_wait_timeout": {
+                    "default": 600,
+                    "description": [
+                        "How long to wait for the spot instance request to be fulfilled. Affects 'Request valid until' for setting spot request lifespan."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "restarted",
+                        "running",
+                        "stopped"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create, terminate, start, stop or restart instances. The state 'restarted' was added in Ansible 2.2.",
+                        "When I(state=absent), I(instance_ids) is required.",
+                        "When I(state=running), I(state=stopped) or I(state=restarted) then either I(instance_ids) or I(instance_tags) is required."
+                    ],
+                    "type": "str"
+                },
+                "tenancy": {
+                    "choices": [
+                        "default",
+                        "dedicated"
+                    ],
+                    "default": "default",
+                    "description": [
+                        "An instance with a tenancy of C(dedicated) runs on single-tenant hardware and can only be launched into a VPC.",
+                        "Note that to use dedicated tenancy you MUST specify a I(vpc_subnet_id) as well.",
+                        "Dedicated tenancy is not available for EC2 \"micro\" instances."
+                    ],
+                    "type": "str"
+                },
+                "termination_protection": {
+                    "default": false,
+                    "description": [
+                        "Enable or Disable the Termination Protection."
+                    ],
+                    "type": "bool"
+                },
+                "user_data": {
+                    "description": [
+                        "Opaque blob of data which is made available to the EC2 instance."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "volumes": {
+                    "description": [
+                        "A list of hash/dictionaries of volumes to add to the new instance."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "delete_on_termination": {
+                            "default": false,
+                            "description": [
+                                "Whether the volume should be automatically deleted when the instance is terminated."
+                            ],
+                            "type": "bool"
+                        },
+                        "device_name": {
+                            "description": [
+                                "A name for the device (For example C(/dev/sda))."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "encrypted": {
+                            "default": false,
+                            "description": [
+                                "Whether the volume should be encrypted using the 'aws/ebs' KMS CMK."
+                            ],
+                            "type": "bool"
+                        },
+                        "ephemeral": {
+                            "description": [
+                                "Whether the volume should be ephemeral.",
+                                "Data on ephemeral volumes is lost when the instance is stopped.",
+                                "Mutually exclusive with the I(snapshot) parameter."
+                            ],
+                            "type": "str"
+                        },
+                        "iops": {
+                            "description": [
+                                "The number of IOPS per second to provision for the volume.",
+                                "Required when I(volume_type=io1)."
+                            ],
+                            "type": "int"
+                        },
+                        "snapshot": {
+                            "description": [
+                                "The ID of an EBS snapshot to copy when creating the volume.",
+                                "Mutually exclusive with the I(ephemeral) parameter."
+                            ],
+                            "type": "str"
+                        },
+                        "volume_size": {
+                            "description": [
+                                "The size of the volume (in GiB)."
+                            ],
+                            "type": "int"
+                        },
+                        "volume_type": {
+                            "description": [
+                                "The type of volume to create.",
+                                "See U(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html) for more information on the available volume types."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "vpc_subnet_id": {
+                    "description": [
+                        "the subnet ID in which to launch the instance (VPC)."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Wait for the instance to reach its desired state before returning.",
+                        "Does not wait for SSH, see the 'wait_for_connection' example for details."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "How long before wait gives up, in seconds."
+                    ],
+                    "type": "int"
+                },
+                "zone": {
+                    "aliases": [
+                        "aws_zone",
+                        "ec2_zone"
+                    ],
+                    "description": [
+                        "AWS availability zone in which to launch the instance."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "create, terminate, start or stop an instance in ec2"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Basic provisioning example\n- ec2:\n    key_name: mykey\n    instance_type: t2.micro\n    image: ami-123456\n    wait: yes\n    group: webserver\n    count: 3\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n# Advanced example with tagging and CloudWatch\n- ec2:\n    key_name: mykey\n    group: databases\n    instance_type: t2.micro\n    image: ami-123456\n    wait: yes\n    wait_timeout: 500\n    count: 5\n    instance_tags:\n       db: postgres\n    monitoring: yes\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n# Single instance with additional IOPS volume from snapshot and volume delete on termination\n- ec2:\n    key_name: mykey\n    group: webserver\n    instance_type: c3.medium\n    image: ami-123456\n    wait: yes\n    wait_timeout: 500\n    volumes:\n      - device_name: /dev/sdb\n        snapshot: snap-abcdef12\n        volume_type: io1\n        iops: 1000\n        volume_size: 100\n        delete_on_termination: true\n    monitoring: yes\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n# Single instance with ssd gp2 root volume\n- ec2:\n    key_name: mykey\n    group: webserver\n    instance_type: c3.medium\n    image: ami-123456\n    wait: yes\n    wait_timeout: 500\n    volumes:\n      - device_name: /dev/xvda\n        volume_type: gp2\n        volume_size: 8\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n    count_tag:\n      Name: dbserver\n    exact_count: 1\n\n# Multiple groups example\n- ec2:\n    key_name: mykey\n    group: ['databases', 'internal-services', 'sshable', 'and-so-forth']\n    instance_type: m1.large\n    image: ami-6e649707\n    wait: yes\n    wait_timeout: 500\n    count: 5\n    instance_tags:\n        db: postgres\n    monitoring: yes\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n# Multiple instances with additional volume from snapshot\n- ec2:\n    key_name: mykey\n    group: webserver\n    instance_type: m1.large\n    image: ami-6e649707\n    wait: yes\n    wait_timeout: 500\n    count: 5\n    volumes:\n    - device_name: /dev/sdb\n      snapshot: snap-abcdef12\n      volume_size: 10\n    monitoring: yes\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n# Dedicated tenancy example\n- local_action:\n    module: ec2\n    assign_public_ip: yes\n    group_id: sg-1dc53f72\n    key_name: mykey\n    image: ami-6e649707\n    instance_type: m1.small\n    tenancy: dedicated\n    vpc_subnet_id: subnet-29e63245\n    wait: yes\n\n# Spot instance example\n- ec2:\n    spot_price: 0.24\n    spot_wait_timeout: 600\n    keypair: mykey\n    group_id: sg-1dc53f72\n    instance_type: m1.small\n    image: ami-6e649707\n    wait: yes\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n    spot_launch_group: report_generators\n    instance_initiated_shutdown_behavior: terminate\n\n# Examples using pre-existing network interfaces\n- ec2:\n    key_name: mykey\n    instance_type: t2.small\n    image: ami-f005ba11\n    network_interface: eni-deadbeef\n\n- ec2:\n    key_name: mykey\n    instance_type: t2.small\n    image: ami-f005ba11\n    network_interfaces: ['eni-deadbeef', 'eni-5ca1ab1e']\n\n# Launch instances, runs some tasks\n# and then terminate them\n\n- name: Create a sandbox instance\n  hosts: localhost\n  gather_facts: False\n  vars:\n    keypair: my_keypair\n    instance_type: m1.small\n    security_group: my_securitygroup\n    image: my_ami_id\n    region: us-east-1\n  tasks:\n    - name: Launch instance\n      ec2:\n         key_name: \"{{ keypair }}\"\n         group: \"{{ security_group }}\"\n         instance_type: \"{{ instance_type }}\"\n         image: \"{{ image }}\"\n         wait: true\n         region: \"{{ region }}\"\n         vpc_subnet_id: subnet-29e63245\n         assign_public_ip: yes\n      register: ec2\n\n    - name: Add new instance to host group\n      add_host:\n        hostname: \"{{ item.public_ip }}\"\n        groupname: launched\n      loop: \"{{ ec2.instances }}\"\n\n    - name: Wait for SSH to come up\n      delegate_to: \"{{ item.public_dns_name }}\"\n      wait_for_connection:\n        delay: 60\n        timeout: 320\n      loop: \"{{ ec2.instances }}\"\n\n- name: Configure instance(s)\n  hosts: launched\n  become: True\n  gather_facts: True\n  roles:\n    - my_awesome_role\n    - my_awesome_test\n\n- name: Terminate instances\n  hosts: localhost\n  tasks:\n    - name: Terminate instances that were previously launched\n      ec2:\n        state: 'absent'\n        instance_ids: '{{ ec2.instance_ids }}'\n\n# Start a few existing instances, run some tasks\n# and stop the instances\n\n- name: Start sandbox instances\n  hosts: localhost\n  gather_facts: false\n  vars:\n    instance_ids:\n      - 'i-xxxxxx'\n      - 'i-xxxxxx'\n      - 'i-xxxxxx'\n    region: us-east-1\n  tasks:\n    - name: Start the sandbox instances\n      ec2:\n        instance_ids: '{{ instance_ids }}'\n        region: '{{ region }}'\n        state: running\n        wait: True\n        vpc_subnet_id: subnet-29e63245\n        assign_public_ip: yes\n  roles:\n    - do_neat_stuff\n    - do_more_neat_stuff\n\n- name: Stop sandbox instances\n  hosts: localhost\n  gather_facts: false\n  vars:\n    instance_ids:\n      - 'i-xxxxxx'\n      - 'i-xxxxxx'\n      - 'i-xxxxxx'\n    region: us-east-1\n  tasks:\n    - name: Stop the sandbox instances\n      ec2:\n        instance_ids: '{{ instance_ids }}'\n        region: '{{ region }}'\n        state: stopped\n        wait: True\n        vpc_subnet_id: subnet-29e63245\n        assign_public_ip: yes\n\n#\n# Start stopped instances specified by tag\n#\n- local_action:\n    module: ec2\n    instance_tags:\n        Name: ExtraPower\n    state: running\n\n#\n# Restart instances specified by tag\n#\n- local_action:\n    module: ec2\n    instance_tags:\n        Name: ExtraPower\n    state: restarted\n\n#\n# Enforce that 5 instances with a tag \"foo\" are running\n# (Highly recommended!)\n#\n\n- ec2:\n    key_name: mykey\n    instance_type: c1.medium\n    image: ami-40603AD1\n    wait: yes\n    group: webserver\n    instance_tags:\n        foo: bar\n    exact_count: 5\n    count_tag: foo\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n#\n# Enforce that 5 running instances named \"database\" with a \"dbtype\" of \"postgres\"\n#\n\n- ec2:\n    key_name: mykey\n    instance_type: c1.medium\n    image: ami-40603AD1\n    wait: yes\n    group: webserver\n    instance_tags:\n        Name: database\n        dbtype: postgres\n    exact_count: 5\n    count_tag:\n        Name: database\n        dbtype: postgres\n    vpc_subnet_id: subnet-29e63245\n    assign_public_ip: yes\n\n#\n# count_tag complex argument examples\n#\n\n    # instances with tag foo\n- ec2:\n    count_tag:\n        foo:\n\n    # instances with tag foo=bar\n- ec2:\n    count_tag:\n        foo: bar\n\n    # instances with tags foo=bar & baz\n- ec2:\n    count_tag:\n        foo: bar\n        baz:\n\n    # instances with tags foo & bar & baz=bang\n- ec2:\n    count_tag:\n        - foo\n        - bar\n        - baz: bang\n\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "core"
+        },
+        "return": null
+    }
+}

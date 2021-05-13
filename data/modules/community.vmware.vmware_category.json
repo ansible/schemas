@@ -1,0 +1,176 @@
+{
+    "community.vmware.vmware_category": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to create / delete / update VMware categories.",
+                "Tag feature is introduced in vSphere 6 version, so this module is not supported in the earlier versions of vSphere.",
+                "All variables and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_category.py",
+            "has_action": false,
+            "module": "vmware_category",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "associable_object_types": {
+                    "choices": [
+                        "All objects",
+                        "Cluster",
+                        "Content Library",
+                        "Datacenter",
+                        "Datastore",
+                        "Datastore Cluster",
+                        "Distributed Port Group",
+                        "Distributed Switch",
+                        "Folder",
+                        "Host",
+                        "Library item",
+                        "Network",
+                        "Host Network",
+                        "Opaque Network",
+                        "Resource Pool",
+                        "vApp",
+                        "Virtual Machine"
+                    ],
+                    "description": [
+                        "List of object types that can be associated with the given category."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "category_cardinality": {
+                    "choices": [
+                        "multiple",
+                        "single"
+                    ],
+                    "default": "multiple",
+                    "description": [
+                        "The category cardinality.",
+                        "This parameter is ignored, when updating existing category."
+                    ],
+                    "type": "str"
+                },
+                "category_description": {
+                    "default": "",
+                    "description": [
+                        "The category description.",
+                        "This is required only if C(state) is set to C(present).",
+                        "This parameter is ignored, when C(state) is set to C(absent)."
+                    ],
+                    "type": "str"
+                },
+                "category_name": {
+                    "description": [
+                        "The name of category to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "new_category_name": {
+                    "description": [
+                        "The new name for an existing category.",
+                        "This value is used while updating an existing category."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead."
+                    ],
+                    "type": "int"
+                },
+                "protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The connection to protocol."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The state of category.",
+                        "If set to C(present) and category does not exists, then category is created.",
+                        "If set to C(present) and category exists, then category is updated.",
+                        "If set to C(absent) and category exists, then category is deleted.",
+                        "If set to C(absent) and category does not exists, no action is taken.",
+                        "Process of updating category only allows name, description change."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid.",
+                        "Set to C(no) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi",
+                "vSphere Automation SDK"
+            ],
+            "short_description": "Manage VMware categories"
+        },
+        "examples": "\n- name: Create a category\n  community.vmware.vmware_category:\n    hostname: \"{{ vcenter_server }}\"\n    username: \"{{ vcenter_user }}\"\n    password: \"{{ vcenter_pass }}\"\n    category_name: Sample_Cat_0001\n    category_description: Sample Description\n    category_cardinality: 'multiple'\n    state: present\n\n- name: Rename category\n  community.vmware.vmware_category:\n    hostname: \"{{ vcenter_server }}\"\n    username: \"{{ vcenter_user }}\"\n    password: \"{{ vcenter_pass }}\"\n    category_name: Sample_Category_0001\n    new_category_name: Sample_Category_0002\n    state: present\n\n- name: Update category description\n  community.vmware.vmware_category:\n    hostname: \"{{ vcenter_server }}\"\n    username: \"{{ vcenter_user }}\"\n    password: \"{{ vcenter_pass }}\"\n    category_name: Sample_Category_0001\n    category_description: Some fancy description\n    state: present\n\n- name: Delete category\n  community.vmware.vmware_category:\n    hostname: \"{{ vcenter_server }}\"\n    username: \"{{ vcenter_user }}\"\n    password: \"{{ vcenter_pass }}\"\n    category_name: Sample_Category_0002\n    state: absent\n\n- name: Create category with 2 associable object types\n  community.vmware.vmware_category:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    validate_certs: False\n    category_name: 'Sample_Category_0003'\n    category_description: 'sample description'\n    associable_object_types:\n    - Datastore\n    - Cluster\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "category_results": {
+                "description": "dictionary of category metadata",
+                "returned": "on success",
+                "sample": {
+                    "category_id": "urn:vmomi:InventoryServiceCategory:d7120bda-9fa5-4f92-9d71-aa1acff2e5a8:GLOBAL",
+                    "msg": "Category NewCat_0001 updated."
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

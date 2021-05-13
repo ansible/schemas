@@ -1,0 +1,134 @@
+{
+    "cisco.iosxr.iosxr_acl_interfaces": {
+        "doc": {
+            "author": "Nilashish Chakraborty (@NilashishC)",
+            "collection": "cisco.iosxr",
+            "description": [
+                "This module manages adding and removing Access Control Lists (ACLs) from interfaces on devices running IOS-XR software."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/iosxr/plugins/modules/iosxr_acl_interfaces.py",
+            "has_action": true,
+            "module": "iosxr_acl_interfaces",
+            "options": {
+                "config": {
+                    "description": "A dictionary of ACL options for interfaces.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "access_groups": {
+                            "description": [
+                                "Specifies ACLs attached to the interfaces."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "acls": {
+                                    "description": [
+                                        "Specifies the ACLs for the provided AFI."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "direction": {
+                                            "choices": [
+                                                "in",
+                                                "out"
+                                            ],
+                                            "description": [
+                                                "Specifies the direction of packets that the ACL will be applied on."
+                                            ],
+                                            "required": true,
+                                            "type": "str"
+                                        },
+                                        "name": {
+                                            "description": [
+                                                "Specifies the name of the IPv4/IPv6 ACL for the interface."
+                                            ],
+                                            "required": true,
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "afi": {
+                                    "choices": [
+                                        "ipv4",
+                                        "ipv6"
+                                    ],
+                                    "description": [
+                                        "Specifies the AFI for the ACL(s) to be configured on this interface."
+                                    ],
+                                    "required": true,
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "name": {
+                            "description": [
+                                "Name/Identifier for the interface"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS-XR device by executing the command B(show running-config interface).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "parsed",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "ACL interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.iosxr"
+        },
+        "examples": "\n# Using merged\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:22:32.911 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n# !\n\n- name: Merge the provided configuration with the existing running configuration\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: acl_1\n          direction: in\n        - name: acl_2\n          direction: out\n      - afi: ipv6\n        acls:\n        - name: acl6_1\n          direction: in\n        - name: acl6_2\n          direction: out\n\n    - name: GigabitEthernet0/0/0/1\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: acl_1\n          direction: out\n    state: merged\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:27:49.378 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n\n# Using merged to update interface ACL configuration\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:27:49.378 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n#\n\n- name: Update acl_interfaces configuration using merged\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/1\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: acl_2\n          direction: out\n        - name: acl_1\n          direction: in\n    state: merged\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:27:49.378 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n# !\n#\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n\n- name: Replace device configurations of listed interface with provided configurations\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/0\n      access_groups:\n      - afi: ipv6\n        acls:\n        - name: acl6_3\n          direction: in\n    state: replaced\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv6 access-group acl6_3 ingress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n#\n\n# Using overridden\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n#\n\n- name: Overridde all interface ACL configuration with provided configuration\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/1\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: acl_2\n          direction: in\n      - afi: ipv6\n        acls:\n        - name: acl6_3\n          direction: out\n    state: overridden\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_2 ingress\n#  ipv6 access-group acl6_3 egress\n# !\n#\n\n# Using 'deleted' to delete all ACL attributes of a single interface\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n#\n\n- name: Delete all ACL attributes of GigabitEthernet0/0/0/1\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/1\n    state: deleted\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n# !\n#\n\n# Using 'deleted' to remove all ACLs attached to all the interfaces in the device\n\n# Before state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n#\n\n- name: Delete all ACL interfaces configuration from the device\n  cisco.iosxr.iosxr_acl_interfaces:\n    state: deleted\n\n# After state:\n# -------------\n#\n# RP/0/RP0/CPU0:ios#sh running-config interface\n# Wed Jan 15 12:34:56.689 UTC\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n# !\n#\n\n# Using parsed\n\n# parsed.cfg\n# ------------\n#\n# interface MgmtEth0/RP0/CPU0/0\n#  ipv4 address dhcp\n# !\n# interface GigabitEthernet0/0/0/0\n#  shutdown\n#  ipv4 access-group acl_1 ingress\n#  ipv4 access-group acl_2 egress\n#  ipv6 access-group acl6_1 ingress\n#  ipv6 access-group acl6_2 egress\n# !\n# interface GigabitEthernet0/0/0/1\n#  shutdown\n#  ipv4 access-group acl_1 egress\n# !\n\n# - name: Convert ACL interfaces config to argspec without connecting to the appliance\n#   cisco.iosxr.iosxr_acl_interfaces:\n#     running_config: \"{{ lookup('file', './parsed.cfg') }}\"\n#     state: parsed\n\n\n# Task Output (redacted)\n# -----------------------\n\n# \"parsed\": [\n#        {\n#            \"name\": \"MgmtEth0/RP0/CPU0/0\"\n#        },\n#        {\n#            \"access_groups\": [\n#                {\n#                    \"acls\": [\n#                        {\n#                            \"direction\": \"in\",\n#                            \"name\": \"acl_1\"\n#                        },\n#                        {\n#                            \"direction\": \"out\",\n#                            \"name\": \"acl_2\"\n#                        }\n#                    ],\n#                    \"afi\": \"ipv4\"\n#                },\n#                {\n#                    \"acls\": [\n#                        {\n#                            \"direction\": \"in\",\n#                            \"name\": \"acl6_1\"\n#                        },\n#                        {\n#                            \"direction\": \"out\",\n#                            \"name\": \"acl6_2\"\n#                        }\n#                    ],\n#                    \"afi\": \"ipv6\"\n#                }\n#            ],\n#            \"name\": \"GigabitEthernet0/0/0/0\"\n#        },\n#        {\n#            \"access_groups\": [\n#                {\n#                    \"acls\": [\n#                        {\n#                            \"direction\": \"out\",\n#                            \"name\": \"acl_1\"\n#                        }\n#                    ],\n#                    \"afi\": \"ipv4\"\n#                }\n#            ],\n#            \"name\": \"GigabitEthernet0/0/0/1\"\n#        }\n#    ]\n# }\n\n\n# Using gathered\n\n- name: Gather ACL interfaces facts using gathered state\n  cisco.iosxr.iosxr_acl_interfaces:\n    state: gathered\n\n\n# Task Output (redacted)\n# -----------------------\n#\n# \"gathered\": [\n#   {\n#      \"name\": \"MgmtEth0/RP0/CPU0/0\"\n#   },\n#   {\n#      \"access_groups\": [\n#          {\n#              \"acls\": [\n#                  {\n#                      \"direction\": \"in\",\n#                      \"name\": \"acl_1\"\n#                  },\n#                  {\n#                      \"direction\": \"out\",\n#                      \"name\": \"acl_2\"\n#                  }\n#              ],\n#              \"afi\": \"ipv4\"\n#          }\n#      \"name\": \"GigabitEthernet0/0/0/0\"\n#  },\n#  {\n#      \"access_groups\": [\n#          {\n#              \"acls\": [\n#                  {\n#                      \"direction\": \"in\",\n#                      \"name\": \"acl6_1\"\n#                  }\n#              ],\n#              \"afi\": \"ipv6\"\n#          }\n#       \"name\": \"GigabitEthernet0/0/0/1\"\n#   }\n# ]\n\n\n# Using rendered\n\n- name: Render platform specific commands from task input using rendered state\n  cisco.iosxr.iosxr_acl_interfaces:\n    config:\n    - name: GigabitEthernet0/0/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: acl_1\n          direction: in\n        - name: acl_2\n          direction: out\n    state: rendered\n\n# Task Output (redacted)\n# -----------------------\n\n# \"rendered\": [\n#     \"interface GigabitEthernet0/0/0/0\",\n#     \"ipv4 access-group acl_1 ingress\",\n#     \"ipv4 access-group acl_2 egress\"\n# ]\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The resulting configuration model invocation.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration prior to the model invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "interface GigabitEthernet0/0/0/1",
+                    "ipv4 access-group acl_1 ingress",
+                    "ipv4 access-group acl_2 egress",
+                    "ipv6 access-group acl6_1 ingress",
+                    "interface GigabitEthernet0/0/0/2",
+                    "no ipv4 access-group acl_3 ingress",
+                    "ipv4 access-group acl_4 egress"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

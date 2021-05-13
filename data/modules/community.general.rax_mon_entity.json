@@ -1,0 +1,137 @@
+{
+    "community.general.rax_mon_entity": {
+        "doc": {
+            "author": "Ash Wilson (@smashwilson)",
+            "collection": "community.general",
+            "description": [
+                "Create or delete a Rackspace Cloud Monitoring entity, which represents a device to monitor. Entities associate checks and alarms with a target system and provide a convenient, centralized place to store IP addresses. Rackspace monitoring module flow | *rax_mon_entity* -> rax_mon_check -> rax_mon_notification -> rax_mon_notification_plan -> rax_mon_alarm"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/rax_mon_entity.py",
+            "has_action": false,
+            "module": "rax_mon_entity",
+            "notes": [
+                "The following environment variables can be used, C(RAX_USERNAME), C(RAX_API_KEY), C(RAX_CREDS_FILE), C(RAX_CREDENTIALS), C(RAX_REGION).",
+                "C(RAX_CREDENTIALS) and C(RAX_CREDS_FILE) points to a credentials file appropriate for pyrax. See U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#authenticating)",
+                "C(RAX_USERNAME) and C(RAX_API_KEY) obviate the use of a credentials file",
+                "C(RAX_REGION) defines a Rackspace Public Cloud region (DFW, ORD, LON, ...)"
+            ],
+            "options": {
+                "agent_id": {
+                    "description": [
+                        "Rackspace monitoring agent on the target device to which this entity is bound. Necessary to collect C(agent.) rax_mon_checks against this entity."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "aliases": [
+                        "password"
+                    ],
+                    "description": [
+                        "Rackspace API key, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "auth_endpoint": {
+                    "description": [
+                        "The URI of the authentication service.",
+                        "If not specified will be set to U(https://identity.api.rackspacecloud.com/v2.0/)"
+                    ],
+                    "type": "str"
+                },
+                "credentials": {
+                    "aliases": [
+                        "creds_file"
+                    ],
+                    "description": [
+                        "File to find the Rackspace credentials in. Ignored if I(api_key) and I(username) are provided."
+                    ],
+                    "type": "path"
+                },
+                "env": {
+                    "description": [
+                        "Environment as configured in I(~/.pyrax.cfg), see U(https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md#pyrax-configuration)."
+                    ],
+                    "type": "str"
+                },
+                "identity_type": {
+                    "default": "rackspace",
+                    "description": [
+                        "Authentication mechanism to use, such as rackspace or keystone."
+                    ],
+                    "type": "str"
+                },
+                "label": {
+                    "description": [
+                        "Defines a name for this entity. Must be a non-empty string between 1 and 255 characters long."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "metadata": {
+                    "description": [
+                        "Hash of arbitrary C(name), C(value) pairs that are passed to associated rax_mon_alarms. Names and values must all be between 1 and 255 characters long."
+                    ],
+                    "type": "dict"
+                },
+                "named_ip_addresses": {
+                    "description": [
+                        "Hash of IP addresses that may be referenced by name by rax_mon_checks added to this entity. Must be a dictionary of with keys that are names between 1 and 64 characters long, and values that are valid IPv4 or IPv6 addresses."
+                    ],
+                    "type": "dict"
+                },
+                "region": {
+                    "description": [
+                        "Region to create an instance in."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Ensure that an entity with this C(name) exists or does not exist."
+                    ],
+                    "type": "str"
+                },
+                "tenant_id": {
+                    "description": [
+                        "The tenant ID used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "tenant_name": {
+                    "description": [
+                        "The tenant name used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Rackspace username, overrides I(credentials)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to require SSL validation of API endpoints."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "pyrax"
+            ],
+            "short_description": "Create or delete a Rackspace Cloud Monitoring entity"
+        },
+        "examples": "\n- name: Entity example\n  gather_facts: False\n  hosts: local\n  connection: local\n  tasks:\n  - name: Ensure an entity exists\n    community.general.rax_mon_entity:\n      credentials: ~/.rax_pub\n      state: present\n      label: my_entity\n      named_ip_addresses:\n        web_box: 192.0.2.4\n        db_box: 192.0.2.5\n      meta:\n        hurf: durf\n    register: the_entity\n",
+        "metadata": null,
+        "return": null
+    }
+}

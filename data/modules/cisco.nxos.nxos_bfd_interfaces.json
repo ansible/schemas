@@ -1,0 +1,102 @@
+{
+    "cisco.nxos.nxos_bfd_interfaces": {
+        "doc": {
+            "author": "Chris Van Heuveln (@chrisvanheuveln)",
+            "collection": "cisco.nxos",
+            "description": "Manages attributes of Bidirectional Forwarding Detection (BFD) on the interface.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/nxos/plugins/modules/nxos_bfd_interfaces.py",
+            "has_action": true,
+            "module": "nxos_bfd_interfaces",
+            "notes": [
+                "Tested against NX-OS 7.0(3)I5(1).",
+                "Feature bfd should be enabled for this module."
+            ],
+            "options": {
+                "config": {
+                    "description": "The provided configuration",
+                    "elements": "dict",
+                    "suboptions": {
+                        "bfd": {
+                            "choices": [
+                                "enable",
+                                "disable"
+                            ],
+                            "description": [
+                                "Enable/Disable Bidirectional Forwarding Detection (BFD) on the interface."
+                            ],
+                            "type": "str"
+                        },
+                        "echo": {
+                            "choices": [
+                                "enable",
+                                "disable"
+                            ],
+                            "description": [
+                                "Enable/Disable BFD Echo functionality on the interface."
+                            ],
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": "The name of the interface.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the NX-OS device by executing the command B(show running-config | section '^interface|^feature bfd').",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "BFD interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.nxos"
+        },
+        "examples": "\n# Using deleted\n\n- name: Configure interfaces\n  cisco.nxos.nxos_bfd_interfaces:\n    state: deleted\n\n\n# Using merged\n\n- name: Configure interfaces\n  cisco.nxos.nxos_bfd_interfaces:\n    config:\n    - name: Ethernet1/1\n      bfd: enable\n      echo: enable\n    - name: Ethernet1/2\n      bfd: disable\n      echo: disable\n    state: merged\n\n\n# Using overridden\n\n- name: Configure interfaces\n  cisco.nxos.nxos_bfd_interfaces:\n    config:\n    - name: Ethernet1/1\n      bfd: enable\n      echo: enable\n    - name: Ethernet1/2\n      bfd: disable\n      echo: disable\n    state: overridden\n\n\n# Using replaced\n\n- name: Configure interfaces\n  cisco.nxos.nxos_bfd_interfaces:\n    config:\n    - name: Ethernet1/1\n      bfd: enable\n      echo: enable\n    - name: Ethernet1/2\n      bfd: disable\n      echo: disable\n    state: replaced\n\n# Using rendered\n\n- name: Use rendered state to convert task input to device specific commands\n  cisco.nxos.nxos_bfd_interfaces:\n    config:\n    - name: Ethernet1/800\n      bfd: enable\n      echo: enable\n    - name: Ethernet1/801\n      bfd: disable\n      echo: disable\n    state: rendered\n\n# Task Output (redacted)\n# -----------------------\n\n# rendered:\n#   - \"interface Ethernet1/800\"\n#   - \"bfd\"\n#   - \"bfd echo\"\n#   - \"interface Ethernet1/801\"\n#   - \"no bfd\"\n#   - \"no bfd echo\"\n\n# Using parsed\n\n# parsed.cfg\n# ------------\n\n# feature bfd\n# interface Ethernet1/800\n#   no switchport\n#   no bfd\n#   no bfd echo\n# interface Ethernet1/801\n#   no switchport\n#   no bfd\n# interface Ethernet1/802\n#   no switchport\n#   no bfd echo\n# interface mgmt0\n#   ip address dhcp\n#   vrf member management\n\n- name: Use parsed state to convert externally supplied config to structured format\n  cisco.nxos.nxos_bfd_interfaces:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# Task output (redacted)\n# -----------------------\n\n# parsed:\n#   - bfd: disable\n#     echo: disable\n#     name: Ethernet1/800\n#   - bfd: disable\n#     echo: enable\n#     name: Ethernet1/801\n#   - bfd: enable\n#     echo: disable\n#     name: Ethernet1/802\n#   - bfd: enable\n#     echo: enable\n#     name: mgmt0\n\n# Using gathered\n\n# Existing device config state\n# -------------------------------\n\n# feature bfd\n# interface Ethernet1/1\n#   no switchport\n#   no bfd\n# interface Ethernet1/2\n#   no switchport\n#   no bfd echo\n# interface mgmt0\n#   ip address dhcp\n#   vrf member management\n\n- name: Gather bfd_interfaces facts from the device using nxos_bfd_interfaces\n  cisco.nxos.nxos_bfd_interfaces:\n    state: gathered\n\n# Task output (redacted)\n# -----------------------\n# gathered:\n# - name: Ethernet1/1\n#   bfd: disable\n#   echo: enable\n# - name: Ethernet1/3\n#   echo: disable\n#   bfd: enable\n# - name: mgmt0\n#   bfd: enable\n#   echo: enable\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "interface Ethernet1/1",
+                    "no bfd",
+                    "no bfd echo"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

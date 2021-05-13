@@ -1,0 +1,383 @@
+{
+    "community.vmware.vmware_guest_network": {
+        "doc": {
+            "author": [
+                "Diane Wang (@Tomorrow9) <dianew@vmware.com>"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module is used to add, reconfigure, remove network adapter of given virtual machine."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_network.py",
+            "has_action": false,
+            "module": "vmware_guest_network",
+            "notes": [
+                "Tested on vSphere 6.0, 6.5 and 6.7",
+                "For backwards compatibility network_data is returned when using the gather_network_info and networks parameters"
+            ],
+            "options": {
+                "cluster": {
+                    "description": [
+                        "Name of cluster where vm is run"
+                    ],
+                    "type": "str"
+                },
+                "connected": {
+                    "default": true,
+                    "description": [
+                        "If nic should be connected to the network"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "datacenter": {
+                    "default": "ha-datacenter",
+                    "description": [
+                        "Datacenter the vm belongs to"
+                    ],
+                    "type": "str"
+                },
+                "device_type": {
+                    "default": "vmxnet3",
+                    "description": "Valid virtual network device is one of the following C(e1000), C(e1000e), C(pcnet32), C(vmxnet2), C(vmxnet3) (default), C(sriov).",
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "directpath_io": {
+                    "default": false,
+                    "description": [
+                        "Enable Universal Pass-through (UPT). Only compatible with the vmxnet3 device type"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "The hostname of the esxi host where the vm is run"
+                    ],
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Folder location of given vm, this is only required when there's multiple vm's with the same name"
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Force adapter creation even if an existing adapter is attached to the same network"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "gather_network_info": {
+                    "aliases": [
+                        "gather_network_facts"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Return information about current guest network adapters"
+                    ],
+                    "type": "bool"
+                },
+                "guest_control": {
+                    "default": true,
+                    "description": [
+                        "Enables guest control over whether the connectable device is connected."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "label": {
+                    "description": [
+                        "Alter the name of the network adapter"
+                    ],
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "mac_address": {
+                    "description": [
+                        "mac address of the nic that should be altered, if a mac address isn't supplied a new nic will be created",
+                        "Required when I(state=absent)"
+                    ],
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "moid": {
+                    "description": [
+                        "Managed Object ID of the instance to manage if known, this is a unique identifier only within a single vCenter instance",
+                        "Required if uuid or name is not supplied"
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of virtual machine",
+                        "Required if uuid or moid is not supplied"
+                    ],
+                    "type": "str"
+                },
+                "network_name": {
+                    "description": [
+                        "Name of network in vsphere"
+                    ],
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "networks": {
+                    "description": [
+                        "This method will be deprecated, use loops in your playbook for multiple interfaces instead",
+                        "A list of network adapters",
+                        "C(mac) or C(label) or C(device_type) is required to reconfigure or remove an existing network adapter.",
+                        "If there are multiple network adapters with the same C(device_type), you should set C(label) or C(mac) to match one of them, or will apply changes on all network adapters with the C(device_type) specified.",
+                        "C(mac), C(label), C(device_type) is the order of precedence from greatest to least if all set.",
+                        "Valid attributes are:",
+                        " - C(mac) (string): MAC address of the existing network adapter to be reconfigured or removed.",
+                        " - C(label) (string): Label of the existing network adapter to be reconfigured or removed, e.g., \"Network adapter 1\".",
+                        " - C(device_type) (string): Valid virtual network device types are: C(e1000), C(e1000e), C(pcnet32), C(vmxnet2), C(vmxnet3) (default), C(sriov). Used to add new network adapter, reconfigure or remove the existing network adapter with this type. If C(mac) and C(label) not specified or not find network adapter by C(mac) or C(label) will use this parameter.",
+                        " - C(name) (string): Name of the portgroup or distributed virtual portgroup for this interface. When specifying distributed virtual portgroup make sure given C(esxi_hostname) or C(cluster) is associated with it.",
+                        " - C(vlan) (integer): VLAN number for this interface.",
+                        " - C(dvswitch_name) (string): Name of the distributed vSwitch. This value is required if multiple distributed portgroups exists with the same name.",
+                        " - C(state) (string): State of the network adapter.",
+                        "   If set to C(present), then will do reconfiguration for the specified network adapter.",
+                        "   If set to C(new), then will add the specified network adapter.",
+                        "   If set to C(absent), then will remove this network adapter.",
+                        " - C(manual_mac) (string): Manual specified MAC address of the network adapter when creating, or reconfiguring. If not specified when creating new network adapter, mac address will be generated automatically. When reconfigure MAC address, VM should be in powered off state.",
+                        " - C(connected) (bool): Indicates that virtual network adapter connects to the associated virtual machine.",
+                        " - C(start_connected) (bool): Indicates that virtual network adapter starts with associated virtual machine powers on.",
+                        " - C(directpath_io) (bool): If set, Universal Pass-Through (UPT or DirectPath I/O) will be enabled on the network adapter. UPT is only compatible for Vmxnet3 adapter."
+                    ],
+                    "type": "list"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "start_connected": {
+                    "default": true,
+                    "description": [
+                        "If nic should be connected to network on startup"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Nic state.",
+                        "When C(state=present), a nic will be added if a mac address or label doesn't previously exists or is unset",
+                        "When C(state=absent), the I(mac_address) parameter has to be set"
+                    ],
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "switch": {
+                    "description": [
+                        "Name of the (dv)switch for destination network, this is only required for dvswitches"
+                    ],
+                    "type": "str",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "use_instance_uuid": {
+                    "default": false,
+                    "description": [
+                        "Whether to use the VMware instance UUID rather than the BIOS UUID."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "vm uuid",
+                        "Required if name or moid is not supplied"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "vlan_id": {
+                    "description": [
+                        "Vlan id associated with the network"
+                    ],
+                    "type": "int",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                },
+                "wake_onlan": {
+                    "default": false,
+                    "description": [
+                        "Enable wake on lan"
+                    ],
+                    "type": "bool",
+                    "version_added": "2.10",
+                    "version_added_collection": "community.vmware"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi"
+            ],
+            "short_description": "Manage network adapters of specified virtual machine in given vCenter infrastructure",
+            "version_added": "2.9",
+            "version_added_collection": "community.vmware"
+        },
+        "examples": "\n- name: change network for 00:50:56:11:22:33 on vm01.domain.fake\n  community.vmware.vmware_guest_network:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    name: vm01.domain.fake\n    mac_address: 00:50:56:11:22:33\n    network_name: admin-network\n    state: present\n\n- name: add a nic on network with vlan id 2001 for 422d000d-2000-ffff-0000-b00000000000\n  community.vmware.vmware_guest_network:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    uuid: 422d000d-2000-ffff-0000-b00000000000\n    vlan_id: 2001\n\n- name: remove nic with mac 00:50:56:11:22:33 from vm01.domain.fake\n  community.vmware.vmware_guest_network:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    mac_address: 00:50:56:11:22:33\n    name: vm01.domain.fake\n    state: absent\n\n- name: add multiple nics to vm01.domain.fake\n  community.vmware.vmware_guest_network:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    name: vm01.domain.fake\n    state: present\n    vlan_id: \"{{ item.vlan_id | default(omit) }}\"\n    network_name: \"{{ item.network_name | default(omit) }}\"\n    connected: \"{{ item.connected | default(omit) }}\"\n  loop:\n    - vlan_id: 2000\n      connected: false\n    - network_name: guest-net\n      connected: true\n",
+        "metadata": null,
+        "return": {
+            "network_data": {
+                "description": "For backwards compatibility, metadata about the virtual machine network adapters",
+                "returned": "when using gather_network_info or networks parameters",
+                "sample": {
+                    "network_data": {
+                        "0": {
+                            "allow_guest_ctl": true,
+                            "connected": true,
+                            "device_type": "vmxnet3",
+                            "label": "Network adapter 2",
+                            "mac_addr": "00:50:56:AA:AA:AA",
+                            "mac_address": "00:50:56:AA:AA:AA",
+                            "name": "admin-net",
+                            "network_name": "admin-net",
+                            "start_connected": true,
+                            "switch": "vSwitch0",
+                            "unit_number": 8,
+                            "vlan_id": 10,
+                            "wake_onlan": false
+                        },
+                        "1": {
+                            "allow_guest_ctl": true,
+                            "connected": true,
+                            "device_type": "vmxnet3",
+                            "label": "Network adapter 1",
+                            "mac_addr": "00:50:56:BB:BB:BB",
+                            "mac_address": "00:50:56:BB:BB:BB",
+                            "name": "guest-net",
+                            "network_name": "guest-net",
+                            "start_connected": true,
+                            "switch": "vSwitch0",
+                            "unit_number": 7,
+                            "vlan_id": 10,
+                            "wake_onlan": true
+                        }
+                    }
+                },
+                "type": "dict"
+            },
+            "network_info": {
+                "description": "metadata about the virtual machine network adapters",
+                "returned": "always",
+                "sample": {
+                    "network_info": [
+                        {
+                            "allow_guest_ctl": true,
+                            "connected": true,
+                            "device_type": "vmxnet3",
+                            "label": "Network adapter 2",
+                            "mac_address": "00:50:56:AA:AA:AA",
+                            "network_name": "admin-net",
+                            "start_connected": true,
+                            "switch": "vSwitch0",
+                            "unit_number": 8,
+                            "vlan_id": 10,
+                            "wake_onlan": false
+                        },
+                        {
+                            "allow_guest_ctl": true,
+                            "connected": true,
+                            "device_type": "vmxnet3",
+                            "label": "Network adapter 1",
+                            "mac_address": "00:50:56:BB:BB:BB",
+                            "network_name": "guest-net",
+                            "start_connected": true,
+                            "switch": "vSwitch0",
+                            "unit_number": 7,
+                            "vlan_id": 10,
+                            "wake_onlan": true
+                        }
+                    ]
+                },
+                "type": "list"
+            }
+        }
+    }
+}

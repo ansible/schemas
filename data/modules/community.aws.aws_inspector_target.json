@@ -1,0 +1,169 @@
+{
+    "community.aws.aws_inspector_target": {
+        "doc": {
+            "author": "Dennis Conrad (@dennisconrad)",
+            "collection": "community.aws",
+            "description": "Creates, updates, or deletes Amazon Inspector Assessment Targets and manages the required Resource Groups.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_inspector_target.py",
+            "has_action": false,
+            "module": "aws_inspector_target",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The user-defined name that identifies the assessment target.  The name must be unique within the AWS account."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The state of the assessment target."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tags of the EC2 instances to be added to the assessment target.",
+                        "Required if C(state=present)."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Create, Update and Delete Amazon Inspector Assessment Targets",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Create my_target Assessment Target\n  community.aws.aws_inspector_target:\n    name: my_target\n    tags:\n      role: scan_target\n\n- name: Update Existing my_target Assessment Target with Additional Tags\n  community.aws.aws_inspector_target:\n    name: my_target\n    tags:\n      env: dev\n      role: scan_target\n\n- name: Delete my_target Assessment Target\n  community.aws.aws_inspector_target:\n    name: my_target\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "arn": {
+                "description": "The ARN that specifies the Amazon Inspector assessment target.",
+                "returned": "success",
+                "sample": "arn:aws:inspector:eu-west-1:123456789012:target/0-O4LnL7n1",
+                "type": "str"
+            },
+            "created_at": {
+                "description": "The time at which the assessment target was created.",
+                "returned": "success",
+                "sample": "2018-01-29T13:48:51.958000+00:00",
+                "type": "str"
+            },
+            "name": {
+                "description": "The name of the Amazon Inspector assessment target.",
+                "returned": "success",
+                "sample": "my_target",
+                "type": "str"
+            },
+            "resource_group_arn": {
+                "description": "The ARN that specifies the resource group that is associated with the assessment target.",
+                "returned": "success",
+                "sample": "arn:aws:inspector:eu-west-1:123456789012:resourcegroup/0-qY4gDel8",
+                "type": "str"
+            },
+            "tags": {
+                "description": "The tags of the resource group that is associated with the assessment target.",
+                "returned": "success",
+                "sample": {
+                    "env": "dev",
+                    "role": "scan_target"
+                },
+                "type": "list"
+            },
+            "updated_at": {
+                "description": "The time at which the assessment target was last updated.",
+                "returned": "success",
+                "sample": "2018-01-29T13:48:51.958000+00:00",
+                "type": "str"
+            }
+        }
+    }
+}

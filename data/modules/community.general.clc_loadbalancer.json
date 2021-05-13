@@ -1,0 +1,151 @@
+{
+    "community.general.clc_loadbalancer": {
+        "doc": {
+            "author": "CLC Runner (@clc-runner)",
+            "collection": "community.general",
+            "description": [
+                "An Ansible module to Create, Delete shared loadbalancers in CenturyLink Cloud."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/clc_loadbalancer.py",
+            "has_action": false,
+            "module": "clc_loadbalancer",
+            "notes": [
+                "To use this module, it is required to set the below environment variables which enables access to the Centurylink Cloud - CLC_V2_API_USERNAME, the account login id for the centurylink cloud - CLC_V2_API_PASSWORD, the account password for the centurylink cloud",
+                "Alternatively, the module accepts the API token and account alias. The API token can be generated using the CLC account login and password via the HTTP api call @ https://api.ctl.io/v2/authentication/login - CLC_V2_API_TOKEN, the API token generated from https://api.ctl.io/v2/authentication/login - CLC_ACCT_ALIAS, the account alias associated with the centurylink cloud",
+                "Users can set CLC_V2_API_URL to specify an endpoint for pointing to a different CLC environment."
+            ],
+            "options": {
+                "alias": {
+                    "description": [
+                        "The alias of your CLC Account"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "A description for the loadbalancer"
+                    ],
+                    "type": "str"
+                },
+                "location": {
+                    "description": [
+                        "The location of the datacenter where the load balancer resides in"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "method": {
+                    "choices": [
+                        "leastConnection",
+                        "roundRobin"
+                    ],
+                    "description": "-The balancing method for the load balancer pool",
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the loadbalancer"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nodes": {
+                    "default": [],
+                    "description": [
+                        "A list of nodes that needs to be added to the load balancer pool"
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "persistence": {
+                    "choices": [
+                        "standard",
+                        "sticky"
+                    ],
+                    "description": [
+                        "The persistence method for the load balancer"
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "choices": [
+                        80,
+                        443
+                    ],
+                    "description": [
+                        "Port to configure on the public-facing side of the load balancer pool"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "port_absent",
+                        "nodes_present",
+                        "nodes_absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether to create or delete the load balancer pool"
+                    ],
+                    "type": "str"
+                },
+                "status": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "The status of the loadbalancer"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python = 2.7",
+                "requests >= 2.5.0",
+                "clc-sdk"
+            ],
+            "short_description": "Create, Delete shared loadbalancers in CenturyLink Cloud."
+        },
+        "examples": "\n# Note - You must set the CLC_V2_API_USERNAME And CLC_V2_API_PASSWD Environment variables before running these examples\n- name: Create Loadbalancer\n  hosts: localhost\n  connection: local\n  tasks:\n    - name: Actually Create things\n      community.general.clc_loadbalancer:\n        name: test\n        description: test\n        alias: TEST\n        location: WA1\n        port: 443\n        nodes:\n          - ipAddress: 10.11.22.123\n            privatePort: 80\n        state: present\n\n- name: Add node to an existing loadbalancer pool\n  hosts: localhost\n  connection: local\n  tasks:\n    - name: Actually Create things\n      community.general.clc_loadbalancer:\n        name: test\n        description: test\n        alias: TEST\n        location: WA1\n        port: 443\n        nodes:\n          - ipAddress: 10.11.22.234\n            privatePort: 80\n        state: nodes_present\n\n- name: Remove node from an existing loadbalancer pool\n  hosts: localhost\n  connection: local\n  tasks:\n    - name: Actually Create things\n      community.general.clc_loadbalancer:\n        name: test\n        description: test\n        alias: TEST\n        location: WA1\n        port: 443\n        nodes:\n          - ipAddress: 10.11.22.234\n            privatePort: 80\n        state: nodes_absent\n\n- name: Delete LoadbalancerPool\n  hosts: localhost\n  connection: local\n  tasks:\n    - name: Actually Delete things\n      community.general.clc_loadbalancer:\n        name: test\n        description: test\n        alias: TEST\n        location: WA1\n        port: 443\n        nodes:\n          - ipAddress: 10.11.22.123\n            privatePort: 80\n        state: port_absent\n\n- name: Delete Loadbalancer\n  hosts: localhost\n  connection: local\n  tasks:\n    - name: Actually Delete things\n      community.general.clc_loadbalancer:\n        name: test\n        description: test\n        alias: TEST\n        location: WA1\n        port: 443\n        nodes:\n          - ipAddress: 10.11.22.123\n            privatePort: 80\n        state: absent\n",
+        "metadata": null,
+        "return": {
+            "loadbalancer": {
+                "description": "The load balancer result object from CLC",
+                "returned": "success",
+                "sample": {
+                    "description": "test-lb",
+                    "id": "ab5b18cb81e94ab9925b61d1ca043fb5",
+                    "ipAddress": "66.150.174.197",
+                    "links": [
+                        {
+                            "href": "/v2/sharedLoadBalancers/wfad/wa1/ab5b18cb81e94ab9925b61d1ca043fb5",
+                            "rel": "self",
+                            "verbs": [
+                                "GET",
+                                "PUT",
+                                "DELETE"
+                            ]
+                        },
+                        {
+                            "href": "/v2/sharedLoadBalancers/wfad/wa1/ab5b18cb81e94ab9925b61d1ca043fb5/pools",
+                            "rel": "pools",
+                            "verbs": [
+                                "GET",
+                                "POST"
+                            ]
+                        }
+                    ],
+                    "name": "test-lb",
+                    "pools": [],
+                    "status": "enabled"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

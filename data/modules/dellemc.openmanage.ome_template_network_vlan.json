@@ -1,0 +1,158 @@
+{
+    "dellemc.openmanage.ome_template_network_vlan": {
+        "doc": {
+            "author": [
+                "Jagadeesh N V(@jagadeeshnv)"
+            ],
+            "collection": "dellemc.openmanage",
+            "description": "This module allows to set tagged and untagged vlans to native network card supported by a template on OpenManage Enterprise.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/ome_template_network_vlan.py",
+            "has_action": false,
+            "module": "ome_template_network_vlan",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC OpenManage Enterprise.",
+                "This module does not support C(check_mode)."
+            ],
+            "options": {
+                "hostname": {
+                    "description": "Target IP address or hostname.",
+                    "required": true,
+                    "type": "str"
+                },
+                "nic_identifier": {
+                    "description": "Display name of NIC port in the template for VLAN configuration.",
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": "Target user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": "Target HTTPS port.",
+                    "type": "int"
+                },
+                "tagged_networks": {
+                    "description": "List of tagged VLANs and their corresponding NIC ports.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "port": {
+                            "description": "NIC port number of the tagged VLAN",
+                            "required": true,
+                            "type": "int"
+                        },
+                        "tagged_network_ids": {
+                            "description": [
+                                "List of IDs of the tagged VLANs",
+                                "Enter [] to remove the tagged VLAN from a port.",
+                                "List of I(tagged_network_ids) is combined with list of I(tagged_network_names) when adding tagged VLANs to a port.",
+                                "To get the VLAN network ID use the API U( https://I(hostname)/api/NetworkConfigurationService/Networks)"
+                            ],
+                            "elements": "int",
+                            "type": "list"
+                        },
+                        "tagged_network_names": {
+                            "description": [
+                                "List of names of tagged VLANs",
+                                "Enter [] to remove the tagged VLAN from a port.",
+                                "List of I(tagged_network_names) is combined with list of I(tagged_network_ids) when adding tagged VLANs to a port."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "template_id": {
+                    "description": [
+                        "Id of the template.",
+                        "It is mutually exclusive with I(template_name)."
+                    ],
+                    "type": "int"
+                },
+                "template_name": {
+                    "description": [
+                        "Name of the template.",
+                        "It is mutually exclusive with I(template_id)."
+                    ],
+                    "type": "str"
+                },
+                "untagged_networks": {
+                    "description": "List of untagged networks and their corresponding NIC ports.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "port": {
+                            "description": "NIC port number of the untagged VLAN.",
+                            "required": true,
+                            "type": "int"
+                        },
+                        "untagged_network_id": {
+                            "description": [
+                                "ID of the untagged VLAN",
+                                "Enter 0 to clear the untagged VLAN from the port.",
+                                "This option is mutually exclusive with I(untagged_network_name)",
+                                "To get the VLAN network ID use the API U( https://I(hostname)/api/NetworkConfigurationService/Networks)"
+                            ],
+                            "type": "int"
+                        },
+                        "untagged_network_name": {
+                            "description": [
+                                "name of the vlan for untagging",
+                                "provide 0 for clearing the untagging for this I(port)",
+                                "This parameter is mutually exclusive with I(untagged_network_id)"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "username": {
+                    "description": "Target username.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7.5"
+            ],
+            "short_description": "Set tagged and untagged vlans to native network card supported by a template on OpenManage Enterprise",
+            "version_added": "2.0.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Add tagged or untagged VLANs to a template using VLAN ID and name\n  dellemc.openmanage.ome_template_network_vlan:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    template_id: 78\n    nic_identifier: NIC Slot 4\n    untagged_networks:\n      - port: 1\n        untagged_network_id: 127656\n      - port: 2\n        untagged_network_name: vlan2\n    tagged_networks:\n      - port: 1\n        tagged_network_ids:\n          - 12767\n          - 12768\n      - port: 4\n        tagged_network_ids:\n          - 12767\n          - 12768\n        tagged_network_names:\n          - vlan3\n      - port: 2\n        tagged_network_names:\n          - vlan4\n          - vlan1\n\n- name: Clear the tagged and untagged VLANs from a template\n  dellemc.openmanage.ome_template_network_vlan:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    template_id: 78\n    nic_identifier: NIC Slot 4\n    untagged_networks:\n      # For removing the untagged VLANs for the port 1 and 2\n      - port: 1\n        untagged_network_id: 0\n      - port: 2\n        untagged_network_name: 0\n    tagged_networks:\n      # For removing the tagged VLANs for port 1, 4 and 2\n      - port: 1\n        tagged_network_ids: []\n      - port: 4\n        tagged_network_ids: []\n        tagged_network_names: []\n      - port: 2\n        tagged_network_names: []\n",
+        "metadata": null,
+        "return": {
+            "error_info": {
+                "description": "Details of the HTTP Error.",
+                "returned": "on HTTP error",
+                "sample": {
+                    "error": {
+                        "@Message.ExtendedInfo": [
+                            {
+                                "Message": "Unable to complete the request because TemplateId  does not exist or is not applicable for the resource URI.",
+                                "MessageArgs": [
+                                    "TemplateId"
+                                ],
+                                "MessageId": "CGEN1004",
+                                "RelatedProperties": [],
+                                "Resolution": "Check the request resource URI. Refer to the OpenManage Enterprise-Modular User's Guide for more information about resource URI and its properties.",
+                                "Severity": "Critical"
+                            }
+                        ],
+                        "code": "Base.1.0.GeneralError",
+                        "message": "A general error has occurred. See ExtendedInfo for more information."
+                    }
+                },
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Overall status of the template vlan operation.",
+                "returned": "always",
+                "sample": "Successfully applied the network settings to template",
+                "type": "str"
+            }
+        }
+    }
+}

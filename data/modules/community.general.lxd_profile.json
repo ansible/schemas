@@ -1,0 +1,148 @@
+{
+    "community.general.lxd_profile": {
+        "doc": {
+            "author": "Hiroaki Nakamura (@hnakamur)",
+            "collection": "community.general",
+            "description": [
+                "Management of LXD profiles"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/lxd_profile.py",
+            "has_action": false,
+            "module": "lxd_profile",
+            "notes": [
+                "Profiles must have a unique name. If you attempt to create a profile with a name that already existed in the users namespace the module will simply return as \"unchanged\"."
+            ],
+            "options": {
+                "client_cert": {
+                    "aliases": [
+                        "cert_file"
+                    ],
+                    "description": [
+                        "The client certificate file path.",
+                        "If not specified, it defaults to C($HOME/.config/lxc/client.crt)."
+                    ],
+                    "required": false,
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key_file"
+                    ],
+                    "description": [
+                        "The client certificate key file path.",
+                        "If not specified, it defaults to C($HOME/.config/lxc/client.key)."
+                    ],
+                    "required": false,
+                    "type": "path"
+                },
+                "config": {
+                    "description": [
+                        "The config for the container (e.g. {\"limits.memory\": \"4GB\"}). See U(https://github.com/lxc/lxd/blob/master/doc/rest-api.md#patch-3)",
+                        "If the profile already exists and its \"config\" value in metadata obtained from GET /1.0/profiles/<name> U(https://github.com/lxc/lxd/blob/master/doc/rest-api.md#get-19) are different, they this module tries to apply the configurations.",
+                        "Not all config values are supported to apply the existing profile. Maybe you need to delete and recreate a profile."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "description": {
+                    "description": [
+                        "Description of the profile."
+                    ],
+                    "type": "str"
+                },
+                "devices": {
+                    "description": [
+                        "The devices for the profile (e.g. {\"rootfs\": {\"path\": \"/dev/kvm\", \"type\": \"unix-char\"}). See U(https://github.com/lxc/lxd/blob/master/doc/rest-api.md#patch-3)"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "merge_profile": {
+                    "default": false,
+                    "description": [
+                        "Merge the configuration of the present profile with the new desired configuration, instead of replacing it."
+                    ],
+                    "required": false,
+                    "type": "bool",
+                    "version_added": "2.1.0",
+                    "version_added_collection": "community.general"
+                },
+                "name": {
+                    "description": [
+                        "Name of a profile."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_name": {
+                    "description": [
+                        "A new name of a profile.",
+                        "If this parameter is specified a profile will be renamed to this name. See U(https://github.com/lxc/lxd/blob/master/doc/rest-api.md#post-11)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "snap_url": {
+                    "default": "unix:/var/snap/lxd/common/lxd/unix.socket",
+                    "description": [
+                        "The unix domain socket path when LXD is installed by snap package manager."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Define the state of a profile."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "trust_password": {
+                    "description": [
+                        "The client trusted password.",
+                        "You need to set this password on the LXD server before running this module using the following command. lxc config set core.trust_password <some random password> See U(https://www.stgraber.org/2016/04/18/lxd-api-direct-interaction/)",
+                        "If trust_password is set, this module send a request for authentication before sending any requests."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "url": {
+                    "default": "unix:/var/lib/lxd/unix.socket",
+                    "description": [
+                        "The unix domain socket path or the https URL for the LXD server."
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage LXD profiles"
+        },
+        "examples": "\n# An example for creating a profile\n- hosts: localhost\n  connection: local\n  tasks:\n    - name: Create a profile\n      community.general.lxd_profile:\n        name: macvlan\n        state: present\n        config: {}\n        description: my macvlan profile\n        devices:\n          eth0:\n            nictype: macvlan\n            parent: br0\n            type: nic\n\n# An example for creating a profile via http connection\n- hosts: localhost\n  connection: local\n  tasks:\n  - name: Create macvlan profile\n    community.general.lxd_profile:\n      url: https://127.0.0.1:8443\n      # These client_cert and client_key values are equal to the default values.\n      #client_cert: \"{{ lookup('env', 'HOME') }}/.config/lxc/client.crt\"\n      #client_key: \"{{ lookup('env', 'HOME') }}/.config/lxc/client.key\"\n      trust_password: mypassword\n      name: macvlan\n      state: present\n      config: {}\n      description: my macvlan profile\n      devices:\n        eth0:\n          nictype: macvlan\n          parent: br0\n          type: nic\n\n# An example for modify/merge a profile\n- hosts: localhost\n  connection: local\n  tasks:\n    - name: Merge a profile\n      community.general.lxd_profile:\n        merge_profile: true\n        name: macvlan\n        state: present\n        config: {}\n        description: my macvlan profile\n        devices:\n          eth0:\n            nictype: macvlan\n            parent: br0\n            type: nic\n\n# An example for deleting a profile\n- hosts: localhost\n  connection: local\n  tasks:\n    - name: Delete a profile\n      community.general.lxd_profile:\n        name: macvlan\n        state: absent\n\n# An example for renaming a profile\n- hosts: localhost\n  connection: local\n  tasks:\n    - name: Rename a profile\n      community.general.lxd_profile:\n        name: macvlan\n        new_name: macvlan2\n        state: present\n",
+        "metadata": null,
+        "return": {
+            "actions": {
+                "description": "List of actions performed for the profile.",
+                "returned": "success",
+                "sample": "[\"create\"]",
+                "type": "list"
+            },
+            "logs": {
+                "description": "The logs of requests and responses.",
+                "returned": "when ansible-playbook is invoked with -vvvv.",
+                "sample": "(too long to be placed here)",
+                "type": "list"
+            },
+            "old_state": {
+                "description": "The old state of the profile",
+                "returned": "success",
+                "sample": "absent",
+                "type": "str"
+            }
+        }
+    }
+}

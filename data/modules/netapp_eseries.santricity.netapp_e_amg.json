@@ -1,0 +1,156 @@
+{
+    "netapp_eseries.santricity.netapp_e_amg": {
+        "doc": {
+            "author": "Kevin Hulquest (@hulquest)",
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "Allows for the creation, removal and updating of Asynchronous Mirror Groups for NetApp E-series storage arrays"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_amg.py",
+            "has_action": false,
+            "module": "netapp_e_amg",
+            "notes": [
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "interfaceType": {
+                    "choices": [
+                        "iscsi",
+                        "fibre"
+                    ],
+                    "description": [
+                        "The intended protocol to use if both Fibre and iSCSI are available."
+                    ],
+                    "type": "str"
+                },
+                "manualSync": {
+                    "default": "no",
+                    "description": [
+                        "Setting this to true will cause other synchronization values to be ignored"
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the async array you wish to target, or create.",
+                        "If C(state) is present and the name isn't found, it will attempt to create."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_name": {
+                    "description": [
+                        "New async array name"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "recoveryWarnThresholdMinutes": {
+                    "default": 20,
+                    "description": [
+                        "Recovery point warning threshold (minutes). The user will be warned when the age of the last good failures point exceeds this value"
+                    ],
+                    "type": "int"
+                },
+                "repoUtilizationWarnThreshold": {
+                    "default": 80,
+                    "description": [
+                        "Recovery point warning threshold"
+                    ],
+                    "type": "int"
+                },
+                "secondaryArrayId": {
+                    "description": [
+                        "The ID of the secondary array to be used in mirroring process"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "description": [
+                        "A C(state) of present will either create or update the async mirror group.",
+                        "A C(state) of absent will remove the async mirror group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "syncIntervalMinutes": {
+                    "default": 10,
+                    "description": [
+                        "The synchronization interval in minutes"
+                    ],
+                    "type": "int"
+                },
+                "syncWarnThresholdMinutes": {
+                    "default": 10,
+                    "description": [
+                        "The threshold (in minutes) for notifying the user that periodic synchronization has taken too long to complete."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series create, remove, and update asynchronous mirror groups",
+            "version_added": "2.2",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n    - name: AMG removal\n      na_eseries_amg:\n        state: absent\n        ssid: \"{{ ssid }}\"\n        secondaryArrayId: \"{{amg_secondaryArrayId}}\"\n        api_url: \"{{ netapp_api_url }}\"\n        api_username: \"{{ netapp_api_username }}\"\n        api_password: \"{{ netapp_api_password }}\"\n        new_name: \"{{amg_array_name}}\"\n        name: \"{{amg_name}}\"\n      when: amg_create\n\n    - name: AMG create\n      netapp_e_amg:\n        state: present\n        ssid: \"{{ ssid }}\"\n        secondaryArrayId: \"{{amg_secondaryArrayId}}\"\n        api_url: \"{{ netapp_api_url }}\"\n        api_username: \"{{ netapp_api_username }}\"\n        api_password: \"{{ netapp_api_password }}\"\n        new_name: \"{{amg_array_name}}\"\n        name: \"{{amg_name}}\"\n      when: amg_create\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Successful creation",
+                "returned": "success",
+                "sample": "{\"changed\": true, \"connectionType\": \"fc\", \"groupRef\": \"3700000060080E5000299C24000006E857AC7EEC\", \"groupState\": \"optimal\", \"id\": \"3700000060080E5000299C24000006E857AC7EEC\", \"label\": \"amg_made_by_ansible\", \"localRole\": \"primary\", \"mirrorChannelRemoteTarget\": \"9000000060080E5000299C24005B06E557AC7EEC\", \"orphanGroup\": false, \"recoveryPointAgeAlertThresholdMinutes\": 20, \"remoteRole\": \"secondary\", \"remoteTarget\": {\"nodeName\": {\"ioInterfaceType\": \"fc\", \"iscsiNodeName\": null, \"remoteNodeWWN\": \"20040080E5299F1C\"}, \"remoteRef\": \"9000000060080E5000299C24005B06E557AC7EEC\", \"scsiinitiatorTargetBaseProperties\": {\"ioInterfaceType\": \"fc\", \"iscsiinitiatorTargetBaseParameters\": null}}, \"remoteTargetId\": \"ansible2\", \"remoteTargetName\": \"Ansible2\", \"remoteTargetWwn\": \"60080E5000299F880000000056A25D56\", \"repositoryUtilizationWarnThreshold\": 80, \"roleChangeProgress\": \"none\", \"syncActivity\": \"idle\", \"syncCompletionTimeAlertThresholdMinutes\": 10, \"syncIntervalMinutes\": 10, \"worldWideName\": \"60080E5000299C24000006E857AC7EEC\"}",
+                "type": "str"
+            }
+        }
+    }
+}

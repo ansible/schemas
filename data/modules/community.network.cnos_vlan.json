@@ -1,0 +1,139 @@
+{
+    "community.network.cnos_vlan": {
+        "doc": {
+            "author": "Anil Kumar Mureleedharan(@amuraleedhar)",
+            "collection": "community.network",
+            "description": [
+                "This module provides declarative management of VLANs on Lenovo CNOS network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/cnos_vlan.py",
+            "has_action": false,
+            "module": "cnos_vlan",
+            "notes": [
+                "Tested against CNOS 10.8.1"
+            ],
+            "options": {
+                "aggregate": {
+                    "description": "List of VLANs definitions."
+                },
+                "associated_interfaces": {
+                    "description": [
+                        "This is a intent option and checks the operational state of the for given vlan C(name) for associated interfaces. If the value in the C(associated_interfaces) does not match with the operational state of vlan interfaces on device it will result in failure."
+                    ]
+                },
+                "delay": {
+                    "default": 10,
+                    "description": [
+                        "Delay the play should wait to check for declarative intent params values."
+                    ]
+                },
+                "interfaces": {
+                    "description": [
+                        "List of interfaces that should be associated to the VLAN."
+                    ],
+                    "required": true
+                },
+                "name": {
+                    "description": [
+                        "Name of the VLAN."
+                    ]
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(CNOS Platform Options guide, ../network/user_guide/platform_cnos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ]
+                        },
+                        "authorize": {
+                            "default": "no",
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "required": true
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ]
+                        },
+                        "port": {
+                            "default": 22,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ]
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ]
+                        },
+                        "timeout": {
+                            "default": 10,
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ]
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ]
+                        }
+                    }
+                },
+                "purge": {
+                    "default": false,
+                    "description": [
+                        "Purge VLANs not defined in the I(aggregate) parameter."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "active",
+                        "suspend"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the VLAN configuration."
+                    ]
+                },
+                "vlan_id": {
+                    "description": [
+                        "ID of the VLAN. Range 1-4094."
+                    ],
+                    "required": true
+                }
+            },
+            "short_description": "Manage VLANs on CNOS network devices"
+        },
+        "examples": "\n- name: Create vlan\n  community.network.cnos_vlan:\n    vlan_id: 100\n    name: test-vlan\n    state: present\n\n- name: Add interfaces to VLAN\n  community.network.cnos_vlan:\n    vlan_id: 100\n    interfaces:\n      - Ethernet1/33\n      - Ethernet1/44\n\n- name: Check if interfaces is assigned to VLAN\n  community.network.cnos_vlan:\n    vlan_id: 100\n    associated_interfaces:\n      - Ethernet1/33\n      - Ethernet1/44\n\n- name: Delete vlan\n  community.network.cnos_vlan:\n    vlan_id: 100\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always",
+                "sample": [
+                    "vlan 100",
+                    "name test-vlan"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

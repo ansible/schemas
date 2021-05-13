@@ -1,0 +1,236 @@
+{
+    "community.google.gce_mig": {
+        "doc": {
+            "author": [
+                "Tom Melendez (@supertom) <tom@supertom.com>"
+            ],
+            "collection": "community.google",
+            "description": [
+                "Create, Update or Destroy a Managed Instance Group (MIG).  See U(https://cloud.google.com/compute/docs/instance-groups) for an overview. Full install/configuration instructions for the gce* modules can be found in the comments of ansible/test/gce_tests.py."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/google/plugins/modules/gce_mig.py",
+            "has_action": false,
+            "module": "gce_mig",
+            "notes": [
+                "Resizing and Recreating VM are also supported.",
+                "An existing instance template is required in order to create a Managed Instance Group."
+            ],
+            "options": {
+                "autoscaling": {
+                    "description": [
+                        "A dictionary of configuration for the autoscaler. 'enabled (bool)', 'name (str)' and policy.max_instances (int) are required fields if autoscaling is used. See U(https://cloud.google.com/compute/docs/reference/beta/autoscalers) for more information on Autoscaling."
+                    ],
+                    "type": "dict"
+                },
+                "credentials_file": {
+                    "description": [
+                        "Path to the JSON file associated with the service account email"
+                    ],
+                    "type": "path"
+                },
+                "name": {
+                    "description": [
+                        "Name of the Managed Instance Group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "named_ports": {
+                    "description": [
+                        "Define named ports that backend services can forward data to.  Format is a a list of name:port dictionaries."
+                    ],
+                    "type": "list"
+                },
+                "pem_file": {
+                    "description": [
+                        "path to the pem file associated with the service account email This option is deprecated. Use 'credentials_file'."
+                    ],
+                    "type": "path"
+                },
+                "project_id": {
+                    "description": [
+                        "GCE project ID"
+                    ],
+                    "type": "str"
+                },
+                "recreate_instances": {
+                    "default": false,
+                    "description": [
+                        "Recreate MIG instances."
+                    ],
+                    "type": "bool"
+                },
+                "service_account_email": {
+                    "description": [
+                        "service account email"
+                    ],
+                    "type": "str"
+                },
+                "service_account_permissions": {
+                    "description": [
+                        "service account permissions"
+                    ],
+                    "type": "list"
+                },
+                "size": {
+                    "description": [
+                        "Size of Managed Instance Group.  If MIG already exists, it will be resized to the number provided here.  Required for creating MIGs."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "desired state of the resource"
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "description": [
+                        "Instance Template to be used in creating the VMs.  See U(https://cloud.google.com/compute/docs/instance-templates) to learn more about Instance Templates.  Required for creating MIGs."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "The GCE zone to use for this Managed Instance Group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "apache-libcloud >= 1.2.0"
+            ],
+            "short_description": "Create, Update or Destroy a Managed Instance Group (MIG)."
+        },
+        "examples": "\n# Following playbook creates, rebuilds instances, resizes and then deletes a MIG.\n# Notes:\n# - Two valid Instance Templates must exist in your GCE project in order to run\n#   this playbook.  Change the fields to match the templates used in your\n#   project.\n# - The use of the 'pause' module is not required, it is just for convenience.\n- name: Managed Instance Group Example\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Create MIG\n      community.google.gce_mig:\n        name: ansible-mig-example\n        zone: us-central1-c\n        state: present\n        size: 1\n        template: my-instance-template-1\n        named_ports:\n        - name: http\n          port: 80\n        - name: foobar\n          port: 82\n\n    - name: Pause for 30 seconds\n      ansible.builtin.pause:\n        seconds: 30\n\n    - name: Recreate MIG Instances with Instance Template change.\n      community.google.gce_mig:\n        name: ansible-mig-example\n        zone: us-central1-c\n        state: present\n        template: my-instance-template-2-small\n        recreate_instances: yes\n\n    - name: Pause for 30 seconds\n      ansible.builtin.pause:\n        seconds: 30\n\n    - name: Resize MIG\n      community.google.gce_mig:\n        name: ansible-mig-example\n        zone: us-central1-c\n        state: present\n        size: 3\n\n    - name: Update MIG with Autoscaler\n      community.google.gce_mig:\n        name: ansible-mig-example\n        zone: us-central1-c\n        state: present\n        size: 3\n        template: my-instance-template-2-small\n        recreate_instances: yes\n        autoscaling:\n          enabled: yes\n          name: my-autoscaler\n          policy:\n            min_instances: 2\n            max_instances: 5\n            cool_down_period: 37\n            cpu_utilization:\n              target: .39\n            load_balancing_utilization:\n              target: 0.4\n\n    - name: Pause for 30 seconds\n      ansible.builtin.pause:\n        seconds: 30\n\n    - name: Delete MIG\n      community.google.gce_mig:\n        name: ansible-mig-example\n        zone: us-central1-c\n        state: absent\n        autoscaling:\n          enabled: no\n          name: my-autoscaler\n",
+        "metadata": null,
+        "return": {
+            "created_autoscaler": {
+                "description": "True if Autoscaler was attempted and created.  False otherwise.",
+                "returned": "When the creation of an Autoscaler was attempted.",
+                "sample": true,
+                "type": "bool"
+            },
+            "created_instances": {
+                "description": "Names of instances created.",
+                "returned": "When instances are created.",
+                "sample": [
+                    "ansible-mig-new-0k4y",
+                    "ansible-mig-new-0zk5",
+                    "ansible-mig-new-kp68"
+                ],
+                "type": "list"
+            },
+            "deleted_autoscaler": {
+                "description": "True if an Autoscaler delete attempted and succeeded. False returned if delete failed.",
+                "returned": "When the delete of an Autoscaler was attempted.",
+                "sample": true,
+                "type": "bool"
+            },
+            "deleted_instances": {
+                "description": "Names of instances deleted.",
+                "returned": "When instances are deleted.",
+                "sample": [
+                    "ansible-mig-new-0k4y",
+                    "ansible-mig-new-0zk5",
+                    "ansible-mig-new-kp68"
+                ],
+                "type": "list"
+            },
+            "name": {
+                "description": "Name of the Managed Instance Group.",
+                "returned": "changed",
+                "sample": "my-managed-instance-group",
+                "type": "str"
+            },
+            "named_ports": {
+                "description": "list of named ports acted upon",
+                "returned": "when named_ports are initially set or updated",
+                "sample": [
+                    {
+                        "name": "http",
+                        "port": 80
+                    },
+                    {
+                        "name": "foo",
+                        "port": 82
+                    }
+                ],
+                "type": "list"
+            },
+            "recreated_instances": {
+                "description": "Names of instances recreated.",
+                "returned": "When instances are recreated.",
+                "sample": [
+                    "ansible-mig-new-0k4y",
+                    "ansible-mig-new-0zk5",
+                    "ansible-mig-new-kp68"
+                ],
+                "type": "list"
+            },
+            "resize_created_instances": {
+                "description": "Names of instances created during resizing.",
+                "returned": "When a resize results in the creation of instances.",
+                "sample": [
+                    "ansible-mig-new-0k4y",
+                    "ansible-mig-new-0zk5",
+                    "ansible-mig-new-kp68"
+                ],
+                "type": "list"
+            },
+            "resize_deleted_instances": {
+                "description": "Names of instances deleted during resizing.",
+                "returned": "When a resize results in the deletion of instances.",
+                "sample": [
+                    "ansible-mig-new-0k4y",
+                    "ansible-mig-new-0zk5",
+                    "ansible-mig-new-kp68"
+                ],
+                "type": "list"
+            },
+            "set_named_ports": {
+                "description": "True if the named_ports have been set",
+                "returned": "named_ports have been set",
+                "sample": true,
+                "type": "bool"
+            },
+            "size": {
+                "description": "Number of VMs in Managed Instance Group.",
+                "returned": "changed",
+                "sample": 4,
+                "type": "int"
+            },
+            "template": {
+                "description": "Instance Template to use for VMs.  Must exist prior to using with MIG.",
+                "returned": "changed",
+                "sample": "my-instance-template",
+                "type": "str"
+            },
+            "updated_autoscaler": {
+                "description": "True if an Autoscaler update was attempted and succeeded. False returned if update failed.",
+                "returned": "When the update of an Autoscaler was attempted.",
+                "sample": true,
+                "type": "bool"
+            },
+            "updated_named_ports": {
+                "description": "True if the named_ports have been updated",
+                "returned": "named_ports have been updated",
+                "sample": true,
+                "type": "bool"
+            },
+            "zone": {
+                "description": "Zone in which to launch MIG.",
+                "returned": "always",
+                "sample": "us-central1-b",
+                "type": "str"
+            }
+        }
+    }
+}

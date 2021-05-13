@@ -1,0 +1,106 @@
+{
+    "awx.awx.tower_settings": {
+        "doc": {
+            "author": "Nikhil Jain (@jainnikhil30)",
+            "collection": "awx.awx",
+            "description": [
+                "Modify Ansible Tower settings. See U(https://www.ansible.com/tower) for an overview."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/awx/awx/plugins/modules/tower_settings.py",
+            "has_action": false,
+            "module": "tower_settings",
+            "notes": [
+                "If no I(config_file) is provided we will attempt to use the tower-cli library defaults to find your Tower host information.",
+                "I(config_file) should contain Tower configuration in the following format host=hostname username=username password=password"
+            ],
+            "options": {
+                "name": {
+                    "description": [
+                        "Name of setting to modify"
+                    ],
+                    "type": "str"
+                },
+                "settings": {
+                    "description": [
+                        "A data structure to be sent into the settings endpoint"
+                    ],
+                    "type": "dict"
+                },
+                "tower_config_file": {
+                    "description": [
+                        "Path to the Tower or AWX config file.",
+                        "If provided, the other locations for config files will not be considered."
+                    ],
+                    "type": "path"
+                },
+                "tower_host": {
+                    "description": [
+                        "URL to your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_HOST) and then config files",
+                        "If value not specified by any means, the value of C(127.0.0.1) will be used"
+                    ],
+                    "type": "str"
+                },
+                "tower_oauthtoken": {
+                    "description": [
+                        "The Tower OAuth token to use.",
+                        "This value can be in one of two formats.",
+                        "A string which is the token itself. (i.e. bqV5txm97wqJqtkxlMkhQz0pKhRMMX)",
+                        "A dictionary structure as returned by the tower_token module.",
+                        "If value not set, will try environment variable C(TOWER_OAUTH_TOKEN) and then config files"
+                    ],
+                    "type": "raw",
+                    "version_added": "3.7",
+                    "version_added_collection": "awx.awx"
+                },
+                "tower_password": {
+                    "description": [
+                        "Password for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_PASSWORD) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "tower_username": {
+                    "description": [
+                        "Username for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_USERNAME) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tower_verify_ssl"
+                    ],
+                    "description": [
+                        "Whether to allow insecure connections to Tower or AWX.",
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates.",
+                        "If value not set, will try environment variable C(TOWER_VERIFY_SSL) and then config files"
+                    ],
+                    "type": "bool"
+                },
+                "value": {
+                    "description": [
+                        "Value to be modified for given setting.",
+                        "If given a non-string type, will make best effort to cast it to type API expects.",
+                        "For better control over types, use the C(settings) param instead."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "pyyaml"
+            ],
+            "short_description": "Modify Ansible Tower settings."
+        },
+        "examples": "\n- name: Set the value of AWX_PROOT_BASE_PATH\n  tower_settings:\n    name: AWX_PROOT_BASE_PATH\n    value: \"/tmp\"\n  register: testing_settings\n\n- name: Set the value of AWX_PROOT_SHOW_PATHS\n  tower_settings:\n    name: \"AWX_PROOT_SHOW_PATHS\"\n    value: \"'/var/lib/awx/projects/', '/tmp'\"\n  register: testing_settings\n\n- name: Set the LDAP Auth Bind Password\n  tower_settings:\n    name: \"AUTH_LDAP_BIND_PASSWORD\"\n    value: \"Password\"\n  no_log: true\n\n- name: Set all the LDAP Auth Bind Params\n  tower_settings:\n    settings:\n      AUTH_LDAP_BIND_PASSWORD: \"password\"\n      AUTH_LDAP_USER_ATTR_MAP:\n        email: \"mail\"\n        first_name: \"givenName\"\n        last_name: \"surname\"\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

@@ -1,0 +1,488 @@
+{
+    "community.crypto.acme_certificate": {
+        "doc": {
+            "author": "Michael Gruener (@mgruener)",
+            "collection": "community.crypto",
+            "description": [
+                "Create and renew SSL/TLS certificates with a CA supporting the L(ACME protocol,https://tools.ietf.org/html/rfc8555), such as L(Let's Encrypt,https://letsencrypt.org/) or L(Buypass,https://www.buypass.com/). The current implementation supports the C(http-01), C(dns-01) and C(tls-alpn-01) challenges.",
+                "To use this module, it has to be executed twice. Either as two different tasks in the same run or during two runs. Note that the output of the first run needs to be recorded and passed to the second run as the module argument C(data).",
+                "Between these two tasks you have to fulfill the required steps for the chosen challenge by whatever means necessary. For C(http-01) that means creating the necessary challenge file on the destination webserver. For C(dns-01) the necessary dns record has to be created. For C(tls-alpn-01) the necessary certificate has to be created and served. It is I(not) the responsibility of this module to perform these steps.",
+                "For details on how to fulfill these challenges, you might have to read through L(the main ACME specification,https://tools.ietf.org/html/rfc8555#section-8) and the L(TLS-ALPN-01 specification,https://www.rfc-editor.org/rfc/rfc8737.html#section-3). Also, consider the examples provided for this module.",
+                "The module includes experimental support for IP identifiers according to the L(RFC 8738,https://www.rfc-editor.org/rfc/rfc8738.html)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/acme_certificate.py",
+            "has_action": false,
+            "module": "acme_certificate",
+            "notes": [
+                "At least one of C(dest) and C(fullchain_dest) must be specified.",
+                "This module includes basic account management functionality. If you want to have more control over your ACME account, use the M(community.crypto.acme_account) module and disable account management for this module using the C(modify_account) option.",
+                "This module was called C(letsencrypt) before Ansible 2.6. The usage did not change.",
+                "If a new enough version of the C(cryptography) library is available (see Requirements for details), it will be used instead of the C(openssl) binary. This can be explicitly disabled or enabled with the C(select_crypto_backend) option. Note that using the C(openssl) binary will be slower and less secure, as private key contents always have to be stored on disk (see C(account_key_content)).",
+                "Although the defaults are chosen so that the module can be used with the L(Let's Encrypt,https://letsencrypt.org/) CA, the module can in principle be used with any CA providing an ACME endpoint, such as L(Buypass Go SSL,https://www.buypass.com/ssl/products/acme)."
+            ],
+            "options": {
+                "account_email": {
+                    "description": [
+                        "The email address associated with this account.",
+                        "It will be used for certificate expiration warnings.",
+                        "Note that when C(modify_account) is not set to C(no) and you also used the M(community.crypto.acme_account) module to specify more than one contact for your account, this module will update your account and restrict it to the (at most one) contact email address specified here."
+                    ],
+                    "type": "str"
+                },
+                "account_key_content": {
+                    "description": [
+                        "Content of the ACME account RSA or Elliptic Curve key.",
+                        "Mutually exclusive with C(account_key_src).",
+                        "Required if C(account_key_src) is not used.",
+                        "B(Warning:) the content will be written into a temporary file, which will be deleted by Ansible when the module completes. Since this is an important private key \u2014 it can be used to change the account key, or to revoke your certificates without knowing their private keys \u2014, this might not be acceptable.",
+                        "In case C(cryptography) is used, the content is not written into a temporary file. It can still happen that it is written to disk by Ansible in the process of moving the module with its argument to the node where it is executed."
+                    ],
+                    "type": "str"
+                },
+                "account_key_passphrase": {
+                    "description": [
+                        "Phassphrase to use to decode the account key.",
+                        "B(Note:) this is not supported by the C(openssl) backend, only by the C(cryptography) backend."
+                    ],
+                    "type": "str",
+                    "version_added": "1.6.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "account_key_src": {
+                    "aliases": [
+                        "account_key"
+                    ],
+                    "description": [
+                        "Path to a file containing the ACME account RSA or Elliptic Curve key.",
+                        "Private keys can be created with the M(community.crypto.openssl_privatekey) or M(community.crypto.openssl_privatekey_pipe) modules. If the requisites (pyOpenSSL or cryptography) are not available, keys can also be created directly with the C(openssl) command line tool: RSA keys can be created with C(openssl genrsa ...). Elliptic curve keys can be created with C(openssl ecparam -genkey ...). Any other tool creating private keys in PEM format can be used as well.",
+                        "Mutually exclusive with C(account_key_content).",
+                        "Required if C(account_key_content) is not used."
+                    ],
+                    "type": "path"
+                },
+                "account_uri": {
+                    "description": [
+                        "If specified, assumes that the account URI is as given. If the account key does not match this account, or an account with this URI does not exist, the module fails."
+                    ],
+                    "type": "str"
+                },
+                "acme_directory": {
+                    "description": [
+                        "The ACME directory to use. This is the entry point URL to access the ACME CA server API.",
+                        "For safety reasons the default is set to the Let's Encrypt staging server (for the ACME v1 protocol). This will create technically correct, but untrusted certificates.",
+                        "The default value is C(https://acme-staging.api.letsencrypt.org/directory). Note that in community.crypto 2.0.0, this option B(will be required) and will no longer have a default. Note that the default is the Let's Encrypt staging server for the ACME v1 protocol, which is deprecated and will be disabled in May 2021 (see L(here,https://community.letsencrypt.org/t/end-of-life-plan-for-acmev1/88430/7) for details).",
+                        "For Let's Encrypt, all staging endpoints can be found here: U(https://letsencrypt.org/docs/staging-environment/). For Buypass, all endpoints can be found here: U(https://community.buypass.com/t/63d4ay/buypass-go-ssl-endpoints)",
+                        "For B(Let's Encrypt), the production directory URL for ACME v2 is U(https://acme-v02.api.letsencrypt.org/directory). (The production directory URL for ACME v1 is U(https://acme-v01.api.letsencrypt.org/directory) and will be disabled in July 2021.)",
+                        "For B(Buypass), the production directory URL for ACME v2 and v1 is U(https://api.buypass.com/acme/directory).",
+                        "For B(ZeroSSL), the production directory URL for ACME v2 is U(https://acme.zerossl.com/v2/DV90).",
+                        "B(Warning:) So far, the ACME modules have only been tested against Let's Encrypt (staging and production), Buypass (staging and production), ZeroSSL (production), and L(Pebble testing server,https://github.com/letsencrypt/Pebble). If you experience problems with another ACME server, please L(create an issue,https://github.com/ansible-collections/community.crypto/issues/new/choose) to help us supporting it. Feedback that an ACME server not mentioned does work is also appreciated."
+                    ],
+                    "type": "str"
+                },
+                "acme_version": {
+                    "choices": [
+                        1,
+                        2
+                    ],
+                    "description": [
+                        "The ACME version of the endpoint.",
+                        "Must be C(1) for the classic Let's Encrypt and Buypass ACME endpoints, or C(2) for standardized ACME v2 endpoints.",
+                        "The default value is C(1). Note that in community.crypto 2.0.0, this option B(will be required) and will no longer have a default.",
+                        "Please also note that we will deprecate ACME v1 support eventually."
+                    ],
+                    "type": "int"
+                },
+                "agreement": {
+                    "description": [
+                        "URI to a terms of service document you agree to when using the ACME v1 service at C(acme_directory).",
+                        "Default is latest gathered from C(acme_directory) URL.",
+                        "This option will only be used when C(acme_version) is 1."
+                    ],
+                    "type": "str"
+                },
+                "chain_dest": {
+                    "aliases": [
+                        "chain"
+                    ],
+                    "description": [
+                        "If specified, the intermediate certificate will be written to this file."
+                    ],
+                    "type": "path"
+                },
+                "challenge": {
+                    "choices": [
+                        "http-01",
+                        "dns-01",
+                        "tls-alpn-01"
+                    ],
+                    "default": "http-01",
+                    "description": "The challenge to be performed.",
+                    "type": "str"
+                },
+                "csr": {
+                    "aliases": [
+                        "src"
+                    ],
+                    "description": [
+                        "File containing the CSR for the new certificate.",
+                        "Can be created with M(community.crypto.openssl_csr) or C(openssl req ...).",
+                        "The CSR may contain multiple Subject Alternate Names, but each one will lead to an individual challenge that must be fulfilled for the CSR to be signed.",
+                        "I(Note): the private key used to create the CSR I(must not) be the account key. This is a bad idea from a security point of view, and the CA should not accept the CSR. The ACME server should return an error in this case.",
+                        "Precisely one of I(csr) or I(csr_content) must be specified."
+                    ],
+                    "type": "path"
+                },
+                "csr_content": {
+                    "description": [
+                        "Content of the CSR for the new certificate.",
+                        "Can be created with M(community.crypto.openssl_csr_pipe) or C(openssl req ...).",
+                        "The CSR may contain multiple Subject Alternate Names, but each one will lead to an individual challenge that must be fulfilled for the CSR to be signed.",
+                        "I(Note): the private key used to create the CSR I(must not) be the account key. This is a bad idea from a security point of view, and the CA should not accept the CSR. The ACME server should return an error in this case.",
+                        "Precisely one of I(csr) or I(csr_content) must be specified."
+                    ],
+                    "type": "str",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "data": {
+                    "description": [
+                        "The data to validate ongoing challenges. This must be specified for the second run of the module only.",
+                        "The value that must be used here will be provided by a previous use of this module. See the examples for more details.",
+                        "Note that for ACME v2, only the C(order_uri) entry of C(data) will be used. For ACME v1, C(data) must be non-empty to indicate the second stage is active; all needed data will be taken from the CSR.",
+                        "I(Note): the C(data) option was marked as C(no_log) up to Ansible 2.5. From Ansible 2.6 on, it is no longer marked this way as it causes error messages to be come unusable, and C(data) does not contain any information which can be used without having access to the account key or which are not public anyway."
+                    ],
+                    "type": "dict"
+                },
+                "deactivate_authzs": {
+                    "default": false,
+                    "description": [
+                        "Deactivate authentication objects (authz) after issuing a certificate, or when issuing the certificate failed.",
+                        "Authentication objects are bound to an account key and remain valid for a certain amount of time, and can be used to issue certificates without having to re-authenticate the domain. This can be a security concern."
+                    ],
+                    "type": "bool"
+                },
+                "dest": {
+                    "aliases": [
+                        "cert"
+                    ],
+                    "description": [
+                        "The destination file for the certificate.",
+                        "Required if C(fullchain_dest) is not specified."
+                    ],
+                    "type": "path"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Enforces the execution of the challenge and validation, even if an existing certificate is still valid for more than C(remaining_days).",
+                        "This is especially helpful when having an updated CSR e.g. with additional domains for which a new certificate is desired."
+                    ],
+                    "type": "bool"
+                },
+                "fullchain_dest": {
+                    "aliases": [
+                        "fullchain"
+                    ],
+                    "description": [
+                        "The destination file for the full chain (i.e. certificate followed by chain of intermediate certificates).",
+                        "Required if C(dest) is not specified."
+                    ],
+                    "type": "path"
+                },
+                "modify_account": {
+                    "default": true,
+                    "description": [
+                        "Boolean indicating whether the module should create the account if necessary, and update its contact data.",
+                        "Set to C(no) if you want to use the M(community.crypto.acme_account) module to manage your account instead, and to avoid accidental creation of a new account using an old key if you changed the account key with M(community.crypto.acme_account).",
+                        "If set to C(no), C(terms_agreed) and C(account_email) are ignored."
+                    ],
+                    "type": "bool"
+                },
+                "remaining_days": {
+                    "default": 10,
+                    "description": [
+                        "The number of days the certificate must have left being valid. If C(cert_days < remaining_days), then it will be renewed. If the certificate is not renewed, module return values will not include C(challenge_data).",
+                        "To make sure that the certificate is renewed in any case, you can use the C(force) option."
+                    ],
+                    "type": "int"
+                },
+                "retrieve_all_alternates": {
+                    "default": false,
+                    "description": [
+                        "When set to C(yes), will retrieve all alternate trust chains offered by the ACME CA. These will not be written to disk, but will be returned together with the main chain as C(all_chains). See the documentation for the C(all_chains) return value for details."
+                    ],
+                    "type": "bool"
+                },
+                "select_chain": {
+                    "description": [
+                        "Allows to specify criteria by which an (alternate) trust chain can be selected.",
+                        "The list of criteria will be processed one by one until a chain is found matching a criterium. If such a chain is found, it will be used by the module instead of the default chain.",
+                        "If a criterium matches multiple chains, the first one matching will be returned. The order is determined by the ordering of the C(Link) headers returned by the ACME server and might not be deterministic.",
+                        "Every criterium can consist of multiple different conditions, like I(issuer) and I(subject). For the criterium to match a chain, all conditions must apply to the same certificate in the chain.",
+                        "This option can only be used with the C(cryptography) backend."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "authority_key_identifier": {
+                            "description": [
+                                "Checks for the AuthorityKeyIdentifier extension. This is an identifier based on the private key of the issuer of the intermediate certificate.",
+                                "The identifier must be of the form C(C4:A7:B1:A4:7B:2C:71:FA:DB:E1:4B:90:75:FF:C4:15:60:85:89:10)."
+                            ],
+                            "type": "str"
+                        },
+                        "issuer": {
+                            "description": [
+                                "Allows to specify parts of the issuer of a certificate in the chain must have to be selected.",
+                                "If I(issuer) is empty, any certificate will match.",
+                                "An example value would be C({\"commonName\": \"My Preferred CA Root\"})."
+                            ],
+                            "type": "dict"
+                        },
+                        "subject": {
+                            "description": [
+                                "Allows to specify parts of the subject of a certificate in the chain must have to be selected.",
+                                "If I(subject) is empty, any certificate will match.",
+                                "An example value would be C({\"CN\": \"My Preferred CA Intermediate\"})"
+                            ],
+                            "type": "dict"
+                        },
+                        "subject_key_identifier": {
+                            "description": [
+                                "Checks for the SubjectKeyIdentifier extension. This is an identifier based on the private key of the intermediate certificate.",
+                                "The identifier must be of the form C(A8:4A:6A:63:04:7D:DD:BA:E6:D1:39:B7:A6:45:65:EF:F3:A8:EC:A1)."
+                            ],
+                            "type": "str"
+                        },
+                        "test_certificates": {
+                            "choices": [
+                                "first",
+                                "last",
+                                "all"
+                            ],
+                            "default": "all",
+                            "description": [
+                                "Determines which certificates in the chain will be tested.",
+                                "I(all) tests all certificates in the chain (excluding the leaf, which is identical in all chains).",
+                                "I(first) only tests the first certificate in the chain, i.e. the one which signed the leaf.",
+                                "I(last) only tests the last certificate in the chain, i.e. the one furthest away from the leaf. Its issuer is the root certificate of this chain."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "select_crypto_backend": {
+                    "choices": [
+                        "auto",
+                        "cryptography",
+                        "openssl"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Determines which crypto backend to use.",
+                        "The default choice is C(auto), which tries to use C(cryptography) if available, and falls back to C(openssl).",
+                        "If set to C(openssl), will try to use the C(openssl) binary.",
+                        "If set to C(cryptography), will try to use the L(cryptography,https://cryptography.io/) library."
+                    ],
+                    "type": "str"
+                },
+                "terms_agreed": {
+                    "default": false,
+                    "description": [
+                        "Boolean indicating whether you agree to the terms of service document.",
+                        "ACME servers can require this to be true.",
+                        "This option will only be used when C(acme_version) is not 1."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether calls to the ACME directory will validate TLS certificates.",
+                        "B(Warning:) Should B(only ever) be set to C(no) for testing purposes, for example when testing against a local Pebble server."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "either openssl or L(cryptography,https://cryptography.io/) >= 1.5"
+            ],
+            "seealso": [
+                {
+                    "description": "Documentation for the Let's Encrypt Certification Authority. Provides useful information for example on rate limits.",
+                    "link": "https://letsencrypt.org/docs/",
+                    "name": "The Let's Encrypt documentation"
+                },
+                {
+                    "description": "Documentation for the Buypass Certification Authority. Provides useful information for example on rate limits.",
+                    "link": "https://www.buypass.com/ssl/products/acme",
+                    "name": "Buypass Go SSL"
+                },
+                {
+                    "description": "The specification of the ACME protocol (RFC 8555).",
+                    "link": "https://tools.ietf.org/html/rfc8555",
+                    "name": "Automatic Certificate Management Environment (ACME)"
+                },
+                {
+                    "description": "The specification of the C(tls-alpn-01) challenge (RFC 8737).",
+                    "link": "https://www.rfc-editor.org/rfc/rfc8737.html-05",
+                    "name": "ACME TLS ALPN Challenge Extension"
+                },
+                {
+                    "description": "Helps preparing C(tls-alpn-01) challenges.",
+                    "module": "community.crypto.acme_challenge_cert_helper"
+                },
+                {
+                    "description": "Can be used to create private keys (both for certificates and accounts).",
+                    "module": "community.crypto.openssl_privatekey"
+                },
+                {
+                    "description": "Can be used to create private keys without writing it to disk (both for certificates and accounts).",
+                    "module": "community.crypto.openssl_privatekey_pipe"
+                },
+                {
+                    "description": "Can be used to create a Certificate Signing Request (CSR).",
+                    "module": "community.crypto.openssl_csr"
+                },
+                {
+                    "description": "Can be used to create a Certificate Signing Request (CSR) without writing it to disk.",
+                    "module": "community.crypto.openssl_csr_pipe"
+                },
+                {
+                    "description": "Allows to find the root certificate for the returned fullchain.",
+                    "module": "community.crypto.certificate_complete_chain"
+                },
+                {
+                    "description": "Allows to revoke certificates.",
+                    "module": "community.crypto.acme_certificate_revoke"
+                },
+                {
+                    "description": "Allows to create, modify or delete an ACME account.",
+                    "module": "community.crypto.acme_account"
+                },
+                {
+                    "description": "Allows to debug problems.",
+                    "module": "community.crypto.acme_inspect"
+                }
+            ],
+            "short_description": "Create SSL/TLS certificates with the ACME protocol"
+        },
+        "examples": "\n### Example with HTTP challenge ###\n\n- name: Create a challenge for sample.com using a account key from a variable.\n  community.crypto.acme_certificate:\n    account_key_content: \"{{ account_private_key }}\"\n    csr: /etc/pki/cert/csr/sample.com.csr\n    dest: /etc/httpd/ssl/sample.com.crt\n  register: sample_com_challenge\n\n# Alternative first step:\n- name: Create a challenge for sample.com using a account key from hashi vault.\n  community.crypto.acme_certificate:\n    account_key_content: \"{{ lookup('hashi_vault', 'secret=secret/account_private_key:value') }}\"\n    csr: /etc/pki/cert/csr/sample.com.csr\n    fullchain_dest: /etc/httpd/ssl/sample.com-fullchain.crt\n  register: sample_com_challenge\n\n# Alternative first step:\n- name: Create a challenge for sample.com using a account key file.\n  community.crypto.acme_certificate:\n    account_key_src: /etc/pki/cert/private/account.key\n    csr_content: \"{{ lookup('file', '/etc/pki/cert/csr/sample.com.csr') }}\"\n    dest: /etc/httpd/ssl/sample.com.crt\n    fullchain_dest: /etc/httpd/ssl/sample.com-fullchain.crt\n  register: sample_com_challenge\n\n# perform the necessary steps to fulfill the challenge\n# for example:\n#\n# - copy:\n#     dest: /var/www/html/{{ sample_com_challenge['challenge_data']['sample.com']['http-01']['resource'] }}\n#     content: \"{{ sample_com_challenge['challenge_data']['sample.com']['http-01']['resource_value'] }}\"\n#     when: sample_com_challenge is changed and 'sample.com' in sample_com_challenge['challenge_data']\n#\n# Alternative way:\n#\n# - copy:\n#     dest: /var/www/{{ item.key }}/{{ item.value['http-01']['resource'] }}\n#     content: \"{{ item.value['http-01']['resource_value'] }}\"\n#   loop: \"{{ sample_com_challenge.challenge_data | dict2items }}\"\n#   when: sample_com_challenge is changed\n\n- name: Let the challenge be validated and retrieve the cert and intermediate certificate\n  community.crypto.acme_certificate:\n    account_key_src: /etc/pki/cert/private/account.key\n    csr: /etc/pki/cert/csr/sample.com.csr\n    dest: /etc/httpd/ssl/sample.com.crt\n    fullchain_dest: /etc/httpd/ssl/sample.com-fullchain.crt\n    chain_dest: /etc/httpd/ssl/sample.com-intermediate.crt\n    data: \"{{ sample_com_challenge }}\"\n\n### Example with DNS challenge against production ACME server ###\n\n- name: Create a challenge for sample.com using a account key file.\n  community.crypto.acme_certificate:\n    account_key_src: /etc/pki/cert/private/account.key\n    account_email: myself@sample.com\n    src: /etc/pki/cert/csr/sample.com.csr\n    cert: /etc/httpd/ssl/sample.com.crt\n    challenge: dns-01\n    acme_directory: https://acme-v01.api.letsencrypt.org/directory\n    # Renew if the certificate is at least 30 days old\n    remaining_days: 60\n  register: sample_com_challenge\n\n# perform the necessary steps to fulfill the challenge\n# for example:\n#\n# - community.aws.route53:\n#     zone: sample.com\n#     record: \"{{ sample_com_challenge.challenge_data['sample.com']['dns-01'].record }}\"\n#     type: TXT\n#     ttl: 60\n#     state: present\n#     wait: yes\n#     # Note: route53 requires TXT entries to be enclosed in quotes\n#     value: \"{{ sample_com_challenge.challenge_data['sample.com']['dns-01'].resource_value | regex_replace('^(.*)$', '\\\"\\\\1\\\"') }}\"\n#   when: sample_com_challenge is changed and 'sample.com' in sample_com_challenge.challenge_data\n#\n# Alternative way:\n#\n# - community.aws.route53:\n#     zone: sample.com\n#     record: \"{{ item.key }}\"\n#     type: TXT\n#     ttl: 60\n#     state: present\n#     wait: yes\n#     # Note: item.value is a list of TXT entries, and route53\n#     # requires every entry to be enclosed in quotes\n#     value: \"{{ item.value | map('regex_replace', '^(.*)$', '\\\"\\\\1\\\"' ) | list }}\"\n#   loop: \"{{ sample_com_challenge.challenge_data_dns | dict2items }}\"\n#   when: sample_com_challenge is changed\n\n- name: Let the challenge be validated and retrieve the cert and intermediate certificate\n  community.crypto.acme_certificate:\n    account_key_src: /etc/pki/cert/private/account.key\n    account_email: myself@sample.com\n    src: /etc/pki/cert/csr/sample.com.csr\n    cert: /etc/httpd/ssl/sample.com.crt\n    fullchain: /etc/httpd/ssl/sample.com-fullchain.crt\n    chain: /etc/httpd/ssl/sample.com-intermediate.crt\n    challenge: dns-01\n    acme_directory: https://acme-v01.api.letsencrypt.org/directory\n    remaining_days: 60\n    data: \"{{ sample_com_challenge }}\"\n  when: sample_com_challenge is changed\n\n# Alternative second step:\n- name: Let the challenge be validated and retrieve the cert and intermediate certificate\n  community.crypto.acme_certificate:\n    account_key_src: /etc/pki/cert/private/account.key\n    account_email: myself@sample.com\n    src: /etc/pki/cert/csr/sample.com.csr\n    cert: /etc/httpd/ssl/sample.com.crt\n    fullchain: /etc/httpd/ssl/sample.com-fullchain.crt\n    chain: /etc/httpd/ssl/sample.com-intermediate.crt\n    challenge: tls-alpn-01\n    remaining_days: 60\n    data: \"{{ sample_com_challenge }}\"\n    # We use Let's Encrypt's ACME v2 endpoint\n    acme_directory: https://acme-v02.api.letsencrypt.org/directory\n    acme_version: 2\n    # The following makes sure that if a chain with /CN=DST Root CA X3 in its issuer is provided\n    # as an alternative, it will be selected. These are the roots cross-signed by IdenTrust.\n    # As long as Let's Encrypt provides alternate chains with the cross-signed root(s) when\n    # switching to their own ISRG Root X1 root, this will use the chain ending with a cross-signed\n    # root. This chain is more compatible with older TLS clients.\n    select_chain:\n      - test_certificates: last\n        issuer:\n          CN: DST Root CA X3\n          O: Digital Signature Trust Co.\n  when: sample_com_challenge is changed\n",
+        "metadata": null,
+        "return": {
+            "account_uri": {
+                "description": "ACME account URI.",
+                "returned": "changed",
+                "type": "str"
+            },
+            "all_chains": {
+                "contains": {
+                    "cert": {
+                        "description": [
+                            "The leaf certificate itself, in PEM format."
+                        ],
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "chain": {
+                        "description": [
+                            "The certificate chain, excluding the root, as concatenated PEM certificates."
+                        ],
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "full_chain": {
+                        "description": [
+                            "The certificate chain, excluding the root, but including the leaf certificate, as concatenated PEM certificates."
+                        ],
+                        "returned": "always",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "When I(retrieve_all_alternates) is set to C(yes), the module will query the ACME server for alternate chains. This return value will contain a list of all chains returned, the first entry being the main chain returned by the server.",
+                    "See L(Section 7.4.2 of RFC8555,https://tools.ietf.org/html/rfc8555#section-7.4.2) for details."
+                ],
+                "elements": "dict",
+                "returned": "when certificate was retrieved and I(retrieve_all_alternates) is set to C(yes)",
+                "type": "list"
+            },
+            "authorizations": {
+                "description": [
+                    "ACME authorization data.",
+                    "Maps an identifier to ACME authorization objects. See U(https://tools.ietf.org/html/rfc8555#section-7.1.4)."
+                ],
+                "returned": "changed",
+                "sample": "{\"example.com\":{...}}",
+                "type": "dict"
+            },
+            "cert_days": {
+                "description": "The number of days the certificate remains valid.",
+                "returned": "success",
+                "type": "int"
+            },
+            "challenge_data": {
+                "contains": {
+                    "record": {
+                        "description": "The full DNS record's name for the challenge.",
+                        "returned": "changed and challenge is C(dns-01)",
+                        "sample": "_acme-challenge.example.com",
+                        "type": "str"
+                    },
+                    "resource": {
+                        "description": "The challenge resource that must be created for validation.",
+                        "returned": "changed",
+                        "sample": ".well-known/acme-challenge/evaGxfADs6pSRb2LAv9IZf17Dt3juxGJ-PCt92wr-oA",
+                        "type": "str"
+                    },
+                    "resource_original": {
+                        "description": [
+                            "The original challenge resource including type identifier for C(tls-alpn-01) challenges."
+                        ],
+                        "returned": "changed and challenge is C(tls-alpn-01)",
+                        "sample": "DNS:example.com",
+                        "type": "str"
+                    },
+                    "resource_value": {
+                        "description": [
+                            "The value the resource has to produce for the validation.",
+                            "For C(http-01) and C(dns-01) challenges, the value can be used as-is.",
+                            "For C(tls-alpn-01) challenges, note that this return value contains a Base64 encoded version of the correct binary blob which has to be put into the acmeValidation x509 extension; see U(https://www.rfc-editor.org/rfc/rfc8737.html#section-3) for details. To do this, you might need the C(b64decode) Jinja filter to extract the binary blob from this return value."
+                        ],
+                        "returned": "changed",
+                        "sample": "IlirfxKKXA...17Dt3juxGJ-PCt92wr-oA",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Per identifier / challenge type challenge data.",
+                    "Since Ansible 2.8.5, only challenges which are not yet valid are returned."
+                ],
+                "elements": "dict",
+                "returned": "changed",
+                "type": "list"
+            },
+            "challenge_data_dns": {
+                "description": [
+                    "List of TXT values per DNS record, in case challenge is C(dns-01).",
+                    "Since Ansible 2.8.5, only challenges which are not yet valid are returned."
+                ],
+                "returned": "changed",
+                "type": "dict"
+            },
+            "finalization_uri": {
+                "description": "ACME finalization URI.",
+                "returned": "changed",
+                "type": "str"
+            },
+            "order_uri": {
+                "description": "ACME order URI.",
+                "returned": "changed",
+                "type": "str"
+            }
+        }
+    }
+}

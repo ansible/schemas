@@ -1,0 +1,573 @@
+{
+    "f5networks.f5_modules.bigip_firewall_rule": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages firewall rules in an AFM (Advanced Firewall Manager) firewall policy. New rules will always be added to the end of the policy. Rules can be re-ordered using the C(bigip_security_policy) module. Rules can also be pre-ordered using the C(bigip_security_policy) module and then later updated using the C(bigip_firewall_rule) module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_firewall_rule.py",
+            "has_action": false,
+            "module": "bigip_firewall_rule",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "action": {
+                    "choices": [
+                        "accept",
+                        "drop",
+                        "reject",
+                        "accept-decisively"
+                    ],
+                    "description": [
+                        "Specifies the action for the firewall rule.",
+                        "When C(accept), allows packets with the specified source, destination, and protocol to pass through the firewall. Packets that match the rule and are accepted, traverse the system as if the firewall is not present.",
+                        "When C(drop), drops packets with the specified source, destination, and protocol. Dropping a packet is a silent action with no notification to the source or destination systems. Dropping the packet causes the connection to be retried until the retry threshold is reached.",
+                        "When C(reject), rejects packets with the specified source, destination, and protocol. When a packet is rejected, the firewall sends a destination unreachable message to the sender.",
+                        "When C(accept-decisively), allows packets with the specified source, destination, and protocol to pass through the firewall, and does not require any further processing by any of the further firewalls. Packets that match the rule and are accepted, traverse the system as if the firewall is not present. If the Rule List is applied to a virtual server, management IP, or self IP firewall rule, then Accept Decisively is equivalent to Accept.",
+                        "When creating a new rule, if this parameter is not provided, the default is C(reject)."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The rule description."
+                    ],
+                    "type": "str"
+                },
+                "destination": {
+                    "description": [
+                        "Specifies packet destinations to which the rule applies.",
+                        "Leaving this field blank applies the rule to all addresses and all ports.",
+                        "You can specify the following destination items. An IPv4 or IPv6 address, an IPv4 or IPv6 address range, geographic location, VLAN, address list, port, port range, port list or address list.",
+                        "You can specify a mix of different types of items for the source address."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "Specifies a specific IP address."
+                            ],
+                            "type": "str"
+                        },
+                        "address_list": {
+                            "description": [
+                                "Specifies an existing address list."
+                            ],
+                            "type": "str"
+                        },
+                        "address_range": {
+                            "description": [
+                                "Specifies an address range."
+                            ],
+                            "type": "str"
+                        },
+                        "country": {
+                            "description": [
+                                "Specifies a country code."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies a single numeric port.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "int"
+                        },
+                        "port_list": {
+                            "description": [
+                                "Specifes an existing port list.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "str"
+                        },
+                        "port_range": {
+                            "description": [
+                                "Specifies a range of ports, which is two port values separated by a hyphen. The port to the left of the hyphen should be less than the port to the right.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "icmp_message": {
+                    "description": [
+                        "Specifies the Internet Control Message Protocol (ICMP) or ICMPv6 message C(type) and C(code) the rule uses.",
+                        "This parameter is only relevant when C(protocol) is either C(icmp)(1) or C(icmpv6)(58)."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "code": {
+                            "description": [
+                                "Specifies the code returned in response to the specified ICMP message type.",
+                                "You can specify codes, each set appropriate to the associated type, such as No Code (0) (associated with Echo Reply (0)) and Host Unreachable (1) (associated with Destination Unreachable (3)), or you can specify C(any) to indicate the system applies the rule for all codes in response to that specific ICMP message.",
+                                "You can also specify an arbitrary code.",
+                                "The ICMP protocol contains definitions for the existing message code and number pairs."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "Specifies the type of ICMP message.",
+                                "You can specify control messages, such as Echo Reply (0) and Destination Unreachable (3), or you can specify C(any) to indicate the system applies the rule for all ICMP messages.",
+                                "You can also specify an arbitrary ICMP message.",
+                                "The ICMP protocol contains definitions for the existing message type and number pairs."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "irule": {
+                    "description": [
+                        "Specifies an iRule that is applied to the firewall rule.",
+                        "An iRule can be started when the firewall rule matches traffic."
+                    ],
+                    "type": "str"
+                },
+                "logging": {
+                    "description": [
+                        "Specifies whether logging is enabled or disabled for the firewall rule.",
+                        "When creating a new rule, if this parameter is not specified, the default if C(no)."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the rule."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent_policy": {
+                    "description": [
+                        "The policy which contains the rule to be managed.",
+                        "One of either C(parent_policy) or C(parent_rule_list) is required."
+                    ],
+                    "type": "str"
+                },
+                "parent_rule_list": {
+                    "description": [
+                        "The rule list which contains the rule to be managed.",
+                        "One of either C(parent_policy) or C(parent_rule_list) is required."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "protocol": {
+                    "description": [
+                        "Specifies the protocol to which the rule applies.",
+                        "Protocols may be specified by either their name or numeric value.",
+                        "A special protocol value C(any) can be specified to match any protocol. The numeric equivalent of this protocol is C(255)."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "rule_list": {
+                    "description": [
+                        "Specifies an existing rule list to use in the rule.",
+                        "This parameter is mutually exclusive with many of the other individual-rule specific settings. This includes C(logging), C(action), C(source), C(destination), C(irule'), C(protocol) and C(logging).",
+                        "This parameter is only used when C(parent_policy) is specified, otherwise it is ignored."
+                    ],
+                    "type": "str"
+                },
+                "schedule": {
+                    "description": [
+                        "Specifies a schedule for the firewall rule.",
+                        "You configure schedules to define days and times when the firewall rule is made active."
+                    ],
+                    "type": "str"
+                },
+                "source": {
+                    "description": [
+                        "Specifies packet sources to which the rule applies.",
+                        "Leaving this field blank applies the rule to all addresses and all ports.",
+                        "You can specify the following source items. An IPv4 or IPv6 address, an IPv4 or IPv6 address range, geographic location, VLAN, address list, port, port range, port list or address list.",
+                        "You can specify a mix of different types of items for the source address."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "Specifies a specific IP address."
+                            ],
+                            "type": "str"
+                        },
+                        "address_list": {
+                            "description": [
+                                "Specifies an existing address list."
+                            ],
+                            "type": "str"
+                        },
+                        "address_range": {
+                            "description": [
+                                "Specifies an address range."
+                            ],
+                            "type": "str"
+                        },
+                        "country": {
+                            "description": [
+                                "Specifies a country code."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies a single numeric port.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "int"
+                        },
+                        "port_list": {
+                            "description": [
+                                "Specifes an existing port list.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "str"
+                        },
+                        "port_range": {
+                            "description": [
+                                "Specifies a range of ports, which is two port values separated by a hyphen. The port to the left of the hyphen should be less than the port to the right.",
+                                "This option is only valid when C(protocol) is C(tcp)(6) or C(udp)(17)."
+                            ],
+                            "type": "str"
+                        },
+                        "vlan": {
+                            "description": [
+                                "Specifies VLANs to which the rule applies.",
+                                "The VLAN source refers to the packet's source."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state) is C(present), ensures the rule exists.",
+                        "When C(state) is C(absent), ensures the rule is removed."
+                    ],
+                    "type": "str"
+                },
+                "status": {
+                    "choices": [
+                        "enabled",
+                        "disabled",
+                        "scheduled"
+                    ],
+                    "description": [
+                        "Indicates the activity state of the rule or rule list.",
+                        "When C(disabled), specifies the rule or rule list does not apply at all.",
+                        "When C(enabled), specifies the system applies the firewall rule or rule list to the given context and addresses.",
+                        "When C(scheduled), specifies the system applies the rule or rule list according to the specified schedule.",
+                        "When creating a new rule, if this parameter is not provided, the default is C(enabled)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage AFM Firewall rules",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a new rule in the foo firewall policy\n  bigip_firewall_rule:\n    name: foo\n    parent_policy: policy1\n    protocol: tcp\n    source:\n      - address: 1.2.3.4\n      - address: \"::1\"\n      - address_list: foo-list1\n      - address_range: 1.1.1.1-2.2.2.2\n      - vlan: vlan1\n      - country: US\n      - port: 22\n      - port_list: port-list1\n      - port_range: 80-443\n    destination:\n      - address: 1.2.3.4\n      - address: \"::1\"\n      - address_list: foo-list1\n      - address_range: 1.1.1.1-2.2.2.2\n      - country: US\n      - port: 22\n      - port_list: port-list1\n      - port_range: 80-443\n    irule: irule1\n    action: accept\n    logging: yes\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create an ICMP specific rule\n  bigip_firewall_rule:\n    name: foo\n    protocol: icmp\n    icmp_message:\n      type: 0\n    source:\n      - country: US\n    action: drop\n    logging: yes\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Add a new policy rule that uses an existing rule list\n  bigip_firewall_rule:\n    name: foo\n    parent_policy: foo_policy\n    rule_list: rule-list1\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "action": {
+                "description": "The action for the firewall rule.",
+                "returned": "changed",
+                "sample": "drop",
+                "type": "str"
+            },
+            "description": {
+                "description": "The rule description.",
+                "returned": "changed",
+                "sample": "MyRule",
+                "type": "str"
+            },
+            "destination": {
+                "contains": {
+                    "address": {
+                        "description": "A specific IP address.",
+                        "returned": "changed",
+                        "sample": "192.168.1.1",
+                        "type": "str"
+                    },
+                    "address_list": {
+                        "description": "An existing address list.",
+                        "returned": "changed",
+                        "sample": "foo-list1",
+                        "type": "str"
+                    },
+                    "address_range": {
+                        "description": "The address range.",
+                        "returned": "changed",
+                        "sample": "1.1.1.1-2.2.2.2",
+                        "type": "str"
+                    },
+                    "country": {
+                        "description": "A country code.",
+                        "returned": "changed",
+                        "sample": "US",
+                        "type": "str"
+                    },
+                    "port": {
+                        "description": "Single numeric port.",
+                        "returned": "changed",
+                        "sample": 8080,
+                        "type": "int"
+                    },
+                    "port_list": {
+                        "description": "An existing port list.",
+                        "returned": "changed",
+                        "sample": "port-list1",
+                        "type": "str"
+                    },
+                    "port_range": {
+                        "description": "The port range.",
+                        "returned": "changed",
+                        "sample": "80-443",
+                        "type": "str"
+                    }
+                },
+                "description": "The packet destinations to which the rule applies.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "icmp_message": {
+                "contains": {
+                    "code": {
+                        "description": "The code returned in response to the specified ICMP message type.",
+                        "returned": "changed",
+                        "sample": 1,
+                        "type": "str"
+                    },
+                    "type": {
+                        "description": "The type of ICMP message.",
+                        "returned": "changed",
+                        "sample": 0,
+                        "type": "str"
+                    }
+                },
+                "description": "The (ICMP) or ICMPv6 message C(type) and C(code) that the rule uses.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "irule": {
+                "description": "The iRule that is applied to the firewall rule.",
+                "returned": "changed",
+                "sample": "_sys_auth_radius",
+                "type": "str"
+            },
+            "logging": {
+                "description": "Enable or Disable logging for the firewall rule.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "name": {
+                "description": "Name of the rule.",
+                "returned": "changed",
+                "sample": "FooRule",
+                "type": "str"
+            },
+            "parent_policy": {
+                "description": "The policy which contains the rule to be managed.",
+                "returned": "changed",
+                "sample": "FooPolicy",
+                "type": "str"
+            },
+            "parent_rule_list": {
+                "description": "The rule list which contains the rule to be managed.",
+                "returned": "changed",
+                "sample": "FooRuleList",
+                "type": "str"
+            },
+            "protocol": {
+                "description": "The protocol to which the rule applies.",
+                "returned": "changed",
+                "sample": "any",
+                "type": "str"
+            },
+            "rule_list": {
+                "description": "An existing rule list to use in the parent policy.",
+                "returned": "changed",
+                "sample": "rule-list-1",
+                "type": "str"
+            },
+            "schedule": {
+                "description": "The schedule for the firewall rule.",
+                "returned": "changed",
+                "sample": "Foo_schedule",
+                "type": "str"
+            },
+            "source": {
+                "contains": {
+                    "address": {
+                        "description": "A specific IP address.",
+                        "returned": "changed",
+                        "sample": "192.168.1.1",
+                        "type": "str"
+                    },
+                    "address_list": {
+                        "description": "An existing address list.",
+                        "returned": "changed",
+                        "sample": "foo-list1",
+                        "type": "str"
+                    },
+                    "address_range": {
+                        "description": "The address range.",
+                        "returned": "changed",
+                        "sample": "1.1.1.1-2.2.2.2",
+                        "type": "str"
+                    },
+                    "country": {
+                        "description": "A country code.",
+                        "returned": "changed",
+                        "sample": "US",
+                        "type": "str"
+                    },
+                    "port": {
+                        "description": "Single numeric port.",
+                        "returned": "changed",
+                        "sample": 8080,
+                        "type": "int"
+                    },
+                    "port_list": {
+                        "description": "An existing port list.",
+                        "returned": "changed",
+                        "sample": "port-list1",
+                        "type": "str"
+                    },
+                    "port_range": {
+                        "description": "The port range.",
+                        "returned": "changed",
+                        "sample": "80-443",
+                        "type": "str"
+                    },
+                    "vlan": {
+                        "description": "Source VLANs for the packets.",
+                        "returned": "changed",
+                        "sample": "vlan1",
+                        "type": "str"
+                    }
+                },
+                "description": "The packet sources to which the rule applies.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "status": {
+                "description": "The activity state of the rule or rule list.",
+                "returned": "changed",
+                "sample": "scheduled",
+                "type": "str"
+            }
+        }
+    }
+}

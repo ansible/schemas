@@ -1,0 +1,183 @@
+{
+    "cloudscale_ch.cloud.network": {
+        "doc": {
+            "author": [
+                "Ren\u00e9 Moser (@resmo)"
+            ],
+            "collection": "cloudscale_ch.cloud",
+            "description": [
+                "Create, update and remove networks."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cloudscale_ch/cloud/plugins/modules/network.py",
+            "has_action": false,
+            "module": "network",
+            "notes": [
+                "All operations are performed using the cloudscale.ch public API v1.",
+                "For details consult the full API documentation: U(https://www.cloudscale.ch/en/api/v1).",
+                "A valid API token is required for all operations. You can create as many tokens as you like using the cloudscale.ch control panel at U(https://control.cloudscale.ch)."
+            ],
+            "options": {
+                "api_timeout": {
+                    "default": 30,
+                    "description": [
+                        "Timeout in seconds for calls to the cloudscale.ch API."
+                    ],
+                    "type": "int"
+                },
+                "api_token": {
+                    "description": [
+                        "cloudscale.ch API token.",
+                        "This can also be passed in the C(CLOUDSCALE_API_TOKEN) environment variable."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "default": "https://api.cloudscale.ch/v1",
+                    "description": [
+                        "cloudscale.ch API URL.",
+                        "This can also be passed in the C(CLOUDSCALE_API_URL) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "cloudscale_ch.cloud"
+                },
+                "auto_create_ipv4_subnet": {
+                    "default": true,
+                    "description": [
+                        "Whether to automatically create an IPv4 subnet in the network or not."
+                    ],
+                    "type": "bool"
+                },
+                "mtu": {
+                    "default": 9000,
+                    "description": [
+                        "The MTU of the network."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of the network.",
+                        "Either I(name) or I(uuid) is required."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the network."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tags assosiated with the networks. Set this to C({}) to clear any tags."
+                    ],
+                    "type": "dict"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the network.",
+                        "Either I(name) or I(uuid) is required."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "Zone slug of the network (e.g. C(lgp1) or C(rma1))."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages networks on the cloudscale.ch IaaS service",
+            "version_added": "1.2.0",
+            "version_added_collection": "cloudscale_ch.cloud"
+        },
+        "examples": "\n---\n- name: Ensure network exists\n  cloudscale_ch.cloud.network:\n    name: my network\n    api_token: xxxxxx\n\n- name: Ensure network in a specific zone\n  cloudscale_ch.cloud.network:\n    name: my network\n    zone: lpg1\n    api_token: xxxxxx\n\n- name: Ensure a network is absent\n  cloudscale_ch.cloud.network:\n    name: my network\n    state: absent\n    api_token: xxxxxx\n",
+        "metadata": null,
+        "return": {
+            "created_at": {
+                "description": "The creation date and time of the network.",
+                "returned": "success",
+                "sample": "2019-05-29T13:18:42.511407Z",
+                "type": "str"
+            },
+            "href": {
+                "description": "API URL to get details about this network.",
+                "returned": "success",
+                "sample": "https://api.cloudscale.ch/v1/networks/cfde831a-4e87-4a75-960f-89b0148aa2cc",
+                "type": "str"
+            },
+            "mtu": {
+                "description": "The MTU of the network.",
+                "returned": "success",
+                "sample": 9000,
+                "type": "int"
+            },
+            "name": {
+                "description": "The name of the network.",
+                "returned": "success",
+                "sample": "my network",
+                "type": "str"
+            },
+            "state": {
+                "description": "State of the network.",
+                "returned": "success",
+                "sample": "present",
+                "type": "str"
+            },
+            "subnets": {
+                "contains": {
+                    "cidr": {
+                        "description": "The CIDR of the subnet.",
+                        "returned": "success",
+                        "sample": "172.16.0.0/24",
+                        "type": "str"
+                    },
+                    "href": {
+                        "description": "API URL to get details about the subnet.",
+                        "returned": "success",
+                        "sample": "https://api.cloudscale.ch/v1/subnets/33333333-1864-4608-853a-0771b6885a3",
+                        "type": "str"
+                    },
+                    "uuid": {
+                        "description": "The unique identifier for the subnet.",
+                        "returned": "success",
+                        "sample": "33333333-1864-4608-853a-0771b6885a3",
+                        "type": "str"
+                    }
+                },
+                "description": "A list of subnets objects of the network.",
+                "returned": "success",
+                "type": "complex"
+            },
+            "tags": {
+                "description": "Tags assosiated with the network.",
+                "returned": "success",
+                "sample": {
+                    "project": "my project"
+                },
+                "type": "dict"
+            },
+            "uuid": {
+                "description": "The unique identifier for the network.",
+                "returned": "success",
+                "sample": "cfde831a-4e87-4a75-960f-89b0148aa2cc",
+                "type": "str"
+            },
+            "zone": {
+                "description": "The zone of the network.",
+                "returned": "success",
+                "sample": {
+                    "slug": "rma1"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}
