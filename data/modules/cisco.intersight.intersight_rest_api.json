@@ -1,0 +1,169 @@
+{
+    "cisco.intersight.intersight_rest_api": {
+        "doc": {
+            "author": [
+                "David Soper (@dsoper2)",
+                "CiscoUcs (@CiscoUcs)"
+            ],
+            "collection": "cisco.intersight",
+            "description": [
+                "Direct REST API configuration for Cisco Intersight.",
+                "All REST API resources and properties must be specified.",
+                "For more information see L(Cisco Intersight,https://intersight.com/apidocs)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/intersight/plugins/modules/intersight_rest_api.py",
+            "has_action": false,
+            "module": "intersight_rest_api",
+            "options": {
+                "api_body": {
+                    "description": [
+                        "The paylod for API requests used to modify resources."
+                    ],
+                    "type": "dict"
+                },
+                "api_key_id": {
+                    "description": [
+                        "Public API Key ID associated with the private key.",
+                        "If not set, the value of the INTERSIGHT_API_KEY_ID environment variable is used."
+                    ],
+                    "env": [
+                        {
+                            "name": "INTERSIGHT_API_KEY_ID"
+                        }
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_private_key": {
+                    "description": [
+                        "Filename (absolute path) or string of PEM formatted private key data to be used for Intersight API authentication.",
+                        "If a string is used, Ansible vault should be used to encrypt string data.",
+                        "Ex. ansible-vault encrypt_string --vault-id tme@/Users/dsoper/Documents/vault_password_file '-----BEGIN EC PRIVATE KEY-----",
+                        "    <your private key data>",
+                        "    -----END EC PRIVATE KEY-----'",
+                        "If not set, the value of the INTERSIGHT_API_PRIVATE_KEY environment variable is used."
+                    ],
+                    "env": [
+                        {
+                            "name": "INTERSIGHT_API_PRIVATE_KEY"
+                        }
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_uri": {
+                    "default": "https://intersight.com/api/v1",
+                    "description": [
+                        "URI used to access the Intersight API.",
+                        "If not set, the value of the INTERSIGHT_API_URI environment variable is used."
+                    ],
+                    "env": [
+                        {
+                            "name": "INTERSIGHT_API_URI"
+                        }
+                    ],
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "Query parameters for the Intersight API query languange."
+                    ],
+                    "type": "dict"
+                },
+                "resource_path": {
+                    "description": [
+                        "Resource URI being configured related to api_uri."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "return_list": {
+                    "default": false,
+                    "description": [
+                        "If C(yes), will return a list of API results in the api_response.",
+                        "By default only the 1st element of the API Results list is returned.",
+                        "Can only be used with GET operations."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(present), will verify the resource is present and will create if needed.",
+                        "If C(absent), will verify the resource is absent and will delete if needed."
+                    ]
+                },
+                "update_method": {
+                    "choices": [
+                        "patch",
+                        "post"
+                    ],
+                    "default": "patch",
+                    "description": [
+                        "The HTTP method used for update operations.",
+                        "Some Intersight resources require POST operations for modifications."
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Boolean control for verifying the api_uri TLS certificate"
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "REST API configuration for Cisco Intersight",
+            "version_added": "2.8",
+            "version_added_collection": "cisco.intersight"
+        },
+        "examples": "\n- name: Configure Boot Policy\n  intersight_rest_api:\n    api_private_key: \"{{ api_private_key }}\"\n    api_key_id: \"{{ api_key_id }}\"\n    api_key_uri: \"{{ api_key_uri }}\"\n    validate_certs: \"{{ validate_certs }}\"\n    resource_path: /boot/PrecisionPolicies\n    query_params:\n      $filter: \"Name eq 'vmedia-localdisk'\"\n    api_body: {\n      \"Name\": \"vmedia-localdisk\",\n      \"ConfiguredBootMode\": \"Legacy\",\n      \"BootDevices\": [\n        {\n          \"ObjectType\": \"boot.VirtualMedia\",\n          \"Enabled\": true,\n          \"Name\": \"remote-vmedia\",\n          \"Subtype\": \"cimc-mapped-dvd\"\n        },\n        {\n          \"ObjectType\": \"boot.LocalDisk\",\n          \"Enabled\": true,\n          \"Name\": \"localdisk\",\n          \"Slot\": \"MRAID\",\n          \"Bootloader\": null\n        }\n      ],\n    }\n    state: present\n\n- name: Delete Boot Policy\n  intersight_rest_api:\n    api_private_key: \"{{ api_private_key }}\"\n    api_key_id: \"{{ api_key_id }}\"\n    api_key_uri: \"{{ api_key_uri }}\"\n    validate_certs: \"{{ validate_certs }}\"\n    resource_path: /boot/PrecisionPolicies\n    query_params:\n      $filter: \"Name eq 'vmedia-localdisk'\"\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "api_repsonse": {
+                "description": "The API response output returned by the specified resource.",
+                "returned": "always",
+                "sample": {
+                    "api_response": {
+                        "BootDevices": [
+                            {
+                                "Enabled": true,
+                                "Name": "remote-vmedia",
+                                "ObjectType": "boot.VirtualMedia",
+                                "Subtype": "cimc-mapped-dvd"
+                            },
+                            {
+                                "Bootloader": null,
+                                "Enabled": true,
+                                "Name": "boot-lun",
+                                "ObjectType": "boot.LocalDisk",
+                                "Slot": "MRAID"
+                            }
+                        ],
+                        "ConfiguredBootMode": "Legacy",
+                        "Name": "vmedia-localdisk",
+                        "ObjectType": "boot.PrecisionPolicy"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

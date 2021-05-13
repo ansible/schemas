@@ -1,0 +1,136 @@
+{
+    "theforeman.foreman.smart_proxy": {
+        "doc": {
+            "author": [
+                "James Stuart (@jstuart)",
+                "Matthias M Dellweg (@mdellweg)",
+                "Jeffrey van Pelt (@Thulium-Drake)"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Create, update and delete Smart Proxies"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/smart_proxy.py",
+            "has_action": false,
+            "module": "smart_proxy",
+            "notes": [
+                "Even with I(state=present) this module does not install a new Smart Proxy.",
+                "It can only associate an existing Smart Proxy listening at the specified I(url).",
+                "Consider using I(foreman-installer) to create Smart Proxies."
+            ],
+            "options": {
+                "download_policy": {
+                    "choices": [
+                        "background",
+                        "immediate",
+                        "on_demand"
+                    ],
+                    "description": [
+                        "The download policy for the Smart Proxy",
+                        "Only available for Katello installations."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "lifecycle_environments": {
+                    "description": [
+                        "Lifecycle Environments synced to the Smart Proxy.",
+                        "Only available for Katello installations."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "locations": {
+                    "description": "List of locations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the Smart Proxy"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "organizations": {
+                    "description": "List of organizations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the entity"
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "URL of the Smart Proxy"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Manage Smart Proxies",
+            "version_added": "1.4.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n# Create a local Smart Proxy\n- name: \"Create Smart Proxy\"\n  theforeman.foreman.smart_proxy:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://{{ ansible_fqdn }}\"\n    name: \"{{ ansible_fqdn }}\"\n    url: \"https://{{ ansible_fqdn }}:9090\"\n    download_policy: \"immediate\"\n    lifecycle_environments:\n      - \"Development\"\n    organizations:\n      - \"Default Organization\"\n    locations:\n      - \"Default Location\"\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "smart_proxies": {
+                        "description": "List of smart_proxies.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

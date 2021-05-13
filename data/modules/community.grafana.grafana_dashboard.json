@@ -1,0 +1,189 @@
+{
+    "community.grafana.grafana_dashboard": {
+        "doc": {
+            "author": [
+                "Thierry Sall\u00e9 (@seuf)"
+            ],
+            "collection": "community.grafana",
+            "description": [
+                "Create, update, delete, export Grafana dashboards via API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/grafana/plugins/modules/grafana_dashboard.py",
+            "has_action": false,
+            "module": "grafana_dashboard",
+            "options": {
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, I(client_key) is not required"
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If I(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path"
+                },
+                "commit_message": {
+                    "aliases": [
+                        "message"
+                    ],
+                    "description": [
+                        "Set a commit message for the version history.",
+                        "Only used when C(state) is C(present).",
+                        "C(message) alias is deprecated in Ansible 2.10, since it is used internally by Ansible Core Engine."
+                    ],
+                    "type": "str"
+                },
+                "dashboard_id": {
+                    "description": [
+                        "Public Grafana.com dashboard id to import"
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.grafana"
+                },
+                "dashboard_revision": {
+                    "default": 1,
+                    "description": [
+                        "Revision of the public grafana dashboard to import"
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.grafana"
+                },
+                "folder": {
+                    "default": "General",
+                    "description": [
+                        "The Grafana folder where this dashboard will be imported to."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.grafana"
+                },
+                "grafana_api_key": {
+                    "description": [
+                        "The Grafana API key.",
+                        "If set, C(url_username) and C(url_password) will be ignored."
+                    ],
+                    "type": "str"
+                },
+                "org_id": {
+                    "default": 1,
+                    "description": [
+                        "The Grafana Organisation ID where the dashboard will be imported / exported.",
+                        "Not used when I(grafana_api_key) is set, because the grafana_api_key only belongs to one organisation.."
+                    ],
+                    "type": "int"
+                },
+                "overwrite": {
+                    "default": "no",
+                    "description": [
+                        "Override existing dashboard when state is present."
+                    ],
+                    "type": "bool"
+                },
+                "path": {
+                    "aliases": [
+                        "dashboard_url"
+                    ],
+                    "description": [
+                        "The path to the json file containing the Grafana dashboard to import or export.",
+                        "A http URL is also accepted (since 2.10).",
+                        "Required if C(state) is C(export) or C(present)."
+                    ],
+                    "type": "str"
+                },
+                "slug": {
+                    "description": [
+                        "Deprecated since Grafana 5. Use grafana dashboard uid instead.",
+                        "slug of the dashboard. It's the friendly url name of the dashboard.",
+                        "When C(state) is C(present), this parameter can override the slug in the meta section of the json file.",
+                        "If you want to import a json dashboard exported directly from the interface (not from the api), you have to specify the slug parameter because there is no meta section in the exported json."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "export",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the dashboard."
+                    ],
+                    "type": "str"
+                },
+                "uid": {
+                    "description": [
+                        "uid of the dashboard to export when C(state) is C(export) or C(absent)."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.grafana"
+                },
+                "url": {
+                    "aliases": [
+                        "grafana_url"
+                    ],
+                    "description": [
+                        "The Grafana URL."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "grafana_password"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana password for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "url_username": {
+                    "aliases": [
+                        "grafana_user"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana user for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage Grafana dashboards",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.grafana"
+        },
+        "examples": "\n- hosts: localhost\n  connection: local\n  tasks:\n    - name: Import Grafana dashboard foo\n      community.grafana.grafana_dashboard:\n        grafana_url: http://grafana.company.com\n        grafana_api_key: \"{{ grafana_api_key }}\"\n        state: present\n        commit_message: Updated by ansible\n        overwrite: yes\n        path: /path/to/dashboards/foo.json\n\n    - name: Import Grafana dashboard Zabbix\n      community.grafana.grafana_dashboard:\n        grafana_url: http://grafana.company.com\n        grafana_api_key: \"{{ grafana_api_key }}\"\n        folder: zabbix\n        dashboard_id: 6098\n        dashbord_revision: 1\n\n    - name: Import Grafana dashboard zabbix\n      community.grafana.grafana_dashboard:\n        grafana_url: http://grafana.company.com\n        grafana_api_key: \"{{ grafana_api_key }}\"\n        folder: public\n        dashboard_url: https://grafana.com/api/dashboards/6098/revisions/1/download\n\n    - name: Export dashboard\n      community.grafana.grafana_dashboard:\n        grafana_url: http://grafana.company.com\n        grafana_user: \"admin\"\n        grafana_password: \"{{ grafana_password }}\"\n        org_id: 1\n        state: export\n        uid: \"000000653\"\n        path: \"/path/to/dashboards/000000653.json\"\n",
+        "metadata": null,
+        "return": {
+            "uid": {
+                "description": "uid or slug of the created / deleted / exported dashboard.",
+                "returned": "success",
+                "sample": 51,
+                "type": "str"
+            }
+        }
+    }
+}

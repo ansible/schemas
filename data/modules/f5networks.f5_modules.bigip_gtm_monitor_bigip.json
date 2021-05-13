@@ -1,0 +1,246 @@
+{
+    "f5networks.f5_modules.bigip_gtm_monitor_bigip": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages F5 BIG-IP GTM (now BIG-IP DNS) BIG-IP monitors. This monitor is used by GTM to monitor BIG-IPs themselves."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_gtm_monitor_bigip.py",
+            "has_action": false,
+            "module": "bigip_gtm_monitor_bigip",
+            "notes": [
+                "Requires BIG-IP software version >= 12",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "aggregate_dynamic_ratios": {
+                    "choices": [
+                        "none",
+                        "average-nodes",
+                        "sum-nodes",
+                        "average-members",
+                        "sum-members"
+                    ],
+                    "description": [
+                        "Specifies how the system combines the module values to create the proportion (score) for the load balancing operation.",
+                        "The score represents the module's estimated capacity for handing traffic.",
+                        "Averaged values are appropriate for downstream Web Accelerator or Application Security Manager (ASM) virtual servers.",
+                        "When creating a new monitor, if this parameter is not specified, the default of C(none) is used, meaning the system does not use the scores in the load balancing operation.",
+                        "When C(none), specifies the monitor ignores the nodes and pool member scores.",
+                        "When C(average-nodes), specifies the system averages the dynamic ratios on the nodes associated with the monitor's target virtual servers and returns that average as the virtual servers' score.",
+                        "When C(sum-nodes), specifies the system adds together the scores of the nodes associated with the monitor's target virtual servers and uses that value in the load balancing operation.",
+                        "When C(average-members), specifies the system averages the dynamic ratios on the pool members associated with the monitor's target virtual servers and returns that average as the virtual servers' score.",
+                        "When C(sum-members), specifies the system adds together the scores of the pool members associated with the monitor's target virtual servers and uses that value in the load balancing operation."
+                    ],
+                    "type": "str"
+                },
+                "ignore_down_response": {
+                    "description": [
+                        "Specifies the monitor allows more than one probe attempt per interval.",
+                        "When C(yes), specifies the monitor ignores down responses for the duration of the monitor timeout. Once the monitor timeout is reached without the system receiving an up response, the system marks the object down.",
+                        "When C(no), specifies the monitor immediately marks an object down when it receives a down response.",
+                        "When creating a new monitor, if this parameter is not provided, the default value will be C(no)."
+                    ],
+                    "type": "bool"
+                },
+                "interval": {
+                    "description": [
+                        "Specifies, in seconds, the frequency at which the system issues the monitor check when either the resource is down or the status of the resource is unknown.",
+                        "When creating a new monitor, if this parameter is not provided, the default value will be C(30). This value B(must) be less than the C(timeout) value."
+                    ],
+                    "type": "int"
+                },
+                "ip": {
+                    "description": [
+                        "IP address part of the IP/port definition. If this parameter is not provided when creating a new monitor, the default value will be '*'."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the monitor."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent": {
+                    "default": "/Common/bigip",
+                    "description": [
+                        "The parent template of this monitor template. Once this value has been set, it cannot be changed. By default, this value is the C(bigip) parent on the C(Common) partition."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Port address part of the IP/port definition. If this parameter is not provided when creating a new monitor, the default value will be '*'. Note that if specifying an IP address, you must use a value between 1 and 65535."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the monitor exists.",
+                        "When C(absent), ensures the monitor is removed."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "description": [
+                        "Specifies the number of seconds the target has in which to respond to the monitor request.",
+                        "If the target responds within the set time period, it is considered up.",
+                        "If the target does not respond within the set time period, it is considered down.",
+                        "When this value is set to 0 (zero), the system uses the interval from the parent monitor.",
+                        "When creating a new monitor, if this parameter is not provided, the default value will be C(90)."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP GTM BIG-IP monitors",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create BIG-IP Monitor\n  bigip_gtm_monitor_bigip:\n    state: present\n    ip: 10.10.10.10\n    name: my_monitor\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Remove BIG-IP Monitor\n  bigip_gtm_monitor_bigip:\n    state: absent\n    name: my_monitor\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Add BIG-IP monitor for all addresses, port 514\n  bigip_gtm_monitor_bigip:\n    port: 514\n    name: my_monitor\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "aggregate_dynamic_ratios": {
+                "description": "The new aggregate of to the monitor.",
+                "returned": "changed",
+                "sample": "sum-members",
+                "type": "str"
+            },
+            "ignore_down_response": {
+                "description": "Whether to ignore the down response or not.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "interval": {
+                "description": "The new interval at which to run the monitor check.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "ip": {
+                "description": "The new IP of IP/port definition.",
+                "returned": "changed",
+                "sample": "10.12.13.14",
+                "type": "str"
+            },
+            "parent": {
+                "description": "New parent template of the monitor.",
+                "returned": "changed",
+                "sample": "bigip",
+                "type": "str"
+            },
+            "timeout": {
+                "description": "The new timeout in which the remote system must respond to the monitor.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            }
+        }
+    }
+}

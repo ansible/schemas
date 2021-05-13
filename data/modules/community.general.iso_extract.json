@@ -1,0 +1,80 @@
+{
+    "community.general.iso_extract": {
+        "doc": {
+            "author": [
+                "Jeroen Hoekx (@jhoekx)",
+                "Matt Robinson (@ribbons)",
+                "Dag Wieers (@dagwieers)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module has two possible ways of operation.",
+                "If 7zip is installed on the system, this module extracts files from an ISO into a temporary directory and copies files to a given destination, if needed.",
+                "If the user has mount-capabilities (CAP_SYS_ADMIN on Linux) this module mounts the ISO image to a temporary location, and copies files to a given destination, if needed."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/iso_extract.py",
+            "has_action": false,
+            "module": "iso_extract",
+            "notes": [
+                "Only the file checksum (content) is taken into account when extracting files from the ISO image. If C(force=no), only checks the presence of the file.",
+                "In Ansible 2.3 this module was using C(mount) and C(umount) commands only, requiring root access. This is no longer needed with the introduction of 7zip for extraction."
+            ],
+            "options": {
+                "dest": {
+                    "description": [
+                        "The destination directory to extract files to."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "executable": {
+                    "description": [
+                        "The path to the C(7z) executable to use for extracting files from the ISO.",
+                        "If not provided, it will assume the value C(7z)."
+                    ],
+                    "type": "path"
+                },
+                "files": {
+                    "description": [
+                        "A list of files to extract from the image.",
+                        "Extracting directories does not work."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "force": {
+                    "aliases": [
+                        "thirsty"
+                    ],
+                    "default": true,
+                    "description": [
+                        "If C(yes), which will replace the remote file when contents are different than the source.",
+                        "If C(no), the file will only be extracted and copied if the destination does not already exist.",
+                        "Alias C(thirsty) has been deprecated and will be removed in community.general 3.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "image": {
+                    "aliases": [
+                        "path",
+                        "src"
+                    ],
+                    "description": [
+                        "The ISO image to extract files from."
+                    ],
+                    "required": true,
+                    "type": "path"
+                }
+            },
+            "requirements": [
+                "Either 7z (from I(7zip) or I(p7zip) package)",
+                "Or mount capabilities (root-access, or CAP_SYS_ADMIN capability on Linux)"
+            ],
+            "short_description": "Extract files from an ISO image"
+        },
+        "examples": "\n- name: Extract kernel and ramdisk from a LiveCD\n  community.general.iso_extract:\n    image: /tmp/rear-test.iso\n    dest: /tmp/virt-rear/\n    files:\n    - isolinux/kernel\n    - isolinux/initrd.cgz\n",
+        "metadata": null,
+        "return": null
+    }
+}

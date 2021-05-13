@@ -1,0 +1,359 @@
+{
+    "f5networks.f5_modules.bigip_gtm_pool_member": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages a variety of settings on GTM (now BIG-IP DNS) pool members. The settings that can be adjusted with this module are much more broad that what can be done in the C(bigip_gtm_pool) module. The pool module is intended to allow you to adjust the member order in the pool, not the various settings of the members. The C(bigip_gtm_pool_member) module should be used to adjust all of the other settings."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_gtm_pool_member.py",
+            "has_action": false,
+            "module": "bigip_gtm_pool_member",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "aggregate": {
+                    "aliases": [
+                        "members"
+                    ],
+                    "description": [
+                        "List of GTM pool member definitions to be created, modified, or removed.",
+                        "When using C(aggregates), if one of the aggregate definitions is invalid, the aggregate run will fail, indicating the error it last encountered.",
+                        "The module will C(NOT) rollback any changes it has made prior to encountering the error.",
+                        "The module also will not indicate what changes were made prior to failure, therefore we strongly advise you run the module in check mode to make basic validation, prior to module execution."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "description": {
+                    "description": [
+                        "The description of the pool member."
+                    ],
+                    "type": "str"
+                },
+                "limits": {
+                    "description": [
+                        "Specifies resource thresholds or limit requirements at the pool member level.",
+                        "When you enable one or more limit settings, the system then uses that data to take members in and out of service.",
+                        "You can define limits for any or all of the limit settings. However, when a member does not meet the resource threshold limit requirement, the system marks the member as unavailable and directs load balancing traffic to another resource."
+                    ],
+                    "suboptions": {
+                        "bits_enabled": {
+                            "description": [
+                                "Whether the bits limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "bits_limit": {
+                            "description": [
+                                "Specifies the maximum allowable data throughput rate for the member, in bits per second.",
+                                "If the network traffic volume exceeds this limit, the system marks the member as unavailable."
+                            ],
+                            "type": "int"
+                        },
+                        "connections_enabled": {
+                            "description": [
+                                "Whether the current connections limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "connections_limit": {
+                            "description": [
+                                "Specifies the maximum number of concurrent connections, combined, for all of the members.",
+                                "If the connections exceed this limit, the system marks the server as unavailable."
+                            ],
+                            "type": "int"
+                        },
+                        "packets_enabled": {
+                            "description": [
+                                "Whether the packets limit is enabled or not.",
+                                "This parameter allows you to switch on or off the effect of the limit."
+                            ],
+                            "type": "bool"
+                        },
+                        "packets_limit": {
+                            "description": [
+                                "Specifies the maximum allowable data transfer rate for the member, in packets per second.",
+                                "If the network traffic volume exceeds this limit, the system marks the member as unavailable."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "member_order": {
+                    "description": [
+                        "Specifies the order in which the member will appear in the pool.",
+                        "The system uses this number with load balancing methods that involve prioritizing pool members, such as the Ratio load balancing method.",
+                        "When creating a new member using this module, if the C(member_order) parameter is not specified, it will default to C(0) (first member in the pool)."
+                    ],
+                    "type": "int"
+                },
+                "monitor": {
+                    "description": [
+                        "Specifies the monitor assigned to this pool member.",
+                        "Pool members only support a single monitor.",
+                        "If the C(port) of the C(gtm_virtual_server) is C(*), the accepted values of this parameter will be affected.",
+                        "If this parameter is not specified when creating a new pool member, the default of C(default) will be used.",
+                        "To remove the monitor from the pool member, use the value C(none).",
+                        "For pool members created on different partitions, you can also specify the full path to the Common monitor. For example, C(/Common/tcp)."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "pool": {
+                    "description": [
+                        "Name of the GTM pool.",
+                        "For pools created on different partitions, you must specify partition of the pool in the full path format, for example, C(/FooBar/pool_name)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "ratio": {
+                    "description": [
+                        "Specifies the weight of the pool member for load balancing purposes."
+                    ],
+                    "type": "int"
+                },
+                "replace_all_with": {
+                    "aliases": [
+                        "purge"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Removes members not defined in the C(aggregate) parameter.",
+                        "This operation is all or none, meaning it will stop if there are some pool members that cannot be removed."
+                    ],
+                    "type": "bool"
+                },
+                "server_name": {
+                    "description": [
+                        "Specifies the GTM server which contains the C(virtual_server)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Pool member state. When C(present), ensures the pool member is created and enabled. When C(absent), ensures the pool member is removed from the system. When C(enabled) or C(disabled), ensures the pool member is enabled or disabled (respectively) on the remote device.",
+                        "We recommend you use the C(members) parameter of the C(bigip_gtm_pool) module when adding and removing members, as it provides an easier way of specifying order. If this is not possible, the C(state) parameter here should be used.",
+                        "Remember that the order of the members will be affected if you add or remove them using this method. To some extent, this can be controlled using the C(member_order) parameter."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "a",
+                        "aaaa",
+                        "cname",
+                        "mx",
+                        "naptr",
+                        "srv"
+                    ],
+                    "description": [
+                        "The type of GTM pool that the member is in."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "virtual_server": {
+                    "description": [
+                        "Specifies the name of the GTM virtual server which is assigned to the specified C(server)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage GTM pool member settings",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a GTM pool member\n  bigip_gtm_pool_member:\n    pool: pool1\n    server_name: server1\n    virtual_server: vs1\n    type: a\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create a GTM pool member different partition\n  bigip_gtm_pool_member:\n    server_name: /Common/foo_name\n    virtual_server: GTMVSName\n    type: a\n    pool: /FooBar/foo-pool\n    partition: Common\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Add GTM pool members aggregate\n  bigip_gtm_pool_member:\n    pool: pool1\n    type: a\n    aggregate:\n      - server_name: server1\n        virtual_server: vs1\n        partition: Common\n        description: web server1\n        member_order: 0\n      - server_name: server2\n        virtual_server: vs2\n        partition: Common\n        description: web server2\n        member_order: 1\n      - server_name: server3\n        virtual_server: vs3\n        partition: Common\n        description: web server3\n        member_order: 2\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add GTM pool members aggregate, remove non aggregates\n  bigip_gtm_pool_member:\n    pool: pool1\n    type: a\n    aggregate:\n      - server_name: server1\n        virtual_server: vs1\n        partition: Common\n        description: web server1\n        member_order: 0\n      - server_name: server2\n        virtual_server: vs2\n        partition: Common\n        description: web server2\n        member_order: 1\n      - server_name: server3\n        virtual_server: vs3\n        partition: Common\n        description: web server3\n        member_order: 2\n    replace_all_with: yes\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "bits_enabled": {
+                "description": "Whether the bits limit is enabled.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "bits_limit": {
+                "description": "The new bits_enabled limit.",
+                "returned": "changed",
+                "sample": 100,
+                "type": "int"
+            },
+            "connections_enabled": {
+                "description": "Whether the connections limit is enabled.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "connections_limit": {
+                "description": "The new connections_limit limit.",
+                "returned": "changed",
+                "sample": 100,
+                "type": "int"
+            },
+            "description": {
+                "description": "The new description of the member.",
+                "returned": "changed",
+                "sample": "My description",
+                "type": "str"
+            },
+            "disabled": {
+                "description": "Whether the pool member is disabled or not.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "enabled": {
+                "description": "Whether the pool member is enabled or not.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "member_order": {
+                "description": "The new order in which the member appears in the pool.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "monitor": {
+                "description": "The new monitor assigned to the pool member.",
+                "returned": "changed",
+                "sample": "/Common/monitor1",
+                "type": "str"
+            },
+            "packets_enabled": {
+                "description": "Whether the packets limit is enabled.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "packets_limit": {
+                "description": "The new packets_limit limit.",
+                "returned": "changed",
+                "sample": 100,
+                "type": "int"
+            },
+            "ratio": {
+                "description": "The new weight of the member for load balancing.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "replace_all_with": {
+                "description": "Purges all non-aggregate pool members from device",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

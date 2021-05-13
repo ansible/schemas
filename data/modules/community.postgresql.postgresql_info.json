@@ -1,0 +1,739 @@
+{
+    "community.postgresql.postgresql_info": {
+        "doc": {
+            "author": [
+                "Andrew Klychkov (@Andersson007)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Gathers information about PostgreSQL servers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_info.py",
+            "has_action": false,
+            "module": "postgresql_info",
+            "notes": [
+                "Supports C(check_mode).",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect."
+                    ],
+                    "type": "str"
+                },
+                "filter": {
+                    "description": [
+                        "Limit the collected information by comma separated string or YAML list.",
+                        "Allowable values are C(version), C(databases), C(in_recovery), C(settings), C(tablespaces), C(roles), C(replications), C(repl_slots).",
+                        "By default, collects all subsets.",
+                        "You can use shell-style (fnmatch) wildcard to pass groups of values (see Examples).",
+                        "You can use '!' before value (for example, C(!settings)) to exclude it from the information.",
+                        "If you pass including and excluding values to the filter, for example, I(filter=!settings,ver), the excluding values will be ignored."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting. The specified session_role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session_role were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether a value of I(session_role) is potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via I(session_role) are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.postgresql.postgresql_ping"
+                }
+            ],
+            "short_description": "Gather information about PostgreSQL servers"
+        },
+        "examples": "\n# Display info from postgres hosts.\n# ansible postgres -m postgresql_info\n\n# Display only databases and roles info from all hosts using shell-style wildcards:\n# ansible all -m postgresql_info -a 'filter=dat*,rol*'\n\n# Display only replications and repl_slots info from standby hosts using shell-style wildcards:\n# ansible standby -m postgresql_info -a 'filter=repl*'\n\n# Display all info from databases hosts except settings:\n# ansible databases -m postgresql_info -a 'filter=!settings'\n\n- name: Collect PostgreSQL version and extensions\n  become: yes\n  become_user: postgres\n  community.postgresql.postgresql_info:\n    filter: ver*,ext*\n\n- name: Collect all info except settings and roles\n  become: yes\n  become_user: postgres\n  community.postgresql.postgresql_info:\n    filter: \"!settings,!roles\"\n\n# On FreeBSD with PostgreSQL 9.5 version and lower use pgsql user to become\n# and pass \"postgres\" as a database to connect to\n- name: Collect tablespaces and repl_slots info\n  become: yes\n  become_user: pgsql\n  community.postgresql.postgresql_info:\n    db: postgres\n    filter:\n    - tablesp*\n    - repl_sl*\n\n- name: Collect all info except databases\n  become: yes\n  become_user: postgres\n  community.postgresql.postgresql_info:\n    filter:\n    - \"!databases\"\n",
+        "metadata": null,
+        "return": {
+            "databases": {
+                "contains": {
+                    "database_name": {
+                        "contains": {
+                            "access_priv": {
+                                "description": "Database access privileges.",
+                                "returned": "always",
+                                "sample": "=c/postgres_npostgres=CTc/postgres",
+                                "type": "str"
+                            },
+                            "collate": {
+                                "description": [
+                                    "Database collation U(https://www.postgresql.org/docs/current/collation.html)."
+                                ],
+                                "returned": "always",
+                                "sample": "en_US.UTF-8",
+                                "type": "str"
+                            },
+                            "ctype": {
+                                "description": [
+                                    "Database LC_CTYPE U(https://www.postgresql.org/docs/current/multibyte.html)."
+                                ],
+                                "returned": "always",
+                                "sample": "en_US.UTF-8",
+                                "type": "str"
+                            },
+                            "encoding": {
+                                "description": [
+                                    "Database encoding U(https://www.postgresql.org/docs/current/multibyte.html)."
+                                ],
+                                "returned": "always",
+                                "sample": "UTF8",
+                                "type": "str"
+                            },
+                            "extensions": {
+                                "contains": {
+                                    "extdescription": {
+                                        "description": "Extension description.",
+                                        "returned": "if existent",
+                                        "sample": "PL/pgSQL procedural language",
+                                        "type": "str"
+                                    },
+                                    "extversion": {
+                                        "contains": {
+                                            "major": {
+                                                "description": "Extension major version.",
+                                                "returned": "always",
+                                                "sample": 1,
+                                                "type": "int"
+                                            },
+                                            "minor": {
+                                                "description": "Extension minor version.",
+                                                "returned": "always",
+                                                "sample": 0,
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "Extension description.",
+                                        "returned": "always",
+                                        "type": "dict"
+                                    },
+                                    "nspname": {
+                                        "description": "Namespace where the extension is.",
+                                        "returned": "always",
+                                        "sample": "pg_catalog",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": [
+                                    "Extensions U(https://www.postgresql.org/docs/current/sql-createextension.html)."
+                                ],
+                                "returned": "always",
+                                "sample": [
+                                    {
+                                        "plpgsql": {
+                                            "description": "PL/pgSQL procedural language",
+                                            "extversion": {
+                                                "major": 1,
+                                                "minor": 0
+                                            }
+                                        }
+                                    }
+                                ],
+                                "type": "dict"
+                            },
+                            "languages": {
+                                "contains": {
+                                    "lanacl": {
+                                        "description": [
+                                            "Language access privileges U(https://www.postgresql.org/docs/current/catalog-pg-language.html)."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "{postgres=UC/postgres,=U/postgres}",
+                                        "type": "str"
+                                    },
+                                    "lanowner": {
+                                        "description": [
+                                            "Language owner U(https://www.postgresql.org/docs/current/catalog-pg-language.html)."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "postgres",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Procedural languages U(https://www.postgresql.org/docs/current/xplang.html).",
+                                "returned": "always",
+                                "sample": {
+                                    "sql": {
+                                        "lanacl": "",
+                                        "lanowner": "postgres"
+                                    }
+                                },
+                                "type": "dict"
+                            },
+                            "namespaces": {
+                                "contains": {
+                                    "nspacl": {
+                                        "description": [
+                                            "Access privileges U(https://www.postgresql.org/docs/current/catalog-pg-namespace.html)."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "{postgres=UC/postgres,=U/postgres}",
+                                        "type": "str"
+                                    },
+                                    "nspowner": {
+                                        "description": [
+                                            "Schema owner U(https://www.postgresql.org/docs/current/catalog-pg-namespace.html)."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "postgres",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": [
+                                    "Namespaces (schema) U(https://www.postgresql.org/docs/current/sql-createschema.html)."
+                                ],
+                                "returned": "always",
+                                "sample": {
+                                    "pg_catalog": {
+                                        "nspacl": "{postgres=UC/postgres,=U/postgres}",
+                                        "nspowner": "postgres"
+                                    }
+                                },
+                                "type": "dict"
+                            },
+                            "owner": {
+                                "description": [
+                                    "Database owner U(https://www.postgresql.org/docs/current/sql-createdatabase.html)."
+                                ],
+                                "returned": "always",
+                                "sample": "postgres",
+                                "type": "str"
+                            },
+                            "publications": {
+                                "description": [
+                                    "Information about logical replication publications (available for PostgreSQL 10 and higher) U(https://www.postgresql.org/docs/current/logical-replication-publication.html).",
+                                    "Content depends on PostgreSQL server version."
+                                ],
+                                "returned": "if configured",
+                                "sample": {
+                                    "pub1": {
+                                        "ownername": "postgres",
+                                        "puballtables": true,
+                                        "pubinsert": true,
+                                        "pubupdate": true
+                                    }
+                                },
+                                "type": "dict",
+                                "version_added": "0.2.0",
+                                "version_added_collection": "community.postgresql"
+                            },
+                            "size": {
+                                "description": "Database size in bytes.",
+                                "returned": "always",
+                                "sample": 8189415,
+                                "type": "str"
+                            },
+                            "subscriptions": {
+                                "description": [
+                                    "Information about replication subscriptions (available for PostgreSQL 10 and higher) U(https://www.postgresql.org/docs/current/logical-replication-subscription.html).",
+                                    "Content depends on PostgreSQL server version."
+                                ],
+                                "returned": "if configured",
+                                "sample": [
+                                    {
+                                        "my_subscription": {
+                                            "ownername": "postgres",
+                                            "subenabled": true,
+                                            "subpublications": [
+                                                "first_publication"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "type": "dict",
+                                "version_added": "0.2.0",
+                                "version_added_collection": "community.postgresql"
+                            }
+                        },
+                        "description": "Database name.",
+                        "returned": "always",
+                        "sample": "template1",
+                        "type": "dict"
+                    }
+                },
+                "description": "Information about databases.",
+                "returned": "always",
+                "sample": [
+                    {
+                        "postgres": {
+                            "access_priv": "",
+                            "collate": "en_US.UTF-8",
+                            "ctype": "en_US.UTF-8",
+                            "encoding": "UTF8",
+                            "owner": "postgres",
+                            "size": "7997 kB"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "in_recovery": {
+                "description": "Indicates if the service is in recovery mode or not.",
+                "returned": "always",
+                "sample": false,
+                "type": "bool"
+            },
+            "pending_restart_settings": {
+                "description": [
+                    "List of settings that are pending restart to be set."
+                ],
+                "returned": "always",
+                "sample": [
+                    "shared_buffers"
+                ],
+                "type": "list"
+            },
+            "repl_slots": {
+                "contains": {
+                    "active": {
+                        "description": [
+                            "True means that a receiver has connected to it, and it is currently reserving archives."
+                        ],
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "database": {
+                        "description": "Database name this slot is associated with, or null.",
+                        "returned": "always",
+                        "sample": "acme",
+                        "type": "str"
+                    },
+                    "plugin": {
+                        "description": [
+                            "Base name of the shared object containing the output plugin this logical slot is using, or null for physical slots."
+                        ],
+                        "returned": "always",
+                        "sample": "pgoutput",
+                        "type": "str"
+                    },
+                    "slot_type": {
+                        "description": "The slot type - physical or logical.",
+                        "returned": "always",
+                        "sample": "logical",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Replication slots (available in 9.4 and later) U(https://www.postgresql.org/docs/current/view-pg-replication-slots.html)."
+                ],
+                "returned": "if existent",
+                "sample": {
+                    "slot0": {
+                        "active": false,
+                        "database": null,
+                        "plugin": null,
+                        "slot_type": "physical"
+                    }
+                },
+                "type": "dict"
+            },
+            "replications": {
+                "contains": {
+                    "app_name": {
+                        "description": "Name of the application that is connected to this WAL sender.",
+                        "returned": "if existent",
+                        "sample": "acme_srv",
+                        "type": "str"
+                    },
+                    "backend_start": {
+                        "description": "Time when this process was started, i.e., when the client connected to this WAL sender.",
+                        "returned": "always",
+                        "sample": "2019-02-03 00:14:33.908593+03",
+                        "type": "str"
+                    },
+                    "client_addr": {
+                        "description": [
+                            "IP address of the client connected to this WAL sender.",
+                            "If this field is null, it indicates that the client is connected via a Unix socket on the server machine."
+                        ],
+                        "returned": "always",
+                        "sample": "10.0.0.101",
+                        "type": "str"
+                    },
+                    "client_hostname": {
+                        "description": [
+                            "Host name of the connected client, as reported by a reverse DNS lookup of client_addr.",
+                            "This field will only be non-null for IP connections, and only when log_hostname is enabled."
+                        ],
+                        "returned": "always",
+                        "sample": "dbsrv1",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "Current WAL sender state.",
+                        "returned": "always",
+                        "sample": "streaming",
+                        "type": "str"
+                    },
+                    "usename": {
+                        "description": [
+                            "Name of the user logged into this WAL sender process ('usename' is a column name in pg_stat_replication view)."
+                        ],
+                        "returned": "always",
+                        "sample": "replication_user",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Information about the current replications by process PIDs U(https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-STATS-VIEWS-TABLE)."
+                ],
+                "returned": "if pg_stat_replication view existent",
+                "sample": [
+                    {
+                        "76580": {
+                            "app_name": "standby1",
+                            "backend_start": "2019-02-03 00:14:33.908593+03",
+                            "client_addr": "10.10.10.2",
+                            "client_hostname": "",
+                            "state": "streaming",
+                            "usename": "postgres"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "roles": {
+                "contains": {
+                    "canlogin": {
+                        "description": "Login privilege U(https://www.postgresql.org/docs/current/role-attributes.html).",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "member_of": {
+                        "description": [
+                            "Role membership U(https://www.postgresql.org/docs/current/role-membership.html)."
+                        ],
+                        "returned": "always",
+                        "sample": [
+                            "read_only_users"
+                        ],
+                        "type": "list"
+                    },
+                    "superuser": {
+                        "description": "User is a superuser or not.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "valid_until": {
+                        "description": [
+                            "Password expiration date U(https://www.postgresql.org/docs/current/sql-alterrole.html)."
+                        ],
+                        "returned": "always",
+                        "sample": "9999-12-31T23:59:59.999999+00:00",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Information about roles U(https://www.postgresql.org/docs/current/user-manag.html)."
+                ],
+                "returned": "always",
+                "sample": [
+                    {
+                        "test_role": {
+                            "canlogin": true,
+                            "member_of": [
+                                "user_ro"
+                            ],
+                            "superuser": false,
+                            "valid_until": "9999-12-31T23:59:59.999999+00:00"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "settings": {
+                "contains": {
+                    "boot_val": {
+                        "description": [
+                            "Parameter value assumed at server startup if the parameter is not otherwise set."
+                        ],
+                        "returned": "always",
+                        "sample": 4096,
+                        "type": "str"
+                    },
+                    "context": {
+                        "description": [
+                            "Context required to set the parameter's value.",
+                            "For more information see U(https://www.postgresql.org/docs/current/view-pg-settings.html)."
+                        ],
+                        "returned": "always",
+                        "sample": "user",
+                        "type": "str"
+                    },
+                    "max_val": {
+                        "description": [
+                            "Maximum allowed value of the parameter (null for non-numeric values)."
+                        ],
+                        "returned": "always",
+                        "sample": 2147483647,
+                        "type": "str"
+                    },
+                    "min_val": {
+                        "description": [
+                            "Minimum allowed value of the parameter (null for non-numeric values)."
+                        ],
+                        "returned": "always",
+                        "sample": 64,
+                        "type": "str"
+                    },
+                    "pending_restart": {
+                        "description": [
+                            "True if the value has been changed in the configuration file but needs a restart; or false otherwise.",
+                            "Returns only if C(settings) is passed."
+                        ],
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "pretty_val": {
+                        "description": [
+                            "Value presented in the pretty form."
+                        ],
+                        "returned": "always",
+                        "sample": "2MB",
+                        "type": "str"
+                    },
+                    "setting": {
+                        "description": "Current value of the parameter.",
+                        "returned": "always",
+                        "sample": 49152,
+                        "type": "str"
+                    },
+                    "sourcefile": {
+                        "description": [
+                            "Configuration file the current value was set in.",
+                            "Null for values set from sources other than configuration files, or when examined by a user who is neither a superuser or a member of pg_read_all_settings.",
+                            "Helpful when using include directives in configuration files."
+                        ],
+                        "returned": "always",
+                        "sample": "/var/lib/pgsql/10/data/postgresql.auto.conf",
+                        "type": "str"
+                    },
+                    "unit": {
+                        "description": "Implicit unit of the parameter.",
+                        "returned": "always",
+                        "sample": "kB",
+                        "type": "str"
+                    },
+                    "val_in_bytes": {
+                        "description": [
+                            "Current value of the parameter in bytes."
+                        ],
+                        "returned": "if supported",
+                        "sample": 2147483647,
+                        "type": "int"
+                    },
+                    "vartype": {
+                        "description": [
+                            "Parameter type (bool, enum, integer, real, or string)."
+                        ],
+                        "returned": "always",
+                        "sample": "integer",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Information about run-time server parameters U(https://www.postgresql.org/docs/current/view-pg-settings.html)."
+                ],
+                "returned": "always",
+                "sample": [
+                    {
+                        "work_mem": {
+                            "boot_val": "4096",
+                            "context": "user",
+                            "max_val": "2147483647",
+                            "min_val": "64",
+                            "setting": "8192",
+                            "sourcefile": "/var/lib/pgsql/10/data/postgresql.auto.conf",
+                            "unit": "kB",
+                            "val_in_bytes": 4194304,
+                            "vartype": "integer"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "tablespaces": {
+                "contains": {
+                    "spcacl": {
+                        "description": "Tablespace access privileges.",
+                        "returned": "always",
+                        "sample": "{postgres=C/postgres,andreyk=C/postgres}",
+                        "type": "str"
+                    },
+                    "spcoptions": {
+                        "description": "Tablespace-level options.",
+                        "returned": "always",
+                        "sample": [
+                            "seq_page_cost=1"
+                        ],
+                        "type": "list"
+                    },
+                    "spcowner": {
+                        "description": "Owner of the tablespace.",
+                        "returned": "always",
+                        "sample": "test_user",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Information about tablespaces U(https://www.postgresql.org/docs/current/catalog-pg-tablespace.html)."
+                ],
+                "returned": "always",
+                "sample": [
+                    {
+                        "test": {
+                            "spcacl": "{postgres=C/postgres,andreyk=C/postgres}",
+                            "spcoptions": [
+                                "seq_page_cost=1"
+                            ],
+                            "spcowner": "postgres"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "version": {
+                "contains": {
+                    "full": {
+                        "description": "Full server version.",
+                        "returned": "always",
+                        "sample": "13.2",
+                        "type": "str",
+                        "version_added": "1.2.0",
+                        "version_added_collection": "community.postgresql"
+                    },
+                    "major": {
+                        "description": "Major server version.",
+                        "returned": "always",
+                        "sample": 11,
+                        "type": "int"
+                    },
+                    "minor": {
+                        "description": "Minor server version.",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    },
+                    "patch": {
+                        "description": "Patch server version.",
+                        "returned": "if supported",
+                        "sample": 5,
+                        "type": "int",
+                        "version_added": "1.2.0",
+                        "version_added_collection": "community.postgresql"
+                    },
+                    "raw": {
+                        "description": "Full output returned by ``SELECT version()``.",
+                        "returned": "always",
+                        "sample": "PostgreSQL 13.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20201125 (Red Hat 10.2.1-9), 64-bit",
+                        "type": "str",
+                        "version_added": "1.2.0",
+                        "version_added_collection": "community.postgresql"
+                    }
+                },
+                "description": "Database server version U(https://www.postgresql.org/support/versioning/).",
+                "returned": "always",
+                "sample": {
+                    "version": {
+                        "major": 10,
+                        "minor": 6
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

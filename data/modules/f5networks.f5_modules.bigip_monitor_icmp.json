@@ -1,0 +1,355 @@
+{
+    "f5networks.f5_modules.bigip_monitor_icmp": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages ICMP monitors on a BIG-IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_monitor_icmp.py",
+            "has_action": false,
+            "module": "bigip_monitor_icmp",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "adaptive": {
+                    "description": [
+                        "Specifies whether adaptive response time monitoring is enabled for this monitor.",
+                        "When C(yes), the monitor determines the state of a service based on how divergent from the mean latency a monitor probe for that service is allowed to be. Also, values for the C(allowed_divergence), C(adaptive_limit), and and C(sampling_timespan) will be enforced.",
+                        "When C(disabled), the monitor determines the state of a service based on the C(interval), C(up_interval), C(time_until_up), and C(timeout) monitor settings."
+                    ],
+                    "type": "bool"
+                },
+                "adaptive_limit": {
+                    "description": [
+                        "Specifies the absolute number of milliseconds that may not be exceeded by a monitor probe, regardless of C(allowed_divergence) setting, for a probe to be considered successful.",
+                        "This value applies regardless of the value of the C(allowed_divergence) setting.",
+                        "While this value can be configured when C(adaptive) is C(no), it will not take effect on the system until C(adaptive) is C(yes)."
+                    ],
+                    "type": "int"
+                },
+                "allowed_divergence_type": {
+                    "choices": [
+                        "relative",
+                        "absolute"
+                    ],
+                    "description": [
+                        "When specifying a new monitor, if C(adaptive) is C(yes), the default is C(relative).",
+                        "When C(absolute), the number of milliseconds the latency of a monitor probe can exceed the mean latency of a monitor probe for the service being probed. In typical cases, if the monitor detects three probes in a row that miss the latency value you set, the pool member or node is marked down.",
+                        "When C(relative), the percentage of deviation the latency of a monitor probe can exceed the mean latency of a monitor probe for the service being probed."
+                    ],
+                    "type": "str"
+                },
+                "allowed_divergence_value": {
+                    "description": [
+                        "When specifying a new monitor, if C(adaptive) is C(yes), and C(type) is C(relative), the default is C(25) percent."
+                    ],
+                    "type": "int"
+                },
+                "app_service": {
+                    "description": [
+                        "The iApp service to be associated with this profile. When no service is specified, the default is None."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The description of the monitor."
+                    ],
+                    "type": "str"
+                },
+                "interval": {
+                    "description": [
+                        "Specifies the frequency, in seconds, at which the system issues the monitor check when either the resource is down or the status of the resource is unknown."
+                    ],
+                    "type": "int"
+                },
+                "ip": {
+                    "description": [
+                        "Specifies the IP address of the resource that is the destination of this monitor.",
+                        "When set to B(*), the device performs a health check on the IP address of the node.",
+                        "When set to an B(<IP>) the device performs a health check on that IP address and marks the associated node up or down as a result of the response. This option is set by the device by default when not defined during monitor creation.",
+                        "When set to an B(<IP>) and C(transparent) is C(yes), the device performs a health check on that IP address, routes the check through the associated node IP address, and marks the associated node IP address up or down accordingly."
+                    ],
+                    "type": "str"
+                },
+                "manual_resume": {
+                    "description": [
+                        "Specifies whether the system automatically changes the status of a resource to B(enabled) at the next successful monitor check.",
+                        "If you set this option to C(yes), you must manually re-enable the resource before the system can use it for load balancing connections.",
+                        "When C(yes), specifies you must manually re-enable the resource after an unsuccessful monitor check.",
+                        "When C(no), specifies the system automatically changes the status of a resource to B(enabled) at the next successful monitor check."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the monitor."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent": {
+                    "description": [
+                        "The parent template of this monitor template. Once this value has been set, it cannot be changed.",
+                        "When creating a new monitor, if this parameter is not specified, the default is the system-supplied C(icmp) monitor."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "sampling_timespan": {
+                    "description": [
+                        "Specifies the length, in seconds, of the probe history window the system uses to calculate the mean latency and standard deviation of a monitor probe.",
+                        "While this value can be configured when C(adaptive) is C(no), it will not take effect on the system until C(adaptive) is C(yes)."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures that the monitor exists.",
+                        "When C(absent), ensures the monitor is removed."
+                    ],
+                    "type": "str"
+                },
+                "time_until_up": {
+                    "description": [
+                        "Specifies the number of seconds to wait after a resource first responds correctly to the monitor before setting the resource to 'up'.",
+                        "During the interval, all responses from the resource must be correct.",
+                        "When the interval expires, the resource is marked 'up'.",
+                        "A value of 0 means the resource is marked up immediately upon receipt of the first correct response."
+                    ],
+                    "type": "int"
+                },
+                "timeout": {
+                    "description": [
+                        "Specifies the number of seconds the target has in which to respond to the monitor request.",
+                        "If the target responds within the set time period, it is considered 'up'. If the target does not respond within the set time period, it is considered 'down'. When this value is set to 0 (zero), the system uses the interval from the parent monitor.",
+                        "Note that C(timeout) and C(time_until_up) combine to control when a resource is set to up."
+                    ],
+                    "type": "int"
+                },
+                "transparent": {
+                    "description": [
+                        "Specifies whether the monitor operates in transparent mode.",
+                        "A monitor in transparent mode directs traffic through the associated pool members or nodes (usually a router or firewall) to the aliased destination (that is, it probes the C(ip)-C(port) combination specified in the monitor).",
+                        "If the monitor cannot successfully reach the aliased destination, the pool member or node through which the monitor traffic was sent is marked down.",
+                        "When creating a new monitor, if this parameter is not provided, the default value will be whatever is provided by the C(parent)."
+                    ],
+                    "type": "bool"
+                },
+                "up_interval": {
+                    "description": [
+                        "Specifies the interval for the system to use to perform the health check when a resource is up.",
+                        "When C(0), specifies the system uses the interval specified in C(interval) to check the health of the resource.",
+                        "When any other number, enables you to specify a different interval to use when checking the health of a resource that is up."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP LTM ICMP monitors",
+            "version_added": "1.1.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create an ICMP monitor\n  bigip_monitor_icmp:\n    name: icmp1\n    adaptive: no\n    interval: 1\n    time_until_up: 0\n    timeout: 3\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Update an ICMP monitor\n  bigip_monitor_icmp:\n    name: icmp1\n    manual_resume: yes\n    interval: 5\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove an ICMP monitor\n  bigip_monitor_icmp:\n    name: icmp1\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "adaptive": {
+                "description": "Whether adaptive is enabled or not.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "adaptive_limit": {
+                "description": "Absolute number of milliseconds that may not be exceeded by a monitor probe.",
+                "returned": "changed",
+                "sample": 200,
+                "type": "int"
+            },
+            "allowed_divergence_type": {
+                "description": "Type of divergence used for adaptive response time monitoring.",
+                "returned": "changed",
+                "sample": "absolute",
+                "type": "str"
+            },
+            "allowed_divergence_value": {
+                "description": [
+                    "Value of the type of divergence used for adaptive response time monitoring.",
+                    "May be C(percent) or C(ms) depending on whether C(relative) or C(absolute)."
+                ],
+                "returned": "changed",
+                "sample": 25,
+                "type": "int"
+            },
+            "app_service": {
+                "description": "The iApp service associated with this monitor.",
+                "returned": "changed",
+                "sample": "/Common/good_service.app/good_service",
+                "type": "str"
+            },
+            "description": {
+                "description": "The description of the monitor.",
+                "returned": "changed",
+                "sample": "Important Monitor",
+                "type": "str"
+            },
+            "interval": {
+                "description": "The new interval in which to run the monitor check.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "ip": {
+                "description": "The new IP of IP/port definition.",
+                "returned": "changed",
+                "sample": "10.12.13.14",
+                "type": "str"
+            },
+            "parent": {
+                "description": "New parent template of the monitor.",
+                "returned": "changed",
+                "sample": "gateway-icmp",
+                "type": "str"
+            },
+            "port": {
+                "description": [
+                    "Alias port or service for the monitor to check, on behalf of the pools or pool members with which the monitor is associated."
+                ],
+                "returned": "changed",
+                "sample": 80,
+                "type": "str"
+            },
+            "sampling_timespan": {
+                "description": "Absolute number of milliseconds that may not be exceeded by a monitor probe.",
+                "returned": "changed",
+                "sample": 200,
+                "type": "int"
+            },
+            "time_until_up": {
+                "description": "The new time in which to mark a system as up after first successful response.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "timeout": {
+                "description": "The new timeout in which the remote system must respond to the monitor.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "transparent": {
+                "description": "Whether the monitor operates in transparent mode.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "up_interval": {
+                "description": "Interval for the system to use to perform the health check when a resource is up.",
+                "returned": "changed",
+                "sample": 0,
+                "type": "int"
+            }
+        }
+    }
+}

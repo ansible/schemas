@@ -1,0 +1,75 @@
+{
+    "community.general.timezone": {
+        "doc": {
+            "author": [
+                "Shinichi TAMURA (@tmshn)",
+                "Jasper Lievisse Adriaanse (@jasperla)",
+                "Indrajit Raychaudhuri (@indrajitr)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module configures the timezone setting, both of the system clock and of the hardware clock. If you want to set up the NTP, use M(ansible.builtin.service) module.",
+                "It is recommended to restart C(crond) after changing the timezone, otherwise the jobs may run at the wrong time.",
+                "Several different tools are used depending on the OS/Distribution involved. For Linux it can use C(timedatectl) or edit C(/etc/sysconfig/clock) or C(/etc/timezone) and C(hwclock). On SmartOS, C(sm-set-timezone), for macOS, C(systemsetup), for BSD, C(/etc/localtime) is modified. On AIX, C(chtz) is used.",
+                "As of Ansible 2.3 support was added for SmartOS and BSDs.",
+                "As of Ansible 2.4 support was added for macOS.",
+                "As of Ansible 2.9 support was added for AIX 6.1+",
+                "Windows and HPUX are not supported, please let us know if you find any other OS/distro in which this fails."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/timezone.py",
+            "has_action": false,
+            "module": "timezone",
+            "notes": [
+                "On SmartOS the C(sm-set-timezone) utility (part of the smtools package) is required to set the zone timezone",
+                "On AIX only Olson/tz database timezones are useable (POSIX is not supported). - An OS reboot is also required on AIX for the new timezone setting to take effect."
+            ],
+            "options": {
+                "hwclock": {
+                    "aliases": [
+                        "rtc"
+                    ],
+                    "choices": [
+                        "local",
+                        "UTC"
+                    ],
+                    "description": [
+                        "Whether the hardware clock is in UTC or in local timezone.",
+                        "Default is to keep current setting.",
+                        "Note that this option is recommended not to change and may fail to configure, especially on virtual environments such as AWS.",
+                        "B(At least one of name and hwclock are required.)",
+                        "I(Only used on Linux.)"
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the timezone for the system clock.",
+                        "Default is to keep current setting.",
+                        "B(At least one of name and hwclock are required.)"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Configure timezone setting"
+        },
+        "examples": "\n- name: Set timezone to Asia/Tokyo\n  community.general.timezone:\n    name: Asia/Tokyo\n",
+        "metadata": null,
+        "return": {
+            "diff": {
+                "contains": {
+                    "after": {
+                        "description": "The values after change",
+                        "type": "dict"
+                    },
+                    "before": {
+                        "description": "The values before change",
+                        "type": "dict"
+                    }
+                },
+                "description": "The differences about the given arguments.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

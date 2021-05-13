@@ -1,0 +1,278 @@
+{
+    "community.general.lxc_container": {
+        "doc": {
+            "author": "Kevin Carter (@cloudnull)",
+            "collection": "community.general",
+            "description": [
+                "Management of LXC containers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/lxc_container.py",
+            "has_action": false,
+            "module": "lxc_container",
+            "notes": [
+                "Containers must have a unique name. If you attempt to create a container with a name that already exists in the users namespace the module will simply return as \"unchanged\".",
+                "The \"container_command\" can be used with any state except \"absent\". If used with state \"stopped\" the container will be \"started\", the command executed, and then the container \"stopped\" again. Likewise if the state is \"stopped\" and the container does not exist it will be first created, \"started\", the command executed, and then \"stopped\". If you use a \"|\" in the variable you can use common script formatting within the variable itself The \"container_command\" option will always execute as BASH. When using \"container_command\" a log file is created in the /tmp/ directory which contains both stdout and stderr of any command executed.",
+                "If \"archive\" is **true** the system will attempt to create a compressed tarball of the running container. The \"archive\" option supports LVM backed containers and will create a snapshot of the running container when creating the archive.",
+                "If your distro does not have a package for \"python2-lxc\", which is a requirement for this module, it can be installed from source at \"https://github.com/lxc/python2-lxc\" or installed via pip using the package name lxc-python2."
+            ],
+            "options": {
+                "archive": {
+                    "default": "no",
+                    "description": [
+                        "Create an archive of a container.",
+                        "This will create a tarball of the running container."
+                    ],
+                    "type": "bool"
+                },
+                "archive_compression": {
+                    "choices": [
+                        "gzip",
+                        "bzip2",
+                        "none"
+                    ],
+                    "default": "gzip",
+                    "description": [
+                        "Type of compression to use when creating an archive of a running container."
+                    ],
+                    "type": "str"
+                },
+                "archive_path": {
+                    "description": [
+                        "Path the save the archived container.",
+                        "If the path does not exist the archive method will attempt to create it."
+                    ],
+                    "type": "path"
+                },
+                "backing_store": {
+                    "choices": [
+                        "dir",
+                        "lvm",
+                        "loop",
+                        "btrfs",
+                        "overlayfs",
+                        "zfs"
+                    ],
+                    "default": "dir",
+                    "description": [
+                        "Backend storage type for the container."
+                    ],
+                    "type": "str"
+                },
+                "clone_name": {
+                    "description": [
+                        "Name of the new cloned server.",
+                        "This is only used when state is clone."
+                    ],
+                    "type": "str"
+                },
+                "clone_snapshot": {
+                    "default": "no",
+                    "description": [
+                        "Create a snapshot a container when cloning.",
+                        "This is not supported by all container storage backends.",
+                        "Enabling this may fail if the backing store does not support snapshots."
+                    ],
+                    "type": "bool"
+                },
+                "config": {
+                    "description": [
+                        "Path to the LXC configuration file."
+                    ],
+                    "type": "path"
+                },
+                "container_command": {
+                    "description": [
+                        "Run a command within a container."
+                    ],
+                    "type": "str"
+                },
+                "container_config": {
+                    "description": [
+                        "A list of C(key=value) options to use when configuring a container."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "container_log": {
+                    "default": "no",
+                    "description": [
+                        "Enable a container log for host actions to the container."
+                    ],
+                    "type": "bool"
+                },
+                "container_log_level": {
+                    "choices": [
+                        "Info",
+                        "info",
+                        "INFO",
+                        "Error",
+                        "error",
+                        "ERROR",
+                        "Debug",
+                        "debug",
+                        "DEBUG"
+                    ],
+                    "default": "INFO",
+                    "description": [
+                        "Set the log level for a container where *container_log* was set."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "directory": {
+                    "description": [
+                        "Place rootfs directory under DIR."
+                    ],
+                    "type": "path"
+                },
+                "fs_size": {
+                    "default": "5G",
+                    "description": [
+                        "File system Size."
+                    ],
+                    "type": "str"
+                },
+                "fs_type": {
+                    "default": "ext4",
+                    "description": [
+                        "Create fstype TYPE."
+                    ],
+                    "type": "str"
+                },
+                "lv_name": {
+                    "description": [
+                        "Name of the logical volume, defaults to the container name.",
+                        "If not specified, it defaults to C($CONTAINER_NAME)."
+                    ],
+                    "type": "str"
+                },
+                "lxc_path": {
+                    "description": [
+                        "Place container under PATH."
+                    ],
+                    "type": "path"
+                },
+                "name": {
+                    "description": [
+                        "Name of a container."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "started",
+                        "stopped",
+                        "restarted",
+                        "absent",
+                        "frozen",
+                        "clone"
+                    ],
+                    "default": "started",
+                    "description": [
+                        "Define the state of a container.",
+                        "If you clone a container using I(clone_name) the newly cloned container created in a stopped state.",
+                        "The running container will be stopped while the clone operation is happening and upon completion of the clone the original container state will be restored."
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "default": "ubuntu",
+                    "description": [
+                        "Name of the template to use within an LXC create."
+                    ],
+                    "type": "str"
+                },
+                "template_options": {
+                    "description": [
+                        "Template options when building the container."
+                    ],
+                    "type": "str"
+                },
+                "thinpool": {
+                    "description": [
+                        "Use LVM thin pool called TP."
+                    ],
+                    "type": "str"
+                },
+                "vg_name": {
+                    "default": "lxc",
+                    "description": [
+                        "If backend store is lvm, specify the name of the volume group."
+                    ],
+                    "type": "str"
+                },
+                "zfs_root": {
+                    "description": [
+                        "Create zfs under given zfsroot."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "lxc >= 1.0 # OS package",
+                "python >= 2.6 # OS Package",
+                "lxc-python2 >= 0.1 # PIP Package from https://github.com/lxc/python2-lxc"
+            ],
+            "short_description": "Manage LXC Containers"
+        },
+        "examples": "\n- name: Create a started container\n  community.general.lxc_container:\n    name: test-container-started\n    container_log: true\n    template: ubuntu\n    state: started\n    template_options: --release trusty\n\n- name: Create a stopped container\n  community.general.lxc_container:\n    name: test-container-stopped\n    container_log: true\n    template: ubuntu\n    state: stopped\n    template_options: --release trusty\n\n- name: Create a frozen container\n  community.general.lxc_container:\n    name: test-container-frozen\n    container_log: true\n    template: ubuntu\n    state: frozen\n    template_options: --release trusty\n    container_command: |\n      echo 'hello world.' | tee /opt/started-frozen\n\n# Create filesystem container, configure it, and archive it, and start it.\n- name: Create filesystem container\n  community.general.lxc_container:\n    name: test-container-config\n    backing_store: dir\n    container_log: true\n    template: ubuntu\n    state: started\n    archive: true\n    archive_compression: none\n    container_config:\n      - \"lxc.aa_profile=unconfined\"\n      - \"lxc.cgroup.devices.allow=a *:* rmw\"\n    template_options: --release trusty\n\n# Create an lvm container, run a complex command in it, add additional\n# configuration to it, create an archive of it, and finally leave the container\n# in a frozen state. The container archive will be compressed using bzip2\n- name: Create a frozen lvm container\n  community.general.lxc_container:\n    name: test-container-lvm\n    container_log: true\n    template: ubuntu\n    state: frozen\n    backing_store: lvm\n    template_options: --release trusty\n    container_command: |\n      apt-get update\n      apt-get install -y vim lxc-dev\n      echo 'hello world.' | tee /opt/started\n      if [[ -f \"/opt/started\" ]]; then\n          echo 'hello world.' | tee /opt/found-started\n      fi\n    container_config:\n      - \"lxc.aa_profile=unconfined\"\n      - \"lxc.cgroup.devices.allow=a *:* rmw\"\n    archive: true\n    archive_compression: bzip2\n  register: lvm_container_info\n\n- name: Debug info on container \"test-container-lvm\"\n  ansible.builtin.debug:\n    var: lvm_container_info\n\n- name: Run a command in a container and ensure its in a \"stopped\" state.\n  community.general.lxc_container:\n    name: test-container-started\n    state: stopped\n    container_command: |\n      echo 'hello world.' | tee /opt/stopped\n\n- name: Run a command in a container and ensure its it in a \"frozen\" state.\n  community.general.lxc_container:\n    name: test-container-stopped\n    state: frozen\n    container_command: |\n      echo 'hello world.' | tee /opt/frozen\n\n- name: Start a container\n  community.general.lxc_container:\n    name: test-container-stopped\n    state: started\n\n- name: Run a command in a container and then restart it\n  community.general.lxc_container:\n    name: test-container-started\n    state: restarted\n    container_command: |\n      echo 'hello world.' | tee /opt/restarted\n\n- name: Run a complex command within a \"running\" container\n  community.general.lxc_container:\n    name: test-container-started\n    container_command: |\n      apt-get update\n      apt-get install -y curl wget vim apache2\n      echo 'hello world.' | tee /opt/started\n      if [[ -f \"/opt/started\" ]]; then\n          echo 'hello world.' | tee /opt/found-started\n      fi\n\n# Create an archive of an existing container, save the archive to a defined\n# path and then destroy it.\n- name: Archive container\n  community.general.lxc_container:\n    name: test-container-started\n    state: absent\n    archive: true\n    archive_path: /opt/archives\n\n# Create a container using overlayfs, create an archive of it, create a\n# snapshot clone of the container and and finally leave the container\n# in a frozen state. The container archive will be compressed using gzip.\n- name: Create an overlayfs container archive and clone it\n  community.general.lxc_container:\n    name: test-container-overlayfs\n    container_log: true\n    template: ubuntu\n    state: started\n    backing_store: overlayfs\n    template_options: --release trusty\n    clone_snapshot: true\n    clone_name: test-container-overlayfs-clone-snapshot\n    archive: true\n    archive_compression: gzip\n  register: clone_container_info\n\n- name: Debug info on container \"test-container\"\n  ansible.builtin.debug:\n    var: clone_container_info\n\n- name: Clone a container using snapshot\n  community.general.lxc_container:\n    name: test-container-overlayfs-clone-snapshot\n    backing_store: overlayfs\n    clone_name: test-container-overlayfs-clone-snapshot2\n    clone_snapshot: true\n\n- name: Create a new container and clone it\n  community.general.lxc_container:\n    name: test-container-new-archive\n    backing_store: dir\n    clone_name: test-container-new-archive-clone\n\n- name: Archive and clone a container then destroy it\n  community.general.lxc_container:\n    name: test-container-new-archive\n    state: absent\n    clone_name: test-container-new-archive-destroyed-clone\n    archive: true\n    archive_compression: gzip\n\n- name: Start a cloned container.\n  community.general.lxc_container:\n    name: test-container-new-archive-destroyed-clone\n    state: started\n\n- name: Destroy a container\n  community.general.lxc_container:\n    name: '{{ item }}'\n    state: absent\n  with_items:\n    - test-container-stopped\n    - test-container-started\n    - test-container-frozen\n    - test-container-lvm\n    - test-container-config\n    - test-container-overlayfs\n    - test-container-overlayfs-clone\n    - test-container-overlayfs-clone-snapshot\n    - test-container-overlayfs-clone-snapshot2\n    - test-container-new-archive\n    - test-container-new-archive-clone\n    - test-container-new-archive-destroyed-clone\n",
+        "metadata": null,
+        "return": {
+            "lxc_container": {
+                "contains": {
+                    "archive": {
+                        "description": "resulting state of the container",
+                        "returned": "success, when archive is true",
+                        "sample": "/tmp/test-container-config.tar",
+                        "type": "str"
+                    },
+                    "clone": {
+                        "description": "if the container was cloned",
+                        "returned": "success, when clone_name is specified",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "init_pid": {
+                        "description": "pid of the lxc init process",
+                        "returned": "success",
+                        "sample": 19786,
+                        "type": "int"
+                    },
+                    "interfaces": {
+                        "description": "list of the container's network interfaces",
+                        "returned": "success",
+                        "sample": [
+                            "eth0",
+                            "lo"
+                        ],
+                        "type": "list"
+                    },
+                    "ips": {
+                        "description": "list of ips",
+                        "returned": "success",
+                        "sample": [
+                            "10.0.3.3"
+                        ],
+                        "type": "list"
+                    },
+                    "name": {
+                        "description": "name of the lxc container",
+                        "returned": "success",
+                        "sample": "test_host",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "resulting state of the container",
+                        "returned": "success",
+                        "sample": "running",
+                        "type": "str"
+                    }
+                },
+                "description": "container information",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

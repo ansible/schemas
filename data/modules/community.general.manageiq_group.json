@@ -1,0 +1,223 @@
+{
+    "community.general.manageiq_group": {
+        "doc": {
+            "author": "Evert Mulder (@evertmulder)",
+            "collection": "community.general",
+            "description": [
+                "The manageiq_group module supports adding, updating and deleting groups in ManageIQ."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/manageiq_group.py",
+            "has_action": false,
+            "module": "manageiq_group",
+            "options": {
+                "belongsto_filters": {
+                    "default": null,
+                    "description": "A list of strings with a reference to the allowed host, cluster or folder",
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "belongsto_filters_merge_mode": {
+                    "choices": [
+                        "merge",
+                        "replace"
+                    ],
+                    "default": "replace",
+                    "description": [
+                        "In merge mode existing settings are merged with the supplied C(belongsto_filters).",
+                        "In replace mode current values are replaced with the supplied C(belongsto_filters)."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "default": null,
+                    "description": [
+                        "The group description."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "managed_filters": {
+                    "default": null,
+                    "description": "The tag values per category",
+                    "required": false,
+                    "type": "dict"
+                },
+                "managed_filters_merge_mode": {
+                    "choices": [
+                        "merge",
+                        "replace"
+                    ],
+                    "default": "replace",
+                    "description": [
+                        "In merge mode existing categories are kept or updated, new categories are added.",
+                        "In replace mode all categories will be replaced with the supplied C(managed_filters)."
+                    ],
+                    "type": "str"
+                },
+                "manageiq_connection": {
+                    "description": [
+                        "ManageIQ connection configuration information."
+                    ],
+                    "required": false,
+                    "suboptions": {
+                        "ca_cert": {
+                            "aliases": [
+                                "ca_bundle_path"
+                            ],
+                            "description": [
+                                "The path to a CA bundle file or directory with certificates. defaults to None."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "ManageIQ password. C(MIQ_PASSWORD) env var if set. otherwise, required if no token is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "token": {
+                            "description": [
+                                "ManageIQ token. C(MIQ_TOKEN) env var if set. otherwise, required if no username or password is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "ManageIQ environment url. C(MIQ_URL) env var if set. otherwise, it is required to pass it."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "ManageIQ username. C(MIQ_USERNAME) env var if set. otherwise, required if no token is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "aliases": [
+                                "verify_ssl"
+                            ],
+                            "default": true,
+                            "description": [
+                                "Whether SSL certificates should be verified for HTTPS requests. defaults to True."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "role": {
+                    "default": null,
+                    "description": [
+                        "The the group role name",
+                        "The C(role_id) has precedence over the C(role) when supplied."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "role_id": {
+                    "default": null,
+                    "description": [
+                        "The the group role id"
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "absent - group should not exist, present - group should be."
+                    ],
+                    "type": "str"
+                },
+                "tenant": {
+                    "default": null,
+                    "description": [
+                        "The tenant for the group identified by the tenant name.",
+                        "The C(tenant_id) has precedence over the C(tenant) when supplied.",
+                        "Tenant names are case sensitive."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tenant_id": {
+                    "default": null,
+                    "description": [
+                        "The tenant for the group identified by the tenant id."
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "manageiq-client",
+                "manageiq-client U(https://github.com/ManageIQ/manageiq-api-client-python/)"
+            ],
+            "short_description": "Management of groups in ManageIQ."
+        },
+        "examples": "\n- name: Create a group in ManageIQ with the role EvmRole-user and tenant 'my_tenant'\n  community.general.manageiq_group:\n    description: 'MyGroup-user'\n    role: 'EvmRole-user'\n    tenant: 'my_tenant'\n    manageiq_connection:\n      url: 'https://manageiq_server'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n\n- name: Create a group in ManageIQ with the role EvmRole-user and tenant with tenant_id 4\n  community.general.manageiq_group:\n    description: 'MyGroup-user'\n    role: 'EvmRole-user'\n    tenant_id: 4\n    manageiq_connection:\n      url: 'https://manageiq_server'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n\n- name:\n  - Create or update a group in ManageIQ with the role EvmRole-user and tenant my_tenant.\n  - Apply 3 prov_max_cpu and 2 department tags to the group.\n  - Limit access to a cluster for the group.\n  community.general.manageiq_group:\n    description: 'MyGroup-user'\n    role: 'EvmRole-user'\n    tenant: my_tenant\n    managed_filters:\n      prov_max_cpu:\n      - '1'\n      - '2'\n      - '4'\n      department:\n      - defense\n      - engineering\n    managed_filters_merge_mode: replace\n    belongsto_filters:\n    - \"/belongsto/ExtManagementSystem|ProviderName/EmsFolder|Datacenters/EmsFolder|dc_name/EmsFolder|host/EmsCluster|Cluster name\"\n    belongsto_filters_merge_mode: merge\n    manageiq_connection:\n      url: 'https://manageiq_server'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n\n- name: Delete a group in ManageIQ\n  community.general.manageiq_group:\n    state: 'absent'\n    description: 'MyGroup-user'\n    manageiq_connection:\n      url: 'http://127.0.0.1:3000'\n      username: 'admin'\n      password: 'smartvm'\n\n- name: Delete a group in ManageIQ using a token\n  community.general.manageiq_group:\n    state: 'absent'\n    description: 'MyGroup-user'\n    manageiq_connection:\n      url: 'http://127.0.0.1:3000'\n      token: 'sometoken'\n",
+        "metadata": null,
+        "return": {
+            "group": {
+                "contains": {
+                    "belongsto_filters": {
+                        "description": "A list of strings with a reference to the allowed host, cluster or folder",
+                        "returned": "success",
+                        "type": "list"
+                    },
+                    "created_on": {
+                        "description": "Group creation date",
+                        "returned": "success",
+                        "sample": "2018-08-12T08:37:55+00:00",
+                        "type": "str"
+                    },
+                    "description": {
+                        "description": "The group description",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "group_type": {
+                        "description": "The group type, system or user",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "id": {
+                        "description": "The group id",
+                        "returned": "success",
+                        "type": "int"
+                    },
+                    "managed_filters": {
+                        "description": "The tag values per category",
+                        "returned": "success",
+                        "type": "dict"
+                    },
+                    "role": {
+                        "description": "The group role name",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "tenant": {
+                        "description": "The group tenant name",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "updated_on": {
+                        "description": "Group update date",
+                        "returned": "success",
+                        "sample": "2018-08-12T08:37:55+00:00",
+                        "type": "int"
+                    }
+                },
+                "description": "The group.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

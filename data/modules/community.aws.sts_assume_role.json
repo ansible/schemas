@@ -1,0 +1,182 @@
+{
+    "community.aws.sts_assume_role": {
+        "doc": {
+            "author": [
+                "Boris Ekelchik (@bekelchik)",
+                "Marek Piatek (@piontas)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Assume a role using AWS Security Token Service and obtain temporary credentials."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/sts_assume_role.py",
+            "has_action": false,
+            "module": "sts_assume_role",
+            "notes": [
+                "In order to use the assumed role in a following playbook task you must pass the access_key, access_secret and access_token.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "duration_seconds": {
+                    "description": [
+                        "The duration, in seconds, of the role session. The value can range from 900 seconds (15 minutes) to 43200 seconds (12 hours).",
+                        "The max depends on the IAM role's sessions duration setting.",
+                        "By default, the value is set to 3600 seconds."
+                    ],
+                    "type": "int"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "external_id": {
+                    "description": [
+                        "A unique identifier that is used by third parties to assume a role in their customers' accounts."
+                    ],
+                    "type": "str"
+                },
+                "mfa_serial_number": {
+                    "description": [
+                        "The identification number of the MFA device that is associated with the user who is making the AssumeRole call."
+                    ],
+                    "type": "str"
+                },
+                "mfa_token": {
+                    "description": [
+                        "The value provided by the MFA device, if the trust policy of the role being assumed requires MFA."
+                    ],
+                    "type": "str"
+                },
+                "policy": {
+                    "description": [
+                        "Supplemental policy to use in addition to assumed role's policies."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "role_arn": {
+                    "description": [
+                        "The Amazon Resource Name (ARN) of the role that the caller is assuming U(https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html#Identifiers_ARNs)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "role_session_name": {
+                    "description": [
+                        "Name of the role's session - will be used by CloudTrail."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Assume a role using AWS Security Token Service and obtain temporary credentials",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Assume an existing role (more details: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)\n- community.aws.sts_assume_role:\n    role_arn: \"arn:aws:iam::123456789012:role/someRole\"\n    role_session_name: \"someRoleSession\"\n  register: assumed_role\n\n# Use the assumed role above to tag an instance in account 123456789012\n- amazon.aws.ec2_tag:\n    aws_access_key: \"{{ assumed_role.sts_creds.access_key }}\"\n    aws_secret_key: \"{{ assumed_role.sts_creds.secret_key }}\"\n    security_token: \"{{ assumed_role.sts_creds.session_token }}\"\n    resource: i-xyzxyz01\n    state: present\n    tags:\n      MyNewTag: value\n\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "True if obtaining the credentials succeeds",
+                "returned": "always",
+                "type": "bool"
+            },
+            "sts_creds": {
+                "description": "The temporary security credentials, which include an access key ID, a secret access key, and a security (or session) token",
+                "returned": "always",
+                "sample": {
+                    "access_key": "XXXXXXXXXXXXXXXXXXXX",
+                    "expiration": "2017-11-11T11:11:11+00:00",
+                    "secret_key": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                    "session_token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                },
+                "type": "dict"
+            },
+            "sts_user": {
+                "description": "The Amazon Resource Name (ARN) and the assumed role ID",
+                "returned": "always",
+                "sample": {
+                    "arn": "ARO123EXAMPLE123:Bob",
+                    "assumed_role_id": "arn:aws:sts::123456789012:assumed-role/demo/Bob"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

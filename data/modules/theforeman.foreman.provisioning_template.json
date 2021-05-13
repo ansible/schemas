@@ -1,0 +1,175 @@
+{
+    "theforeman.foreman.provisioning_template": {
+        "doc": {
+            "author": [
+                "Bernhard Hopfenmueller (@Fobhep) ATIX AG",
+                "Matthias Dellweg (@mdellweg) ATIX AG"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Manage Provisioning Templates"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/provisioning_template.py",
+            "has_action": false,
+            "module": "provisioning_template",
+            "options": {
+                "audit_comment": {
+                    "description": [
+                        "Content of the audit comment field"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "file_name": {
+                    "description": [
+                        "The path of a template file, that shall be imported.",
+                        "Either this or I(template) is required as a source for the Provisioning Template \"content\"."
+                    ],
+                    "required": false,
+                    "type": "path"
+                },
+                "kind": {
+                    "choices": [
+                        "Bootdisk",
+                        "cloud-init",
+                        "finish",
+                        "iPXE",
+                        "job_template",
+                        "kexec",
+                        "POAP",
+                        "provision",
+                        "ptable",
+                        "PXEGrub",
+                        "PXEGrub2",
+                        "PXELinux",
+                        "registration",
+                        "script",
+                        "snippet",
+                        "user_data",
+                        "ZTP"
+                    ],
+                    "description": [
+                        "The provisioning template kind"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "locations": {
+                    "description": "List of locations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "locked": {
+                    "description": [
+                        "Determines whether the template shall be locked"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the Provisioning Template.",
+                        "If omited, will be determined from the C(name) header of the template or the filename (in that order).",
+                        "The special value \"*\" can be used to perform bulk actions (modify, delete) on all existing templates."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "operatingsystems": {
+                    "description": [
+                        "List of operating systems the entity should be assigned to.",
+                        "Operating systems are looked up by their title which is composed as \"<name> <major>.<minor>\".",
+                        "You can omit the version part as long as you only have one operating system by that name."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "organizations": {
+                    "description": "List of organizations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "present_with_defaults",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the entity",
+                        "C(present_with_defaults) will ensure the entity exists, but won't update existing ones"
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "description": [
+                        "The content of the provisioning template.",
+                        "Either this or I(file_name) is required as a source for the Provisioning Template \"content\"."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "updated_name": {
+                    "description": "New provisioning template name. When this parameter is set, the module will not be idempotent.",
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Manage Provisioning Templates",
+            "version_added": "1.0.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n\n# Keep in mind, that in this case, the inline parameters will be overwritten\n- name: \"Create a Provisioning Template inline\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: A New Finish Template\n    kind: finish\n    state: present\n    template: |\n      <%#\n          name: Finish timetravel\n          kind: finish\n      %>\n      cd /\n      rm -rf *\n    locations:\n      - Gallifrey\n    organizations:\n      - TARDIS INC\n\n- name: \"Create a Provisioning Template from a file\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    file_name: timeywimey_template.erb\n    state: present\n    locations:\n      - Gallifrey\n    organizations:\n      - TARDIS INC\n\n# Due to the module logic, deleting requires a template dummy,\n# either inline or from a file.\n- name: \"Delete a Provisioning Template\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: timeywimey_template\n    template: |\n      <%#\n          dummy:\n      %>\n    state: absent\n\n- name: \"Create a Provisioning Template from a file and modify with parameter\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    file_name: timeywimey_template.erb\n    name: Wibbly Wobbly Template\n    state: present\n    locations:\n      - Gallifrey\n    organizations:\n      - TARDIS INC\n\n# Providing a name in this case wouldn't be very sensible.\n# Alternatively make use of with_filetree to parse recursively with filter.\n- name: \"Parsing a directory of provisioning templates\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    file_name: \"{{ item }}\"\n    state: present\n    locations:\n      - SKARO\n    organizations:\n      - DALEK INC\n    with_fileglob:\n       - \"./arsenal_templates/*.erb\"\n\n# If the templates are stored locally and the ansible module is executed on a remote host\n- name: Ensure latest version of all Provisioning Community Templates\n  theforeman.foreman.provisioning_template:\n    server_url: \"https://foreman.example.com\"\n    username: \"admin\"\n    password: \"changeme\"\n    state: present\n    template: '{{ lookup(\"file\", item.src) }}'\n  with_filetree: '/path/to/provisioning/templates'\n  when: item.state == 'file'\n\n\n# with name set to \"*\" bulk actions can be performed\n- name: \"Delete *ALL* provisioning templates\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"*\"\n    state: absent\n\n- name: \"Assign all provisioning templates to the same organization(s)\"\n  theforeman.foreman.provisioning_template:\n    username: \"admin\"\n    password: \"changeme\"\n    server_url: \"https://foreman.example.com\"\n    name: \"*\"\n    state: present\n    organizations:\n      - DALEK INC\n      - sky.net\n      - Doc Brown's garage\n\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "provisioning_templates": {
+                        "description": "List of provisioning templates.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

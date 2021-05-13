@@ -1,0 +1,142 @@
+{
+    "community.vmware.vmware_dvs_portgroup_find": {
+        "doc": {
+            "author": [
+                "David Martinez (@dx0xm)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Find portgroup(s) based on different criteria such as distributed vSwitch, VLAN id or a string in the name."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_dvs_portgroup_find.py",
+            "has_action": false,
+            "module": "vmware_dvs_portgroup_find",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "dvswitch": {
+                    "description": [
+                        "Name of a distributed vSwitch to look for."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "string to check inside the name of the portgroup.",
+                        "Basic containment check using python C(in) operation."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "show_uplink": {
+                    "default": false,
+                    "description": [
+                        "Show or hide uplink portgroups.",
+                        "Only relevant when C(vlanid) is supplied."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "vlanid": {
+                    "description": [
+                        "VLAN id can be any number between 1 and 4094.",
+                        "This search criteria will looks into VLAN ranges to find possible matches."
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi"
+            ],
+            "short_description": "Find portgroup(s) in a VMware environment"
+        },
+        "examples": "\n- name: Get all portgroups in dvswitch vDS\n  community.vmware.vmware_dvs_portgroup_find:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    dvswitch: 'vDS'\n    validate_certs: no\n  delegate_to: localhost\n\n- name: Confirm if vlan 15 is present\n  community.vmware.vmware_dvs_portgroup_find:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    vlanid: '15'\n    validate_certs: no\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "dvs_portgroups": {
+                "description": "basic details of portgroups found",
+                "returned": "on success",
+                "sample": [
+                    {
+                        "dvswitch": "vDS",
+                        "name": "N-51",
+                        "pvlan": true,
+                        "trunk": true,
+                        "vlan_id": "0"
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

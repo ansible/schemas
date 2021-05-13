@@ -1,0 +1,135 @@
+{
+    "junipernetworks.junos.junos_acl_interfaces": {
+        "doc": {
+            "author": "Daniel Mellado (@dmellado)",
+            "collection": "junipernetworks.junos",
+            "description": [
+                "This module manages adding and removing Access Control Lists (ACLs) from interfaces on devices running Juniper JUNOS."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/junipernetworks/junos/plugins/modules/junos_acl_interfaces.py",
+            "has_action": true,
+            "module": "junos_acl_interfaces",
+            "notes": [
+                "This module requires the netconf system service be enabled on the device being managed.",
+                "This module works with connection C(netconf). See L(the Junos OS Platform Options,../network/user_guide/platform_junos.html).",
+                "Tested against JunOS v18.4R1"
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of ACL options for interfaces.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "access_groups": {
+                            "description": [
+                                "Specifies ACLs attached to the interface."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "acls": {
+                                    "description": [
+                                        "Specifies the ACLs for the provided AFI."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "direction": {
+                                            "choices": [
+                                                "in",
+                                                "out"
+                                            ],
+                                            "description": [
+                                                "Specifies the direction of packets that the ACL will be applied on."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "name": {
+                                            "description": [
+                                                "Specifies the name of the IPv4/IPv4 ACL for the interface."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "list"
+                                },
+                                "afi": {
+                                    "choices": [
+                                        "ipv4",
+                                        "ipv6"
+                                    ],
+                                    "description": [
+                                        "Specifies the AFI for the ACL(s) to be configured on this interface."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "name": {
+                            "description": [
+                                "Name/Identifier for the interface."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the Junos device by executing the command B(show interfaces).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "ncclient (>=v0.6.4)",
+                "xmltodict (>=0.12.0)"
+            ],
+            "short_description": "ACL interfaces resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "junipernetworks.junos"
+        },
+        "examples": "\n# Using deleted\n\n# Before state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface with filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input inbound_acl;\n#                 output outbound_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n- name: Delete JUNOS L3 interface filter\n  junipernetworks.junos.junos_acl_interfaces:\n    config:\n    - name: ge-1/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: inbound_acl\n          direction: in\n        - name: outbound_acl\n          direction: out\n      state: deleted\n\n# After state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface with filter\";\n#     unit 0 {\n#         family inet {\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n\n# Using merged\n\n# Before state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface without filter\";\n#     unit 0 {\n#         family inet {\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n- name: Merge JUNOS L3 interface filter\n  junipernetworks.junos.junos_acl_interfaces:\n    config:\n    - name: ge-1/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: inbound_acl\n          direction: in\n        - name: outbound_acl\n          direction: out\n      state: merged\n\n# After state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface with filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input inbound_acl;\n#                 output outbound_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n\n# Using overridden\n\n# Before state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface without filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input foo_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n- name: Override JUNOS L3 interface filter\n  junipernetworks.junos.junos_acl_interfaces:\n    config:\n    - name: ge-1/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: inbound_acl\n          direction: in\n        - name: outbound_acl\n          direction: out\n      state: overridden\n\n# After state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface with filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input inbound_acl;\n#                 output outbound_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface without filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input foo_acl;\n#                 output outbound_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n- name: Replace JUNOS L3 interface filter\n  junipernetworks.junos.junos_acl_interfaces:\n    config:\n    - name: ge-1/0/0\n      access_groups:\n      - afi: ipv4\n        acls:\n        - name: inbound_acl\n          direction: in\n      state: replaced\n\n# After state:\n# -------------\n#\n# admin# show interfaces\n# ge-1/0/0 {\n#     description \"L3 interface with filter\";\n#     unit 0 {\n#         family inet {\n#             filter {\n#                 input inbound_acl;\n#                 output outbound_acl;\n#             }\n#             address 100.64.0.1/10;\n#             address 100.64.0.2/10;\n#         }\n#         family inet6;\n#     }\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The resulting configuration model invocation.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "before": {
+                "description": "The configuration prior to the model invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "command 1",
+                    "command 2",
+                    "command 3"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

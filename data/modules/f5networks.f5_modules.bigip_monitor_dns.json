@@ -1,0 +1,461 @@
+{
+    "f5networks.f5_modules.bigip_monitor_dns": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages DNS health monitors on a BIG-IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_monitor_dns.py",
+            "has_action": false,
+            "module": "bigip_monitor_dns",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "accept_rcode": {
+                    "choices": [
+                        "no-error",
+                        "anything"
+                    ],
+                    "description": [
+                        "Specifies the RCODE required in the response for an up status.",
+                        "When creating a new monitor, if this parameter is not specified, the default value is C(no-error).",
+                        "When C(no-error), specifies the status of the node will be marked up if the received DNS message has no error.",
+                        "When C(anything), specifies the status of the node will be marked up irrespective of the RCODE in the DNS message received.",
+                        "If this parameter is set to C(anything), it will disregard the C(receive) string, and nullify it if the monitor is being updated."
+                    ],
+                    "type": "str"
+                },
+                "adaptive": {
+                    "description": [
+                        "Specifies whether adaptive response time monitoring is enabled for this monitor.",
+                        "When C(yes), the monitor determines the state of a service based on how divergent from the mean latency a monitor probe for that service is allowed to be. Also, values for the C(allowed_divergence), C(adaptive_limit), and and C(sampling_timespan) will be enforced.",
+                        "When C(disabled), the monitor determines the state of a service based on the C(interval), C(up_interval), C(time_until_up), and C(timeout) monitor settings."
+                    ],
+                    "type": "bool"
+                },
+                "adaptive_limit": {
+                    "description": [
+                        "Specifies the absolute number of milliseconds that may not be exceeded by a monitor probe, regardless of C(allowed_divergence) setting, for a probe to be considered successful.",
+                        "This value applies regardless of the value of the C(allowed_divergence) setting.",
+                        "While this value can be configured when C(adaptive) is C(no), it will not take effect on the system until C(adaptive) is C(yes)."
+                    ],
+                    "type": "int"
+                },
+                "allowed_divergence_type": {
+                    "choices": [
+                        "relative",
+                        "absolute"
+                    ],
+                    "description": [
+                        "When specifying a new monitor, if C(adaptive) is C(yes), the default is C(relative).",
+                        "When C(absolute), the number of milliseconds the latency of a monitor probe can exceed the mean latency of a monitor probe for the service being probed. In typical cases, if the monitor detects three probes in a row that miss the latency value you set, the pool member or node is marked down.",
+                        "When C(relative), the percentage of deviation the latency of a monitor probe can exceed the mean latency of a monitor probe for the service being probed."
+                    ],
+                    "type": "str"
+                },
+                "allowed_divergence_value": {
+                    "description": [
+                        "When specifying a new monitor, if C(adaptive) is C(yes), and C(type) is C(relative), the default is C(25) percent."
+                    ],
+                    "type": "int"
+                },
+                "answer_section_contains": {
+                    "choices": [
+                        "any-type",
+                        "anything",
+                        "query-type"
+                    ],
+                    "description": [
+                        "Specifies the type of DNS query the monitor sends.",
+                        "When creating a new monitor, if this value is not specified, the default value is C(query-type).",
+                        "When C(query-type), specifies that the response should contain at least one answer of which the resource record type matches the query type.",
+                        "When C(any-type), specifies the DNS message should contain at least one answer.",
+                        "When C(anything), specifies an empty answer is enough to mark the status of the node up."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The description of the monitor."
+                    ],
+                    "type": "str"
+                },
+                "interval": {
+                    "description": [
+                        "The interval specifying how frequently the monitor instance of this template will run.",
+                        "This value B(must) be less than the C(timeout) value.",
+                        "When creating a new monitor, if this parameter is not provided, the default C(5) will be used."
+                    ],
+                    "type": "int"
+                },
+                "ip": {
+                    "description": [
+                        "IP address part of the IP/port definition.",
+                        "If this parameter is not provided when creating a new monitor, the default value will be C(*)."
+                    ],
+                    "type": "str"
+                },
+                "manual_resume": {
+                    "description": [
+                        "Specifies whether the system automatically changes the status of a resource to B(enabled) at the next successful monitor check.",
+                        "If C(yes), you must manually re-enable the resource before the system can use it for load balancing connections.",
+                        "When creating a new monitor, if this parameter is not specified, the default value is C(no).",
+                        "When C(yes), specifies you must manually re-enable the resource after an unsuccessful monitor check.",
+                        "When C(no), specifies the system automatically changes the status of a resource to B(enabled) at the next successful monitor check."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the monitor."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent": {
+                    "default": "/Common/dns",
+                    "description": [
+                        "The parent template of this monitor template. Once this value has been set, it cannot be changed. By default, this value is the C(dns) parent on the C(Common) partition."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Port address part of the IP/port definition.",
+                        "If this parameter is not provided when creating a new monitor, the default value will be C(*).",
+                        "Note that if specifying an IP address, you must use a value between 1 and 65535."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "query_name": {
+                    "description": [
+                        "Specifies a query name for the monitor to use in a DNS query."
+                    ],
+                    "type": "str"
+                },
+                "query_type": {
+                    "choices": [
+                        "a",
+                        "aaaa"
+                    ],
+                    "description": [
+                        "Specifies the type of DNS query the monitor sends.",
+                        "When creating a new monitor, if this parameter is not specified, the default value is C(a).",
+                        "When C(a), specifies the monitor will send a DNS query of type A.",
+                        "When C(aaaa), specifies the monitor will send a DNS query of type AAAA."
+                    ],
+                    "type": "str"
+                },
+                "receive": {
+                    "description": [
+                        "Specifies the IP address the monitor uses from the resource record sections of the DNS response.",
+                        "The IP address should be specified in the dotted-decimal notation or IPv6 notation."
+                    ],
+                    "type": "str"
+                },
+                "reverse": {
+                    "description": [
+                        "Specifies whether the monitor operates in reverse mode.",
+                        "When the monitor is in reverse mode, a successful receive string match marks the monitored object down instead of up. You can use the this mode only if you configure the C(receive) option.",
+                        "This parameter is not compatible with the C(time_until_up) parameter. If C(time_until_up) is specified, it must be C(0). Or, if it already exists, it must be C(0)."
+                    ],
+                    "type": "bool"
+                },
+                "sampling_timespan": {
+                    "description": [
+                        "Specifies the length, in seconds, of the probe history window the system uses to calculate the mean latency and standard deviation of a monitor probe.",
+                        "While this value can be configured when C(adaptive) is C(no), it will not take effect on the system until C(adaptive) is C(yes)."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the monitor exists.",
+                        "When C(absent), ensures the monitor is removed."
+                    ],
+                    "type": "str"
+                },
+                "time_until_up": {
+                    "description": [
+                        "Specifies the amount of time in seconds after the first successful response before a node will be marked up.",
+                        "A value of 0 will cause a node to be marked up immediately after a valid response is received from the node.",
+                        "If this parameter is not provided when creating a new monitor, the default value will be C(0)."
+                    ],
+                    "type": "int"
+                },
+                "timeout": {
+                    "description": [
+                        "The number of seconds in which the node or service must respond to the monitor request.",
+                        "If the target responds within the set time period, it is considered up.",
+                        "If the target does not respond within the set time period, it is considered down.",
+                        "You can change this to any number, however, it should be 3 times the interval number of seconds plus 1 second.",
+                        "If this parameter is not provided when creating a new monitor, the default value will be C(16)."
+                    ],
+                    "type": "int"
+                },
+                "transparent": {
+                    "description": [
+                        "Specifies whether the monitor operates in transparent mode.",
+                        "Monitors in transparent mode can monitor pool members through firewalls.",
+                        "When creating a new monitor, if this parameter is not provided, the default value will be C(no)."
+                    ],
+                    "type": "bool"
+                },
+                "up_interval": {
+                    "description": [
+                        "Specifies the interval for the system to use to perform the health check when a resource is up.",
+                        "When C(0), specifies the system uses the interval specified in C(interval) to check the health of the resource.",
+                        "When any other number, enables you to specify a different interval to use when checking the health of a resource that is up.",
+                        "When creating a new monitor, if this parameter is not provided, the default C(0) will be used."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manage DNS monitors on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a DNS monitor\n  bigip_monitor_dns:\n    name: DNS-UDP-V6\n    interval: 2\n    query_name: localhost\n    query_type: aaaa\n    up_interval: 5\n    adaptive: no\n    state: present\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "accept_rcode": {
+                "description": "RCODE required in the response for an up status.",
+                "returned": "changed",
+                "sample": "no-error",
+                "type": "str"
+            },
+            "adaptive": {
+                "description": "Whether adaptive is enabled or not.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "adaptive_limit": {
+                "description": "Absolute number of milliseconds that may not be exceeded by a monitor probe.",
+                "returned": "changed",
+                "sample": 200,
+                "type": "int"
+            },
+            "allowed_divergence_type": {
+                "description": "Type of divergence used for adaptive response time monitoring.",
+                "returned": "changed",
+                "sample": "absolute",
+                "type": "str"
+            },
+            "allowed_divergence_value": {
+                "description": [
+                    "Value of the type of divergence used for adaptive response time monitoring.",
+                    "May be C(percent) or C(ms) depending on whether C(relative) or C(absolute)."
+                ],
+                "returned": "changed",
+                "sample": 25,
+                "type": "int"
+            },
+            "answer_section_contains": {
+                "description": "Type of DNS query that the monitor sends.",
+                "returned": "changed",
+                "sample": "query-type",
+                "type": "str"
+            },
+            "description": {
+                "description": "The description of the monitor.",
+                "returned": "changed",
+                "sample": "Important Monitor",
+                "type": "str"
+            },
+            "interval": {
+                "description": "The new interval in which to run the monitor check.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "ip": {
+                "description": "The new IP of IP/port definition.",
+                "returned": "changed",
+                "sample": "10.12.13.14",
+                "type": "str"
+            },
+            "manual_resume": {
+                "description": [
+                    "Whether the system automatically changes the status of a resource to enabled at the next successful monitor check."
+                ],
+                "returned": "changed",
+                "sample": "query-type",
+                "type": "str"
+            },
+            "parent": {
+                "description": "New parent template of the monitor.",
+                "returned": "changed",
+                "sample": "http",
+                "type": "str"
+            },
+            "port": {
+                "description": [
+                    "Alias port or service for the monitor to check, on behalf of the pools or pool members with which the monitor is associated."
+                ],
+                "returned": "changed",
+                "sample": 80,
+                "type": "str"
+            },
+            "query_name": {
+                "description": "Query name for the monitor to use in a DNS query.",
+                "returned": "changed",
+                "sample": "foo",
+                "type": "str"
+            },
+            "query_type": {
+                "description": "Type of DNS query the monitor sends. Either C(a) or C(aaaa).",
+                "returned": "changed",
+                "sample": "aaaa",
+                "type": "str"
+            },
+            "receive": {
+                "description": "IP address the monitor uses from the resource record sections of the DNS response.",
+                "returned": "changed",
+                "sample": "2.3.2.4",
+                "type": "str"
+            },
+            "reverse": {
+                "description": "Whether the monitor operates in reverse mode.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "sampling_timespan": {
+                "description": "Absolute number of milliseconds that may not be exceeded by a monitor probe.",
+                "returned": "changed",
+                "sample": 200,
+                "type": "int"
+            },
+            "time_until_up": {
+                "description": "The new time in which to mark a system as up after first successful response.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "timeout": {
+                "description": "The new timeout in which the remote system must respond to the monitor.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "transparent": {
+                "description": "Whether the monitor operates in transparent mode.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "up_interval": {
+                "description": "Interval for the system to use to perform the health check when a resource is up.",
+                "returned": "changed",
+                "sample": 0,
+                "type": "int"
+            }
+        }
+    }
+}

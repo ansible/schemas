@@ -1,0 +1,227 @@
+{
+    "community.aws.ecs_ecr": {
+        "doc": {
+            "author": [
+                "David M. Lee (@leedm777)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Manage Elastic Container Registry repositories."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ecs_ecr.py",
+            "has_action": false,
+            "module": "ecs_ecr",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "force_set_policy": {
+                    "default": false,
+                    "description": [
+                        "If I(force_set_policy=false), it prevents setting a policy that would prevent you from setting another policy in the future."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "image_tag_mutability": {
+                    "choices": [
+                        "mutable",
+                        "immutable"
+                    ],
+                    "default": "mutable",
+                    "description": [
+                        "Configure whether repository should be mutable (ie. an already existing tag can be overwritten) or not."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "lifecycle_policy": {
+                    "description": [
+                        "JSON or dict that represents the new lifecycle policy."
+                    ],
+                    "required": false,
+                    "type": "json"
+                },
+                "name": {
+                    "description": [
+                        "The name of the repository."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "policy": {
+                    "description": [
+                        "JSON or dict that represents the new policy."
+                    ],
+                    "required": false,
+                    "type": "json"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_lifecycle_policy": {
+                    "description": [
+                        "if C(true), remove the lifecycle policy from the repository.",
+                        "Defaults to C(false)."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "purge_policy": {
+                    "aliases": [
+                        "delete_policy"
+                    ],
+                    "description": [
+                        "If yes, remove the policy from the repository.",
+                        "Alias C(delete_policy) has been deprecated and will be removed after 2022-06-01.",
+                        "Defaults to C(false)."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "registry_id": {
+                    "description": [
+                        "AWS account id associated with the registry.",
+                        "If not specified, the default registry is assumed."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "scan_on_push": {
+                    "default": false,
+                    "description": [
+                        "if C(true), images are scanned for known vulnerabilities after being pushed to the repository.",
+                        "I(scan_on_push) requires botocore >= 1.13.3"
+                    ],
+                    "required": false,
+                    "type": "bool",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.aws"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or destroy the repository."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage Elastic Container Registry repositories",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# If the repository does not exist, it is created. If it does exist, would not\n# affect any policies already on it.\n- name: ecr-repo\n  community.aws.ecs_ecr:\n    name: super/cool\n\n- name: destroy-ecr-repo\n  community.aws.ecs_ecr:\n    name: old/busted\n    state: absent\n\n- name: Cross account ecr-repo\n  community.aws.ecs_ecr:\n    registry_id: 999999999999\n    name: cross/account\n\n- name: set-policy as object\n  community.aws.ecs_ecr:\n    name: needs-policy-object\n    policy:\n      Version: '2008-10-17'\n      Statement:\n        - Sid: read-only\n          Effect: Allow\n          Principal:\n            AWS: '{{ read_only_arn }}'\n          Action:\n            - ecr:GetDownloadUrlForLayer\n            - ecr:BatchGetImage\n            - ecr:BatchCheckLayerAvailability\n\n- name: set-policy as string\n  community.aws.ecs_ecr:\n    name: needs-policy-string\n    policy: \"{{ lookup('template', 'policy.json.j2') }}\"\n\n- name: delete-policy\n  community.aws.ecs_ecr:\n    name: needs-no-policy\n    purge_policy: yes\n\n- name: create immutable ecr-repo\n  community.aws.ecs_ecr:\n    name: super/cool\n    image_tag_mutability: immutable\n\n- name: set-lifecycle-policy\n  community.aws.ecs_ecr:\n    name: needs-lifecycle-policy\n    scan_on_push: yes\n    lifecycle_policy:\n      rules:\n        - rulePriority: 1\n          description: new policy\n          selection:\n            tagStatus: untagged\n            countType: sinceImagePushed\n            countUnit: days\n            countNumber: 365\n          action:\n            type: expire\n\n- name: purge-lifecycle-policy\n  community.aws.ecs_ecr:\n    name: needs-no-lifecycle-policy\n    purge_lifecycle_policy: true\n",
+        "metadata": null,
+        "return": {
+            "created": {
+                "description": "If true, the repository was created",
+                "returned": "always",
+                "type": "bool"
+            },
+            "name": {
+                "description": "The name of the repository",
+                "returned": "when state == 'absent'",
+                "type": "str"
+            },
+            "repository": {
+                "description": "The created or updated repository",
+                "returned": "when state == 'present'",
+                "sample": {
+                    "createdAt": "2017-01-17T08:41:32-06:00",
+                    "registryId": "999999999999",
+                    "repositoryArn": "arn:aws:ecr:us-east-1:999999999999:repository/ecr-test-1484664090",
+                    "repositoryName": "ecr-test-1484664090",
+                    "repositoryUri": "999999999999.dkr.ecr.us-east-1.amazonaws.com/ecr-test-1484664090"
+                },
+                "type": "dict"
+            },
+            "state": {
+                "description": "The asserted state of the repository (present, absent)",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

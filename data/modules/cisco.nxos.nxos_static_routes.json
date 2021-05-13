@@ -1,0 +1,173 @@
+{
+    "cisco.nxos.nxos_static_routes": {
+        "doc": {
+            "author": "Adharsh Srivats Rangarajan (@adharshsrivatsr)",
+            "collection": "cisco.nxos",
+            "description": "This module configures and manages the attributes of static routes on Cisco NX-OS platforms.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/nxos/plugins/modules/nxos_static_routes.py",
+            "has_action": true,
+            "module": "nxos_static_routes",
+            "notes": [
+                "Tested against NX-OS 7.3.(0)D1(1) on VIRL",
+                "When a route is configured for a non-existent VRF, the VRF is created and the route is added to it.",
+                "When deleting routes for a VRF, all routes inside the VRF are deleted, but the VRF is not deleted."
+            ],
+            "options": {
+                "config": {
+                    "description": [
+                        "A list of configurations for static routes"
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "address_families": {
+                            "description": "A dictionary specifying the address family to which the static route(s) belong.",
+                            "elements": "dict",
+                            "suboptions": {
+                                "afi": {
+                                    "choices": [
+                                        "ipv4",
+                                        "ipv6"
+                                    ],
+                                    "description": [
+                                        "Specifies the top level address family indicator."
+                                    ],
+                                    "required": true,
+                                    "type": "str"
+                                },
+                                "routes": {
+                                    "description": "A dictionary that specifies the static route configurations",
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "dest": {
+                                            "description": [
+                                                "Destination prefix of static route",
+                                                "The address format is <ipv4/v6 address>/<mask>",
+                                                "The mask is number in range 0-32 for IPv4 and in range 0-128 for IPv6"
+                                            ],
+                                            "required": true,
+                                            "type": "str"
+                                        },
+                                        "next_hops": {
+                                            "description": [
+                                                "Details of route to be taken"
+                                            ],
+                                            "elements": "dict",
+                                            "suboptions": {
+                                                "admin_distance": {
+                                                    "description": [
+                                                        "Preference or administrative distance of route (range 1-255)"
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "dest_vrf": {
+                                                    "description": [
+                                                        "VRF of the destination"
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "forward_router_address": {
+                                                    "description": [
+                                                        "IP address of the next hop router"
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "interface": {
+                                                    "description": [
+                                                        "Outgoing interface to take. For anything except 'Null0', then next hop IP address should also be configured."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "route_name": {
+                                                    "description": [
+                                                        "Name of the static route"
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "tag": {
+                                                    "description": [
+                                                        "Route tag value (numeric)"
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "track": {
+                                                    "description": [
+                                                        "Track value (range 1 - 512). Track must already be configured on the device before adding the route."
+                                                    ],
+                                                    "type": "int"
+                                                }
+                                            },
+                                            "type": "list"
+                                        }
+                                    },
+                                    "type": "list"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "vrf": {
+                            "description": [
+                                "The VRF to which the static route(s) belong"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the NX-OS device by executing the following commands in order B(show running-config | include '^ip(v6)* route') and B(show running-config | section '^vrf context').",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "deleted",
+                        "merged",
+                        "overridden",
+                        "replaced",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Static routes resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.nxos"
+        },
+        "examples": "\n# Using deleted:\n\n# Before state:\n# -------------\n#\n# ip route 192.0.2.32/28 192.0.2.12 name new_route\n# ip route 192.0.2.26/24 192.0.2.13 tag 12\n\n- name: Delete all routes\n  cisco.nxos.nxos_static_routes:\n    state: deleted\n\n# After state:\n# ------------\n#\n\n\n# Before state:\n# ------------\n#\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ip route 192.0.2.64/28 192.0.2.22 tag 4\n# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1\n# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5\n\n- name: Delete routes based on VRF\n  cisco.nxos.nxos_static_routes:\n    config:\n    - vrf: trial_vrf\n    state: deleted\n\n# After state:\n# -----------\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n\n\n# Before state:\n# ------------\n#\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ip route 192.0.2.64/28 192.0.2.22 tag 4\n# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1\n# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5\n\n- name: Delete routes based on AFI in a VRF\n  cisco.nxos.nxos_static_routes:\n    config:\n    - vrf: trial_vrf\n      address_families:\n      - afi: ipv4\n    state: deleted\n\n# After state:\n# -----------\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5\n\n\n# Before state:\n# -----------\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# vrf context trial_vrf\n# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5\n\n\n# Using merged\n\n# Before state:\n# -------------\n#\n\n- name: Merge new static route configuration\n  cisco.nxos.nxos_static_routes:\n    config:\n    - vrf: trial_vrf\n      address_families:\n      - afi: ipv4\n        routes:\n        - dest: 192.0.2.64/24\n          next_hops:\n          - forward_router_address: 192.0.2.22\n            tag: 4\n            admin_distance: 2\n\n    - address_families:\n      - afi: ipv4\n        routes:\n        - dest: 192.0.2.16/24\n          next_hops:\n          - forward_router_address: 192.0.2.24\n            route_name: new_route\n      - afi: ipv6\n        routes:\n        - dest: 2001:db8::/64\n          next_hops:\n          - interface: eth1/3\n            forward_router_address: 2001:db8::12\n    state: merged\n\n# After state:\n# ------------\n#\n# ip route 192.0.2.16/24 192.0.2.24 name new_route\n# ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12\n# vrf context trial_vrf\n#   ip route 192.0.2.0/24 192.0.2.22 tag 4 2\n\n\n# Using overridden:\n\n# Before state:\n# -------------\n#\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ip route 192.0.2.64/28 192.0.2.22 tag 4\n# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1\n\n- name: Overriden existing static route configuration with new configuration\n  cisco.nxos.nxos_static_routes:\n    config:\n    - vrf: trial_vrf\n      address_families:\n      - afi: ipv4\n        routes:\n        - dest: 192.0.2.16/28\n          next_hops:\n          - forward_router_address: 192.0.2.23\n            route_name: overridden_route1\n            admin_distance: 3\n\n          - forward_router_address: 192.0.2.45\n            route_name: overridden_route2\n            dest_vrf: destinationVRF\n            interface: Ethernet1/2\n    state: overridden\n\n# After state:\n# ------------\n#\n# ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3\n# ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2\n\n\n# Using replaced:\n\n# Before state:\n# ------------\n# ip route 192.0.2.16/28 192.0.2.24 name new_route\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ip route 192.0.2.64/28 192.0.2.22 tag 4\n# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1\n\n- name: Replaced the existing static configuration of a prefix with new configuration\n  cisco.nxos.nxos_static_routes:\n    config:\n    - address_families:\n      - afi: ipv4\n        routes:\n        - dest: 192.0.2.16/28\n          next_hops:\n          - forward_router_address: 192.0.2.23\n            route_name: replaced_route1\n            admin_distance: 3\n\n          - forward_router_address: 192.0.2.45\n            route_name: replaced_route2\n            dest_vrf: destinationVRF\n            interface: Ethernet1/2\n    state: replaced\n\n# After state:\n# -----------\n# ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3\n# ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2\n# ip route 192.0.2.80/28 192.0.2.26 tag 12\n# vrf context trial_vrf\n# ip route 192.0.2.64/28 192.0.2.22 tag 4\n# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1\n\n\n# Using gathered:\n\n# Before state:\n# -------------\n# ipv6 route 2001:db8:12::/32  2001:db8::12\n# vrf context Test\n#    ip route 192.0.2.48/28 192.0.2.13\n#    ip route 192.0.2.48/28 192.0.2.14 5\n\n- name: Gather the exisitng condiguration\n  cisco.nxos.nxos_static_routes:\n    state: gathered\n\n# returns:\n# gathered:\n#     - vrf: Test\n#       address_families:\n#         - afi: ipv4\n#           routes:\n#             - dest: 192.0.2.48/28\n#               next_hops:\n#                 - forward_router_address: 192.0.2.13\n#\n#                 - forward_router_address: 192.0.2.14\n#                   admin_distance: 5\n#\n#     - address_families:\n#         - afi: ipv6\n#           routes:\n#             - dest: 2001:db8:12::/32\n#               next_hops:\n#                 - forward_router_address: 2001:db8::12\n\n\n# Using rendered:\n\n- name: Render required configuration to be pushed to the device\n  cisco.nxos.nxos_static_routes:\n    config:\n    - address_families:\n      - afi: ipv4\n        routes:\n        - dest: 192.0.2.48/28\n          next_hops:\n          - forward_router_address: 192.0.2.13\n\n      - afi: ipv6\n        routes:\n        - dest: 2001:db8::/64\n          next_hops:\n          - interface: eth1/3\n            forward_router_address: 2001:db8::12\n    state: rendered\n\n# returns\n# rendered:\n#   vrf context default\n#   ip route 192.0.2.48/28 192.0.2.13\n#   ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12\n\n\n# Using parsed\n\n- name: Parse the config to structured data\n  cisco.nxos.nxos_static_routes:\n    running_config: |\n      ipv6 route 2002:db8:12::/32 2002:db8:12::1\n      vrf context Test\n        ip route 192.0.2.48/28 192.0.2.13\n        ip route 192.0.2.48/28 192.0.2.14 5\n\n# returns:\n# parsed:\n#     - vrf: Test\n#       address_families:\n#         - afi: ipv4\n#           routes:\n#             - dest: 192.0.2.48/28\n#               next_hops:\n#                 - forward_router_address: 192.0.2.13\n#\n#                 - forward_router_address: 192.0.2.14\n#                   admin_distance: 5\n#\n#     - address_families:\n#         - afi: ipv6\n#           routes:\n#             - dest: 2002:db8:12::/32\n#               next_hops:\n#                 - forward_router_address: 2002:db8:12::1\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The resulting configuration model invocation.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration prior to the model invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "ip route 192.0.2.48/28 192.0.2.12 Ethernet1/2 name sample_route",
+                    "ipv6 route 2001:db8:3000::/36 2001:db8:200:2::2",
+                    "vrf context test",
+                    "ip route 192.0.2.48/28 192.0.2.121"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

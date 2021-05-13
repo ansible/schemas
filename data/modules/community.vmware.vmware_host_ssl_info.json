@@ -1,0 +1,132 @@
+{
+    "community.vmware.vmware_host_ssl_info": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to gather information of the SSL thumbprint information for a host."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_host_ssl_info.py",
+            "has_action": false,
+            "module": "vmware_host_ssl_info",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster.",
+                        "SSL thumbprint information about all ESXi host system in the given cluster will be reported.",
+                        "If C(esxi_hostname) is not given, this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "ESXi hostname.",
+                        "SSL thumbprint information of this ESXi host system will be reported.",
+                        "If C(cluster_name) is not given, this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Gather info of ESXi host system about SSL"
+        },
+        "examples": "\n- name: Gather SSL thumbprint information about all ESXi Hosts in given Cluster\n  community.vmware.vmware_host_ssl_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    cluster_name: '{{ cluster_name }}'\n  delegate_to: localhost\n  register: all_host_ssl_info\n\n- name: Get SSL Thumbprint info about \"{{ esxi_hostname }}\"\n  community.vmware.vmware_host_ssl_info:\n    hostname: \"{{ vcenter_server }}\"\n    username: \"{{ vcenter_user }}\"\n    password: \"{{ vcenter_pass }}\"\n    esxi_hostname: '{{ esxi_hostname }}'\n  register: ssl_info\n- set_fact:\n    ssl_thumbprint: \"{{ ssl_info['host_ssl_info'][esxi_hostname]['ssl_thumbprints'][0] }}\"\n- debug:\n    msg: \"{{ ssl_thumbprint }}\"\n- name: Add ESXi Host to vCenter\n  vmware_host:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter_name: '{{ datacenter_name }}'\n    cluster_name: '{{ cluster_name }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n    esxi_username: '{{ esxi_username }}'\n    esxi_password: '{{ esxi_password }}'\n    esxi_ssl_thumbprint: '{{ ssl_thumbprint }}'\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "host_ssl_info": {
+                "description": [
+                    "dict with hostname as key and dict with SSL thumbprint related info"
+                ],
+                "returned": "info",
+                "sample": {
+                    "10.76.33.215": {
+                        "owner_tag": "",
+                        "principal": "vpxuser",
+                        "ssl_thumbprints": [
+                            "E3:E8:A9:20:8D:32:AE:59:C6:8D:A5:91:B0:20:EF:00:A2:7C:27:EE",
+                            "F1:AC:DA:6E:D8:1E:37:36:4A:5C:07:E5:04:0B:87:C8:75:FB:42:01"
+                        ]
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

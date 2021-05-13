@@ -1,0 +1,173 @@
+{
+    "community.network.netscaler_ssl_certkey": {
+        "doc": {
+            "author": "George Nikolopoulos (@giorgos-nikolopoulos)",
+            "collection": "community.network",
+            "description": [
+                "Manage ssl certificate keys."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/netscaler_ssl_certkey.py",
+            "has_action": false,
+            "module": "netscaler_ssl_certkey",
+            "notes": [
+                "For more information on using Ansible to manage Citrix NetScaler Network devices see U(https://www.ansible.com/ansible-netscaler)."
+            ],
+            "options": {
+                "cert": {
+                    "description": [
+                        "Name of and, optionally, path to the X509 certificate file that is used to form the certificate-key pair. The certificate file should be present on the appliance's hard-disk drive or solid-state drive. Storing a certificate in any location other than the default might cause inconsistency in a high availability setup. /nsconfig/ssl/ is the default path.",
+                        "Minimum length = 1"
+                    ]
+                },
+                "certkey": {
+                    "description": [
+                        "Name for the certificate and private-key pair. Must begin with an ASCII alphanumeric or underscore C(_) character, and must contain only ASCII alphanumeric, underscore C(_), hash C(#), period C(.), space C( ), colon C(:), at C(@), equals C(=), and hyphen C(-) characters. Cannot be changed after the certificate-key pair is created.",
+                        "The following requirement applies only to the NetScaler CLI:",
+                        "If the name includes one or more spaces, enclose the name in double or single quotation marks (for example, \"my cert\" or 'my cert').",
+                        "Minimum length = 1"
+                    ]
+                },
+                "expirymonitor": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "description": [
+                        "Issue an alert when the certificate is about to expire."
+                    ]
+                },
+                "inform": {
+                    "choices": [
+                        "DER",
+                        "PEM",
+                        "PFX"
+                    ],
+                    "description": [
+                        "Input format of the certificate and the private-key files. The three formats supported by the appliance are:",
+                        "PEM - Privacy Enhanced Mail",
+                        "DER - Distinguished Encoding Rule",
+                        "PFX - Personal Information Exchange."
+                    ]
+                },
+                "key": {
+                    "description": [
+                        "Name of and, optionally, path to the private-key file that is used to form the certificate-key pair. The certificate file should be present on the appliance's hard-disk drive or solid-state drive. Storing a certificate in any location other than the default might cause inconsistency in a high availability setup. /nsconfig/ssl/ is the default path.",
+                        "Minimum length = 1"
+                    ]
+                },
+                "nitro_pass": {
+                    "description": [
+                        "The password with which to authenticate to the netscaler node."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nitro_protocol": {
+                    "choices": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "http",
+                    "description": [
+                        "Which protocol to use when accessing the nitro API objects."
+                    ],
+                    "type": "str"
+                },
+                "nitro_timeout": {
+                    "default": 310,
+                    "description": [
+                        "Time in seconds until a timeout error is thrown when establishing a new session with Netscaler"
+                    ],
+                    "type": "float"
+                },
+                "nitro_user": {
+                    "description": [
+                        "The username with which to authenticate to the netscaler node."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "notificationperiod": {
+                    "description": [
+                        "Time, in number of days, before certificate expiration, at which to generate an alert that the certificate is about to expire.",
+                        "Minimum value = C(10)",
+                        "Maximum value = C(100)"
+                    ]
+                },
+                "nsip": {
+                    "description": [
+                        "The ip address of the netscaler appliance where the nitro API calls will be made.",
+                        "The port can be specified with the colon (:). E.g. 192.168.1.1:555."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "passplain": {
+                    "description": [
+                        "Pass phrase used to encrypt the private-key. Required when adding an encrypted private-key in PEM format.",
+                        "Minimum length = 1"
+                    ]
+                },
+                "password": {
+                    "description": [
+                        "Passphrase that was used to encrypt the private-key. Use this option to load encrypted private-keys in PEM format."
+                    ]
+                },
+                "save_config": {
+                    "default": true,
+                    "description": [
+                        "If C(yes) the module will save the configuration on the netscaler node if it makes any changes.",
+                        "The module will not save the configuration on the netscaler node if it made no changes."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The state of the resource being configured by the module on the netscaler node.",
+                        "When present the resource will be created if needed and configured according to the module's parameters.",
+                        "When absent the resource will be deleted from the netscaler node."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "nitro python sdk"
+            ],
+            "short_description": "Manage ssl certificate keys."
+        },
+        "examples": "\n\n- name: Setup ssl certkey\n  delegate_to: localhost\n  community.network.netscaler_ssl_certkey:\n    nitro_user: nsroot\n    nitro_pass: nsroot\n    nsip: 172.18.0.2\n\n    certkey: certirificate_1\n    cert: server.crt\n    key: server.key\n    expirymonitor: enabled\n    notificationperiod: 30\n    inform: PEM\n    password: False\n    passplain: somesecret\n",
+        "metadata": null,
+        "return": {
+            "diff": {
+                "description": "List of differences between the actual configured object and the configuration specified in the module",
+                "returned": "failure",
+                "sample": "{ 'targetlbvserver': 'difference. ours: (str) server1 other: (str) server2' }",
+                "type": "dict"
+            },
+            "loglines": {
+                "description": "list of logged messages by the module",
+                "returned": "always",
+                "sample": "['message 1', 'message 2']",
+                "type": "list"
+            },
+            "msg": {
+                "description": "Message detailing the failure reason",
+                "returned": "failure",
+                "sample": "Action does not exist",
+                "type": "str"
+            }
+        }
+    }
+}

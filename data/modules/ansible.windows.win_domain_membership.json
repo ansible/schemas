@@ -1,0 +1,104 @@
+{
+    "ansible.windows.win_domain_membership": {
+        "doc": {
+            "author": [
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "Manages domain membership or workgroup membership for a Windows host. Also supports hostname changes.",
+                "This module may require subsequent use of the M(ansible.windows.win_reboot) action if changes are made."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_domain_membership.py",
+            "has_action": false,
+            "module": "win_domain_membership",
+            "options": {
+                "dns_domain_name": {
+                    "description": [
+                        "When C(state) is C(domain), the DNS name of the domain to which the targeted Windows host should be joined."
+                    ],
+                    "type": "str"
+                },
+                "domain_admin_password": {
+                    "description": [
+                        "Password for the specified C(domain_admin_user)."
+                    ],
+                    "type": "str"
+                },
+                "domain_admin_user": {
+                    "description": [
+                        "Username of a domain admin for the target domain (required to join or leave the domain)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "domain_ou_path": {
+                    "description": [
+                        "The desired OU path for adding the computer object.",
+                        "This is only used when adding the target host to a domain, if it is already a member then it is ignored."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The desired hostname for the Windows host."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "domain",
+                        "workgroup"
+                    ],
+                    "description": [
+                        "Whether the target host should be a member of a domain or workgroup."
+                    ],
+                    "type": "str"
+                },
+                "workgroup_name": {
+                    "description": [
+                        "When C(state) is C(workgroup), the name of the workgroup that the Windows host should be in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_domain"
+                },
+                {
+                    "module": "ansible.windows.win_domain_controller"
+                },
+                {
+                    "module": "community.windows.win_domain_computer"
+                },
+                {
+                    "module": "community.windows.win_domain_group"
+                },
+                {
+                    "module": "community.windows.win_domain_user"
+                },
+                {
+                    "module": "ansible.windows.win_group"
+                },
+                {
+                    "module": "ansible.windows.win_group_membership"
+                },
+                {
+                    "module": "ansible.windows.win_user"
+                }
+            ],
+            "short_description": "Manage domain/workgroup membership for a Windows host"
+        },
+        "examples": "\n\n# host should be a member of domain ansible.vagrant; module will ensure the hostname is mydomainclient\n# and will use the passed credentials to join domain if necessary.\n# Ansible connection should use local credentials if possible.\n# If a reboot is required, the second task will trigger one and wait until the host is available.\n- hosts: winclient\n  gather_facts: no\n  tasks:\n  - ansible.windows.win_domain_membership:\n      dns_domain_name: ansible.vagrant\n      hostname: mydomainclient\n      domain_admin_user: testguy@ansible.vagrant\n      domain_admin_password: password123!\n      domain_ou_path: \"OU=Windows,OU=Servers,DC=ansible,DC=vagrant\"\n      state: domain\n    register: domain_state\n\n  - ansible.windows.win_reboot:\n    when: domain_state.reboot_required\n\n\n\n# Host should be in workgroup mywg- module will use the passed credentials to clean-unjoin domain if possible.\n# Ansible connection should use local credentials if possible.\n# The domain admin credentials can be sourced from a vault-encrypted variable\n- hosts: winclient\n  gather_facts: no\n  tasks:\n  - ansible.windows.win_domain_membership:\n      workgroup_name: mywg\n      domain_admin_user: '{{ win_domain_admin_user }}'\n      domain_admin_password: '{{ win_domain_admin_password }}'\n      state: workgroup\n",
+        "metadata": null,
+        "return": {
+            "reboot_required": {
+                "description": "True if changes were made that require a reboot.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

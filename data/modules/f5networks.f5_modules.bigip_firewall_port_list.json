@@ -1,0 +1,204 @@
+{
+    "f5networks.f5_modules.bigip_firewall_port_list": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages the AFM (Advanced Firewall Manager) port lists on a BIG-IP. This module can be used to add and remove port list entries."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_firewall_port_list.py",
+            "has_action": false,
+            "module": "bigip_firewall_port_list",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "description": {
+                    "description": [
+                        "Description of the port list."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the port list."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "port_lists": {
+                    "description": [
+                        "Simple list of existing port lists to add to this list. Port lists can be specified in either their fully qualified name (/Common/foo) or their short name (foo). If a short name is used, the C(partition) argument will automatically be prepended to the short name."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "port_ranges": {
+                    "description": [
+                        "A list of port ranges where the range starts with a port number, is followed by a dash (-), and then a second number.",
+                        "If the first number is greater than the second number, the numbers will be reversed to be properly formatted, for example 90-78 would become 78-90."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ports": {
+                    "description": [
+                        "Simple list of port values to add to the list."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the address list and entries exists.",
+                        "When C(absent), ensures the address list is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage port lists on BIG-IP AFM",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a simple port list\n  bigip_firewall_port_list:\n    name: foo\n    ports:\n      - 80\n      - 443\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Override the above list of ports with a new list\n  bigip_firewall_port_list:\n    name: foo\n    ports:\n      - 3389\n      - 8080\n      - 25\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create port list with series of ranges\n  bigip_firewall_port_list:\n    name: foo\n    port_ranges:\n      - 25-30\n      - 80-500\n      - 50-78\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Use multiple types of port arguments\n  bigip_firewall_port_list:\n    name: foo\n    port_ranges:\n      - 25-30\n      - 80-500\n      - 50-78\n    ports:\n      - 8080\n      - 443\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove port list\n  bigip_firewall_port_list:\n    name: foo\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create port list from a file with one port per line\n  bigip_firewall_port_list:\n    name: lot-of-ports\n    ports: \"{{ lookup('file', 'my-large-port-list.txt').split('\\n') }}\"\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "description": {
+                "description": "The new description of the port list.",
+                "returned": "changed",
+                "sample": "My port list",
+                "type": "str"
+            },
+            "port_lists": {
+                "description": "The new list of port list names applied to the port list.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/list1",
+                    "/Common/list2"
+                ],
+                "type": "list"
+            },
+            "port_ranges": {
+                "description": "The new list of port ranges applied to the port list.",
+                "returned": "changed",
+                "sample": [
+                    "80-100",
+                    "200-8080"
+                ],
+                "type": "list"
+            },
+            "ports": {
+                "description": "The new list of ports applied to the port list.",
+                "returned": "changed",
+                "sample": [
+                    80,
+                    443
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,220 @@
+{
+    "openstack.cloud.os_keystone_endpoint": {
+        "doc": {
+            "author": "OpenStack Ansible SIG",
+            "collection": "openstack.cloud",
+            "description": [
+                "Create, update, or delete OpenStack Identity service endpoints. If a service with the same combination of I(service), I(interface) and I(region) exist, the I(url) and I(state) (C(present) or C(absent)) will be updated."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/openstack/cloud/plugins/modules/endpoint.py",
+            "has_action": false,
+            "module": "endpoint",
+            "notes": [
+                "The standard OpenStack environment variables, such as C(OS_USERNAME) may be used instead of providing explicit values.",
+                "Auth information is driven by openstacksdk, which means that values can come from a yaml config file in /etc/ansible/openstack.yaml, /etc/openstack/clouds.yaml or ~/.config/openstack/clouds.yaml, then from standard environment variables, then finally by explicit parameters in plays. More information can be found at U(https://docs.openstack.org/openstacksdk/)"
+            ],
+            "options": {
+                "api_timeout": {
+                    "description": [
+                        "How long should the socket layer wait before timing out for API calls. If this is omitted, nothing will be passed to the requests library."
+                    ],
+                    "type": "int"
+                },
+                "auth": {
+                    "description": [
+                        "Dictionary containing auth information as needed by the cloud's auth plugin strategy. For the default I(password) plugin, this would contain I(auth_url), I(username), I(password), I(project_name) and any information about domains (for example, I(user_domain_name) or I(project_domain_name)) if the cloud supports them. For other plugins, this param will need to contain whatever parameters that auth plugin requires. This parameter is not needed if a named cloud is provided or OpenStack OS_* environment variables are present."
+                    ],
+                    "type": "dict"
+                },
+                "auth_type": {
+                    "description": [
+                        "Name of the auth plugin to use. If the cloud uses something other than password authentication, the name of the plugin should be indicated here and the contents of the I(auth) parameter should be updated accordingly."
+                    ],
+                    "type": "str"
+                },
+                "availability_zone": {
+                    "description": [
+                        "Ignored. Present for backwards compatibility"
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "cacert"
+                    ],
+                    "description": [
+                        "A path to a CA Cert bundle that can be used as part of verifying SSL API requests."
+                    ],
+                    "type": "str"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert"
+                    ],
+                    "description": [
+                        "A path to a client certificate to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key"
+                    ],
+                    "description": [
+                        "A path to a client key to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "cloud": {
+                    "description": [
+                        "Named cloud or cloud config to operate against. If I(cloud) is a string, it references a named cloud config as defined in an OpenStack clouds.yaml file. Provides default values for I(auth) and I(auth_type). This parameter is not needed if I(auth) is provided or if OpenStack OS_* environment variables are present. If I(cloud) is a dict, it contains a complete cloud configuration like would be in a section of clouds.yaml."
+                    ],
+                    "type": "raw"
+                },
+                "enabled": {
+                    "default": true,
+                    "description": [
+                        "Is the service enabled."
+                    ],
+                    "type": "bool"
+                },
+                "endpoint_interface": {
+                    "choices": [
+                        "admin",
+                        "public",
+                        "internal"
+                    ],
+                    "description": [
+                        "Interface of the service."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "interface": {
+                    "aliases": [
+                        "endpoint_type"
+                    ],
+                    "choices": [
+                        "admin",
+                        "internal",
+                        "public"
+                    ],
+                    "default": "public",
+                    "description": [
+                        "Endpoint URL type to fetch from the service catalog."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "Region that the service belongs to. Note that I(region_name) is used for authentication."
+                    ],
+                    "type": "str"
+                },
+                "region_name": {
+                    "description": [
+                        "Name of the region."
+                    ],
+                    "type": "str"
+                },
+                "service": {
+                    "description": [
+                        "Name or id of the service."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the resource be C(present) or C(absent)."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "How long should ansible wait for the requested resource."
+                    ],
+                    "type": "int"
+                },
+                "url": {
+                    "description": [
+                        "URL of the service."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Whether or not SSL API requests should be verified.",
+                        "Before Ansible 2.3 this defaulted to C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "Should ansible wait until the requested resource is complete."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "openstacksdk >= 0.12.0",
+                "openstacksdk >= 0.13.0",
+                "python >= 3.6"
+            ],
+            "short_description": "Manage OpenStack Identity service endpoints"
+        },
+        "examples": "\n- name: Create a service for glance\n  openstack.cloud.endpoint:\n     cloud: mycloud\n     service: glance\n     endpoint_interface: public\n     url: http://controller:9292\n     region: RegionOne\n     state: present\n\n- name: Delete a service for nova\n  openstack.cloud.endpoint:\n     cloud: mycloud\n     service: nova\n     endpoint_interface: public\n     region: RegionOne\n     state: absent\n",
+        "metadata": null,
+        "return": {
+            "endpoint": {
+                "contains": {
+                    "enabled": {
+                        "description": "Service status.",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "id": {
+                        "description": "Endpoint ID.",
+                        "sample": "3292f020780b4d5baf27ff7e1d224c44",
+                        "type": "str"
+                    },
+                    "interface": {
+                        "description": "Endpoint Interface.",
+                        "sample": "public",
+                        "type": "str"
+                    },
+                    "region": {
+                        "description": "Region Name.",
+                        "sample": "RegionOne",
+                        "type": "str"
+                    },
+                    "service_id": {
+                        "description": "Service ID.",
+                        "sample": "b91f1318f735494a825a55388ee118f3",
+                        "type": "str"
+                    },
+                    "url": {
+                        "description": "Service URL.",
+                        "sample": "http://controller:9292",
+                        "type": "str"
+                    }
+                },
+                "description": "Dictionary describing the endpoint.",
+                "returned": "On success when I(state) is C(present)",
+                "type": "complex"
+            }
+        }
+    }
+}

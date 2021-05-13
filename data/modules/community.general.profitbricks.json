@@ -1,0 +1,197 @@
+{
+    "community.general.profitbricks": {
+        "doc": {
+            "author": "Matt Baldwin (@baldwinSPC) <baldwin@stackpointcloud.com>",
+            "collection": "community.general",
+            "description": [
+                "Create, destroy, update, start, stop, and reboot a ProfitBricks virtual machine. When the virtual machine is created it can optionally wait for it to be 'running' before returning. This module has a dependency on profitbricks >= 1.0.0"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/profitbricks.py",
+            "has_action": false,
+            "module": "profitbricks",
+            "options": {
+                "assign_public_ip": {
+                    "default": "no",
+                    "description": [
+                        "This will assign the machine to the public LAN. If no LAN exists with public Internet access it is created."
+                    ],
+                    "type": "bool"
+                },
+                "auto_increment": {
+                    "default": "yes",
+                    "description": [
+                        "Whether or not to increment a single number in the name for created virtual machines."
+                    ],
+                    "type": "bool"
+                },
+                "bus": {
+                    "choices": [
+                        "IDE",
+                        "VIRTIO"
+                    ],
+                    "default": "VIRTIO",
+                    "description": [
+                        "The bus type for the volume."
+                    ],
+                    "type": "str"
+                },
+                "cores": {
+                    "default": 2,
+                    "description": [
+                        "The number of CPU cores to allocate to the virtual machine."
+                    ],
+                    "type": "int"
+                },
+                "count": {
+                    "default": 1,
+                    "description": [
+                        "The number of virtual machines to create."
+                    ],
+                    "type": "int"
+                },
+                "cpu_family": {
+                    "choices": [
+                        "AMD_OPTERON",
+                        "INTEL_XEON"
+                    ],
+                    "default": "AMD_OPTERON",
+                    "description": [
+                        "The CPU family type to allocate to the virtual machine."
+                    ],
+                    "type": "str"
+                },
+                "datacenter": {
+                    "description": [
+                        "The datacenter to provision this virtual machine."
+                    ],
+                    "type": "str"
+                },
+                "disk_type": {
+                    "choices": [
+                        "SSD",
+                        "HDD"
+                    ],
+                    "default": "HDD",
+                    "description": [
+                        "the type of disk to be allocated."
+                    ],
+                    "type": "str"
+                },
+                "image": {
+                    "description": [
+                        "The system image ID for creating the virtual machine, e.g. a3eae284-a2fe-11e4-b187-5f1f641608c8."
+                    ],
+                    "type": "str"
+                },
+                "image_password": {
+                    "description": [
+                        "Password set for the administrative user."
+                    ],
+                    "type": "str"
+                },
+                "instance_ids": {
+                    "description": [
+                        "list of instance ids, currently only used when state='absent' to remove instances."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "lan": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the LAN you wish to add the servers to."
+                    ],
+                    "type": "int"
+                },
+                "location": {
+                    "choices": [
+                        "us/las",
+                        "de/fra",
+                        "de/fkb"
+                    ],
+                    "default": "us/las",
+                    "description": [
+                        "The datacenter location. Use only if you want to create the Datacenter or else this value is ignored."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the virtual machine."
+                    ],
+                    "type": "str"
+                },
+                "ram": {
+                    "default": 2048,
+                    "description": [
+                        "The amount of memory to allocate to the virtual machine."
+                    ],
+                    "type": "int"
+                },
+                "remove_boot_volume": {
+                    "default": "yes",
+                    "description": [
+                        "remove the bootVolume of the virtual machine you're destroying."
+                    ],
+                    "type": "bool"
+                },
+                "ssh_keys": {
+                    "description": [
+                        "Public SSH keys allowing access to the virtual machine."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "default": "present",
+                    "description": [
+                        "create or terminate instances",
+                        "The choices available are: C(running), C(stopped), C(absent), C(present)."
+                    ],
+                    "type": "str"
+                },
+                "subscription_password": {
+                    "description": [
+                        "THe ProfitBricks password. Overrides the PB_PASSWORD environment variable."
+                    ],
+                    "type": "str"
+                },
+                "subscription_user": {
+                    "description": [
+                        "The ProfitBricks username. Overrides the PB_SUBSCRIPTION_ID environment variable."
+                    ],
+                    "type": "str"
+                },
+                "volume_size": {
+                    "default": 10,
+                    "description": [
+                        "The size in GB of the boot volume."
+                    ],
+                    "type": "int"
+                },
+                "wait": {
+                    "default": "yes",
+                    "description": [
+                        "wait for the instance to be in state 'running' before returning"
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 600,
+                    "description": [
+                        "how long before wait gives up, in seconds"
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "profitbricks",
+                "python >= 2.6"
+            ],
+            "short_description": "Create, destroy, start, stop, and reboot a ProfitBricks virtual machine."
+        },
+        "examples": "\n\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Provisioning example\n- name: Create three servers and enumerate their names\n  community.general.profitbricks:\n    datacenter: Tardis One\n    name: web%02d.stackpointcloud.com\n    cores: 4\n    ram: 2048\n    volume_size: 50\n    cpu_family: INTEL_XEON\n    image: a3eae284-a2fe-11e4-b187-5f1f641608c8\n    location: us/las\n    count: 3\n    assign_public_ip: true\n\n- name: Remove virtual machines\n  community.general.profitbricks:\n    datacenter: Tardis One\n    instance_ids:\n      - 'web001.stackpointcloud.com'\n      - 'web002.stackpointcloud.com'\n      - 'web003.stackpointcloud.com'\n    wait_timeout: 500\n    state: absent\n\n- name: Start virtual machines\n  community.general.profitbricks:\n    datacenter: Tardis One\n    instance_ids:\n      - 'web001.stackpointcloud.com'\n      - 'web002.stackpointcloud.com'\n      - 'web003.stackpointcloud.com'\n    wait_timeout: 500\n    state: running\n\n- name: Stop virtual machines\n  community.general.profitbricks:\n    datacenter: Tardis One\n    instance_ids:\n      - 'web001.stackpointcloud.com'\n      - 'web002.stackpointcloud.com'\n      - 'web003.stackpointcloud.com'\n    wait_timeout: 500\n    state: stopped\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,354 @@
+{
+    "f5networks.f5_modules.bigip_pool": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages F5 BIG-IP LTM pools via iControl REST API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_pool.py",
+            "has_action": false,
+            "module": "bigip_pool",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "aggregate": {
+                    "aliases": [
+                        "pools"
+                    ],
+                    "description": [
+                        "List of pool definitions to be created, modified, or removed.",
+                        "When using C(aggregates), if one of the aggregate definitions is invalid, the aggregate run will fail, indicating the error it last encountered.",
+                        "The module will B(NOT) rollback any changes it has made prior to encountering the error.",
+                        "The module also will not indicate which changes were made prior to failure. Therefore we strongly advise you run the module in C(check) mode to ensure basic validation prior to executing this module."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "description": {
+                    "description": [
+                        "Specifies descriptive text that identifies the pool."
+                    ],
+                    "type": "str"
+                },
+                "lb_method": {
+                    "choices": [
+                        "dynamic-ratio-member",
+                        "dynamic-ratio-node",
+                        "fastest-app-response",
+                        "fastest-node",
+                        "least-connections-member",
+                        "least-connections-node",
+                        "least-sessions",
+                        "observed-member",
+                        "observed-node",
+                        "predictive-member",
+                        "predictive-node",
+                        "ratio-least-connections-member",
+                        "ratio-least-connections-node",
+                        "ratio-member",
+                        "ratio-node",
+                        "ratio-session",
+                        "round-robin",
+                        "weighted-least-connections-member",
+                        "weighted-least-connections-node"
+                    ],
+                    "description": [
+                        "Load balancing method. When creating a new pool, if this value is not specified, the default of C(round-robin) is used."
+                    ],
+                    "type": "str"
+                },
+                "metadata": {
+                    "description": [
+                        "Arbitrary key/value pairs you can attach to a pool. This is useful in situations where you might want to annotate a pool to be managed by Ansible.",
+                        "Key names are stored as strings; this includes names that are numbers.",
+                        "Values for all of the keys are stored as strings; this includes values that are numbers.",
+                        "Data will be persisted, not ephemeral."
+                    ],
+                    "type": "raw"
+                },
+                "monitor_type": {
+                    "choices": [
+                        "and_list",
+                        "m_of_n",
+                        "single"
+                    ],
+                    "description": [
+                        "Monitor rule type when C(monitors) is specified.",
+                        "When creating a new pool, if this value is not specified, the default of C(and_list) is used.",
+                        "When C(single), ensures all specified monitors are checked, but additionally includes checks to make sure you only specified a single monitor.",
+                        "When C(and_list), ensures B(all) monitors are checked.",
+                        "When C(m_of_n), ensures C(quorum) of C(monitors) are checked. C(m_of_n) B(requires) a C(quorum) of 1 or greater be set either in the playbook, or already exist on the device.",
+                        "Both C(single) and C(and_list) are functionally identical, as BIG-IP considers all monitors as \"a list\"."
+                    ],
+                    "type": "str"
+                },
+                "monitors": {
+                    "description": [
+                        "Monitor template name list. If the partition is not provided as part of the monitor name, the C(partition) option is used instead."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "aliases": [
+                        "pool"
+                    ],
+                    "description": [
+                        "Pool name"
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "priority_group_activation": {
+                    "aliases": [
+                        "minimum_active_members"
+                    ],
+                    "description": [
+                        "Specifies whether the system load balances traffic according to the priority number assigned to the pool member.",
+                        "When creating a new pool, if this parameter is not specified, the default of C(0) is used.",
+                        "To disable this setting, provide the value C(0).",
+                        "Once you enable this setting, you can specify pool member priority when you create a new pool or on a pool member's properties screen.",
+                        "The system treats same-priority pool members as a group.",
+                        "To enable priority group activation, provide a number from C(0) to C(65535) that represents the minimum number of members that must be available in one priority group before the system directs traffic to members in a lower priority group.",
+                        "When a sufficient number of members become available in the higher priority group, the system again directs traffic to the higher priority group."
+                    ],
+                    "type": "int"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "quorum": {
+                    "description": [
+                        "Monitor quorum value when C(monitor_type) is C(m_of_n).",
+                        "Quorum must be a value of 1 or greater when C(monitor_type) is C(m_of_n)."
+                    ],
+                    "type": "int"
+                },
+                "replace_all_with": {
+                    "aliases": [
+                        "purge"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Removes pools not defined in the C(aggregate) parameter.",
+                        "This operation is all or none, meaning it will stop if there are some pools that cannot be removed."
+                    ],
+                    "type": "bool"
+                },
+                "reselect_tries": {
+                    "description": [
+                        "Sets the number of times the system tries to contact a pool member after a passive failure."
+                    ],
+                    "type": "int"
+                },
+                "service_down_action": {
+                    "choices": [
+                        "none",
+                        "reset",
+                        "drop",
+                        "reselect"
+                    ],
+                    "description": [
+                        "Sets the action to take when node goes down in pool."
+                    ],
+                    "type": "str"
+                },
+                "slow_ramp_time": {
+                    "description": [
+                        "Sets the ramp-up time (in seconds) to gradually ramp up the load on newly added or freshly detected up pool members."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), guarantees the pool exists with the provided attributes.",
+                        "When C(absent), removes the pool from the system."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP LTM pools",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create pool\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    lb_method: least-connections-member\n    slow_ramp_time: 120\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Modify load balancer method\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    lb_method: round-robin\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Set a single monitor (with enforcement)\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    monitor_type: single\n    monitors:\n      - http\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Set a single monitor (without enforcement)\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    monitors:\n      - http\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Set multiple monitors (all must succeed)\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    monitor_type: and_list\n    monitors:\n      - http\n      - tcp\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Set multiple monitors (at least 1 must succeed)\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    monitor_type: m_of_n\n    quorum: 1\n    monitors:\n      - http\n      - tcp\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Delete pool\n  bigip_pool:\n    state: absent\n    name: my-pool\n    partition: Common\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add metadata to pool\n  bigip_pool:\n    state: present\n    name: my-pool\n    partition: Common\n    metadata:\n      ansible: 2.4\n      updated_at: 2017-12-20T17:50:46Z\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add pools Aggregate\n  bigip_pool:\n    aggregate:\n      - name: my-pool\n        partition: Common\n        lb_method: least-connections-member\n        slow_ramp_time: 120\n      - name: my-pool2\n        partition: Common\n        lb_method: least-sessions\n        slow_ramp_time: 120\n      - name: my-pool3\n        partition: Common\n        lb_method: round-robin\n        slow_ramp_time: 120\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add pools Aggregate, purge others\n  bigip_pool:\n    aggregate:\n      - name: my-pool\n        partition: Common\n        lb_method: least-connections-member\n        slow_ramp_time: 120\n      - name: my-pool2\n        partition: Common\n        lb_method: least-sessions\n        slow_ramp_time: 120\n      - name: my-pool3\n        partition: Common\n        lb_method: round-robin\n        slow_ramp_time: 120\n    replace_all_with: yes\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "description": {
+                "description": "Description set on the pool.",
+                "returned": "changed",
+                "sample": "Pool of web servers",
+                "type": "str"
+            },
+            "lb_method": {
+                "description": "The load balancing method set for the pool.",
+                "returned": "changed",
+                "sample": "round-robin",
+                "type": "str"
+            },
+            "metadata": {
+                "description": "The new value of the pool.",
+                "returned": "changed",
+                "sample": {
+                    "key1": "foo",
+                    "key2": "bar"
+                },
+                "type": "dict"
+            },
+            "monitor_type": {
+                "description": [
+                    "Changed value for the monitor_type of the pool."
+                ],
+                "returned": "changed",
+                "sample": "m_of_n",
+                "type": "str"
+            },
+            "monitors": {
+                "description": "Monitors set on the pool.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/http",
+                    "/Common/gateway_icmp"
+                ],
+                "type": "list"
+            },
+            "priority_group_activation": {
+                "description": "The new minimum number of members to activate the priority group.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "quorum": {
+                "description": "The quorum that was set on the pool.",
+                "returned": "changed",
+                "sample": 2,
+                "type": "int"
+            },
+            "replace_all_with": {
+                "description": "Purges all non-aggregate pools from device",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "reselect_tries": {
+                "description": "The new value set for the number of tries to contact member.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "service_down_action": {
+                "description": "Service down action that is set on the pool.",
+                "returned": "changed",
+                "sample": "reset",
+                "type": "str"
+            },
+            "slow_ramp_time": {
+                "description": "The new value set for the slow ramp-up time.",
+                "returned": "changed",
+                "sample": 500,
+                "type": "int"
+            }
+        }
+    }
+}

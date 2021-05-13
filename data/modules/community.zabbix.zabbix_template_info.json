@@ -1,0 +1,150 @@
+{
+    "community.zabbix.zabbix_template_info": {
+        "doc": {
+            "author": [
+                "sky-joker (@sky-joker)"
+            ],
+            "collection": "community.zabbix",
+            "description": [
+                "This module allows you to search for Zabbix template."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/zabbix/plugins/modules/zabbix_template_info.py",
+            "has_action": false,
+            "module": "zabbix_template_info",
+            "notes": [
+                "If you use I(login_password=zabbix), the word \"zabbix\" is replaced by \"********\" in all module output, because I(login_password) uses C(no_log). See L(this FAQ,https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-is-my-output-sometimes-replaced-with) for more information."
+            ],
+            "options": {
+                "format": {
+                    "choices": [
+                        "json",
+                        "xml"
+                    ],
+                    "default": "json",
+                    "description": [
+                        "Format to use when dumping template."
+                    ],
+                    "type": "str"
+                },
+                "http_login_password": {
+                    "description": [
+                        "Basic Auth password"
+                    ],
+                    "type": "str"
+                },
+                "http_login_user": {
+                    "description": [
+                        "Basic Auth login"
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "Zabbix user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "Zabbix user name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "omit_date": {
+                    "default": false,
+                    "description": [
+                        "Removes the date field for the dumped template"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "server_url": {
+                    "aliases": [
+                        "url"
+                    ],
+                    "description": [
+                        "URL of Zabbix server, with protocol (http or https). C(url) is an alias for C(server_url)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "template_name": {
+                    "description": [
+                        "Name of the template in Zabbix."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The timeout of API request (seconds)."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to False, SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "zabbix-api >= 0.5.4"
+            ],
+            "short_description": "Gather information about Zabbix template"
+        },
+        "examples": "\n- name: Get Zabbix template as JSON\n  community.zabbix.zabbix_template_info:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    template_name: Template\n    format: json\n    omit_date: yes\n  register: template_json\n\n- name: Get Zabbix template as XML\n  community.zabbix.zabbix_template_info:\n    server_url: \"http://zabbix.example.com/zabbix/\"\n    login_user: admin\n    login_password: secret\n    template_name: Template\n    format: xml\n    omit_date: no\n  register: template_json\n",
+        "metadata": null,
+        "return": {
+            "template_json": {
+                "description": "The JSON of the template",
+                "returned": "when format is json and omit_date is true",
+                "sample": {
+                    "zabbix_export": {
+                        "groups": [
+                            {
+                                "name": "Templates"
+                            }
+                        ],
+                        "templates": [
+                            {
+                                "applications": [
+                                    {
+                                        "name": "Test Application"
+                                    }
+                                ],
+                                "description": "Testing template import",
+                                "discovery_rules": [],
+                                "groups": [
+                                    {
+                                        "name": "Templates"
+                                    }
+                                ],
+                                "httptests": [],
+                                "items": [],
+                                "macros": [],
+                                "name": "Template for Testing",
+                                "screens": [],
+                                "template": "Test Template",
+                                "templates": []
+                            }
+                        ],
+                        "version": "4.0"
+                    }
+                },
+                "type": "str"
+            },
+            "template_xml": {
+                "description": "The XML of the template",
+                "returned": "when format is xml and omit_date is false",
+                "sample": "<zabbix_export>\n    <version>4.0</version>\n    <date>2019-10-27T14:49:57Z</date>\n    <groups>\n        <group>\n            <name>Templates</name>\n        </group>\n    </groups>\n    <templates>\n        <template>\n            <template>Test Template</template>\n            <name>Template for Testing</name>\n            <description>Testing template import</description>\n            <groups>\n                <group>\n                    <name>Templates</name>\n                </group>\n            </groups>\n            <applications>\n                <application>\n                    <name>Test Application</name>\n                </application>\n            </applications>\n            <items />\n            <discovery_rules />\n            <httptests />\n            <macros />\n            <templates />\n            <screens />\n        </template>\n    </templates>\n</zabbix_export>",
+                "type": "str"
+            }
+        }
+    }
+}

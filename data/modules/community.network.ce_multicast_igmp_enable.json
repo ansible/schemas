@@ -1,0 +1,131 @@
+{
+    "community.network.ce_multicast_igmp_enable": {
+        "doc": {
+            "author": "xuxiaowei0512 (@CloudEngine-Ansible)",
+            "collection": "community.network",
+            "description": [
+                "Manages multicast igmp on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_multicast_igmp_enable.py",
+            "has_action": false,
+            "module": "ce_multicast_igmp_enable",
+            "notes": [
+                "If no vrf is supplied, vrf is set to default. If I(state=absent), the route will be removed, regardless of the non-required parameters.",
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "This module works with connection C(netconf)."
+            ],
+            "options": {
+                "aftype": {
+                    "choices": [
+                        "v4",
+                        "v6"
+                    ],
+                    "description": [
+                        "Destination ip address family type of static route."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "features": {
+                    "choices": [
+                        "global",
+                        "vlan"
+                    ],
+                    "description": [
+                        "Distinguish between Globally Enabled IGMP or",
+                        "Enabled IGMP under vlanID."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "igmp": {
+                    "default": false,
+                    "description": [
+                        "Enable Layer 2 multicast Snooping in a VLAN."
+                    ],
+                    "type": "bool"
+                },
+                "proxy": {
+                    "default": false,
+                    "description": [
+                        "Layer 2 multicast snooping proxy is enabled."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify desired state of the resource."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "default": 2,
+                    "description": [
+                        "Specifies the IGMP version that can be processed."
+                    ],
+                    "type": "int"
+                },
+                "vlan_id": {
+                    "description": [
+                        "Virtual LAN identity."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manages multicast igmp enable configuration on HUAWEI CloudEngine switches.",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.network"
+        },
+        "examples": "\n\n  - name: Configure global igmp enable\n    community.network.ce_multicast_igmp_enable:\n      aftype: v4\n      features: 'global'\n      state: present\n\n  - name: Configure global igmp disable\n    community.network.ce_multicast_igmp_enable:\n      features: 'global'\n      aftype: v4\n      state: absent\n\n  - name: Configure vlan igmp enable\n    community.network.ce_multicast_igmp_enable:\n      features: 'vlan'\n      aftype: v4\n      vlan_id: 1\n      igmp: true\n\n  - name: New proxy,igmp,version\n    community.network.ce_multicast_igmp_enable:\n      features: 'vlan'\n      aftype: v4\n      vlan_id: 1\n      proxy: true\n      igmp: true\n      version: 1\n\n  - name: Modify proxy,igmp,version\n    community.network.ce_multicast_igmp_enable:\n      features: 'vlan'\n      aftype: v4\n      vlan_id: 1\n      version: 2\n\n  - name: Delete proxy,igmp,version\n    community.network.ce_multicast_igmp_enable:\n      features: 'vlan'\n      aftype: v4\n      vlan_id: 1\n      state: absent\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of switchport after module execution",
+                "returned": "always",
+                "sample": {},
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing switchport",
+                "returned": "always",
+                "sample": {},
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "addrFamily": "ipv4unicast",
+                    "features": "vlan",
+                    "proxyEnable": "false",
+                    "snoopingEnable": "false",
+                    "state": "absent",
+                    "version": 2,
+                    "vlanId": 1
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command list sent to the device",
+                "returned": "always",
+                "sample": [
+                    "undo igmp snooping enable",
+                    "undo igmp snooping version",
+                    "undo igmp snooping proxy"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

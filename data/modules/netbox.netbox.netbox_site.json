@@ -1,0 +1,232 @@
+{
+    "netbox.netbox.netbox_site": {
+        "doc": {
+            "author": [
+                "Mikhail Yohman (@FragmentedPacket)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates or removes sites from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_site.py",
+            "has_action": false,
+            "module": "netbox_site",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the site configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "asn": {
+                            "description": [
+                                "The ASN associated with the site"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "comments": {
+                            "description": [
+                                "Comments for the site. This can be markdown syntax"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "contact_email": {
+                            "description": [
+                                "Contact email for site"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "contact_name": {
+                            "description": [
+                                "Name of contact for site"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "contact_phone": {
+                            "description": [
+                                "Contact phone number for site"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "custom_fields": {
+                            "description": [
+                                "must exist in Netbox"
+                            ],
+                            "required": false,
+                            "type": "dict"
+                        },
+                        "description": {
+                            "description": [
+                                "The description of the prefix"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "facility": {
+                            "description": [
+                                "Data center provider or facility, ex. Equinix NY7"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "latitude": {
+                            "description": [
+                                "Latitude in decimal format"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "longitude": {
+                            "description": [
+                                "Longitude in decimal format"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the site to be created"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "physical_address": {
+                            "description": [
+                                "Physical address of site"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "region": {
+                            "description": [
+                                "The region that the site should be associated with"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "shipping_address": {
+                            "description": [
+                                "Shipping address of site"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "slug": {
+                            "description": [
+                                "URL-friendly unique shorthand"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "status": {
+                            "description": [
+                                "Status of the site"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the prefix may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "tenant": {
+                            "description": [
+                                "The tenant the site will be assigned to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "time_zone": {
+                            "description": [
+                                "Timezone associated with the site, ex. America/Denver"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.\nThis should only be used on personally controlled sites using self-signed certificates.\n"
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Creates or removes sites from Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox site module\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Create site within Netbox with only required information\n      netbox_site:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test - Colorado\n        state: present\n\n    - name: Delete site within netbox\n      netbox_site:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test - Colorado\n        state: absent\n\n    - name: Create site with all parameters\n      netbox_site:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Test - California\n          status: Planned\n          region: Test Region\n          tenant: Test Tenant\n          facility: EquinoxCA7\n          asn: 65001\n          time_zone: America/Los Angeles\n          description: This is a test description\n          physical_address: Hollywood, CA, 90210\n          shipping_address: Hollywood, CA, 90210\n          latitude: 10.100000\n          longitude: 12.200000\n          contact_name: Jenny\n          contact_phone: 867-5309\n          contact_email: jenny@changednumber.com\n          slug: test-california\n          comments: ### Placeholder\n        state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            },
+            "site": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "on creation",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,98 @@
+{
+    "ansible.windows.win_group_membership": {
+        "doc": {
+            "author": [
+                "Andrew Saraceni (@andrewsaraceni)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "Allows the addition and removal of local, service and domain users, and domain groups from a local group."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_group_membership.py",
+            "has_action": false,
+            "module": "win_group_membership",
+            "options": {
+                "members": {
+                    "description": [
+                        "A list of members to ensure are present/absent from the group.",
+                        "Accepts local users as .\\username, and SERVERNAME\\username.",
+                        "Accepts domain users and groups as DOMAIN\\username and username@DOMAIN.",
+                        "Accepts service users as NT AUTHORITY\\username.",
+                        "Accepts all local, domain and service user types as username, favoring domain lookups when in a domain."
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Name of the local group to manage membership on."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "pure"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired state of the members in the group.",
+                        "When C(state) is C(pure), only the members specified will exist, and all other existing members not specified are removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "community.windows.win_domain_group"
+                },
+                {
+                    "module": "ansible.windows.win_domain_membership"
+                },
+                {
+                    "module": "ansible.windows.win_group"
+                }
+            ],
+            "short_description": "Manage Windows local group membership"
+        },
+        "examples": "\n- name: Add a local and domain user to a local group\n  ansible.windows.win_group_membership:\n    name: Remote Desktop Users\n    members:\n      - NewLocalAdmin\n      - DOMAIN\\TestUser\n    state: present\n\n- name: Remove a domain group and service user from a local group\n  ansible.windows.win_group_membership:\n    name: Backup Operators\n    members:\n      - DOMAIN\\TestGroup\n      - NT AUTHORITY\\SYSTEM\n    state: absent\n\n- name: Ensure only a domain user exists in a local group\n  ansible.windows.win_group_membership:\n    name: Remote Desktop Users\n    members:\n      - DOMAIN\\TestUser\n    state: pure\n",
+        "metadata": null,
+        "return": {
+            "added": {
+                "description": "A list of members added when C(state) is C(present) or C(pure); this is empty if no members are added.",
+                "returned": "success and C(state) is C(present)",
+                "sample": [
+                    "SERVERNAME\\NewLocalAdmin",
+                    "DOMAIN\\TestUser"
+                ],
+                "type": "list"
+            },
+            "members": {
+                "description": "A list of all local group members at completion; this is empty if the group contains no members.",
+                "returned": "success",
+                "sample": [
+                    "DOMAIN\\TestUser",
+                    "SERVERNAME\\NewLocalAdmin"
+                ],
+                "type": "list"
+            },
+            "name": {
+                "description": "The name of the target local group.",
+                "returned": "always",
+                "sample": "Administrators",
+                "type": "str"
+            },
+            "removed": {
+                "description": "A list of members removed when C(state) is C(absent) or C(pure); this is empty if no members are removed.",
+                "returned": "success and C(state) is C(absent)",
+                "sample": [
+                    "DOMAIN\\TestGroup",
+                    "NT AUTHORITY\\SYSTEM"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

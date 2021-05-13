@@ -1,0 +1,487 @@
+{
+    "community.docker.docker_compose": {
+        "doc": {
+            "author": "Chris Houseknecht (@chouseknecht)",
+            "collection": "community.docker",
+            "description": [
+                "Uses Docker Compose to start, shutdown and scale services.",
+                "Works with compose versions 1 and 2.",
+                "Configuration can be read from a C(docker-compose.yml) or C(docker-compose.yaml) file or inline using the I(definition) option.",
+                "See the examples for more details.",
+                "Supports check mode.",
+                "This module was called C(docker_service) before Ansible 2.8. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/docker/plugins/modules/docker_compose.py",
+            "has_action": false,
+            "module": "docker_compose",
+            "notes": [
+                "Connect to the Docker daemon by providing parameters with each task or by defining environment variables. You can define C(DOCKER_HOST), C(DOCKER_TLS_HOSTNAME), C(DOCKER_API_VERSION), C(DOCKER_CERT_PATH), C(DOCKER_SSL_VERSION), C(DOCKER_TLS), C(DOCKER_TLS_VERIFY) and C(DOCKER_TIMEOUT). If you are using docker machine, run the script shipped with the product that sets up the environment. It will set these variables for you. See U(https://docs.docker.com/machine/reference/env/) for more details.",
+                "When connecting to Docker daemon with TLS, you might need to install additional Python packages. For the Docker SDK for Python, version 2.4 or newer, this can be done by installing C(docker[tls]) with M(ansible.builtin.pip).",
+                "Note that the Docker SDK for Python only allows to specify the path to the Docker configuration for very few functions. In general, it will use C($HOME/.docker/config.json) if the C(DOCKER_CONFIG) environment variable is not specified, and use C($DOCKER_CONFIG/config.json) otherwise.",
+                "This module uses the L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) to communicate with the Docker daemon."
+            ],
+            "options": {
+                "api_version": {
+                    "aliases": [
+                        "docker_api_version"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "The version of the Docker API running on the Docker Host.",
+                        "Defaults to the latest version of the API supported by Docker SDK for Python and the docker daemon.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_API_VERSION) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "build": {
+                    "default": false,
+                    "description": [
+                        "Use with I(state) C(present) to always build images prior to starting the application.",
+                        "Same as running C(docker-compose build) with the pull option.",
+                        "Images will only be rebuilt if Docker detects a change in the Dockerfile or build directory contents.",
+                        "Use the I(nocache) option to ignore the image cache when performing the build.",
+                        "If an existing image is replaced, services using the image will be recreated unless I(recreate) is C(never)."
+                    ],
+                    "type": "bool"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "tls_ca_cert",
+                        "cacert_path"
+                    ],
+                    "description": [
+                        "Use a CA certificate when performing server verification by providing the path to a CA certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(ca.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "tls_client_cert",
+                        "cert_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS certificate file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(cert.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "tls_client_key",
+                        "key_path"
+                    ],
+                    "description": [
+                        "Path to the client's TLS key file.",
+                        "If the value is not specified in the task and the environment variable C(DOCKER_CERT_PATH) is set, the file C(key.pem) from the directory specified in the environment variable C(DOCKER_CERT_PATH) will be used."
+                    ],
+                    "type": "path"
+                },
+                "debug": {
+                    "default": false,
+                    "description": [
+                        "Debug mode"
+                    ],
+                    "type": "bool"
+                },
+                "definition": {
+                    "description": [
+                        "Compose file describing one or more services, networks and volumes.",
+                        "Mutually exclusive with I(project_src) and I(files)."
+                    ],
+                    "type": "dict"
+                },
+                "dependencies": {
+                    "default": true,
+                    "description": [
+                        "When I(state) is C(present) specify whether or not to include linked services."
+                    ],
+                    "type": "bool"
+                },
+                "docker_host": {
+                    "aliases": [
+                        "docker_url"
+                    ],
+                    "default": "unix://var/run/docker.sock",
+                    "description": [
+                        "The URL or Unix socket path used to connect to the Docker API. To connect to a remote host, provide the TCP connection string. For example, C(tcp://192.0.2.23:2376). If TLS is used to encrypt the connection, the module will automatically replace C(tcp) in the connection URL with C(https).",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_HOST) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "str"
+                },
+                "files": {
+                    "description": [
+                        "List of Compose file names relative to I(project_src). Overrides C(docker-compose.yml) or C(docker-compose.yaml).",
+                        "Files are loaded and merged in the order given."
+                    ],
+                    "elements": "path",
+                    "type": "list"
+                },
+                "hostname_check": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to check the Docker daemon's hostname against the name provided in the client certificate."
+                    ],
+                    "type": "bool"
+                },
+                "nocache": {
+                    "default": false,
+                    "description": [
+                        "Use with the I(build) option to ignore the cache during the image build process."
+                    ],
+                    "type": "bool"
+                },
+                "project_name": {
+                    "description": [
+                        "Provide a project name. If not provided, the project name is taken from the basename of I(project_src).",
+                        "Required when I(definition) is provided."
+                    ],
+                    "type": "str"
+                },
+                "project_src": {
+                    "description": [
+                        "Path to a directory containing a C(docker-compose.yml) or C(docker-compose.yaml) file.",
+                        "Mutually exclusive with I(definition).",
+                        "Required when no I(definition) is provided."
+                    ],
+                    "type": "path"
+                },
+                "pull": {
+                    "default": false,
+                    "description": [
+                        "Use with I(state) C(present) to always pull images prior to starting the application.",
+                        "Same as running C(docker-compose pull).",
+                        "When a new image is pulled, services using the image will be recreated unless I(recreate) is C(never)."
+                    ],
+                    "type": "bool"
+                },
+                "recreate": {
+                    "choices": [
+                        "always",
+                        "never",
+                        "smart"
+                    ],
+                    "default": "smart",
+                    "description": [
+                        "By default containers will be recreated when their configuration differs from the service definition.",
+                        "Setting to C(never) ignores configuration differences and leaves existing containers unchanged.",
+                        "Setting to C(always) forces recreation of all existing containers."
+                    ],
+                    "type": "str"
+                },
+                "remove_images": {
+                    "choices": [
+                        "all",
+                        "local"
+                    ],
+                    "description": [
+                        "Use with I(state) C(absent) to remove all images or only local images."
+                    ],
+                    "type": "str"
+                },
+                "remove_orphans": {
+                    "default": false,
+                    "description": [
+                        "Remove containers for services not defined in the Compose file."
+                    ],
+                    "type": "bool"
+                },
+                "remove_volumes": {
+                    "default": false,
+                    "description": [
+                        "Use with I(state) C(absent) to remove data volumes."
+                    ],
+                    "type": "bool"
+                },
+                "restarted": {
+                    "default": false,
+                    "description": [
+                        "Use with I(state) C(present) to restart all containers defined in the Compose file.",
+                        "If I(services) is defined, only the containers listed there will be restarted."
+                    ],
+                    "type": "bool"
+                },
+                "scale": {
+                    "description": [
+                        "When I(state) is C(present) scale services. Provide a dictionary of key/value pairs where the key is the name of the service and the value is an integer count for the number of containers."
+                    ],
+                    "type": "dict"
+                },
+                "services": {
+                    "description": [
+                        "When I(state) is C(present) run C(docker-compose up) resp. C(docker-compose stop) (with I(stopped)) resp. C(docker-compose restart) (with I(restarted)) on a subset of services.",
+                        "If empty, which is the default, the operation will be performed on all services defined in the Compose file (or inline I(definition))."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ssl_version": {
+                    "description": [
+                        "Provide a valid SSL version number. Default value determined by ssl.py module.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_SSL_VERSION) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Desired state of the project.",
+                        "Specifying C(present) is the same as running C(docker-compose up) resp. C(docker-compose stop) (with I(stopped)) resp. C(docker-compose restart) (with I(restarted)).",
+                        "Specifying C(absent) is the same as running C(docker-compose down)."
+                    ],
+                    "type": "str"
+                },
+                "stopped": {
+                    "default": false,
+                    "description": [
+                        "Use with I(state) C(present) to stop all containers defined in the Compose file.",
+                        "If I(services) is defined, only the containers listed there will be stopped."
+                    ],
+                    "type": "bool"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "Timeout in seconds for container shutdown when attached or when containers are already running."
+                    ],
+                    "type": "int"
+                },
+                "tls": {
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS without verifying the authenticity of the Docker host server. Note that if I(validate_certs) is set to C(yes) as well, it will take precedence.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                },
+                "tls_hostname": {
+                    "description": [
+                        "When verifying the authenticity of the Docker Host server, provide the expected name of the server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_HOSTNAME) will be used instead. If the environment variable is not set, the default value will be used.",
+                        "The current default value is C(localhost). This default is deprecated and will change in community.docker 2.0.0 to be a value computed from I(docker_host). Explicitly specify C(localhost) to make sure this value will still be used, and to disable the deprecation message which will be shown otherwise."
+                    ],
+                    "type": "str"
+                },
+                "use_ssh_client": {
+                    "default": false,
+                    "description": [
+                        "Currently ignored for this module, but might suddenly be supported later on."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.docker"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tls_verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Secure the connection to the API by using TLS and verifying the authenticity of the Docker host server.",
+                        "If the value is not specified in the task, the value of environment variable C(DOCKER_TLS_VERIFY) will be used instead. If the environment variable is not set, the default value will be used."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "Docker API >= 1.20",
+                "Docker SDK for Python: Please note that the L(docker-py,https://pypi.org/project/docker-py/) Python module has been superseded by L(docker,https://pypi.org/project/docker/) (see L(here,https://github.com/docker/docker-py/issues/1310) for details). For Python 2.6, C(docker-py) must be used. Otherwise, it is recommended to install the C(docker) Python module. Note that both modules should *not* be installed at the same time. Also note that when both modules are installed and one of them is uninstalled, the other might no longer function and a reinstall of it is required.",
+                "L(Docker SDK for Python,https://docker-py.readthedocs.io/en/stable/) >= 1.8.0 (use L(docker-py,https://pypi.org/project/docker-py/) for Python 2.6)",
+                "PyYAML >= 3.11",
+                "docker-compose >= 1.7.0"
+            ],
+            "short_description": "Manage multi-container Docker applications with Docker Compose."
+        },
+        "examples": "\n# Examples use the django example at https://docs.docker.com/compose/django. Follow it to create the\n# flask directory\n\n- name: Run using a project directory\n  hosts: localhost\n  gather_facts: no\n  tasks:\n    - name: Tear down existing services\n      community.docker.docker_compose:\n        project_src: flask\n        state: absent\n\n    - name: Create and start services\n      community.docker.docker_compose:\n        project_src: flask\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - name: Run `docker-compose up` again\n      community.docker.docker_compose:\n        project_src: flask\n        build: no\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - ansible.builtin.assert:\n        that: \"not output.changed \"\n\n    - name: Stop all services\n      community.docker.docker_compose:\n        project_src: flask\n        build: no\n        stopped: yes\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - ansible.builtin.assert:\n        that:\n          - \"not web.flask_web_1.state.running\"\n          - \"not db.flask_db_1.state.running\"\n\n    - name: Restart services\n      community.docker.docker_compose:\n        project_src: flask\n        build: no\n        restarted: yes\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - ansible.builtin.assert:\n        that:\n          - \"web.flask_web_1.state.running\"\n          - \"db.flask_db_1.state.running\"\n\n- name: Scale the web service to 2\n  hosts: localhost\n  gather_facts: no\n  tasks:\n    - community.docker.docker_compose:\n        project_src: flask\n        scale:\n          web: 2\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n- name: Run with inline v2 compose\n  hosts: localhost\n  gather_facts: no\n  tasks:\n    - community.docker.docker_compose:\n        project_src: flask\n        state: absent\n\n    - community.docker.docker_compose:\n        project_name: flask\n        definition:\n          version: '2'\n          services:\n            db:\n              image: postgres\n            web:\n              build: \"{{ playbook_dir }}/flask\"\n              command: \"python manage.py runserver 0.0.0.0:8000\"\n              volumes:\n                - \"{{ playbook_dir }}/flask:/code\"\n              ports:\n                - \"8000:8000\"\n              depends_on:\n                - db\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - ansible.builtin.assert:\n        that:\n          - \"web.flask_web_1.state.running\"\n          - \"db.flask_db_1.state.running\"\n\n- name: Run with inline v1 compose\n  hosts: localhost\n  gather_facts: no\n  tasks:\n    - community.docker.docker_compose:\n        project_src: flask\n        state: absent\n\n    - community.docker.docker_compose:\n        project_name: flask\n        definition:\n            db:\n              image: postgres\n            web:\n              build: \"{{ playbook_dir }}/flask\"\n              command: \"python manage.py runserver 0.0.0.0:8000\"\n              volumes:\n                - \"{{ playbook_dir }}/flask:/code\"\n              ports:\n                - \"8000:8000\"\n              links:\n                - db\n      register: output\n\n    - ansible.builtin.debug:\n        var: output\n\n    - ansible.builtin.assert:\n        that:\n          - \"web.flask_web_1.state.running\"\n          - \"db.flask_db_1.state.running\"\n",
+        "metadata": null,
+        "return": {
+            "actions": {
+                "contains": {
+                    "service_name": {
+                        "contains": {
+                            "action": {
+                                "contains": {
+                                    "id": {
+                                        "description": "the container's long ID",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "the container's name",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "short_id": {
+                                        "description": "the container's short ID",
+                                        "returned": "always",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "A descriptive name of the action to be performed on the service's containers.",
+                                "elements": "str",
+                                "returned": "always",
+                                "type": "list"
+                            },
+                            "built_image": {
+                                "contains": {
+                                    "id": {
+                                        "description": "image hash",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "name of the image",
+                                        "returned": "always",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Provides image details when a new image is built for the service.",
+                                "returned": "on image build",
+                                "type": "complex"
+                            },
+                            "pulled_image": {
+                                "contains": {
+                                    "id": {
+                                        "description": "image hash",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "name of the image",
+                                        "returned": "always",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Provides image details when a new image is pulled for the service.",
+                                "returned": "on image pull",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Name of the service.",
+                        "returned": "always",
+                        "type": "complex"
+                    }
+                },
+                "description": "Provides the actions to be taken on each service as determined by compose.",
+                "returned": "when in check mode or I(debug) is C(yes)",
+                "type": "complex"
+            },
+            "services": {
+                "contains": {
+                    "container_name": {
+                        "contains": {
+                            "cmd": {
+                                "description": "One or more commands to be executed in the container.",
+                                "elements": "str",
+                                "example": [
+                                    "postgres"
+                                ],
+                                "returned": "success",
+                                "type": "list"
+                            },
+                            "image": {
+                                "description": "Name of the image from which the container was built.",
+                                "example": "postgres",
+                                "returned": "success",
+                                "type": "str"
+                            },
+                            "labels": {
+                                "description": "Meta data assigned to the container.",
+                                "example": {
+                                    "...": null
+                                },
+                                "returned": "success",
+                                "type": "dict"
+                            },
+                            "networks": {
+                                "contains": {
+                                    "IPAddress": {
+                                        "description": "The IP address assigned to the container.",
+                                        "example": "172.17.0.2",
+                                        "returned": "success",
+                                        "type": "str"
+                                    },
+                                    "IPPrefixLen": {
+                                        "description": "Number of bits used by the subnet.",
+                                        "example": 16,
+                                        "returned": "success",
+                                        "type": "int"
+                                    },
+                                    "aliases": {
+                                        "description": "Aliases assigned to the container by the network.",
+                                        "elements": "str",
+                                        "example": [
+                                            "db"
+                                        ],
+                                        "returned": "success",
+                                        "type": "list"
+                                    },
+                                    "globalIPv6": {
+                                        "description": "IPv6 address assigned to the container.",
+                                        "example": "",
+                                        "returned": "success",
+                                        "type": "str"
+                                    },
+                                    "globalIPv6PrefixLen": {
+                                        "description": "IPv6 subnet length.",
+                                        "example": 0,
+                                        "returned": "success",
+                                        "type": "int"
+                                    },
+                                    "links": {
+                                        "description": "List of container names to which this container is linked.",
+                                        "elements": "str",
+                                        "example": null,
+                                        "returned": "success",
+                                        "type": "list"
+                                    },
+                                    "macAddress": {
+                                        "description": "Mac Address assigned to the virtual NIC.",
+                                        "example": "02:42:ac:11:00:02",
+                                        "returned": "success",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Contains a dictionary for each network to which the container is a member.",
+                                "elements": "dict",
+                                "returned": "success",
+                                "type": "list"
+                            },
+                            "state": {
+                                "contains": {
+                                    "running": {
+                                        "description": "Whether or not the container is up with a running process.",
+                                        "example": true,
+                                        "returned": "success",
+                                        "type": "bool"
+                                    },
+                                    "status": {
+                                        "description": "Description of the running state.",
+                                        "example": "running",
+                                        "returned": "success",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Information regarding the current disposition of the container.",
+                                "returned": "success",
+                                "type": "dict"
+                            }
+                        },
+                        "description": "Name of the container. Format is C(project_service_#).",
+                        "returned": "success",
+                        "type": "complex"
+                    }
+                },
+                "description": [
+                    "A dictionary mapping the service's name to a dictionary of containers."
+                ],
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

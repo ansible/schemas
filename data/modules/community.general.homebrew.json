@@ -1,0 +1,142 @@
+{
+    "community.general.homebrew": {
+        "doc": {
+            "author": [
+                "Indrajit Raychaudhuri (@indrajitr)",
+                "Daniel Jaouen (@danieljaouen)",
+                "Andrew Dunham (@andrew-d)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manages Homebrew packages"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/homebrew.py",
+            "has_action": false,
+            "module": "homebrew",
+            "notes": [
+                "When used with a `loop:` each package will be processed individually, it is much more efficient to pass the list directly to the `name` option."
+            ],
+            "options": {
+                "install_options": {
+                    "aliases": [
+                        "options"
+                    ],
+                    "description": [
+                        "options flags to install a package."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "aliases": [
+                        "formula",
+                        "package",
+                        "pkg"
+                    ],
+                    "description": [
+                        "A list of names of packages to install/remove."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "path": {
+                    "default": "/usr/local/bin:/opt/homebrew/bin",
+                    "description": [
+                        "A ':' separated list of paths to search for 'brew' executable. Since a package (I(formula) in homebrew parlance) location is prefixed relative to the actual path of I(brew) command, providing an alternative I(brew) path enables managing different set of packages in an alternative location in the system."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "head",
+                        "installed",
+                        "latest",
+                        "linked",
+                        "present",
+                        "removed",
+                        "uninstalled",
+                        "unlinked",
+                        "upgraded"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "state of the package."
+                    ],
+                    "type": "str"
+                },
+                "update_homebrew": {
+                    "aliases": [
+                        "update-brew"
+                    ],
+                    "default": false,
+                    "description": [
+                        "update homebrew itself first.",
+                        "Alias C(update-brew) has been deprecated and will be removed in community.general 5.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "upgrade_all": {
+                    "aliases": [
+                        "upgrade"
+                    ],
+                    "default": false,
+                    "description": [
+                        "upgrade all homebrew packages."
+                    ],
+                    "type": "bool"
+                },
+                "upgrade_options": {
+                    "description": [
+                        "Option flags to upgrade."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "homebrew must already be installed on the target system"
+            ],
+            "short_description": "Package manager for Homebrew"
+        },
+        "examples": "\n# Install formula foo with 'brew' in default path\n- community.general.homebrew:\n    name: foo\n    state: present\n\n# Install formula foo with 'brew' in alternate path C(/my/other/location/bin)\n- community.general.homebrew:\n    name: foo\n    path: /my/other/location/bin\n    state: present\n\n# Update homebrew first and install formula foo with 'brew' in default path\n- community.general.homebrew:\n    name: foo\n    state: present\n    update_homebrew: yes\n\n# Update homebrew first and upgrade formula foo to latest available with 'brew' in default path\n- community.general.homebrew:\n    name: foo\n    state: latest\n    update_homebrew: yes\n\n# Update homebrew and upgrade all packages\n- community.general.homebrew:\n    update_homebrew: yes\n    upgrade_all: yes\n\n# Miscellaneous other examples\n- community.general.homebrew:\n    name: foo\n    state: head\n\n- community.general.homebrew:\n    name: foo\n    state: linked\n\n- community.general.homebrew:\n    name: foo\n    state: absent\n\n- community.general.homebrew:\n    name: foo,bar\n    state: absent\n\n- community.general.homebrew:\n    name: foo\n    state: present\n    install_options: with-baz,enable-debug\n\n- name: Install formula foo with 'brew' from cask\n  community.general.homebrew:\n    name: homebrew/cask/foo\n    state: present\n\n- name: Use ignored-pinned option while upgrading all\n  community.general.homebrew:\n    upgrade_all: yes\n    upgrade_options: ignored-pinned\n",
+        "metadata": null,
+        "return": {
+            "changed_pkgs": {
+                "description": [
+                    "List of package names which are changed after module run"
+                ],
+                "returned": "success",
+                "sample": [
+                    "git",
+                    "git-cola"
+                ],
+                "type": "list",
+                "version_added": "0.2.0",
+                "version_added_collection": "community.general"
+            },
+            "msg": {
+                "description": "if the cache was updated or not",
+                "returned": "always",
+                "sample": "Changed: 0, Unchanged: 2",
+                "type": "str"
+            },
+            "unchanged_pkgs": {
+                "description": [
+                    "List of package names which are unchanged after module run"
+                ],
+                "returned": "success",
+                "sample": [
+                    "awscli",
+                    "ag"
+                ],
+                "type": "list",
+                "version_added": "0.2.0",
+                "version_added_collection": "community.general"
+            }
+        }
+    }
+}

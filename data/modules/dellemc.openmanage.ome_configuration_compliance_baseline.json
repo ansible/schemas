@@ -1,0 +1,222 @@
+{
+    "dellemc.openmanage.ome_configuration_compliance_baseline": {
+        "doc": {
+            "author": "Sajna Shetty(@Sajna-Shetty)",
+            "collection": "dellemc.openmanage",
+            "description": "This module allows to create, modify, and delete a configuration compliance baseline on OpenManage Enterprise. This module also allows to remediate devices that are non-compliant with the baseline by changing the attributes of devices to match with the associated baseline attributes.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/ome_configuration_compliance_baseline.py",
+            "has_action": false,
+            "module": "ome_configuration_compliance_baseline",
+            "notes": [
+                "This module supports C(check_mode).",
+                "Ensure that the devices have the required licenses to perform the baseline compliance operations."
+            ],
+            "options": {
+                "command": {
+                    "choices": [
+                        "create",
+                        "modify",
+                        "delete",
+                        "remediate"
+                    ],
+                    "default": "create",
+                    "description": [
+                        "C(create) creates a configuration baseline from an existing compliance template.C(create) supports C(check_mode) or idempotency checking for only I(names).",
+                        "C(modify) modifies an existing baseline.Only I(names), I(description), I(device_ids), I(device_service_tags), and I(device_group_names) can be modified",
+                        "I(WARNING) When a baseline is modified, the provided I(device_ids), I(device_group_names), and I(device_service_tags) replaces the devices previously present in the baseline.",
+                        "C(delete) deletes the list of configuration compliance baselines based on the baseline name. Invalid baseline names are ignored.",
+                        "C(remediate) remediates devices that are non-compliant with the baseline by changing the attributes of devices to match with the associated baseline attributes.",
+                        "C(remediate) is performed on all the non-compliant devices if either I(device_ids), or I(device_service_tags) is not provided."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the compliance baseline.",
+                        "This option is applicable when I(command) is C(create), or C(modify)."
+                    ],
+                    "type": "str"
+                },
+                "device_group_names": {
+                    "description": [
+                        "Name of the target device group.",
+                        "This option is applicable when I(command) is C(create), or C(modify) and is mutually exclusive with I(device_ids) and I(device_service_tag)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "device_ids": {
+                    "description": [
+                        "IDs of the target devices.",
+                        "This option is applicable when I(command) is C(create), C(modify), or C(remediate), and is mutually exclusive with I(device_service_tag) and I(device_group_names)."
+                    ],
+                    "elements": "int",
+                    "type": "list"
+                },
+                "device_service_tags": {
+                    "description": [
+                        "Service tag of the target device.",
+                        "This option is applicable when I(command) is C(create), C(modify), or C(remediate) and is mutually exclusive with I(device_ids) and I(device_group_names)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "hostname": {
+                    "description": "Target IP address or hostname.",
+                    "required": true,
+                    "type": "str"
+                },
+                "job_wait": {
+                    "default": true,
+                    "description": [
+                        "Provides the option to wait for job completion.",
+                        "This option is applicable when I(command) is C(create), C(modify), or C(remediate)."
+                    ],
+                    "type": "bool"
+                },
+                "job_wait_timeout": {
+                    "default": 10800,
+                    "description": [
+                        "The maximum wait time of I(job_wait) in seconds.The job will only be tracked for this duration.",
+                        "This option is applicable when I(job_wait) is C(True)."
+                    ],
+                    "type": "int"
+                },
+                "names": {
+                    "description": [
+                        "Name(s) of the configuration compliance baseline.",
+                        "This option is applicable when I(command) is C(create), C(modify), or C(delete).",
+                        "Provide the list of configuration compliance baselines names that are supported when I(command) is C(delete)."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "new_name": {
+                    "description": [
+                        "New name of the compliance baseline to be modified.",
+                        "This option is applicable when I(command) is C(modify)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": "Target user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": "Target HTTPS port.",
+                    "type": "int"
+                },
+                "template_id": {
+                    "description": [
+                        "ID of the deployment template to be used for creating a compliance baseline.",
+                        "This option is applicable when I(command) is C(create) and is mutually exclusive with I(template_name)."
+                    ],
+                    "type": "int"
+                },
+                "template_name": {
+                    "description": [
+                        "Name of the compliance template for creating the compliance baseline(s).",
+                        "Name of the deployment template to be used for creating a compliance baseline.",
+                        "This option is applicable when I(command) is C(create) and is mutually exclusive with I(template_id)."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": "Target username.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7.5"
+            ],
+            "short_description": "Create, modify, and delete a configuration compliance baseline and remediate non-compliant devices on OpenManage Enterprise",
+            "version_added": "3.2.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Create a configuration compliance baseline using device IDs\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    names: \"baseline1\"\n    template_name: \"template1\"\n    description: \"description of baseline\"\n    device_ids:\n      - 1111\n      - 2222\n\n- name: Create a configuration compliance baseline using device service tags\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    names: \"baseline1\"\n    template_id: 1234\n    description: \"description of baseline\"\n    device_service_tags:\n      - \"SVCTAG1\"\n      - \"SVCTAG2\"\n\n- name: Create a configuration compliance baseline using group names\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    names: \"baseline2\"\n    template_id: 2\n    job_wait_timeout: 1000\n    description: \"description of baseline\"\n    device_group_names:\n      - \"Group1\"\n      - \"Group2\"\n\n- name: Delete the configuration compliance baselines\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: delete\n    names:\n      - baseline1\n      - baseline2\n\n- name: Modify a configuration compliance baseline using group names\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: modify\n    names: \"baseline1\"\n    new_name: \"baseline_update\"\n    template_name: \"template2\"\n    description: \"new description of baseline\"\n    job_wait_timeout: 1000\n    device_group_names:\n      - Group1\n\n- name: Remediate specific non-compliant devices to a configuration compliance baseline using device IDs\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"remediate\"\n    names: \"baseline1\"\n    device_ids:\n      - 1111\n\n- name: Remediate specific non-compliant devices to a configuration compliance baseline using device service tags\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"remediate\"\n    names: \"baseline1\"\n    device_service_tags:\n      - \"SVCTAG1\"\n      - \"SVCTAG2\"\n\n- name: Remediate all the non-compliant devices to a configuration compliance baseline\n  dellemc.openmanage.ome_configuration_compliance_baseline:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"remediate\"\n    names: \"baseline1\"\n",
+        "metadata": null,
+        "return": {
+            "compliance_status": {
+                "description": "Status of compliance baseline operation.",
+                "returned": "when I(command) is C(create) or C(modify)",
+                "sample": {
+                    "BaselineTargets": [
+                        {
+                            "Id": 1111,
+                            "Type": {
+                                "Id": 1000,
+                                "Name": "DEVICE"
+                            }
+                        }
+                    ],
+                    "ConfigComplianceSummary": {
+                        "ComplianceStatus": "OK",
+                        "NumberOfCritical": 0,
+                        "NumberOfIncomplete": 0,
+                        "NumberOfNormal": 0,
+                        "NumberOfWarning": 0
+                    },
+                    "Description": null,
+                    "Id": 13,
+                    "LastRun": "2021-02-27 13:15:13.751",
+                    "Name": "baseline1",
+                    "PercentageComplete": "100",
+                    "TaskId": 26584,
+                    "TaskStatus": 2070,
+                    "TemplateId": 102,
+                    "TemplateName": "one",
+                    "TemplateType": 2
+                },
+                "type": "dict"
+            },
+            "error_info": {
+                "description": "Details of the HTTP Error.",
+                "returned": "on HTTP error",
+                "sample": {
+                    "error": {
+                        "@Message.ExtendedInfo": [
+                            {
+                                "Message": "Unable to process the request because an error occurred.",
+                                "MessageArgs": [],
+                                "MessageId": "GEN1234",
+                                "RelatedProperties": [],
+                                "Resolution": "Retry the operation. If the issue persists, contact your system administrator.",
+                                "Severity": "Critical"
+                            }
+                        ],
+                        "code": "Base.1.0.GeneralError",
+                        "message": "A general error has occurred. See ExtendedInfo for more information."
+                    }
+                },
+                "type": "dict"
+            },
+            "incompatible_devices": {
+                "description": "Details of the devices which cannot be used to perform baseline compliance operations",
+                "returned": "when I(device_service_tags) or I(device_ids) contains incompatible devices for C(create) or C(modify)",
+                "sample": [
+                    1234,
+                    5678
+                ],
+                "type": "list"
+            },
+            "job_id": {
+                "description": [
+                    "Task ID created when I(command) is C(remediate)."
+                ],
+                "returned": "when I(command) is C(remediate)",
+                "sample": 14123,
+                "type": "int"
+            },
+            "msg": {
+                "description": "Overall status of the configuration compliance baseline operation.",
+                "returned": "always",
+                "sample": "Successfully created the configuration compliance baseline.",
+                "type": "str"
+            }
+        }
+    }
+}

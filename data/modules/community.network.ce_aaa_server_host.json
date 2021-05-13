@@ -1,0 +1,220 @@
+{
+    "community.network.ce_aaa_server_host": {
+        "doc": {
+            "author": [
+                "wangdezhuang (@QijunPan)"
+            ],
+            "collection": "community.network",
+            "description": [
+                "Manages AAA server host configuration on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_aaa_server_host.py",
+            "has_action": false,
+            "module": "ce_aaa_server_host",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "hwtacacs_is_public_net": {
+                    "default": "no",
+                    "description": [
+                        "Set the public-net."
+                    ],
+                    "type": "bool"
+                },
+                "hwtacacs_is_secondary_server": {
+                    "default": "no",
+                    "description": [
+                        "Whether the server is secondary."
+                    ],
+                    "type": "bool"
+                },
+                "hwtacacs_server_host_name": {
+                    "description": [
+                        "Hwtacacs server host name."
+                    ]
+                },
+                "hwtacacs_server_ip": {
+                    "description": [
+                        "Server IPv4 address. Must be a valid unicast IP address. The value is a string of 0 to 255 characters, in dotted decimal notation."
+                    ]
+                },
+                "hwtacacs_server_ipv6": {
+                    "description": [
+                        "Server IPv6 address. Must be a valid unicast IP address. The total length is 128 bits."
+                    ]
+                },
+                "hwtacacs_server_type": {
+                    "choices": [
+                        "Authentication",
+                        "Authorization",
+                        "Accounting",
+                        "Common"
+                    ],
+                    "description": [
+                        "Hwtacacs server type."
+                    ]
+                },
+                "hwtacacs_template": {
+                    "description": [
+                        "Name of a HWTACACS template. The value is a string of 1 to 32 case-insensitive characters."
+                    ]
+                },
+                "hwtacacs_vpn_name": {
+                    "description": [
+                        "VPN instance name."
+                    ]
+                },
+                "local_ftp_dir": {
+                    "description": [
+                        "FTP user directory. The value is a string of 1 to 255 characters."
+                    ]
+                },
+                "local_password": {
+                    "description": [
+                        "Login password of a user. The password can contain letters, numbers, and special characters. The value is a string of 1 to 255 characters."
+                    ]
+                },
+                "local_service_type": {
+                    "description": [
+                        "The type of local user login through, such as ftp ssh snmp telnet."
+                    ]
+                },
+                "local_user_group": {
+                    "description": [
+                        "Name of the user group where the user belongs. The user inherits all the rights of the user group. The value is a string of 1 to 32 characters."
+                    ]
+                },
+                "local_user_level": {
+                    "description": [
+                        "Login level of a local user. The value is an integer ranging from 0 to 15."
+                    ]
+                },
+                "local_user_name": {
+                    "description": [
+                        "Name of a local user. The value is a string of 1 to 253 characters."
+                    ]
+                },
+                "radius_group_name": {
+                    "description": [
+                        "RADIUS server group's name. The value is a string of 1 to 32 case-insensitive characters."
+                    ]
+                },
+                "radius_server_ip": {
+                    "description": [
+                        "IPv4 address of configured server. The value is a string of 0 to 255 characters, in dotted decimal notation."
+                    ]
+                },
+                "radius_server_ipv6": {
+                    "description": [
+                        "IPv6 address of configured server. The total length is 128 bits."
+                    ]
+                },
+                "radius_server_mode": {
+                    "choices": [
+                        "Secondary-server",
+                        "Primary-server"
+                    ],
+                    "description": [
+                        "Configured primary or secondary server for a particular server."
+                    ]
+                },
+                "radius_server_name": {
+                    "description": [
+                        "Hostname of configured server. The value is a string of 0 to 255 case-sensitive characters."
+                    ]
+                },
+                "radius_server_port": {
+                    "description": [
+                        "Configured server port for a particular server. The value is an integer ranging from 1 to 65535."
+                    ]
+                },
+                "radius_server_type": {
+                    "choices": [
+                        "Authentication",
+                        "Accounting"
+                    ],
+                    "description": [
+                        "Type of Radius Server."
+                    ]
+                },
+                "radius_vpn_name": {
+                    "description": [
+                        "Set VPN instance. The value is a string of 1 to 31 case-sensitive characters."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify desired state of the resource."
+                    ]
+                }
+            },
+            "short_description": "Manages AAA server host configuration on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n\n- name: AAA server host test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: \"Config local user when use local scheme\"\n    community.network.ce_aaa_server_host:\n      state: present\n      local_user_name: user1\n      local_password: 123456\n      provider: \"{{ cli }}\"\n\n  - name: \"Undo local user when use local scheme\"\n    community.network.ce_aaa_server_host:\n      state: absent\n      local_user_name: user1\n      local_password: 123456\n      provider: \"{{ cli }}\"\n\n  - name: \"Config radius server ip\"\n    community.network.ce_aaa_server_host:\n      state: present\n      radius_group_name: group1\n      radius_server_type: Authentication\n      radius_server_ip: 10.1.10.1\n      radius_server_port: 2000\n      radius_server_mode: Primary-server\n      radius_vpn_name: _public_\n      provider: \"{{ cli }}\"\n\n  - name: \"Undo radius server ip\"\n    community.network.ce_aaa_server_host:\n      state: absent\n      radius_group_name: group1\n      radius_server_type: Authentication\n      radius_server_ip: 10.1.10.1\n      radius_server_port: 2000\n      radius_server_mode: Primary-server\n      radius_vpn_name: _public_\n      provider: \"{{ cli }}\"\n\n  - name: \"Config hwtacacs server ip\"\n    community.network.ce_aaa_server_host:\n      state: present\n      hwtacacs_template: template\n      hwtacacs_server_ip: 10.10.10.10\n      hwtacacs_server_type: Authorization\n      hwtacacs_vpn_name: _public_\n      provider: \"{{ cli }}\"\n\n  - name: \"Undo hwtacacs server ip\"\n    community.network.ce_aaa_server_host:\n      state: absent\n      hwtacacs_template: template\n      hwtacacs_server_ip: 10.10.10.10\n      hwtacacs_server_type: Authorization\n      hwtacacs_vpn_name: _public_\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of aaa params after module execution",
+                "returned": "always",
+                "sample": {
+                    "radius server ipv4": [
+                        [
+                            "10.1.10.1",
+                            "Authentication",
+                            "2000",
+                            "Primary-server",
+                            "_public_"
+                        ]
+                    ]
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing aaa server host",
+                "returned": "always",
+                "sample": {
+                    "radius server ipv4": []
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "hwtacacs_is_public_net": "false",
+                    "hwtacacs_is_secondary_server": "false",
+                    "hwtacacs_server_ip": "10.135.182.157",
+                    "hwtacacs_server_type": "Authorization",
+                    "hwtacacs_template": "wdz",
+                    "hwtacacs_vpn_name": "_public_",
+                    "local_password": "******",
+                    "state": "present"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command sent to the device",
+                "returned": "always",
+                "sample": [
+                    "hwtacacs server template test",
+                    "hwtacacs server authorization 10.135.182.157 vpn-instance test_vpn public-net"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

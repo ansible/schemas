@@ -1,0 +1,185 @@
+{
+    "hetzner.hcloud.hcloud_volume": {
+        "doc": {
+            "author": [
+                "Christopher Schmitt (@cschmitt-hcloud)"
+            ],
+            "collection": "hetzner.hcloud",
+            "description": [
+                "Create, update and attach/detach block Volume on the Hetzner Cloud."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/hetzner/hcloud/plugins/modules/hcloud_volume.py",
+            "has_action": false,
+            "module": "hcloud_volume",
+            "options": {
+                "api_token": {
+                    "description": [
+                        "This is the API Token for the Hetzner Cloud."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "automount": {
+                    "default": false,
+                    "description": [
+                        "Automatically mount the Volume."
+                    ],
+                    "type": "bool"
+                },
+                "delete_protection": {
+                    "description": [
+                        "Protect the Volume for deletion."
+                    ],
+                    "type": "bool"
+                },
+                "endpoint": {
+                    "default": "https://api.hetzner.cloud/v1",
+                    "description": [
+                        "This is the API Endpoint for the Hetzner Cloud."
+                    ],
+                    "type": "str"
+                },
+                "format": {
+                    "choices": [
+                        "xfs",
+                        "ext4"
+                    ],
+                    "description": [
+                        "Automatically Format the volume on creation",
+                        "Can only be used in case the Volume does not exists."
+                    ],
+                    "type": "str"
+                },
+                "id": {
+                    "description": [
+                        "The ID of the Hetzner Cloud Block Volume to manage.",
+                        "Only required if no volume I(name) is given"
+                    ],
+                    "type": "int"
+                },
+                "labels": {
+                    "description": [
+                        "User-defined key-value pairs."
+                    ],
+                    "type": "dict"
+                },
+                "location": {
+                    "description": [
+                        "Location of the Hetzner Cloud Volume.",
+                        "Required if no I(server) is given and Volume does not exists."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The Name of the Hetzner Cloud Block Volume to manage.",
+                        "Only required if no volume I(id) is given or a volume does not exists."
+                    ],
+                    "type": "str"
+                },
+                "server": {
+                    "description": [
+                        "Server Name the Volume should be assigned to.",
+                        "Required if no I(location) is given and Volume does not exists."
+                    ],
+                    "type": "str"
+                },
+                "size": {
+                    "description": [
+                        "The size of the Block Volume in GB.",
+                        "Required if volume does not yet exists."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the Volume."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "hcloud-python >= 1.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "Complete reference for the Hetzner Cloud API.",
+                    "link": "https://docs.hetzner.cloud/",
+                    "name": "Documentation for Hetzner Cloud API"
+                }
+            ],
+            "short_description": "Create and manage block Volume on the Hetzner Cloud."
+        },
+        "examples": "\n- name: Create a Volume\n  hcloud_volume:\n    name: my-volume\n    location: fsn1\n    size: 100\n    state: present\n- name: Create a Volume and format it with ext4\n  hcloud_volume:\n    name: my-volume\n    location: fsn\n    format: ext4\n    size: 100\n    state: present\n- name: Mount a existing Volume and automount\n  hcloud_volume:\n    name: my-volume\n    server: my-server\n    automount: yes\n    state: present\n- name: Mount a existing Volume and automount\n  hcloud_volume:\n    name: my-volume\n    server: my-server\n    automount: yes\n    state: present\n- name: Ensure the Volume is absent (remove if needed)\n  hcloud_volume:\n    name: my-volume\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "hcloud_volume": {
+                "contains": {
+                    "delete_protection": {
+                        "description": "True if Volume is protected for deletion",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool",
+                        "version_added": "0.1.0",
+                        "version_added_collection": "hetzner.hcloud"
+                    },
+                    "id": {
+                        "description": "ID of the Volume",
+                        "returned": "Always",
+                        "sample": 12345,
+                        "type": "int"
+                    },
+                    "labels": {
+                        "description": "User-defined labels (key-value pairs)",
+                        "returned": "Always",
+                        "sample": {
+                            "key": "value",
+                            "mylabel": 123
+                        },
+                        "type": "dict"
+                    },
+                    "linux_device": {
+                        "description": "Path to the device that contains the Volume.",
+                        "returned": "always",
+                        "sample": "/dev/disk/by-id/scsi-0HC_Volume_12345",
+                        "type": "str",
+                        "version_added": "0.1.0",
+                        "version_added_collection": "hetzner.hcloud"
+                    },
+                    "location": {
+                        "description": "Location name where the Volume is located at",
+                        "returned": "Always",
+                        "sample": "fsn1",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "Name of the Volume",
+                        "returned": "Always",
+                        "sample": "my-volume",
+                        "type": "str"
+                    },
+                    "server": {
+                        "description": "Server name where the Volume is attached to",
+                        "returned": "Always",
+                        "sample": "my-server",
+                        "type": "str"
+                    },
+                    "size": {
+                        "description": "Size in GB of the Volume",
+                        "returned": "Always",
+                        "sample": 1337,
+                        "type": "int"
+                    }
+                },
+                "description": "The block Volume",
+                "returned": "Always",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,312 @@
+{
+    "community.vmware.vmware_dvswitch": {
+        "doc": {
+            "author": [
+                "Joseph Callen (@jcpowermac)",
+                "Abhijeet Kasurde (@Akasurde)",
+                "Christian Kotte (@ckotte)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to create, remove a Distributed Switch."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_dvswitch.py",
+            "has_action": false,
+            "module": "vmware_dvswitch",
+            "notes": [
+                "Tested on vSphere 6.5 and 6.7"
+            ],
+            "options": {
+                "contact": {
+                    "description": [
+                        "Dictionary which configures administrator contact name and description for the Distributed Switch.",
+                        "Valid attributes are:",
+                        "- C(name) (str): Administrator name.",
+                        "- C(description) (str): Description or other details."
+                    ],
+                    "type": "dict"
+                },
+                "datacenter_name": {
+                    "aliases": [
+                        "datacenter"
+                    ],
+                    "description": [
+                        "The name of the datacenter that will contain the Distributed Switch.",
+                        "This parameter is optional, if C(folder) is provided.",
+                        "Mutually exclusive with C(folder) parameter."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the Distributed Switch."
+                    ],
+                    "type": "str"
+                },
+                "discovery_operation": {
+                    "choices": [
+                        "both",
+                        "advertise",
+                        "listen"
+                    ],
+                    "default": "listen",
+                    "description": [
+                        "Select the discovery operation.",
+                        "Required parameter for C(state) both C(present) and C(absent), before Ansible 2.6 version.",
+                        "Required only if C(state) is set to C(present), for Ansible 2.6 and onwards."
+                    ],
+                    "type": "str"
+                },
+                "discovery_proto": {
+                    "aliases": [
+                        "discovery_protocol"
+                    ],
+                    "choices": [
+                        "cdp",
+                        "lldp",
+                        "disabled"
+                    ],
+                    "default": "cdp",
+                    "description": [
+                        "Link discovery protocol between Cisco and Link Layer discovery.",
+                        "Required parameter for C(state) both C(present) and C(absent), before Ansible 2.6 version.",
+                        "Required only if C(state) is set to C(present), for Ansible 2.6 and onwards.",
+                        "C(cdp): Use Cisco Discovery Protocol (CDP).",
+                        "C(lldp): Use Link Layer Discovery Protocol (LLDP).",
+                        "C(disabled): Do not use a discovery protocol."
+                    ],
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Destination folder, absolute path to place dvswitch in.",
+                        "The folder should include the datacenter.",
+                        "This parameter is case sensitive.",
+                        "This parameter is optional, if C(datacenter) is provided.",
+                        "Examples:",
+                        "   folder: /datacenter1/network",
+                        "   folder: datacenter1/network",
+                        "   folder: /datacenter1/network/folder1",
+                        "   folder: datacenter1/network/folder1",
+                        "   folder: /folder1/datacenter1/network",
+                        "   folder: folder1/datacenter1/network",
+                        "   folder: /folder1/datacenter1/network/folder2"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "health_check": {
+                    "default": {
+                        "teaming_failover": false,
+                        "teaming_failover_interval": 0,
+                        "vlan_mtu": false,
+                        "vlan_mtu_interval": 0
+                    },
+                    "description": [
+                        "Dictionary which configures Health Check for the Distributed Switch.",
+                        "Valid attributes are:",
+                        "- C(vlan_mtu) (bool): VLAN and MTU health check. (default: False)",
+                        "- C(teaming_failover) (bool): Teaming and failover health check. (default: False)",
+                        "- C(vlan_mtu_interval) (int): VLAN and MTU health check interval (minutes). (default: 0)",
+                        "- The default for C(vlan_mtu_interval) is 1 in the vSphere Client if the VLAN and MTU health check is enabled.",
+                        "- C(teaming_failover_interval) (int): Teaming and failover health check interval (minutes). (default: 0)",
+                        "- The default for C(teaming_failover_interval) is 1 in the vSphere Client if the Teaming and failover health check is enabled."
+                    ],
+                    "type": "dict"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "mtu": {
+                    "default": 1500,
+                    "description": [
+                        "The switch maximum transmission unit.",
+                        "Required parameter for C(state) both C(present) and C(absent), before Ansible 2.6 version.",
+                        "Required only if C(state) is set to C(present), for Ansible 2.6 and onwards.",
+                        "Accepts value between 1280 to 9000 (both inclusive)."
+                    ],
+                    "type": "int"
+                },
+                "multicast_filtering_mode": {
+                    "choices": [
+                        "basic",
+                        "snooping"
+                    ],
+                    "default": "basic",
+                    "description": [
+                        "The multicast filtering mode.",
+                        "C(basic) mode: multicast traffic for virtual machines is forwarded according to the destination MAC address of the multicast group.",
+                        "C(snooping) mode: the Distributed Switch provides IGMP and MLD snooping according to RFC 4541."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If set to C(present) and the Distributed Switch doesn't exists then the Distributed Switch will be created.",
+                        "If set to C(absent) and the Distributed Switch exists then the Distributed Switch will be deleted."
+                    ],
+                    "type": "str"
+                },
+                "switch_name": {
+                    "aliases": [
+                        "switch",
+                        "dvswitch"
+                    ],
+                    "description": [
+                        "The name of the distribute vSwitch to create or remove."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "switch_version": {
+                    "aliases": [
+                        "version"
+                    ],
+                    "choices": [
+                        "5.0.0",
+                        "5.1.0",
+                        "5.5.0",
+                        "6.0.0",
+                        "6.5.0",
+                        "6.6.0"
+                    ],
+                    "description": [
+                        "The version of the Distributed Switch to create.",
+                        "Can be 6.0.0, 5.5.0, 5.1.0, 5.0.0 with a vCenter running vSphere 6.0 and 6.5.",
+                        "Can be 6.6.0, 6.5.0, 6.0.0 with a vCenter running vSphere 6.7.",
+                        "The version must match the version of the ESXi hosts you want to connect.",
+                        "The version of the vCenter server is used if not specified.",
+                        "Required only if C(state) is set to C(present)."
+                    ],
+                    "type": "str"
+                },
+                "uplink_prefix": {
+                    "default": "Uplink ",
+                    "description": [
+                        "The prefix used for the naming of the uplinks.",
+                        "Only valid if the Distributed Switch will be created. Not used if the Distributed Switch is already present.",
+                        "Uplinks are created as Uplink 1, Uplink 2, etc. pp. by default."
+                    ],
+                    "type": "str"
+                },
+                "uplink_quantity": {
+                    "description": [
+                        "Quantity of uplink per ESXi host added to the Distributed Switch.",
+                        "The uplink quantity can be increased or decreased, but a decrease will only be successfull if the uplink isn't used by a portgroup.",
+                        "Required parameter for C(state) both C(present) and C(absent), before Ansible 2.6 version.",
+                        "Required only if C(state) is set to C(present), for Ansible 2.6 and onwards."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Create or remove a Distributed Switch"
+        },
+        "examples": "\n- name: Create dvSwitch\n  community.vmware.vmware_dvswitch:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter }}'\n    switch: dvSwitch\n    version: 6.0.0\n    mtu: 9000\n    uplink_quantity: 2\n    discovery_protocol: lldp\n    discovery_operation: both\n    state: present\n  delegate_to: localhost\n\n- name: Create dvSwitch with all options\n  community.vmware.vmware_dvswitch:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter }}'\n    switch: dvSwitch\n    version: 6.5.0\n    mtu: 9000\n    uplink_quantity: 2\n    uplink_prefix: 'Uplink_'\n    discovery_protocol: cdp\n    discovery_operation: both\n    multicast_filtering_mode: snooping\n    health_check:\n      vlan_mtu: true\n      vlan_mtu_interval: 1\n      teaming_failover: true\n      teaming_failover_interval: 1\n    state: present\n  delegate_to: localhost\n\n- name: Delete dvSwitch\n  community.vmware.vmware_dvswitch:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter }}'\n    switch: dvSwitch\n    state: absent\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "description": "information about performed operation",
+                "returned": "always",
+                "sample": {
+                    "changed": false,
+                    "contact": null,
+                    "contact_details": null,
+                    "description": null,
+                    "discovery_operation": "both",
+                    "discovery_protocol": "cdp",
+                    "dvswitch": "test",
+                    "health_check_teaming": false,
+                    "health_check_teaming_interval": 0,
+                    "health_check_vlan": false,
+                    "health_check_vlan_interval": 0,
+                    "mtu": 9000,
+                    "multicast_filtering_mode": "basic",
+                    "result": "DVS already configured properly",
+                    "uplink_quantity": 2,
+                    "uplinks": [
+                        "Uplink_1",
+                        "Uplink_2"
+                    ],
+                    "version": "6.6.0"
+                },
+                "type": "str"
+            }
+        }
+    }
+}

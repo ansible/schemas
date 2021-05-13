@@ -1,0 +1,120 @@
+{
+    "purestorage.flashblade.purefb_policy": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flashblade",
+            "description": [
+                "Manage policies for filesystem and file replica links"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flashblade/plugins/modules/purefb_policy.py",
+            "has_action": false,
+            "module": "purefb_policy",
+            "notes": [
+                "This module requires the C(purity_fb) Python library",
+                "You must set C(PUREFB_URL) and C(PUREFB_API) environment variables if I(fb_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api_token": {
+                    "description": [
+                        "FlashBlade API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "at": {
+                    "description": [
+                        "Provide a time in 12-hour AM/PM format, eg. 11AM"
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "default": true,
+                    "description": [
+                        "State of policy"
+                    ],
+                    "type": "bool"
+                },
+                "every": {
+                    "description": [
+                        "Interval between snapshots in seconds",
+                        "Range available 300 - 31536000 (equates to 5m to 365d)"
+                    ],
+                    "type": "int"
+                },
+                "fb_url": {
+                    "description": [
+                        "FlashBlade management IP address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "filesystem": {
+                    "description": [
+                        "List of filesystems to add to a policy on creation",
+                        "To amend policy members use the I(purefb_fs) module"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "keep_for": {
+                    "description": [
+                        "How long to keep snapshots for",
+                        "Range available 300 - 31536000 (equates to 5m to 365d)",
+                        "Must not be set less than I(every)"
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of the policy"
+                    ],
+                    "type": "str"
+                },
+                "replica_link": {
+                    "description": [
+                        "List of filesystem replica links to add to a policy on creation",
+                        "To amend policy members use the I(purefb_fs_replica) module"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete policy"
+                    ],
+                    "type": "str"
+                },
+                "timezone": {
+                    "description": [
+                        "Time Zone used for the I(at) parameter",
+                        "If not provided, the module will attempt to get the current local timezone from the server"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purity_fb >= 1.9",
+                "netaddr",
+                "pytz"
+            ],
+            "short_description": "Manage FlashBlade policies",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flashblade"
+        },
+        "examples": "\n- name: Create a simple policy with no rules\n  purefb_policy:\n    name: test_policy\n    fb_url: 10.10.10.2\n    api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6\n- name: Create a policy and connect to existing filesystems and filesystem replica links\n  purefb_policy:\n    name: test_policy_with_members\n    filesystem:\n    - fs1\n    - fs2\n    replica_link:\n    - rl1\n    - rl2\n    fb_url: 10.10.10.2\n    api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6\n- name: Create a policy with rules\n  purefb_policy:\n    name: test_policy2\n    at: 11AM\n    keep_for: 86400\n    every: 86400\n    timezone: Asia/Shanghai\n    fb_url: 10.10.10.2\n    api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6\n- name: Delete a policy\n  purefb_policy:\n    name: test_policy\n    state: absent\n    fb_url: 10.10.10.2\n    api_token: T-9f276a18-50ab-446e-8a0c-666a3529a1b6\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

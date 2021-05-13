@@ -1,0 +1,448 @@
+{
+    "f5networks.f5_modules.bigip_profile_client_ssl": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages client SSL profiles on a BIG-IP device."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_profile_client_ssl.py",
+            "has_action": false,
+            "module": "bigip_profile_client_ssl",
+            "notes": [
+                "Requires BIG-IP software version >= 12",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "advertised_cert_authority": {
+                    "description": [
+                        "Specifies the CAs the system advertises to clients is being trusted by the profile."
+                    ],
+                    "type": "str"
+                },
+                "allow_expired_crl": {
+                    "description": [
+                        "Instructs the system to use the specified CRL file even if it has expired."
+                    ],
+                    "type": "bool"
+                },
+                "allow_non_ssl": {
+                    "description": [
+                        "Enables or disables acceptance of non-SSL connections.",
+                        "When creating a new profile, the setting is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "cache_size": {
+                    "description": [
+                        "Specifies the number of sessions in the SSL session cache.",
+                        "The valid value range is between 0 and 4194304 inclusive.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "int",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "cache_timeout": {
+                    "description": [
+                        "Specifies the timeout value in seconds of the SSL session cache entries.",
+                        "Acceptable values are between 0 and 86400 inclusive.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "int",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "cert_auth_depth": {
+                    "description": [
+                        "Specifies the maximum number of certificates to be traversed in a client certificate chain."
+                    ],
+                    "type": "int"
+                },
+                "cert_key_chain": {
+                    "description": [
+                        "One or more certificates and keys to associate with the SSL profile. This option is always a list. The keys in the list dictate the details of the client/key/chain combination. Note that BIG-IPs can only have one of each type of each certificate/key type. This means you can only have one RSA, one DSA, and one ECDSA per profile. If you attempt to assign two RSA, DSA, or ECDSA certificate/key combo, the device rejects it.",
+                        "This list is a complex list that specifies a number of keys."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "cert": {
+                            "description": [
+                                "Specifies a certificate name for use."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "chain": {
+                            "description": [
+                                "Contains a certificate chain relevant to the certificate and key mentioned previously.",
+                                "This key is optional."
+                            ],
+                            "type": "str"
+                        },
+                        "key": {
+                            "description": [
+                                "Contains a key name."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "passphrase": {
+                            "description": [
+                                "Contains the passphrase of the key file, if required.",
+                                "Passphrases are encrypted on the remote BIG-IP device. Therefore, there is no way to compare them when updating a client SSL profile. Due to this, if you specify a passphrase, this module will always register a C(changed) event."
+                            ],
+                            "type": "str"
+                        },
+                        "true_names": {
+                            "default": false,
+                            "description": [
+                                "When C(yes), the module will not append C(.crt) and C(.key) extensions to the given certificate and key names.",
+                                "When C(no), the module will append C(.crt) and C(.key) extensions to the given certificate and key names."
+                            ],
+                            "type": "bool",
+                            "version_added": "1.1.0",
+                            "version_added_collection": "f5networks.f5_modules"
+                        }
+                    },
+                    "type": "list"
+                },
+                "cipher_group": {
+                    "description": [
+                        "Specifies the cipher group to assign to this profile.",
+                        "When the C(ciphers) parameter is in use, the C(cipher_group) must be set to either C(none) or C('').",
+                        "When creating a new profile with C(cipher_group), if the parent profile has C(ciphers) set by default, the C(cipher) parameter must be set to C(none) or C('') during creation.",
+                        "The parameter only works on TMOS version 13.x and later."
+                    ],
+                    "type": "str",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "ciphers": {
+                    "description": [
+                        "Specifies the list of ciphers the system supports.",
+                        "When the C(cipher_group) parameter is in use, the C(ciphers) parameter needs to be set to either C(none) or C('')."
+                    ],
+                    "type": "str"
+                },
+                "client_auth_crl": {
+                    "description": [
+                        "Specifies the name of a file containing a list of revoked client certificates."
+                    ],
+                    "type": "str"
+                },
+                "client_auth_frequency": {
+                    "choices": [
+                        "once",
+                        "always"
+                    ],
+                    "description": [
+                        "Specifies the frequency of client authentication for an SSL session.",
+                        "When C(once), specifies the system authenticates the client once for an SSL session.",
+                        "When C(always), specifies the system authenticates the client once for an SSL session and also upon reuse of that session."
+                    ],
+                    "type": "str"
+                },
+                "client_certificate": {
+                    "choices": [
+                        "ignore",
+                        "require",
+                        "request"
+                    ],
+                    "description": [
+                        "Specifies the way the system handles client certificates.",
+                        "When C(ignore), specifies the system ignores certificates from client systems.",
+                        "When C(require), specifies the system requires a client to present a valid certificate.",
+                        "When C(request), specifies the system requests a valid certificate from a client but always authenticate the client."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the profile."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "options": {
+                    "choices": [
+                        "netscape-reuse-cipher-change-bug",
+                        "microsoft-big-sslv3-buffer",
+                        "msie-sslv2-rsa-padding",
+                        "ssleay-080-client-dh-bug",
+                        "tls-d5-bug",
+                        "tls-block-padding-bug",
+                        "dont-insert-empty-fragments",
+                        "no-ssl",
+                        "no-dtls",
+                        "no-session-resumption-on-renegotiation",
+                        "no-tlsv1.1",
+                        "no-tlsv1.2",
+                        "no-tlsv1.3",
+                        "single-dh-use",
+                        "ephemeral-rsa",
+                        "cipher-server-preference",
+                        "tls-rollback-bug",
+                        "no-sslv2",
+                        "no-sslv3",
+                        "no-tls",
+                        "no-tlsv1",
+                        "pkcs1-check-1",
+                        "pkcs1-check-2",
+                        "netscape-ca-dn-bug",
+                        "netscape-demo-cipher-change-bug",
+                        "none"
+                    ],
+                    "description": [
+                        "Options the system uses for SSL processing in the form of a list. When creating a new profile, the list is provided by the parent profile.",
+                        "When C('') or C(none), all options for SSL processing are disabled."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "parent": {
+                    "description": [
+                        "The parent template of this monitor template. Once this value has been set, it cannot be changed. By default, this value is the C(clientssl) parent on the C(Common) partition."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "renegotiation": {
+                    "description": [
+                        "Enables or disables SSL renegotiation.",
+                        "When creating a new profile, the setting is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "retain_certificate": {
+                    "description": [
+                        "When C(yes), the client certificate is retained in SSL session."
+                    ],
+                    "type": "bool"
+                },
+                "secure_renegotiation": {
+                    "choices": [
+                        "require",
+                        "require-strict",
+                        "request"
+                    ],
+                    "description": [
+                        "Specifies the method of secure renegotiations for SSL connections. When creating a new profile, the setting is provided by the parent profile.",
+                        "When C(request), the system requests secure renegotiation of SSL connections.",
+                        "C(require) is a default setting and when set, the system permits initial SSL handshakes from clients, but terminates renegotiations from unpatched clients.",
+                        "With the C(require-strict) setting, the system requires strict renegotiation of SSL connections. In this mode, the system refuses connections to insecure servers, and terminates existing SSL connections to insecure servers."
+                    ],
+                    "type": "str"
+                },
+                "server_name": {
+                    "description": [
+                        "Specifies the fully qualified DNS hostname of the server used in Server Name Indication communications. When creating a new profile, the setting is provided by the parent profile.",
+                        "The server name can also be a wildcard string containing the asterisk C(*) character."
+                    ],
+                    "type": "str"
+                },
+                "sni_default": {
+                    "description": [
+                        "Indicates the system uses this profile as the default SSL profile when there is no match to the server name, or when the client provides no SNI extension support.",
+                        "When creating a new profile, the setting is provided by the parent profile.",
+                        "There can be only one SSL profile with this setting enabled."
+                    ],
+                    "type": "bool"
+                },
+                "sni_require": {
+                    "description": [
+                        "Requires the network peers also provide SNI support. This setting only takes effect when C(sni_default) is set to C(true).",
+                        "When creating a new profile, the setting is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the profile exists.",
+                        "When C(absent), ensures the profile is removed."
+                    ],
+                    "type": "str"
+                },
+                "strict_resume": {
+                    "description": [
+                        "Enables or disables the resumption of SSL sessions after an unclean shutdown.",
+                        "When creating a new profile, the setting is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "trusted_cert_authority": {
+                    "description": [
+                        "Specifies a client CA the system trusts."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages client SSL profiles on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create client SSL profile\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create client SSL profile with specific ciphers\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    ciphers: \"!SSLv3:!SSLv2:ECDHE+AES-GCM+SHA256:ECDHE-RSA-AES128-CBC-SHA\"\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create client SSL profile with specific cipher group\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    ciphers: \"none\"\n    cipher_group: \"/Common/f5-secure\"\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create client SSL profile with specific SSL options\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    options:\n      - no-sslv2\n      - no-sslv3\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create client SSL profile require secure renegotiation\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    secure_renegotiation: request\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create a client SSL profile with a cert/key/chain setting\n  bigip_profile_client_ssl:\n    state: present\n    name: my_profile\n    cert_key_chain:\n      - cert: bigip_ssl_cert1\n        key: bigip_ssl_key1\n        chain: bigip_ssl_cert1\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "allow_non_ssl": {
+                "description": "Acceptance of non-SSL connections.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "cache_size": {
+                "description": "Specifies the number of sessions in the SSL session cache.",
+                "returned": "changed",
+                "sample": 2000,
+                "type": "int"
+            },
+            "cache_timeout": {
+                "description": "Specifies the timeout value in seconds of the SSL session cache entries.",
+                "returned": "changed",
+                "sample": 1800,
+                "type": "int"
+            },
+            "cipher_group": {
+                "description": "The cipher group applied to the profile.",
+                "returned": "changed",
+                "sample": "/Common/f5-secure",
+                "type": "str"
+            },
+            "ciphers": {
+                "description": "The ciphers applied to the profile.",
+                "returned": "changed",
+                "sample": "!SSLv3:!SSLv2:ECDHE+AES-GCM+SHA256:ECDHE-RSA-AES128-CBC-SHA",
+                "type": "str"
+            },
+            "options": {
+                "description": "The list of options for SSL processing.",
+                "returned": "changed",
+                "sample": [
+                    "no-sslv2",
+                    "no-sslv3"
+                ],
+                "type": "list"
+            },
+            "renegotiation": {
+                "description": "Renegotiation of SSL sessions.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "secure_renegotiation": {
+                "description": "The method of secure SSL renegotiation.",
+                "returned": "changed",
+                "sample": "request",
+                "type": "str"
+            },
+            "strict_resume": {
+                "description": "Resumption of SSL sessions after an unclean shutdown.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            }
+        }
+    }
+}

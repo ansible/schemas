@@ -1,0 +1,162 @@
+{
+    "community.network.flowadm": {
+        "doc": {
+            "author": "Adam \u0160tevko (@xen0l)",
+            "collection": "community.network",
+            "description": [
+                "Create/modify/remove networking bandwidth and associated resources for a type of traffic on a particular link."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/flowadm.py",
+            "has_action": false,
+            "module": "flowadm",
+            "options": {
+                "dsfield": {
+                    "description": "- Identifies the 8-bit differentiated services field (as defined in RFC 2474). The optional dsfield_mask is used to state the bits of interest in the differentiated services field when comparing with the dsfield value. Both values must be in hexadecimal.\n",
+                    "required": false
+                },
+                "link": {
+                    "description": [
+                        "Specifiies a link to configure flow on."
+                    ],
+                    "required": false
+                },
+                "local_ip": {
+                    "description": [
+                        "Identifies a network flow by the local IP address."
+                    ],
+                    "required": false
+                },
+                "local_port": {
+                    "description": [
+                        "Identifies a service specified by the local port."
+                    ],
+                    "required": false
+                },
+                "maxbw": {
+                    "description": "- Sets the full duplex bandwidth for the flow. The bandwidth is specified as an integer with one of the scale suffixes(K, M, or G for Kbps, Mbps, and Gbps). If no units are specified, the input value will be read as Mbps.\n",
+                    "required": false
+                },
+                "name": {
+                    "aliases": [
+                        "flow"
+                    ],
+                    "description": "- A flow is defined as a set of attributes based on Layer 3 and Layer 4 headers, which can be used to identify a protocol, service, or a zone.\n",
+                    "required": true
+                },
+                "priority": {
+                    "choices": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "default": "medium",
+                    "description": [
+                        "Sets the relative priority for the flow."
+                    ],
+                    "required": false
+                },
+                "remote_ip": {
+                    "description": [
+                        "Identifies a network flow by the remote IP address."
+                    ],
+                    "required": false
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "resetted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create/delete/enable/disable an IP address on the network interface."
+                    ],
+                    "required": false
+                },
+                "temporary": {
+                    "default": false,
+                    "description": [
+                        "Specifies that the configured flow is temporary. Temporary flows do not persist across reboots."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "transport": {
+                    "description": "- Specifies a Layer 4 protocol to be used. It is typically used in combination with I(local_port) to identify the service that needs special attention.\n",
+                    "required": false
+                }
+            },
+            "short_description": "Manage bandwidth resource control and priority for protocols, services and zones on Solaris/illumos systems"
+        },
+        "examples": "\n- name: Limit SSH traffic to 100M via vnic0 interface\n  community.network.flowadm:\n    link: vnic0\n    flow: ssh_out\n    transport: tcp\n    local_port: 22\n    maxbw: 100M\n    state: present\n\n- name: Reset flow properties\n  community.network.flowadm:\n    name: dns\n    state: resetted\n\n- name: Configure policy for EF PHB (DSCP value of 101110 from RFC 2598) with a bandwidth of 500 Mbps and a high priority\n  community.network.flowadm:\n    link: bge0\n    dsfield: '0x2e:0xfc'\n    maxbw: 500M\n    priority: high\n    flow: efphb-flow\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "dsfield": {
+                "description": "flow's differentiated services value",
+                "returned": "if dsfield is defined",
+                "sample": "0x2e:0xfc",
+                "type": "str"
+            },
+            "link": {
+                "description": "flow's link",
+                "returned": "if link is defined",
+                "sample": "vnic0",
+                "type": "str"
+            },
+            "local_Ip": {
+                "description": "flow's local IP address",
+                "returned": "if local_ip is defined",
+                "sample": "10.0.0.42",
+                "type": "str"
+            },
+            "local_port": {
+                "description": "flow's local port",
+                "returned": "if local_port is defined",
+                "sample": 1337,
+                "type": "int"
+            },
+            "maxbw": {
+                "description": "flow's maximum bandwidth",
+                "returned": "if maxbw is defined",
+                "sample": "100M",
+                "type": "str"
+            },
+            "name": {
+                "description": "flow name",
+                "returned": "always",
+                "sample": "http_drop",
+                "type": "str"
+            },
+            "priority": {
+                "description": "flow's priority",
+                "returned": "if priority is defined",
+                "sample": "low",
+                "type": "str"
+            },
+            "remote_Ip": {
+                "description": "flow's remote IP address",
+                "returned": "if remote_ip is defined",
+                "sample": "10.0.0.42",
+                "type": "str"
+            },
+            "state": {
+                "description": "state of the target",
+                "returned": "always",
+                "sample": "present",
+                "type": "str"
+            },
+            "temporary": {
+                "description": "flow's persistence",
+                "returned": "always",
+                "sample": "True",
+                "type": "bool"
+            },
+            "transport": {
+                "description": "flow's transport",
+                "returned": "if transport is defined",
+                "sample": "tcp",
+                "type": "str"
+            }
+        }
+    }
+}

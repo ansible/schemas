@@ -1,0 +1,172 @@
+{
+    "community.vmware.vmware_export_ovf": {
+        "doc": {
+            "author": [
+                "Diane Wang (@Tomorrow9) <dianew@vmware.com>"
+            ],
+            "collection": "community.vmware",
+            "description": "This module can be used to export a VMware virtual machine to OVF template from vCenter server or ESXi host.\n",
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_export_ovf.py",
+            "has_action": false,
+            "module": "vmware_export_ovf",
+            "notes": [],
+            "options": {
+                "datacenter": {
+                    "default": "ha-datacenter",
+                    "description": [
+                        "Datacenter name of the virtual machine to export.",
+                        "This parameter is case sensitive."
+                    ],
+                    "type": "str"
+                },
+                "download_timeout": {
+                    "default": 30,
+                    "description": [
+                        "The user defined timeout in second of exporting file.",
+                        "If the vmdk file is too large, you can increase the value."
+                    ],
+                    "type": "int"
+                },
+                "export_dir": {
+                    "description": [
+                        "Absolute path to place the exported files on the server running this task, must have write permission.",
+                        "If folder not exist will create it, also create a folder under this path named with VM name."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "export_with_images": {
+                    "default": false,
+                    "description": [
+                        "Export an ISO image of the media mounted on the CD/DVD Drive within the virtual machine."
+                    ],
+                    "type": "bool"
+                },
+                "folder": {
+                    "description": [
+                        "Destination folder, absolute path to find the specified guest.",
+                        "The folder should include the datacenter. ESX datacenter is ha-datacenter.",
+                        "This parameter is case sensitive.",
+                        "If multiple machines are found with same name, this parameter is used to identify",
+                        "Examples:",
+                        "   folder: /ha-datacenter/vm",
+                        "   folder: ha-datacenter/vm",
+                        "   folder: /datacenter1/vm",
+                        "   folder: datacenter1/vm",
+                        "   folder: /datacenter1/vm/folder1",
+                        "   folder: datacenter1/vm/folder1",
+                        "   folder: /folder1/datacenter1/vm",
+                        "   folder: folder1/datacenter1/vm",
+                        "   folder: /folder1/datacenter1/vm/folder2"
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "moid": {
+                    "description": [
+                        "Managed Object ID of the instance to manage if known, this is a unique identifier only within a single vCenter instance.",
+                        "This is required if C(name) or C(uuid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the virtual machine to export.",
+                        "This is a required parameter, if parameter C(uuid) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "Uuid of the virtual machine to export.",
+                        "This is a required parameter, if parameter C(name) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Exports a VMware virtual machine to an OVF file, device files and a manifest file"
+        },
+        "examples": "\n- community.vmware.vmware_export_ovf:\n    validate_certs: false\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    name: '{{ vm_name }}'\n    export_with_images: true\n    export_dir: /path/to/ovf_template/\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "instance": {
+                "description": "list of the exported files, if exported from vCenter server, device file is not named with vm name",
+                "returned": "always",
+                "sample": "None",
+                "type": "dict"
+            }
+        }
+    }
+}

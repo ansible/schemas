@@ -1,0 +1,421 @@
+{
+    "community.aws.elb_network_lb": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "community.aws",
+            "description": [
+                "Manage an AWS Network Elastic Load Balancer. See U(https://aws.amazon.com/blogs/aws/new-network-load-balancer-effortless-scaling-to-millions-of-requests-per-second/) for details."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/elb_network_lb.py",
+            "has_action": false,
+            "module": "elb_network_lb",
+            "notes": [
+                "Listeners are matched based on port. If a listener's port is changed then a new listener will be created.",
+                "Listener rules are matched based on priority. If a rule's priority is changed then a new rule will be created.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cross_zone_load_balancing": {
+                    "description": [
+                        "Indicates whether cross-zone load balancing is enabled.",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "deletion_protection": {
+                    "description": [
+                        "Indicates whether deletion protection for the ELB is enabled.",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "ip_address_type": {
+                    "choices": [
+                        "ipv4",
+                        "dualstack"
+                    ],
+                    "description": [
+                        "Sets the type of IP addresses used by the subnets of the specified Application Load Balancer."
+                    ],
+                    "type": "str"
+                },
+                "listeners": {
+                    "description": [
+                        "A list of dicts containing listeners to attach to the ELB. See examples for detail of the dict required. Note that listener keys are CamelCased."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "Certificates": {
+                            "description": "The SSL server certificate.",
+                            "elements": "dict",
+                            "suboptions": {
+                                "CertificateArn": {
+                                    "description": "The Amazon Resource Name (ARN) of the certificate.",
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "DefaultActions": {
+                            "description": "The default actions for the listener.",
+                            "elements": "dict",
+                            "required": true,
+                            "suboptions": {
+                                "TargetGroupArn": {
+                                    "description": "The Amazon Resource Name (ARN) of the target group.",
+                                    "type": "str"
+                                },
+                                "Type": {
+                                    "description": "The type of action.",
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "Port": {
+                            "description": "The port on which the load balancer is listening.",
+                            "required": true,
+                            "type": "int"
+                        },
+                        "Protocol": {
+                            "description": "The protocol for connections from clients to the load balancer.",
+                            "required": true,
+                            "type": "str"
+                        },
+                        "SslPolicy": {
+                            "description": "The security policy that defines which ciphers and protocols are supported.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "The name of the load balancer. This name must be unique within your AWS account, can have a maximum of 32 characters, must contain only alphanumeric characters or hyphens, and must not begin or end with a hyphen."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_listeners": {
+                    "default": true,
+                    "description": [
+                        "If I(purge_listeners=true), existing listeners will be purged from the ELB to match exactly what is defined by I(listeners) parameter.",
+                        "If the I(listeners) parameter is not set then listeners will not be modified."
+                    ],
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": true,
+                    "description": [
+                        "If I(purge_tags=true), existing tags will be purged from the resource to match exactly what is defined by I(tags) parameter.",
+                        "If the I(tags) parameter is not set then tags will not be modified."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "scheme": {
+                    "choices": [
+                        "internet-facing",
+                        "internal"
+                    ],
+                    "default": "internet-facing",
+                    "description": [
+                        "Internet-facing or internal load balancer. An ELB scheme can not be modified after creation."
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Create or destroy the load balancer.",
+                        "The current default is C(absent).  However, this behavior is inconsistent with other modules and as such the default will change to C(present) in 2.14. To maintain the existing behavior explicitly set I(state=absent)."
+                    ],
+                    "type": "str"
+                },
+                "subnet_mappings": {
+                    "description": [
+                        "A list of dicts containing the IDs of the subnets to attach to the load balancer. You can also specify the allocation ID of an Elastic IP to attach to the load balancer. You can specify one Elastic IP address per subnet.",
+                        "This parameter is mutually exclusive with I(subnets)."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "subnets": {
+                    "description": [
+                        "A list of the IDs of the subnets to attach to the load balancer. You can specify only one subnet per Availability Zone. You must specify subnets from at least two Availability Zones.",
+                        "Required when I(state=present).",
+                        "This parameter is mutually exclusive with I(subnet_mappings)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "tags": {
+                    "description": [
+                        "A dictionary of one or more tags to assign to the load balancer."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "description": [
+                        "Whether or not to wait for the network load balancer to reach the desired state."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "description": [
+                        "The duration in seconds to wait, used in conjunction with I(wait)."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage a Network Load Balancer",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Create an ELB and attach a listener\n  community.aws.elb_network_lb:\n    name: myelb\n    subnets:\n      - subnet-012345678\n      - subnet-abcdef000\n    listeners:\n      - Protocol: TCP # Required. The protocol for connections from clients to the load balancer (TCP, TLS, UDP or TCP_UDP) (case-sensitive).\n        Port: 80 # Required. The port on which the load balancer is listening.\n        DefaultActions:\n          - Type: forward # Required. Only 'forward' is accepted at this time\n            TargetGroupName: mytargetgroup # Required. The name of the target group\n    state: present\n\n- name: Create an ELB with an attached Elastic IP address\n  community.aws.elb_network_lb:\n    name: myelb\n    subnet_mappings:\n      - SubnetId: subnet-012345678\n        AllocationId: eipalloc-aabbccdd\n    listeners:\n      - Protocol: TCP # Required. The protocol for connections from clients to the load balancer (TCP, TLS, UDP or TCP_UDP) (case-sensitive).\n        Port: 80 # Required. The port on which the load balancer is listening.\n        DefaultActions:\n          - Type: forward # Required. Only 'forward' is accepted at this time\n            TargetGroupName: mytargetgroup # Required. The name of the target group\n    state: present\n\n- name: Remove an ELB\n  community.aws.elb_network_lb:\n    name: myelb\n    state: absent\n\n",
+        "metadata": null,
+        "return": {
+            "availability_zones": {
+                "description": "The Availability Zones for the load balancer.",
+                "returned": "when state is present",
+                "sample": "[{'subnet_id': 'subnet-aabbccddff', 'zone_name': 'ap-southeast-2a', 'load_balancer_addresses': []}]",
+                "type": "list"
+            },
+            "canonical_hosted_zone_id": {
+                "description": "The ID of the Amazon Route 53 hosted zone associated with the load balancer.",
+                "returned": "when state is present",
+                "sample": "ABCDEF12345678",
+                "type": "str"
+            },
+            "created_time": {
+                "description": "The date and time the load balancer was created.",
+                "returned": "when state is present",
+                "sample": "2015-02-12T02:14:02+00:00",
+                "type": "str"
+            },
+            "deletion_protection_enabled": {
+                "description": "Indicates whether deletion protection is enabled.",
+                "returned": "when state is present",
+                "sample": true,
+                "type": "str"
+            },
+            "dns_name": {
+                "description": "The public DNS name of the load balancer.",
+                "returned": "when state is present",
+                "sample": "internal-my-elb-123456789.ap-southeast-2.elb.amazonaws.com",
+                "type": "str"
+            },
+            "idle_timeout_timeout_seconds": {
+                "description": "The idle timeout value, in seconds.",
+                "returned": "when state is present",
+                "sample": 60,
+                "type": "str"
+            },
+            "ip_address_type": {
+                "description": "The type of IP addresses used by the subnets for the load balancer.",
+                "returned": "when state is present",
+                "sample": "ipv4",
+                "type": "str"
+            },
+            "listeners": {
+                "contains": {
+                    "certificates": {
+                        "contains": {
+                            "certificate_arn": {
+                                "description": "The Amazon Resource Name (ARN) of the certificate.",
+                                "returned": "when state is present",
+                                "sample": "",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The SSL server certificate.",
+                        "returned": "when state is present",
+                        "type": "complex"
+                    },
+                    "default_actions": {
+                        "contains": {
+                            "target_group_arn": {
+                                "description": "The Amazon Resource Name (ARN) of the target group.",
+                                "returned": "when state is present",
+                                "sample": "",
+                                "type": "str"
+                            },
+                            "type": {
+                                "description": "The type of action.",
+                                "returned": "when state is present",
+                                "sample": "",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The default actions for the listener.",
+                        "returned": "when state is present",
+                        "type": "str"
+                    },
+                    "listener_arn": {
+                        "description": "The Amazon Resource Name (ARN) of the listener.",
+                        "returned": "when state is present",
+                        "sample": "",
+                        "type": "str"
+                    },
+                    "load_balancer_arn": {
+                        "description": "The Amazon Resource Name (ARN) of the load balancer.",
+                        "returned": "when state is present",
+                        "sample": "",
+                        "type": "str"
+                    },
+                    "port": {
+                        "description": "The port on which the load balancer is listening.",
+                        "returned": "when state is present",
+                        "sample": 80,
+                        "type": "int"
+                    },
+                    "protocol": {
+                        "description": "The protocol for connections from clients to the load balancer.",
+                        "returned": "when state is present",
+                        "sample": "HTTPS",
+                        "type": "str"
+                    },
+                    "ssl_policy": {
+                        "description": "The security policy that defines which ciphers and protocols are supported.",
+                        "returned": "when state is present",
+                        "sample": "",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the listeners.",
+                "returned": "when state is present",
+                "type": "complex"
+            },
+            "load_balancer_arn": {
+                "description": "The Amazon Resource Name (ARN) of the load balancer.",
+                "returned": "when state is present",
+                "sample": "arn:aws:elasticloadbalancing:ap-southeast-2:0123456789:loadbalancer/app/my-elb/001122334455",
+                "type": "str"
+            },
+            "load_balancer_name": {
+                "description": "The name of the load balancer.",
+                "returned": "when state is present",
+                "sample": "my-elb",
+                "type": "str"
+            },
+            "load_balancing_cross_zone_enabled": {
+                "description": "Indicates whether cross-zone load balancing is enabled.",
+                "returned": "when state is present",
+                "sample": true,
+                "type": "str"
+            },
+            "scheme": {
+                "description": "Internet-facing or internal load balancer.",
+                "returned": "when state is present",
+                "sample": "internal",
+                "type": "str"
+            },
+            "state": {
+                "description": "The state of the load balancer.",
+                "returned": "when state is present",
+                "sample": "{'code': 'active'}",
+                "type": "dict"
+            },
+            "tags": {
+                "description": "The tags attached to the load balancer.",
+                "returned": "when state is present",
+                "sample": "{ 'Tag': 'Example' }",
+                "type": "dict"
+            },
+            "type": {
+                "description": "The type of load balancer.",
+                "returned": "when state is present",
+                "sample": "network",
+                "type": "str"
+            },
+            "vpc_id": {
+                "description": "The ID of the VPC for the load balancer.",
+                "returned": "when state is present",
+                "sample": "vpc-0011223344",
+                "type": "str"
+            }
+        }
+    }
+}

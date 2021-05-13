@@ -1,0 +1,41 @@
+{
+    "dellemc.os10.vlt_validate": {
+        "doc": {
+            "author": "Senthil Kumar Ganesan (@skg-net)",
+            "collection": "dellemc.os10",
+            "description": [
+                "Troubleshoot the show vlt info and raise an error if peer is not up."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/os10/plugins/modules/vlt_validate.py",
+            "has_action": false,
+            "module": "vlt_validate",
+            "options": {
+                "intended_vlt_pairs": {
+                    "description": [
+                        "intended vlt pair intput to verify with actual"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_system_network_summary": {
+                    "description": [
+                        "show system summary output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_vlt": {
+                    "description": [
+                        "show vlt output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                }
+            },
+            "short_description": "Validate the vlt info, raise an error if peer is not in up state"
+        },
+        "examples": "\nCopy below YAML into a playbook (e.g. play.yml) and run as follows:\n\n#$ ansible-playbook -i inv play.yml\nname: show system Configuration\nhosts: localhost\nconnection: local\ngather_facts: False\ntasks:\n - name: \"Get Dell EMC OS10 Show run vlt\"\n   os10_command:\n     commands:\n       - command: \"show running-configuration vlt | grep vlt-domain\"\n     provider: \"{{ hostvars[item].cli }}\"\n   with_items: \"{{ groups['all'] }}\"\n   register: show_run_vlt\n - set_fact:\n      output_vlt:  \"{{ output_vlt|default([])+ [{'host': item.invocation.module_args.provider.host, 'inv_name': item.item,\n                                                 'stdout_show_vlt': item.stdout.0}] }}\"\n   loop: \"{{ show_run_vlt.results }}\"\n - debug: var=output_vlt\n - name: \"Get Dell EMC OS10 Show vlt info\"\n   os10_command:\n     commands:\n       - command: \"show vlt {{ item.stdout_show_vlt.split()[1] }} | display-xml\"\n     provider: \"{{ hostvars[item.inv_name].cli }}\"\n   with_items: \"{{ output_vlt }}\"\n   register: show_vlt\n - set_fact:\n      vlt_out:  \"{{ vlt_out|default([])+ [{'host': item.invocation.module_args.provider.host, 'inv_name': item.item, 'show_vlt_stdout': item.stdout.0}] }}\"\n   loop: \"{{ show_vlt.results }}\"\n   register: vlt_output\n - name: call lib to convert vlt info from xml to dict format\n   base_xml_to_dict:\n      cli_responses: \"{{ item.show_vlt_stdout }}\"\n   with_items:\n     - \"{{ vlt_out }}\"\n   register: vlt_dict_output\n - name: \"Get Dell EMC OS10 Show system\"\n   import_role:\n     name: os10_fabric_summary\n   register: show_system_network_summary\n - name: call lib to process\n   vlt_validate:\n       show_vlt : \"{{ vlt_dict_output.results }}\"\n       show_system_network_summary: \"{{ show_system_network_summary.msg.results }}\"\n       intended_vlt_pairs: \"{{ intended_vlt_pairs }}\"\n   register: show_vlt_info\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

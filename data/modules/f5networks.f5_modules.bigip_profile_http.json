@@ -1,0 +1,746 @@
+{
+    "f5networks.f5_modules.bigip_profile_http": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage HTTP profiles on a BIG-IP device."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_profile_http.py",
+            "has_action": false,
+            "module": "bigip_profile_http",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "accept_xff": {
+                    "description": [
+                        "Enables or disables trusting the client IP address, and statistics from the client IP address, based on the request's XFF (X-forwarded-for) headers, if they exist.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "Description of the profile."
+                    ],
+                    "type": "str"
+                },
+                "dns_resolver": {
+                    "description": [
+                        "Specifies the name of a configured DNS resolver, this option is mandatory when C(proxy_type) is set to C(explicit).",
+                        "Format of the name can be either be prepended by partition (C(/Common/foo)), or specified just as an object name (C(foo)).",
+                        "To remove the entry, you can set a value of C(none) or C(''), however the profile C(proxy_type) must not be set as C(explicit)."
+                    ],
+                    "type": "str"
+                },
+                "encrypt_cookie_secret": {
+                    "description": [
+                        "Passphrase for cookie encryption.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "encrypt_cookies": {
+                    "description": [
+                        "Cookie names for the system to encrypt.",
+                        "To remove the entry completely, set a value of C(none) or C('').",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "enforcement": {
+                    "description": [
+                        "Specifies protocol enforcement settings for the HTTP profile.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "suboptions": {
+                        "excess_client_headers": {
+                            "choices": [
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Specifies the behavior when too many client headers are received.",
+                                "If set to C(pass-through), it switches to pass-through mode, when C(reject), the connection is rejected.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "excess_server_headers": {
+                            "choices": [
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Specifies the behavior when too many server headers are received.",
+                                "If set to C(pass-through), it switches to pass-through mode, when C(reject) the connection is rejected.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "known_methods": {
+                            "description": [
+                                "Specifies which HTTP methods count as being known, removing RFC-defined methods from this list will cause the HTTP filter to not recognize them.",
+                                "The default list provided with the system include: C(CONNECT), C(DELETE), C(GET), C(HEAD), C(LOCK), C(OPTIONS), C(POST), C(PROPFIND), C(PUT), C(TRACE) ,C(UNLOCK). The list can be appended by by specifying the C(default) keyword as one of the list elements.",
+                                "The C(default) keyword can also be used to restore the default C(known_methods) on the system.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "max_header_count": {
+                            "description": [
+                                "Specifies the maximum number of headers allowed in HTTP request/response.",
+                                "The valid value range is between 16 and 4096 inclusive.",
+                                "When set to C(default), the value is C(64).",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "max_header_size": {
+                            "description": [
+                                "Specifies the maximum header size specified in bytes.",
+                                "The valid value range is between 0 and 4294967295 inclusive.",
+                                "When set to C(default), the value is C(32768) bytes",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "max_requests": {
+                            "description": [
+                                "Specifies the number of requests the system accepts on a per-connection basis.",
+                                "The valid value range is between 0 and 4294967295 inclusive.",
+                                "When set to C(default), the value is C(0), which means the system will not limit the number of requests per connection.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "oversize_client_headers": {
+                            "choices": [
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Specifies the behavior when too-large client headers are received.",
+                                "If set to C(pass-through),it switches to pass-through mode, when C(reject) the connection is rejected.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "oversize_server_headers": {
+                            "choices": [
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Specifies the behavior when too-large server headers are received.",
+                                "If set to C(pass-through), it switches to pass-through mode, when C(reject) the connection is rejected.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "pipeline": {
+                            "choices": [
+                                "allow",
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Enables HTTP/1.1 pipelining, allowing clients to make requests even when prior requests have not received a response.",
+                                "In order for this to succeed, destination servers must include support for pipelining.",
+                                "If set to C(pass-through), pipelined data causes the BIG-IP to immediately switch to pass-through mode and disable the HTTP filter.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        },
+                        "truncated_redirects": {
+                            "description": [
+                                "Specifies what happens if a truncated redirect is seen from a server.",
+                                "If C(yes), the redirect is forwarded to the client, otherwise the malformed HTTP is silently ignored.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "bool"
+                        },
+                        "unknown_method": {
+                            "choices": [
+                                "allow",
+                                "reject",
+                                "pass-through"
+                            ],
+                            "description": [
+                                "Specifies whether to allow, reject or switch to pass-through mode when an unknown HTTP method is parsed.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "fallback_host": {
+                    "description": [
+                        "Specifies an HTTP fallback host.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "fallback_status_codes": {
+                    "description": [
+                        "Specifies one or more HTTP error codes from server responses that should trigger a redirection to the fallback host.",
+                        "The accepted valid error codes are as defined by RFC2616.",
+                        "The codes can be specified as individual items or as valid ranges, for example C(400-417) or C(500-505).",
+                        "Mixing response code range across error types is invalid, for example defining C(400-505) will raise an error.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "header_erase": {
+                    "description": [
+                        "The name of a header in an HTTP request, which the system removes from request.",
+                        "To remove the entry completely, set a value of C(none) or C('').",
+                        "The format of the header must be in C(KEY:VALUE) format, otherwise an error occurs.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "header_insert": {
+                    "description": [
+                        "A string the system inserts as a header in an HTTP request.",
+                        "To remove the entry completely, set a value of C(none) or C('').",
+                        "The format of the header must be in C(KEY:VALUE) format, otherwise an error occurs.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "hsts_mode": {
+                    "description": [
+                        "When set to C(yes), enables the HSTS settings.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "include_subdomains": {
+                    "description": [
+                        "When set to C(yes), applies the HSTS policy to the HSTS host and its sub-domains.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "insert_xforwarded_for": {
+                    "description": [
+                        "Specifies the system inserts an X-Forwarded-For header in an HTTP request with the client IP address, to use with connection pooling.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "maximum_age": {
+                    "description": [
+                        "Specifies the maximum length of time, in seconds, that HSTS functionality requests clients only use HTTPS to connect to the current host and any sub-domains of the current host's domain name.",
+                        "The accepted value range is C(0 - 4294967295) seconds. A value of C(0) seconds re-enables plaintext HTTP access, while specifying C(indefinite) sets it to the maximum value.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the profile."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "oneconnect_transformations": {
+                    "description": [
+                        "Enables the system to perform HTTP header transformations for keeping server-side connections open. This feature requires a OneConnect profile.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "bool"
+                },
+                "parent": {
+                    "description": [
+                        "Specifies the profile from which this profile inherits settings.",
+                        "When creating a new profile, if this parameter is not specified, the default is the system-supplied C(http) profile."
+                    ],
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "proxy_type": {
+                    "choices": [
+                        "reverse",
+                        "transparent",
+                        "explicit"
+                    ],
+                    "description": [
+                        "Specifies the proxy mode for the profile.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "redirect_rewrite": {
+                    "choices": [
+                        "none",
+                        "all",
+                        "matching",
+                        "nodes"
+                    ],
+                    "description": [
+                        "Specifies whether the system rewrites the URIs that are part of HTTP redirect (3XX) responses.",
+                        "When set to C(none), the system will not rewrite the URI in any HTTP redirect responses.",
+                        "When set to C(all), the system rewrites the URI in all HTTP redirect responses.",
+                        "When set to C(matching), the system rewrites the URI in any HTTP redirect responses that match the request URI.",
+                        "When set to C(nodes), if the URI contains a node IP address instead of a host name, the system changes it to the virtual server address.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "request_chunking": {
+                    "choices": [
+                        "rechunk",
+                        "selective",
+                        "preserve",
+                        "sustain",
+                        "unchunk"
+                    ],
+                    "description": [
+                        "Specifies how to handle chunked and unchunked requests.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "response_chunking": {
+                    "choices": [
+                        "rechunk",
+                        "selective",
+                        "preserve",
+                        "sustain",
+                        "unchunk"
+                    ],
+                    "description": [
+                        "Specifies how to handle chunked and unchunked responses.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "server_agent_name": {
+                    "description": [
+                        "Specifies the string used as the server name in traffic generated by BIG-IP.",
+                        "To remove the entry completely, set a value of C(none) or C('').",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "type": "str"
+                },
+                "sflow": {
+                    "description": [
+                        "Specifies sFlow settings for the HTTP profile.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "suboptions": {
+                        "poll_interval": {
+                            "description": [
+                                "Specifies the maximum interval in seconds between two pollings.",
+                                "The valid value range is between 0 and 4294967295 seconds inclusive.",
+                                "For this setting to take effect the C(poll_interval_global) parameter must be set to C(no).",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "int"
+                        },
+                        "poll_interval_global": {
+                            "description": [
+                                "Specifies whether the global HTTP poll-interval setting overrides the object-level C(poll-interval) setting.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "bool"
+                        },
+                        "sampling_rate": {
+                            "description": [
+                                "Specifies the ratio of packets observed to the samples generated. For example, a sampling rate of C(2000) specifies 1 sample will be randomly generated for every 2000 packets observed.",
+                                "The valid value range is between 0 and 4294967295 packets inclusive.",
+                                "For this setting to take effect the C(sampling_rate_global) parameter must be set to C(no).",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "int"
+                        },
+                        "sampling_rate_global": {
+                            "description": [
+                                "Specifies whether the global HTTP sampling-rate setting overrides the object-level sampling-rate setting.",
+                                "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the profile exists.",
+                        "When C(absent), ensures the profile is removed."
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "always",
+                        "on_create"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "C(always) will update passwords if the C(encrypt_cookie_secret) is specified.",
+                        "C(on_create) will only set the password for newly created profiles."
+                    ],
+                    "type": "str"
+                },
+                "xff_alternative_names": {
+                    "description": [
+                        "Specifies alternative XFF headers instead of the default X-forwarded-for header.",
+                        "When creating a new profile, if this parameter is not specified, the default is provided by the parent profile."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "short_description": "Manage HTTP profiles on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create HTTP profile\n  bigip_profile_http:\n    name: my_profile\n    insert_xforwarded_for: yes\n    redirect_rewrite: all\n    state: present\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Remove HTTP profile\n  bigip_profile_http:\n    name: my_profile\n    state: absent\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Add HTTP profile for transparent proxy\n  bigip_profile_http:\n    name: my_profile\n    proxy_type: transparent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "accept_xff": {
+                "description": "Enables or disables trusting the client IP address and statistics from the client IP address.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "description": {
+                "description": "Description of the profile.",
+                "returned": "changed",
+                "sample": "My profile",
+                "type": "str"
+            },
+            "dns_resolver": {
+                "description": "Configured dns resolver.",
+                "returned": "changed",
+                "sample": "/Common/FooBar",
+                "type": "str"
+            },
+            "encrypt_cookies": {
+                "description": "Cookie names to encrypt.",
+                "returned": "changed",
+                "sample": [
+                    "MyCookie1",
+                    "MyCookie2"
+                ],
+                "type": "list"
+            },
+            "enforcement": {
+                "contains": {
+                    "excess_server_headers": {
+                        "description": "Specifies the behavior when too many server headers are received.",
+                        "returned": "changed",
+                        "sample": "pass-through",
+                        "type": "str"
+                    },
+                    "known_methods": {
+                        "description": "The list of known HTTP methods.",
+                        "returned": "changed",
+                        "sample": [
+                            "default",
+                            "FOO",
+                            "BAR"
+                        ],
+                        "type": "list"
+                    },
+                    "max_header_count": {
+                        "description": "The maximum number of headers allowed in HTTP request/response.",
+                        "returned": "changed",
+                        "sample": 4096,
+                        "type": "str"
+                    },
+                    "max_header_size": {
+                        "description": "The maximum header size specified in bytes.",
+                        "returned": "changed",
+                        "sample": "default",
+                        "type": "str"
+                    },
+                    "max_requests": {
+                        "description": "The number of requests the system accepts on a per-connection basis.",
+                        "returned": "changed",
+                        "sample": "default",
+                        "type": "str"
+                    },
+                    "oversize_client_headers": {
+                        "description": "Specifies the behavior when too-large client headers are received.",
+                        "returned": "changed",
+                        "sample": "reject",
+                        "type": "str"
+                    },
+                    "oversize_server_headers": {
+                        "description": "Specifies the behavior when too-large server headers are received.",
+                        "returned": "changed",
+                        "sample": "reject",
+                        "type": "str"
+                    },
+                    "pipeline": {
+                        "description": "Allows, rejects. or switches to pass-through mode when dealing with pipelined data.",
+                        "returned": "changed",
+                        "sample": "allow",
+                        "type": "str"
+                    },
+                    "truncated_redirects": {
+                        "description": "Specifies what happens if a truncated redirect is seen from a server.",
+                        "returned": "changed",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "unknown_method": {
+                        "description": "Allows, rejects. or switches to pass-through mode when an unknown HTTP method is parsed.",
+                        "returned": "changed",
+                        "sample": "allow",
+                        "type": "str"
+                    }
+                },
+                "description": "Specifies protocol enforcement settings for the HTTP profile.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "fallback_host": {
+                "description": "Specifies an HTTP fallback host.",
+                "returned": "changed",
+                "sample": "foobar.com",
+                "type": "str"
+            },
+            "fallback_status_codes": {
+                "description": "HTTP error codes from server responses that should trigger a redirection to the fallback host.",
+                "returned": "changed",
+                "sample": [
+                    "400-404",
+                    "500",
+                    "501"
+                ],
+                "type": "list"
+            },
+            "header_erase": {
+                "description": "The name of a header in an HTTP request, which the system removes from request.",
+                "returned": "changed",
+                "sample": "FOO:BAR",
+                "type": "str"
+            },
+            "header_insert": {
+                "description": "The string the system inserts as a header in an HTTP request.",
+                "returned": "changed",
+                "sample": "FOO:BAR",
+                "type": "str"
+            },
+            "hsts_mode": {
+                "description": "Enables the HSTS settings.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "include_subdomains": {
+                "description": "Applies the HSTS policy to the HSTS host and its sub-domains.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "insert_xforwarded_for": {
+                "description": "Insert X-Forwarded-For-Header.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "maximum_age": {
+                "description": "The maximum length of time, in seconds, that HSTS functionality requests that clients only use HTTPS.",
+                "returned": "changed",
+                "sample": "indefinite",
+                "type": "str"
+            },
+            "oneconnect_transformations": {
+                "description": "Enables or disables HTTP header transformations.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "parent": {
+                "description": "Specifies the profile from which this profile inherits settings.",
+                "returned": "changed",
+                "sample": "/Common/http",
+                "type": "str"
+            },
+            "proxy_type": {
+                "description": "Specify proxy mode of the profile.",
+                "returned": "changed",
+                "sample": "explicit",
+                "type": "str"
+            },
+            "redirect_rewrite": {
+                "description": "Rewrite URI that are part of 3xx responses.",
+                "returned": "changed",
+                "sample": "all",
+                "type": "str"
+            },
+            "request_chunking": {
+                "description": "Specifies how to handle chunked and unchunked requests.",
+                "returned": "changed",
+                "sample": "rechunk",
+                "type": "str"
+            },
+            "response_chunking": {
+                "description": "Specifies how to handle chunked and unchunked responses.",
+                "returned": "changed",
+                "sample": "rechunk",
+                "type": "str"
+            },
+            "server_agent_name": {
+                "description": "The string used as the server name in traffic generated by BIG-IP.",
+                "returned": "changed",
+                "sample": "foobar",
+                "type": "str"
+            },
+            "sflow": {
+                "contains": {
+                    "poll_interval": {
+                        "description": "Specifies the maximum interval in seconds between two pollings.",
+                        "returned": "changed",
+                        "sample": 30,
+                        "type": "int"
+                    },
+                    "poll_interval_global": {
+                        "description": "Enables/Disables overriding HTTP poll-interval setting.",
+                        "returned": "changed",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "sampling_rate": {
+                        "description": "Specifies the ratio of packets observed to the samples generated.",
+                        "returned": "changed",
+                        "sample": 2000,
+                        "type": "int"
+                    },
+                    "sampling_rate_global": {
+                        "description": "Enables/Disables overriding HTTP sampling-rate setting.",
+                        "returned": "changed",
+                        "sample": true,
+                        "type": "bool"
+                    }
+                },
+                "description": "Specifies sFlow settings for the HTTP profile.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "xff_alternative_names": {
+                "description": "Specifies alternative XFF headers instead of the default X-forwarded-for header.",
+                "returned": "changed",
+                "sample": [
+                    "FooBar",
+                    "client1"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

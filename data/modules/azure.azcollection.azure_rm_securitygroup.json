@@ -1,0 +1,533 @@
+{
+    "azure.azcollection.azure_rm_securitygroup": {
+        "doc": {
+            "author": [
+                "Chris Houseknecht (@chouseknecht)",
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update or delete a network security group.",
+                "A security group contains Access Control List (ACL) rules that allow or deny network traffic to subnets or individual network interfaces.",
+                "A security group is created with a set of default security rules and an empty set of security rules.",
+                "Shape traffic flow by adding rules to the empty set of security rules."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_securitygroup.py",
+            "has_action": false,
+            "module": "azure_rm_securitygroup",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "default_rules": {
+                    "description": [
+                        "The set of default rules automatically added to a security group at creation.",
+                        "In general default rules will not be modified. Modify rules to shape the flow of traffic to or from a subnet or NIC.",
+                        "See rules below for the makeup of a rule dict."
+                    ]
+                },
+                "location": {
+                    "description": [
+                        "Valid azure location. Defaults to location of the resource group."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of the security group to operate on."
+                    ]
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "purge_default_rules": {
+                    "default": "no",
+                    "description": [
+                        "Remove any existing rules not matching those defined in the default_rules parameter."
+                    ],
+                    "type": "bool"
+                },
+                "purge_rules": {
+                    "default": "no",
+                    "description": [
+                        "Remove any existing rules not matching those defined in the rules parameters."
+                    ],
+                    "type": "bool"
+                },
+                "resource_group": {
+                    "description": [
+                        "Name of the resource group the security group belongs to."
+                    ],
+                    "required": true
+                },
+                "rules": {
+                    "description": [
+                        "Set of rules shaping traffic flow to or from a subnet or NIC. Each rule is a dictionary."
+                    ],
+                    "suboptions": {
+                        "access": {
+                            "choices": [
+                                "Allow",
+                                "Deny"
+                            ],
+                            "default": "Allow",
+                            "description": [
+                                "Whether or not to allow the traffic flow."
+                            ]
+                        },
+                        "description": {
+                            "description": [
+                                "Short description of the rule's purpose."
+                            ]
+                        },
+                        "destination_address_prefix": {
+                            "default": "*",
+                            "description": [
+                                "The destination address prefix.",
+                                "CIDR or destination IP range.",
+                                "Asterisk C(*) can also be used to match all source IPs.",
+                                "Default tags such as C(VirtualNetwork), C(AzureLoadBalancer) and C(Internet) can also be used.",
+                                "It can accept string type or a list of string type."
+                            ]
+                        },
+                        "destination_application_security_groups": {
+                            "description": [
+                                "List of the destination application security groups.",
+                                "It could be list of resource id.",
+                                "It could be list of names in same resource group.",
+                                "It could be list of dict containing I(resource_group) and I(name).",
+                                "It is mutually exclusive with C(destination_address_prefix) and C(destination_address_prefixes)."
+                            ],
+                            "type": "list"
+                        },
+                        "destination_port_range": {
+                            "default": "*",
+                            "description": [
+                                "Port or range of ports to which traffic is headed.",
+                                "It can accept string type or a list of string type."
+                            ]
+                        },
+                        "direction": {
+                            "choices": [
+                                "Inbound",
+                                "Outbound"
+                            ],
+                            "default": "Inbound",
+                            "description": [
+                                "Indicates the direction of the traffic flow."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Unique name for the rule."
+                            ],
+                            "required": true
+                        },
+                        "priority": {
+                            "description": [
+                                "Order in which to apply the rule. Must a unique integer between 100 and 4096 inclusive."
+                            ],
+                            "required": true
+                        },
+                        "protocol": {
+                            "choices": [
+                                "Udp",
+                                "Tcp",
+                                "Icmp",
+                                "*"
+                            ],
+                            "default": "*",
+                            "description": [
+                                "Accepted traffic protocol."
+                            ]
+                        },
+                        "source_address_prefix": {
+                            "default": "*",
+                            "description": [
+                                "The CIDR or source IP range.",
+                                "Asterisk C(*) can also be used to match all source IPs.",
+                                "Default tags such as C(VirtualNetwork), C(AzureLoadBalancer) and C(Internet) can also be used.",
+                                "If this is an ingress rule, specifies where network traffic originates from.",
+                                "It can accept string type or a list of string type."
+                            ]
+                        },
+                        "source_application_security_groups": {
+                            "description": [
+                                "List of the source application security groups.",
+                                "It could be list of resource id.",
+                                "It could be list of names in same resource group.",
+                                "It could be list of dict containing resource_group and name.",
+                                "It is mutually exclusive with C(source_address_prefix) and C(source_address_prefixes)."
+                            ],
+                            "type": "list"
+                        },
+                        "source_port_range": {
+                            "default": "*",
+                            "description": [
+                                "Port or range of ports from which traffic originates.",
+                                "It can accept string type or a list of string type."
+                            ]
+                        }
+                    }
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the security group. Set to C(present) to create or update a security group. Set to C(absent) to remove a security group."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Azure network security groups",
+            "version_added": "0.1.0",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n\n# Create a security group\n- azure_rm_securitygroup:\n      resource_group: myResourceGroup\n      name: mysecgroup\n      purge_rules: yes\n      rules:\n          - name: DenySSH\n            protocol: Tcp\n            destination_port_range: 22\n            access: Deny\n            priority: 100\n            direction: Inbound\n          - name: 'AllowSSH'\n            protocol: Tcp\n            source_address_prefix:\n              - '174.109.158.0/24'\n              - '174.109.159.0/24'\n            destination_port_range: 22\n            access: Allow\n            priority: 101\n            direction: Inbound\n          - name: 'AllowMultiplePorts'\n            protocol: Tcp\n            source_address_prefix:\n              - '174.109.158.0/24'\n              - '174.109.159.0/24'\n            destination_port_range:\n              - 80\n              - 443\n            access: Allow\n            priority: 102\n\n# Update rules on existing security group\n- azure_rm_securitygroup:\n      resource_group: myResourceGroup\n      name: mysecgroup\n      rules:\n          - name: DenySSH\n            protocol: Tcp\n            destination_port_range: 22-23\n            access: Deny\n            priority: 100\n            direction: Inbound\n          - name: AllowSSHFromHome\n            protocol: Tcp\n            source_address_prefix: '174.109.158.0/24'\n            destination_port_range: 22-23\n            access: Allow\n            priority: 102\n            direction: Inbound\n      tags:\n          testing: testing\n          delete: on-exit\n\n# Create a securiy group with I(protocol=Icmp)\n- azure_rm_securitygroup:\n    name: mysecgroup\n    resource_group: myResourceGroup\n    rules:\n      - name: SSH\n        protocol: Tcp\n        destination_port_range: 22\n        access: Allow\n        priority: 105\n        direction: Inbound\n      - name: ICMP\n        protocol: Icmp\n        priority: 106\n\n# Delete security group\n- azure_rm_securitygroup:\n      resource_group: myResourceGroup\n      name: mysecgroup\n      state: absent\n",
+        "metadata": null,
+        "return": {
+            "state": {
+                "contains": {
+                    "default_rules": {
+                        "description": [
+                            "The default security rules of network security group."
+                        ],
+                        "returned": "always",
+                        "sample": [
+                            {
+                                "access": "Allow",
+                                "description": "Allow inbound traffic from all VMs in VNET",
+                                "destination_address_prefix": "VirtualNetwork",
+                                "destination_port_range": "*",
+                                "direction": "Inbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/AllowVnetInBound",
+                                "name": "AllowVnetInBound",
+                                "priority": 65000,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "VirtualNetwork",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Allow",
+                                "description": "Allow inbound traffic from azure load balancer",
+                                "destination_address_prefix": "*",
+                                "destination_port_range": "*",
+                                "direction": "Inbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+                                "name": "AllowAzureLoadBalancerInBound",
+                                "priority": 65001,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "AzureLoadBalancer",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Deny",
+                                "description": "Deny all inbound traffic",
+                                "destination_address_prefix": "*",
+                                "destination_port_range": "*",
+                                "direction": "Inbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/DenyAllInBound",
+                                "name": "DenyAllInBound",
+                                "priority": 65500,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "*",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Allow",
+                                "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                                "destination_address_prefix": "VirtualNetwork",
+                                "destination_port_range": "*",
+                                "direction": "Outbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/AllowVnetOutBound",
+                                "name": "AllowVnetOutBound",
+                                "priority": 65000,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "VirtualNetwork",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Allow",
+                                "description": "Allow outbound traffic from all VMs to Internet",
+                                "destination_address_prefix": "Internet",
+                                "destination_port_range": "*",
+                                "direction": "Outbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/AllowInternetOutBound",
+                                "name": "AllowInternetOutBound",
+                                "priority": 65001,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "*",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Deny",
+                                "description": "Deny all outbound traffic",
+                                "destination_address_prefix": "*",
+                                "destination_port_range": "*",
+                                "direction": "Outbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/defaultSecurityRules/DenyAllOutBound",
+                                "name": "DenyAllOutBound",
+                                "priority": 65500,
+                                "protocol": "*",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "*",
+                                "source_port_range": "*"
+                            }
+                        ],
+                        "type": "list"
+                    },
+                    "id": {
+                        "description": [
+                            "The resource ID."
+                        ],
+                        "returned": "always",
+                        "sample": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup",
+                        "type": "str"
+                    },
+                    "location": {
+                        "description": [
+                            "The resource location."
+                        ],
+                        "returned": "always",
+                        "sample": "westus",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": [
+                            "Name of the secrurity group."
+                        ],
+                        "returned": "always",
+                        "sample": "mysecgroup",
+                        "type": "str"
+                    },
+                    "network_interfaces": {
+                        "description": [
+                            "A collection of references to network interfaces."
+                        ],
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "rules": {
+                        "description": [
+                            "A collection of security rules of the network security group."
+                        ],
+                        "returned": "always",
+                        "sample": [
+                            {
+                                "access": "Deny",
+                                "description": null,
+                                "destination_address_prefix": "*",
+                                "destination_port_range": "22",
+                                "direction": "Inbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/securityRules/DenySSH",
+                                "name": "DenySSH",
+                                "priority": 100,
+                                "protocol": "Tcp",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "*",
+                                "source_port_range": "*"
+                            },
+                            {
+                                "access": "Allow",
+                                "description": null,
+                                "destination_address_prefix": "*",
+                                "destination_port_range": "22",
+                                "direction": "Inbound",
+                                "etag": "W/\"edf48d56-b315-40ca-a85d-dbcb47f2da7d\"",
+                                "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroup/myResourceGroup/providers/Microsoft.Network/networkSecurityGroups/mysecgroup/securityRules/AllowSSH",
+                                "name": "AllowSSH",
+                                "priority": 101,
+                                "protocol": "Tcp",
+                                "provisioning_state": "Succeeded",
+                                "source_address_prefix": "174.109.158.0/24",
+                                "source_port_range": "*"
+                            }
+                        ],
+                        "type": "list"
+                    },
+                    "subnets": {
+                        "description": [
+                            "A collection of references to subnets."
+                        ],
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "tags": {
+                        "description": [
+                            "Tags to assign to the security group."
+                        ],
+                        "returned": "always",
+                        "sample": {
+                            "delete": "on-exit",
+                            "foo": "bar",
+                            "testing": "testing"
+                        },
+                        "type": "dict"
+                    },
+                    "type": {
+                        "description": [
+                            "The resource type."
+                        ],
+                        "returned": "always",
+                        "sample": "Microsoft.Network/networkSecurityGroups",
+                        "type": "str"
+                    }
+                },
+                "description": [
+                    "Current state of the security group."
+                ],
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

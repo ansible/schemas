@@ -1,0 +1,441 @@
+{
+    "community.aws.ecs_taskdefinition_info": {
+        "doc": {
+            "author": [
+                "Gustavo Maia (@gurumaia)",
+                "Mark Chance (@Java1Guy)",
+                "Darek Kaczynski (@kaczynskid)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Describes a task definition in ECS."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ecs_taskdefinition_info.py",
+            "has_action": false,
+            "module": "ecs_taskdefinition_info",
+            "notes": [
+                "For details of the parameters and returns see U(http://boto3.readthedocs.io/en/latest/reference/services/ecs.html#ECS.Client.describe_task_definition)",
+                "This module was called C(ecs_taskdefinition_facts) before Ansible 2.9. The usage did not change.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "task_definition": {
+                    "description": [
+                        "The name of the task definition to get details for"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "json",
+                "python >= 2.6"
+            ],
+            "short_description": "Describe a task definition in ECS",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- community.aws.ecs_taskdefinition_info:\n    task_definition: test-td\n",
+        "metadata": null,
+        "return": {
+            "container_definitions": {
+                "contains": {
+                    "command": {
+                        "description": "The command that is passed to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "cpu": {
+                        "description": "The number of cpu units reserved for the container.",
+                        "returned": "always",
+                        "type": "int"
+                    },
+                    "disableNetworking": {
+                        "description": "When this parameter is true, networking is disabled within the container.",
+                        "returned": "when present",
+                        "type": "bool"
+                    },
+                    "dnsSearchDomains": {
+                        "description": "A list of DNS search domains that are presented to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "dnsServers": {
+                        "description": "A list of DNS servers that are presented to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "dockerLabels": {
+                        "description": "A key/value map of labels to add to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "dockerSecurityOptions": {
+                        "description": "A list of strings to provide custom labels for SELinux and AppArmor multi-level security systems.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "entryPoint": {
+                        "description": "The entry point that is passed to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "environment": {
+                        "contains": {
+                            "name": {
+                                "description": "The name of the environment variable.",
+                                "returned": "when present",
+                                "type": "str"
+                            },
+                            "value": {
+                                "description": "The value of the environment variable.",
+                                "returned": "when present",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The environment variables to pass to a container.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "essential": {
+                        "description": "Whether this is an essential container or not.",
+                        "returned": "always",
+                        "type": "bool"
+                    },
+                    "extraHosts": {
+                        "contains": {
+                            "hostname": {
+                                "description": "The hostname to use in the /etc/hosts entry.",
+                                "returned": "when present",
+                                "type": "str"
+                            },
+                            "ipAddress": {
+                                "description": "The IP address to use in the /etc/hosts entry.",
+                                "returned": "when present",
+                                "type": "str"
+                            }
+                        },
+                        "description": "A list of hostnames and IP address mappings to append to the /etc/hosts file on the container.",
+                        "returned": "when present",
+                        "type": "complex"
+                    },
+                    "hostname": {
+                        "description": "The hostname to use for your container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "image": {
+                        "description": "The image used to start a container.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "links": {
+                        "description": "Links to other containers.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "logConfiguration": {
+                        "description": "The log configuration specification for the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "memoryReservation": {
+                        "description": "The soft limit (in MiB) of memory to reserve for the container.",
+                        "returned": "when present",
+                        "type": "int"
+                    },
+                    "mountPoints": {
+                        "contains": {
+                            "containerPath": {
+                                "description": "The path on the container to mount the host volume at.",
+                                "returned": "when present",
+                                "type": "str"
+                            },
+                            "readOnly": {
+                                "description": "If this value is true , the container has read-only access to the volume. If this value is false , then the container can write to the volume.",
+                                "returned": "when present",
+                                "type": "bool"
+                            },
+                            "sourceVolume": {
+                                "description": "The name of the volume to mount.",
+                                "returned": "when present",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The mount points for data volumes in your container.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "name": {
+                        "description": "The name of a container.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "options": {
+                        "description": "The configuration options to send to the log driver.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "portMappings": {
+                        "contains": {
+                            "containerPort": {
+                                "description": "The port number on the container.",
+                                "returned": "when present",
+                                "type": "int"
+                            },
+                            "hostPort": {
+                                "description": "The port number on the container instance to reserve for your container.",
+                                "returned": "when present",
+                                "type": "int"
+                            },
+                            "protocol": {
+                                "description": "The protocol used for the port mapping.",
+                                "returned": "when present",
+                                "type": "str"
+                            }
+                        },
+                        "description": "The list of port mappings for the container.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "privileged": {
+                        "description": "When this parameter is true, the container is given elevated privileges on the host container instance (similar to the root user).",
+                        "returned": "when present",
+                        "type": "bool"
+                    },
+                    "readonlyRootFilesystem": {
+                        "description": "When this parameter is true, the container is given read-only access to its root file system.",
+                        "returned": "when present",
+                        "type": "bool"
+                    },
+                    "ulimits": {
+                        "contains": {
+                            "hardLimit": {
+                                "description": "The hard limit for the ulimit type.",
+                                "returned": "when present",
+                                "type": "int"
+                            },
+                            "name": {
+                                "description": "The type of the ulimit .",
+                                "returned": "when present",
+                                "type": "str"
+                            },
+                            "softLimit": {
+                                "description": "The soft limit for the ulimit type.",
+                                "returned": "when present",
+                                "type": "int"
+                            }
+                        },
+                        "description": "A list of ulimits to set in the container.",
+                        "returned": "when present",
+                        "type": "complex"
+                    },
+                    "user": {
+                        "description": "The user name to use inside the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "volumesFrom": {
+                        "contains": {
+                            "readOnly": {
+                                "description": "If this value is true , the container has read-only access to the volume. If this value is false , then the container can write to the volume.",
+                                "returned": "when present",
+                                "type": "bool"
+                            },
+                            "sourceContainer": {
+                                "description": "The name of another container within the same task definition to mount volumes from.",
+                                "returned": "when present",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Data volumes to mount from another container.",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "workingDirectory": {
+                        "description": "The working directory in which to run commands inside the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    }
+                },
+                "description": "Returns a list of complex objects representing the containers",
+                "returned": "success",
+                "type": "complex"
+            },
+            "family": {
+                "description": "The family of your task definition, used as the definition name",
+                "returned": "always",
+                "type": "str"
+            },
+            "network_mode": {
+                "description": "Network mode for the containers",
+                "returned": "always",
+                "type": "str"
+            },
+            "placement_constraints": {
+                "contains": {
+                    "expression": {
+                        "description": "A cluster query language expression to apply to the constraint.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "type": {
+                        "description": "The type of constraint.",
+                        "returned": "when present",
+                        "type": "str"
+                    }
+                },
+                "description": "A list of placement constraint objects to use for tasks",
+                "returned": "always",
+                "type": "complex"
+            },
+            "requires_attributes": {
+                "contains": {
+                    "name": {
+                        "description": "The name of the attribute.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "targetId": {
+                        "description": "The ID of the target.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "targetType": {
+                        "description": "The type of the target with which to attach the attribute.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "value": {
+                        "description": "The value of the attribute.",
+                        "returned": "when present",
+                        "type": "str"
+                    }
+                },
+                "description": "The container instance attributes required by your task",
+                "returned": "when present",
+                "type": "complex"
+            },
+            "revision": {
+                "description": "Revision number that was queried",
+                "returned": "always",
+                "type": "int"
+            },
+            "status": {
+                "description": "The status of the task definition",
+                "returned": "always",
+                "type": "str"
+            },
+            "task_definition_arn": {
+                "description": "ARN of the task definition",
+                "returned": "always",
+                "type": "str"
+            },
+            "task_role_arn": {
+                "description": "The ARN of the IAM role that containers in this task can assume",
+                "returned": "when role is set",
+                "type": "str"
+            },
+            "volumes": {
+                "contains": {
+                    "host": {
+                        "description": "The contents of the host parameter determine whether your data volume persists on the host container instance and where it is stored.",
+                        "returned": "when present",
+                        "type": "bool"
+                    },
+                    "name": {
+                        "description": "The name of the volume.",
+                        "returned": "when present",
+                        "type": "str"
+                    },
+                    "source_path": {
+                        "description": "The path on the host container instance that is presented to the container.",
+                        "returned": "when present",
+                        "type": "str"
+                    }
+                },
+                "description": "The list of volumes in a task",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

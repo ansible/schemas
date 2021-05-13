@@ -1,0 +1,287 @@
+{
+    "dellemc.openmanage.ome_profile": {
+        "doc": {
+            "author": "Jagadeesh N V (@jagadeeshnv)",
+            "collection": "dellemc.openmanage",
+            "description": "This module allows to create, modify, delete, assign, unassign, and migrate a profile on OpenManage Enterprise.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/ome_profile.py",
+            "has_action": false,
+            "module": "ome_profile",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC OpenManage Enterprise.",
+                "This module does not support C(check_mode).",
+                "C(assign) operation on a already assigned profile will not redeploy."
+            ],
+            "options": {
+                "attributes": {
+                    "description": "Attributes for C(modify) and C(assign).",
+                    "suboptions": {
+                        "Attributes": {
+                            "description": [
+                                "List of attributes to be modified, when I(command) is C(modify).",
+                                "List of attributes to be overridden when I(command) is C(assign)."
+                            ],
+                            "elements": "dict",
+                            "type": "list"
+                        },
+                        "Options": {
+                            "description": [
+                                "Provides the different shut down options.",
+                                "This is applicable when I(command) is C(assign)."
+                            ],
+                            "type": "dict"
+                        },
+                        "Schedule": {
+                            "description": [
+                                "Schedule for profile deployment.",
+                                "This is applicable when I(command) is C(assign)."
+                            ],
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "boot_to_network_iso": {
+                    "description": [
+                        "Details of the Share iso.",
+                        "Applicable when I(command) is C(create), C(assign), and C(modify)."
+                    ],
+                    "suboptions": {
+                        "boot_to_network": {
+                            "description": "Enable or disable a network share.",
+                            "required": true,
+                            "type": "bool"
+                        },
+                        "iso_path": {
+                            "description": "Specify the full ISO path including the share name.",
+                            "type": "str"
+                        },
+                        "iso_timeout": {
+                            "choices": [
+                                1,
+                                2,
+                                4,
+                                8,
+                                16
+                            ],
+                            "default": 4,
+                            "description": "Set the number of hours that the network ISO file will remain mapped to the target device(s).",
+                            "type": "int"
+                        },
+                        "share_ip": {
+                            "description": "IP address of the network share.",
+                            "type": "str"
+                        },
+                        "share_password": {
+                            "description": "User password when I(share_type) is C(CIFS).",
+                            "type": "str"
+                        },
+                        "share_type": {
+                            "choices": [
+                                "NFS",
+                                "CIFS"
+                            ],
+                            "description": "Type of network share.",
+                            "type": "str"
+                        },
+                        "share_user": {
+                            "description": "User name when I(share_type) is C(CIFS).",
+                            "type": "str"
+                        },
+                        "workgroup": {
+                            "description": "User workgroup when I(share_type) is C(CIFS).",
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "command": {
+                    "choices": [
+                        "create",
+                        "modify",
+                        "delete",
+                        "assign",
+                        "unassign",
+                        "migrate"
+                    ],
+                    "default": "create",
+                    "description": [
+                        "C(create) creates new profiles.",
+                        "C(modify) modifies an existing profile. Only I(name), I(description), I(boot_to_network_iso), and I(attributes) can be modified.",
+                        "C(delete) deletes an existing profile.",
+                        "C(assign) Deploys an existing profile on a target device and returns a task ID.",
+                        "C(unassign) unassigns a profile from a specified target and returns a task ID.",
+                        "C(migrate) migrates an existing profile and returns a task ID."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": "Description of the profile.",
+                    "type": "str"
+                },
+                "device_id": {
+                    "description": [
+                        "ID of the target device.",
+                        "This is applicable when I(command) is C(assign) and C(migrate).",
+                        "This option is mutually exclusive with I(device_service_tag)."
+                    ],
+                    "type": "int"
+                },
+                "device_service_tag": {
+                    "description": [
+                        "Identifier of the target device.",
+                        "This is typically 7 to 8 characters in length.",
+                        "Applicable when I(command) is C(assign), and C(migrate).",
+                        "This option is mutually exclusive with I(device_id).",
+                        "If the device does not exist when I(command) is C(assign) then the profile is auto-deployed."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "description": [
+                        "Filters the profiles based on selected criteria.",
+                        "This is applicable when I(command) is C(delete) or C(unassign).",
+                        "This supports suboption I(ProfileIds) which takes a list of profile IDs.",
+                        "This also supports OData filter expressions with the suboption I(Filters).",
+                        "See OpenManage Enterprise REST API guide for the filtering options available.",
+                        "I(WARNING) When this option is used in case of C(unassign), task ID is not returned for any of the profiles affected."
+                    ],
+                    "type": "dict"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Provides the option to force the migration of a profile even if the source device cannot be contacted.",
+                        "This option is applicable when I(command) is C(migrate)."
+                    ],
+                    "type": "bool"
+                },
+                "hostname": {
+                    "description": "Target IP address or hostname.",
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the profile.",
+                        "This is applicable for modify, delete, assign, unassign, and migrate operations.",
+                        "This option is mutually exclusive with I(name_prefix) and I(number_of_profiles)."
+                    ],
+                    "type": "str"
+                },
+                "name_prefix": {
+                    "default": "Profile",
+                    "description": [
+                        "The name provided when creating a profile is used a prefix followed by the number assigned to it by OpenManage Enterprise.",
+                        "This is applicable only for a create operation.",
+                        "This option is mutually exclusive with I(name)."
+                    ],
+                    "type": "str"
+                },
+                "new_name": {
+                    "description": [
+                        "New name of the profile.",
+                        "Applicable when I(command) is C(modify)."
+                    ],
+                    "type": "str"
+                },
+                "number_of_profiles": {
+                    "default": 1,
+                    "description": [
+                        "Provide the number of profiles to be created.",
+                        "This is applicable when I(name_prefix) is used with C(create).",
+                        "This option is mutually exclusive with I(name).",
+                        "Openmanage Enterprise can create a maximum of 100 profiles."
+                    ],
+                    "type": "int"
+                },
+                "password": {
+                    "description": "Target user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": "Target HTTPS port.",
+                    "type": "int"
+                },
+                "template_id": {
+                    "description": [
+                        "ID of the template.",
+                        "This is applicable when I(command) is C(create).",
+                        "This option is mutually exclusive with I(template_name)."
+                    ],
+                    "type": "int"
+                },
+                "template_name": {
+                    "description": [
+                        "Name of the template for creating the profile(s).",
+                        "This is applicable when I(command) is C(create).",
+                        "This option is mutually exclusive with I(template_id)."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": "Target username.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7.5"
+            ],
+            "short_description": "Create, modify, delete, assign, unassign and migrate a profile on OpenManage Enterprise",
+            "version_added": "3.1.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Create two profiles from a template\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    template_name: \"template 1\"\n    name_prefix: \"omam_profile\"\n    number_of_profiles: 2\n\n- name: Create profile with NFS share\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: create\n    template_name: \"template 1\"\n    name_prefix: \"omam_profile\"\n    number_of_profiles: 1\n    boot_to_network_iso:\n      boot_to_network: True\n      share_type: NFS\n      share_ip: \"192.168.0.1\"\n      iso_path: \"path/to/my_iso.iso\"\n      iso_timeout: 8\n\n- name: Create profile with CIFS share\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: create\n    template_name: \"template 1\"\n    name_prefix: \"omam_profile\"\n    number_of_profiles: 1\n    boot_to_network_iso:\n      boot_to_network: True\n      share_type: CIFS\n      share_ip: \"192.168.0.2\"\n      share_user: \"username\"\n      share_password: \"password\"\n      workgroup: \"workgroup\"\n      iso_path: \"\\\\path\\\\to\\\\my_iso.iso\"\n      iso_timeout: 8\n\n- name: Modify profile name with NFS share and attributes\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: modify\n    name: \"Profile 00001\"\n    new_name: \"modified profile\"\n    description: \"new description\"\n    boot_to_network_iso:\n      boot_to_network: True\n      share_type: NFS\n      share_ip: \"192.168.0.3\"\n      iso_path: \"path/to/my_iso.iso\"\n      iso_timeout: 8\n    attributes:\n      Attributes:\n        - Id: 4506\n          Value: \"server attr 1\"\n          IsIgnored: true\n        - Id: 4507\n          Value: \"server attr 2\"\n          IsIgnored: true\n\n- name: Delete a profile using profile name\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"delete\"\n    name: \"Profile 00001\"\n\n- name: Delete profiles using filters\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"delete\"\n    filters:\n      SelectAll: True\n      Filters: =contains(ProfileName,'Profile 00002')\n\n- name: Delete profiles using profile list filter\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"delete\"\n    filters:\n      ProfileIds:\n        - 17123\n        - 16124\n\n- name: Assign a profile to target along with network share\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: assign\n    name: \"Profile 00001\"\n    device_id: 12456\n    boot_to_network_iso:\n      boot_to_network: True\n      share_type: NFS\n      share_ip: \"192.168.0.1\"\n      iso_path: \"path/to/my_iso.iso\"\n      iso_timeout: 8\n    attributes:\n      Attributes:\n        - Id: 4506\n          Value: \"server attr 1\"\n          IsIgnored: true\n      Options:\n        ShutdownType: 0\n        TimeToWaitBeforeShutdown: 300\n        EndHostPowerState: 1\n        StrictCheckingVlan: True\n      Schedule:\n        RunNow: True\n        RunLater: False\n\n- name: Unassign a profile using profile name\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"unassign\"\n    name: \"Profile 00003\"\n\n- name: Unassign profiles using filters\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"unassign\"\n    filters:\n      SelectAll: True\n      Filters: =contains(ProfileName,'Profile 00003')\n\n- name: Unassign profiles using profile list filter\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"unassign\"\n    filters:\n      ProfileIds:\n        - 17123\n        - 16123\n\n- name: Migrate a profile\n  dellemc.openmanage.ome_profile:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    command: \"migrate\"\n    name: \"Profile 00001\"\n    device_id: 12456\n",
+        "metadata": null,
+        "return": {
+            "error_info": {
+                "description": "Details of the HTTP Error.",
+                "returned": "on HTTP error",
+                "sample": {
+                    "error": {
+                        "@Message.ExtendedInfo": [
+                            {
+                                "Message": "Unable to process the request because an error occurred.",
+                                "MessageArgs": [],
+                                "MessageId": "GEN1234",
+                                "RelatedProperties": [],
+                                "Resolution": "Retry the operation. If the issue persists, contact your system administrator.",
+                                "Severity": "Critical"
+                            }
+                        ],
+                        "code": "Base.1.0.GeneralError",
+                        "message": "A general error has occurred. See ExtendedInfo for more information."
+                    }
+                },
+                "type": "dict"
+            },
+            "job_id": {
+                "description": [
+                    "Task ID created when I(command) is C(assign), C(migrate) or C(unassign).",
+                    "C(assign) and C(unassign) operations do not trigger a task if a profile is auto-deployed."
+                ],
+                "returned": "when I(command) is C(assign), C(migrate) or C(unassign)",
+                "sample": 14123,
+                "type": "int"
+            },
+            "msg": {
+                "description": "Overall status of the profile operation.",
+                "returned": "always",
+                "sample": "Successfully created 2 profile(s).",
+                "type": "str"
+            },
+            "profile_ids": {
+                "description": "IDs of the profiles created.",
+                "returned": "when I(command) is C(create)",
+                "sample": [
+                    1234,
+                    5678
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

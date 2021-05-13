@@ -1,0 +1,36 @@
+{
+    "dellemc.os10.show_system_network_summary": {
+        "doc": {
+            "author": "Senthil Kumar Ganesan (@skg-net)",
+            "collection": "dellemc.os10",
+            "description": [
+                "Get the show system inforamtion of a Leaf-Spine."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/os10/plugins/modules/show_system_network_summary.py",
+            "has_action": false,
+            "module": "show_system_network_summary",
+            "options": {
+                "cli_responses": {
+                    "description": [
+                        "show system command xml output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "output_type": {
+                    "default": "json",
+                    "description": [
+                        "json or yaml",
+                        "Default value is json"
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "short_description": "Operations for show_system_network output in json/yaml format."
+        },
+        "examples": "\nCopy below YAML into a playbook (e.g. play.yml) and run as follows:\n\n#$ ansible-playbook -i inv show.yml\nname: show system Configuration\nhosts: localhost\nconnection: local\ngather_facts: False\nvars:\n  cli:\n    username: admin\n    password: admin\ntasks:\n- name: \"Get Dell EMC OS10 Show system summary\"\n  os10_command:\n    commands: ['show system | display-xml']\n    provider: \"{{ hostvars[item].cli }}\"\n  with_items: \"{{ groups['all'] }}\"\n  register: show_system\n- set_fact:\n     output:  \"{{ output|default([])+ [{'inv_name': item.item, 'host': item.invocation.module_args.provider.host, 'stdout_show_system': item.stdout}] }}\"\n  loop: \"{{ show_system.results }}\"\n- debug: var=output\n- name: \"show system network call to lib \"\n  show_system_network_summary:\n    cli_responses: \"{{ output}} \"\n    output_type: \"{{ output_method if output_method is defined else 'json' }}\"\n  register: show_system_network_summary\n- debug: var=show_system_network_summary\n",
+        "metadata": null,
+        "return": null
+    }
+}

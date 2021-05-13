@@ -1,0 +1,107 @@
+{
+    "community.network.edgeswitch_vlan": {
+        "doc": {
+            "author": "Frederic Bor (@f-bor)",
+            "collection": "community.network",
+            "description": [
+                "This module provides declarative management of VLANs on Ubiquiti Edgeswitch network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/edgeswitch_vlan.py",
+            "has_action": false,
+            "module": "edgeswitch_vlan",
+            "notes": [
+                "Tested against edgeswitch 1.7.4",
+                "This module use native Ubiquiti vlan syntax and does not support switchport compatibility syntax. For clarity, it is strongly advised to not use both syntaxes on the same interface.",
+                "Edgeswitch does not support deleting or changing name of VLAN 1",
+                "As auto_tag, auto_untag and auto_exclude are a kind of default setting for all interfaces, they are mutually exclusive"
+            ],
+            "options": {
+                "aggregate": {
+                    "description": "List of VLANs definitions."
+                },
+                "auto_exclude": {
+                    "description": [
+                        "Each of the switch interfaces will be excluded from I(vlan_id) unless defined in I(*_interfaces). This is a default setting for all switch interfaces."
+                    ],
+                    "type": "bool"
+                },
+                "auto_tag": {
+                    "description": [
+                        "Each of the switch interfaces will be set to accept and transmit untagged frames for I(vlan_id) unless defined in I(*_interfaces). This is a default setting for all switch interfaces."
+                    ],
+                    "type": "bool"
+                },
+                "auto_untag": {
+                    "description": [
+                        "Each of the switch interfaces will be set to accept untagged frames and transmit them tagged for I(vlan_id) unless defined in I(*_interfaces). This is a default setting for all switch interfaces."
+                    ],
+                    "type": "bool"
+                },
+                "excluded_interfaces": {
+                    "description": [
+                        "List of interfaces that should be excluded of the VLAN. Accept range of interfaces."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of the VLAN."
+                    ]
+                },
+                "purge": {
+                    "default": false,
+                    "description": [
+                        "Purge VLANs not defined in the I(aggregate) parameter."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "action on the VLAN configuration."
+                    ]
+                },
+                "tagged_interfaces": {
+                    "description": [
+                        "List of interfaces that should accept and transmit tagged frames for the VLAN. Accept range of interfaces."
+                    ]
+                },
+                "untagged_interfaces": {
+                    "description": [
+                        "List of interfaces that should accept untagged frames and transmit them tagged for the VLAN. Accept range of interfaces."
+                    ]
+                },
+                "vlan_id": {
+                    "description": [
+                        "ID of the VLAN. Range 1-4093."
+                    ]
+                }
+            },
+            "short_description": "Manage VLANs on Ubiquiti Edgeswitch network devices"
+        },
+        "examples": "\n- name: Create vlan\n  community.network.edgeswitch_vlan:\n    vlan_id: 100\n    name: voice\n    action: present\n\n- name: Add interfaces to VLAN\n  community.network.edgeswitch_vlan:\n    vlan_id: 100\n    tagged_interfaces:\n      - 0/1\n      - 0/4-0/6\n\n- name: Setup three vlans and delete the rest\n  community.network.edgeswitch_vlan:\n    purge: true\n    aggregate:\n      - { vlan_id: 1, name: default, auto_untag: true, excluded_interfaces: 0/45-0/48 }\n      - { vlan_id: 100, name: voice, auto_tag: true }\n      - { vlan_id: 200, name: video, auto_exclude: true, untagged_interfaces: 0/45-0/48, tagged_interfaces: 0/49 }\n\n- name: Delete vlan\n  community.network.edgeswitch_vlan:\n    vlan_id: 100\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always",
+                "sample": [
+                    "vlan database",
+                    "vlan 100",
+                    "vlan name 100 \"test vlan\"",
+                    "exit",
+                    "interface 0/1",
+                    "vlan pvid 50",
+                    "vlan participation include 50,100",
+                    "vlan tagging 100",
+                    "vlan participation exclude 200",
+                    "no vlan tagging 200"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

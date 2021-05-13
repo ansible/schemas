@@ -1,0 +1,340 @@
+{
+    "community.mysql.mysql_info": {
+        "doc": {
+            "author": [
+                "Andrew Klychkov (@Andersson007)",
+                "Sebastian Gumprich (@rndmh3ro)"
+            ],
+            "collection": "community.mysql",
+            "description": [
+                "Gathers information about MySQL servers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/mysql/plugins/modules/mysql_info.py",
+            "has_action": false,
+            "module": "mysql_info",
+            "notes": [
+                "Calculating the size of a database might be slow, depending on the number and size of tables in it. To avoid this, use I(exclude_fields=db_size).",
+                "Supports C(check_mode).",
+                "Requires the PyMySQL (Python 2.7 and Python 3.X) or MySQL-python (Python 2.X) package installed on the remote host. The Python package may be installed with apt-get install python-pymysql (Ubuntu; see M(ansible.builtin.apt)) or yum install python2-PyMySQL (RHEL/CentOS/Fedora; see M(ansible.builtin.yum)). You can also use dnf install python2-PyMySQL for newer versions of Fedora; see M(ansible.builtin.dnf).",
+                "Be sure you have PyMySQL or MySQLdb library installed on the target machine for the Python interpreter Ansible uses, for example, if it is Python 3, you must install the library for Python 3. You can also change the interpreter. For more information, see U(https://docs.ansible.com/ansible/latest/reference_appendices/interpreter_discovery.html).",
+                "Both C(login_password) and C(login_user) are required when you are passing credentials. If none are present, the module will attempt to read the credentials from C(~/.my.cnf), and finally fall back to using the MySQL default login of 'root' with no password.",
+                "If there are problems with local connections, using I(login_unix_socket=/path/to/mysqld/socket) instead of I(login_host=localhost) might help. As an example, the default MariaDB installation of version 10.4 and later uses the unix_socket authentication plugin by default that without using I(login_unix_socket=/var/run/mysqld/mysqld.sock) (the default path) causes the error ``Host '127.0.0.1' is not allowed to connect to this MariaDB server``.",
+                "Alternatively, you can use the mysqlclient library instead of MySQL-python (MySQLdb) which supports both Python 2.X and Python >=3.5. See U(https://pypi.org/project/mysqlclient/) how to install it."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca"
+                    ],
+                    "description": [
+                        "The path to a Certificate Authority (CA) certificate. This option, if used, must specify the same certificate as used by the server."
+                    ],
+                    "type": "path"
+                },
+                "check_hostname": {
+                    "description": [
+                        "Whether to validate the server host name when an SSL connection is required. Corresponds to MySQL CLIs C(--ssl) switch.",
+                        "Setting this to C(false) disables hostname verification. Use with caution.",
+                        "Requires pymysql >= 0.7.11.",
+                        "This optoin has no effect on MySQLdb."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "ssl_cert"
+                    ],
+                    "description": [
+                        "The path to a client public key certificate."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "ssl_key"
+                    ],
+                    "description": [
+                        "The path to the client private key."
+                    ],
+                    "type": "path"
+                },
+                "config_file": {
+                    "default": "~/.my.cnf",
+                    "description": [
+                        "Specify a config file from which user and password are to be read."
+                    ],
+                    "type": "path"
+                },
+                "connect_timeout": {
+                    "default": 30,
+                    "description": [
+                        "The connection timeout when connecting to the MySQL server."
+                    ],
+                    "type": "int"
+                },
+                "exclude_fields": {
+                    "description": [
+                        "List of fields which are not needed to collect.",
+                        "Supports elements: C(db_size). Unsupported elements will be ignored."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "0.1.0",
+                    "version_added_collection": "community.mysql"
+                },
+                "filter": {
+                    "description": [
+                        "Limit the collected information by comma separated string or YAML list.",
+                        "Allowable values are C(version), C(databases), C(settings), C(global_status), C(users), C(engines), C(master_status), C(slave_status), C(slave_hosts).",
+                        "By default, collects all subsets.",
+                        "You can use '!' before value (for example, C(!settings)) to exclude it from the information.",
+                        "If you pass including and excluding values to the filter, for example, I(filter=!settings,version), the excluding values, C(!settings) in this case, will be ignored."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "login_db": {
+                    "description": [
+                        "Database name to connect to.",
+                        "It makes sense if I(login_user) is allowed to connect to a specific database only."
+                    ],
+                    "type": "str"
+                },
+                "login_host": {
+                    "default": "localhost",
+                    "description": [
+                        "Host running the database.",
+                        "In some cases for local connections the I(login_unix_socket=/path/to/mysqld/socket), that is usually C(/var/run/mysqld/mysqld.sock), needs to be used instead of I(login_host=localhost)."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_port": {
+                    "default": 3306,
+                    "description": [
+                        "Port of the MySQL server. Requires I(login_host) be defined as other than localhost if login_port is used."
+                    ],
+                    "type": "int"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "The path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "return_empty_dbs": {
+                    "default": false,
+                    "description": [
+                        "Includes names of empty databases to returned dictionary."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "PyMySQL (Python 2.7 and Python 3.X), or",
+                "MySQLdb (Python 2.x)"
+            ],
+            "seealso": [
+                {
+                    "module": "community.mysql.mysql_variables"
+                },
+                {
+                    "module": "community.mysql.mysql_db"
+                },
+                {
+                    "module": "community.mysql.mysql_user"
+                },
+                {
+                    "module": "community.mysql.mysql_replication"
+                }
+            ],
+            "short_description": "Gather information about MySQL servers"
+        },
+        "examples": "\n# Display info from mysql-hosts group (using creds from ~/.my.cnf to connect):\n# ansible mysql-hosts -m mysql_info\n\n# Display only databases and users info:\n# ansible mysql-hosts -m mysql_info -a 'filter=databases,users'\n\n# Display only slave status:\n# ansible standby -m mysql_info -a 'filter=slave_status'\n\n# Display all info from databases group except settings:\n# ansible databases -m mysql_info -a 'filter=!settings'\n\n- name: Collect all possible information using passwordless root access\n  community.mysql.mysql_info:\n    login_user: root\n\n- name: Get MySQL version with non-default credentials\n  community.mysql.mysql_info:\n    login_user: mysuperuser\n    login_password: mysuperpass\n    filter: version\n\n- name: Collect all info except settings and users by root\n  community.mysql.mysql_info:\n    login_user: root\n    login_password: rootpass\n    filter: \"!settings,!users\"\n\n- name: Collect info about databases and version using ~/.my.cnf as a credential file\n  become: yes\n  community.mysql.mysql_info:\n    filter:\n    - databases\n    - version\n\n- name: Collect info about databases and version using ~alice/.my.cnf as a credential file\n  become: yes\n  community.mysql.mysql_info:\n    config_file: /home/alice/.my.cnf\n    filter:\n    - databases\n    - version\n\n- name: Collect info about databases including empty and excluding their sizes\n  become: yes\n  community.mysql.mysql_info:\n    config_file: /home/alice/.my.cnf\n    filter:\n    - databases\n    exclude_fields: db_size\n    return_empty_dbs: yes\n",
+        "metadata": null,
+        "return": {
+            "databases": {
+                "contains": {
+                    "size": {
+                        "description": "Database size in bytes.",
+                        "returned": "if not excluded by filter",
+                        "sample": {
+                            "size": 656594
+                        },
+                        "type": "dict"
+                    }
+                },
+                "description": "Information about databases.",
+                "returned": "if not excluded by filter",
+                "sample": [
+                    {
+                        "information_schema": {
+                            "size": 73728
+                        },
+                        "mysql": {
+                            "size": 656594
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "engines": {
+                "description": "Information about the server's storage engines.",
+                "returned": "if not excluded by filter",
+                "sample": [
+                    {
+                        "CSV": {
+                            "Comment": "CSV storage engine",
+                            "Savepoints": "NO",
+                            "Support": "YES",
+                            "Transactions": "NO",
+                            "XA": "NO"
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "global_status": {
+                "description": "Global status information.",
+                "returned": "if not excluded by filter",
+                "sample": [
+                    {
+                        "Innodb_buffer_pool_read_requests": 123,
+                        "Innodb_buffer_pool_reads": 32
+                    }
+                ],
+                "type": "dict"
+            },
+            "master_status": {
+                "description": "Master status information.",
+                "returned": "if master",
+                "sample": [
+                    {
+                        "Binlog_Do_DB": "",
+                        "Binlog_Ignore_DB": "mysql",
+                        "File": "mysql-bin.000001",
+                        "Position": 769
+                    }
+                ],
+                "type": "dict"
+            },
+            "settings": {
+                "description": "Global settings (variables) information.",
+                "returned": "if not excluded by filter",
+                "sample": [
+                    {
+                        "innodb_open_files": 300,
+                        "innodb_page_size\"": 16384
+                    }
+                ],
+                "type": "dict"
+            },
+            "slave_hosts": {
+                "description": "Slave status information.",
+                "returned": "if master",
+                "sample": [
+                    {
+                        "2": {
+                            "Host": "",
+                            "Master_id": 1,
+                            "Port": 3306
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "slave_status": {
+                "description": "Slave status information.",
+                "returned": "if standby",
+                "sample": [
+                    {
+                        "192.168.1.101": {
+                            "3306": {
+                                "replication_user": {
+                                    "Connect_Retry": 60,
+                                    "Exec_Master_Log_Pos": 769,
+                                    "Last_Errno": 0
+                                }
+                            }
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "users": {
+                "description": "Users information.",
+                "returned": "if not excluded by filter",
+                "sample": [
+                    {
+                        "localhost": {
+                            "root": {
+                                "Alter_priv": "Y",
+                                "Alter_routine_priv": "Y"
+                            }
+                        }
+                    }
+                ],
+                "type": "dict"
+            },
+            "version": {
+                "contains": {
+                    "full": {
+                        "description": "Full server version.",
+                        "returned": "if not excluded by filter",
+                        "sample": "5.5.60-MariaDB",
+                        "type": "str"
+                    },
+                    "major": {
+                        "description": "Major server version.",
+                        "returned": "if not excluded by filter",
+                        "sample": 5,
+                        "type": "int"
+                    },
+                    "minor": {
+                        "description": "Minor server version.",
+                        "returned": "if not excluded by filter",
+                        "sample": 5,
+                        "type": "int"
+                    },
+                    "release": {
+                        "description": "Release server version.",
+                        "returned": "if not excluded by filter",
+                        "sample": 60,
+                        "type": "int"
+                    },
+                    "suffix": {
+                        "description": "Server suffix, for example MySQL, MariaDB, other or none.",
+                        "returned": "if not excluded by filter",
+                        "sample": "MariaDB",
+                        "type": "str"
+                    }
+                },
+                "description": "Database server version.",
+                "returned": "if not excluded by filter",
+                "sample": {
+                    "version": {
+                        "full": "5.5.60-MariaDB",
+                        "major": 5,
+                        "minor": 5,
+                        "release": 60,
+                        "suffix": "MariaDB"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

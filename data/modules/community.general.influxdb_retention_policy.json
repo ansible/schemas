@@ -1,0 +1,164 @@
+{
+    "community.general.influxdb_retention_policy": {
+        "doc": {
+            "author": "Kamil Szczygiel (@kamsz)",
+            "collection": "community.general",
+            "description": [
+                "Manage InfluxDB retention policies."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/influxdb_retention_policy.py",
+            "has_action": false,
+            "module": "influxdb_retention_policy",
+            "options": {
+                "database_name": {
+                    "description": [
+                        "Name of the database."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "default": {
+                    "default": false,
+                    "description": [
+                        "Sets the retention policy as default retention policy."
+                    ],
+                    "type": "bool"
+                },
+                "duration": {
+                    "description": [
+                        "Determines how long InfluxDB should keep the data. If specified, it should be C(INF) or at least one hour. If not specified, C(INF) is assumed. Supports complex duration expressions with multiple units."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "default": "localhost",
+                    "description": [
+                        "The hostname or IP address on which InfluxDB server is listening.",
+                        "Since Ansible 2.5, defaulted to localhost."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "login_password"
+                    ],
+                    "default": "root",
+                    "description": [
+                        "Password that will be used to authenticate against InfluxDB server.",
+                        "Alias C(login_password) added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The path on which InfluxDB server is accessible",
+                        "Only available when using python-influxdb >= 5.1.0"
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "policy_name": {
+                    "description": [
+                        "Name of the retention policy."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 8086,
+                    "description": [
+                        "The port on which InfluxDB server is listening"
+                    ],
+                    "type": "int"
+                },
+                "proxies": {
+                    "description": [
+                        "HTTP(S) proxy to use for Requests to connect to InfluxDB server."
+                    ],
+                    "type": "dict"
+                },
+                "replication": {
+                    "description": [
+                        "Determines how many independent copies of each point are stored in the cluster."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "retries": {
+                    "default": 3,
+                    "description": [
+                        "Number of retries client will try before aborting.",
+                        "C(0) indicates try until success.",
+                        "Only available when using python-influxdb >= 4.1.0"
+                    ],
+                    "type": "int"
+                },
+                "shard_group_duration": {
+                    "description": [
+                        "Determines the time range covered by a shard group. If specified it must be at least one hour. If none, it's determined by InfluxDB by the rentention policy's duration. Supports complex duration expressions with multiple units."
+                    ],
+                    "type": "str",
+                    "version_added": "2.0.0",
+                    "version_added_collection": "community.general"
+                },
+                "ssl": {
+                    "default": false,
+                    "description": [
+                        "Use https instead of http to connect to InfluxDB server."
+                    ],
+                    "type": "bool"
+                },
+                "timeout": {
+                    "description": [
+                        "Number of seconds Requests will wait for client to establish a connection."
+                    ],
+                    "type": "int"
+                },
+                "udp_port": {
+                    "default": 4444,
+                    "description": [
+                        "UDP port to connect to InfluxDB server."
+                    ],
+                    "type": "int"
+                },
+                "use_udp": {
+                    "default": false,
+                    "description": [
+                        "Use UDP to connect to InfluxDB server."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "login_username"
+                    ],
+                    "default": "root",
+                    "description": [
+                        "Username that will be used to authenticate against InfluxDB server.",
+                        "Alias C(login_username) added in Ansible 2.5."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to C(no), the SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "influxdb >= 0.9",
+                "requests"
+            ],
+            "short_description": "Manage InfluxDB retention policies"
+        },
+        "examples": "\n# Example influxdb_retention_policy command from Ansible Playbooks\n- name: Create 1 hour retention policy\n  community.general.influxdb_retention_policy:\n      hostname: \"{{influxdb_ip_address}}\"\n      database_name: \"{{influxdb_database_name}}\"\n      policy_name: test\n      duration: 1h\n      replication: 1\n      ssl: yes\n      validate_certs: yes\n\n- name: Create 1 day retention policy with 1 hour shard group duration\n  community.general.influxdb_retention_policy:\n      hostname: \"{{influxdb_ip_address}}\"\n      database_name: \"{{influxdb_database_name}}\"\n      policy_name: test\n      duration: 1d\n      replication: 1\n      shard_group_duration: 1h\n\n- name: Create 1 week retention policy with 1 day shard group duration\n  community.general.influxdb_retention_policy:\n      hostname: \"{{influxdb_ip_address}}\"\n      database_name: \"{{influxdb_database_name}}\"\n      policy_name: test\n      duration: 1w\n      replication: 1\n      shard_group_duration: 1d\n\n- name: Create infinite retention policy with 1 week of shard group duration\n  community.general.influxdb_retention_policy:\n      hostname: \"{{influxdb_ip_address}}\"\n      database_name: \"{{influxdb_database_name}}\"\n      policy_name: test\n      duration: INF\n      replication: 1\n      ssl: no\n      validate_certs: no\n      shard_group_duration: 1w\n\n- name: Create retention policy with complex durations\n  community.general.influxdb_retention_policy:\n      hostname: \"{{influxdb_ip_address}}\"\n      database_name: \"{{influxdb_database_name}}\"\n      policy_name: test\n      duration: 5d1h30m\n      replication: 1\n      ssl: no\n      validate_certs: no\n      shard_group_duration: 1d10h30m\n",
+        "metadata": null,
+        "return": null
+    }
+}

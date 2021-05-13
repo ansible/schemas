@@ -1,0 +1,174 @@
+{
+    "cyberark.pas.cyberark_user": {
+        "doc": {
+            "author": [
+                "Edward Nunez (@enunez-cyberark)",
+                "Cyberark Bizdev (@cyberark-bizdev)",
+                "Erasmo Acosta (@erasmix)",
+                "James Stutes (@jimmyjamcabd)"
+            ],
+            "collection": "cyberark.pas",
+            "description": [
+                "CyberArk User Management using PAS Web Services SDK, It currently supports the following actions Get User Details, Add User, Update User, Delete User."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cyberark/pas/plugins/modules/cyberark_user.py",
+            "has_action": false,
+            "module": "cyberark_user",
+            "options": {
+                "change_password_on_the_next_logon": {
+                    "default": false,
+                    "description": [
+                        "Whether or not the user must change their password in their next logon."
+                    ],
+                    "type": "bool"
+                },
+                "cyberark_session": {
+                    "description": [
+                        "Dictionary set by a CyberArk authentication containing the different values to perform actions on a logged-on CyberArk session, please see M(cyberark_authentication) module for an example of cyberark_session."
+                    ],
+                    "required": true,
+                    "type": "dict"
+                },
+                "disabled": {
+                    "default": false,
+                    "description": [
+                        "Whether or not the user will be disabled."
+                    ],
+                    "type": "bool"
+                },
+                "email": {
+                    "description": [
+                        "The user email address."
+                    ],
+                    "type": "str"
+                },
+                "expiry_date": {
+                    "description": [
+                        "The date and time when the user account will expire and become disabled."
+                    ],
+                    "type": "str"
+                },
+                "first_name": {
+                    "description": [
+                        "The user first name."
+                    ],
+                    "type": "str"
+                },
+                "group_name": {
+                    "description": [
+                        "The name of the group the user will be added to."
+                    ],
+                    "type": "str"
+                },
+                "initial_password": {
+                    "description": [
+                        "The password that the new user will use to log on the first time.",
+                        "This password must meet the password policy requirements.",
+                        "This parameter is required when state is present -- Add User."
+                    ],
+                    "type": "str"
+                },
+                "last_name": {
+                    "description": [
+                        "The user last name."
+                    ],
+                    "type": "str"
+                },
+                "location": {
+                    "description": [
+                        "The Vault Location for the user."
+                    ],
+                    "type": "str"
+                },
+                "logging_file": {
+                    "default": "/tmp/ansible_cyberark.log",
+                    "description": [
+                        "Setting the log file name and location for troubleshooting logs."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "logging_level": {
+                    "choices": [
+                        "NOTSET",
+                        "DEBUG",
+                        "INFO"
+                    ],
+                    "default": "NOTSET",
+                    "description": [
+                        "Parameter used to define the level of troubleshooting output to the C(logging_file) value."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_password": {
+                    "description": [
+                        "The user updated password. Make sure that this password meets the password policy requirements."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specifies the state needed for the user present for create user, absent for delete user."
+                    ],
+                    "type": "str"
+                },
+                "user_type_name": {
+                    "description": [
+                        "The type of user.",
+                        "The parameter defaults to C(EPVUser)."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "The name of the user who will be queried (for details), added, updated or deleted."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "CyberArk User Management using PAS Web Services SDK.",
+            "version_added": 2.4,
+            "version_added_collection": "cyberark.pas"
+        },
+        "examples": "\n- name: Logon to CyberArk Vault using PAS Web Services SDK\n  cyberark_authentication:\n    api_base_url: https://components.cyberark.local\n    use_shared_logon_authentication: yes\n\n- name: Create user & immediately add it to a group\n  cyberark_user:\n    username: username\n    initial_password: password\n    user_type_name: EPVUser\n    change_password_on_the_next_logon: no\n    group_name: GroupOfUser\n    state: present\n    cyberark_session: '{{ cyberark_session }}'\n\n- name: Make sure user is present and reset user credential if present\n  cyberark_user:\n    username: Username\n    new_password: password\n    disabled: no\n    state: present\n    cyberark_session: '{{ cyberark_session }}'\n\n- name: Logoff from CyberArk Vault\n  cyberark_authentication:\n    state: absent\n    cyberark_session: '{{ cyberark_session }}'\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "changed": {
+                "description": "Whether there was a change done.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "cyberark_user": {
+                "contains": {
+                    "result": {
+                        "description": "user properties when state is present",
+                        "returned": "success",
+                        "type": "dict"
+                    }
+                },
+                "description": "Dictionary containing result properties.",
+                "returned": "always",
+                "type": "complex"
+            },
+            "status_code": {
+                "description": "Result HTTP Status code",
+                "returned": "success",
+                "sample": 200,
+                "type": "int"
+            }
+        }
+    }
+}

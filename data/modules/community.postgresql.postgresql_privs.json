@@ -1,0 +1,320 @@
+{
+    "community.postgresql.postgresql_privs": {
+        "doc": {
+            "author": [
+                "Bernhard Weitzhofer (@b6d)",
+                "Tobias Birkefeld (@tcraxs)"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Grant or revoke privileges on PostgreSQL database objects.",
+                "This module is basically a wrapper around most of the functionality of PostgreSQL's GRANT and REVOKE statements with detection of changes (GRANT/REVOKE I(privs) ON I(type) I(objs) TO/FROM I(roles))."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_privs.py",
+            "has_action": false,
+            "module": "postgresql_privs",
+            "notes": [
+                "Supports C(check_mode).",
+                "Parameters that accept comma separated lists (I(privs), I(objs), I(roles)) have singular alias names (I(priv), I(obj), I(role)).",
+                "To revoke only C(GRANT OPTION) for a specific object, set I(state) to C(present) and I(grant_option) to C(no) (see examples).",
+                "Note that when revoking privileges from a role R, this role  may still have access via privileges granted to any role R is a member of including C(PUBLIC).",
+                "Note that when you use C(PUBLIC) role, the module always reports that the state has been changed.",
+                "Note that when revoking privileges from a role R, you do so as the user specified via I(login). If R has been granted the same privileges by another user also, R can still access database objects via these privileges.",
+                "When revoking privileges, C(RESTRICT) is assumed (see PostgreSQL docs).",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "database": {
+                    "aliases": [
+                        "db",
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of database to connect to."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "fail_on_role": {
+                    "default": true,
+                    "description": [
+                        "If C(yes), fail when target role (for whom privs need to be granted) does not exist. Otherwise just warn and continue."
+                    ],
+                    "type": "bool"
+                },
+                "grant_option": {
+                    "aliases": [
+                        "admin_option"
+                    ],
+                    "description": [
+                        "Whether C(role) may grant/revoke the specified privileges/group memberships to others.",
+                        "Set to C(no) to revoke GRANT OPTION, leave unspecified to make no changes.",
+                        "I(grant_option) only has an effect if I(state) is C(present)."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "aliases": [
+                        "login_host"
+                    ],
+                    "description": [
+                        "Database host address. If unspecified, connect via Unix socket."
+                    ],
+                    "type": "str"
+                },
+                "login": {
+                    "aliases": [
+                        "login_user"
+                    ],
+                    "default": "postgres",
+                    "description": [
+                        "The username to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "objs": {
+                    "aliases": [
+                        "obj"
+                    ],
+                    "description": [
+                        "Comma separated list of database objects to set privileges on.",
+                        "If I(type) is C(table), C(partition table), C(sequence), C(function) or C(procedure), the special valueC(ALL_IN_SCHEMA) can be provided instead to specify all database objects of type I(type) in the schema specified via I(schema). (This also works with PostgreSQL < 9.0.) (C(ALL_IN_SCHEMA) is available for C(function) and C(partition table) since Ansible 2.8).",
+                        "C(procedure) is supported since PostgreSQL 11 and M(community.postgresql) collection 1.3.0.",
+                        "If I(type) is C(database), this parameter can be omitted, in which case privileges are set for the database specified via I(database).",
+                        "If I(type) is I(function) or I(procedure), colons (\":\") in object names will be replaced with commas (needed to specify signatures, see examples)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "login_password"
+                    ],
+                    "description": [
+                        "The password to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "privs": {
+                    "aliases": [
+                        "priv"
+                    ],
+                    "description": [
+                        "Comma separated list of privileges to grant/revoke."
+                    ],
+                    "type": "str"
+                },
+                "roles": {
+                    "aliases": [
+                        "role"
+                    ],
+                    "description": [
+                        "Comma separated list of role (user/group) names to set permissions for.",
+                        "The special value C(PUBLIC) can be provided instead to set permissions for the implicitly defined PUBLIC group."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "schema": {
+                    "description": [
+                        "Schema that contains the database objects specified via I(objs).",
+                        "May only be provided if I(type) is C(table), C(sequence), C(function), C(procedure), C(type), or C(default_privs). Defaults to C(public) in these cases.",
+                        "Pay attention, for embedded types when I(type=type) I(schema) can be C(pg_catalog) or C(information_schema) respectively."
+                    ],
+                    "type": "str"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting.",
+                        "The specified session_role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session_role were the one that had logged in originally."
+                    ],
+                    "type": "str"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(present), the specified privileges are granted, if C(absent) they are revoked."
+                    ],
+                    "type": "str"
+                },
+                "target_roles": {
+                    "description": [
+                        "A list of existing role (user/group) names to set as the default permissions for database objects subsequently created by them.",
+                        "Parameter I(target_roles) is only available with C(type=default_privs)."
+                    ],
+                    "type": "str"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether values of parameters I(roles), I(target_roles), I(session_role), I(schema) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via the parameters are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                },
+                "type": {
+                    "choices": [
+                        "database",
+                        "default_privs",
+                        "foreign_data_wrapper",
+                        "foreign_server",
+                        "function",
+                        "group",
+                        "language",
+                        "table",
+                        "tablespace",
+                        "schema",
+                        "sequence",
+                        "type",
+                        "procedure"
+                    ],
+                    "default": "table",
+                    "description": [
+                        "Type of database object to set privileges on.",
+                        "The C(default_privs) choice is available starting at version 2.7.",
+                        "The C(foreign_data_wrapper) and C(foreign_server) object types are available since Ansible version 2.8.",
+                        "The C(type) choice is available since Ansible version 2.10.",
+                        "The C(procedure) is supported since collection version 1.3.0 and PostgreSQL 11."
+                    ],
+                    "type": "str"
+                },
+                "unix_socket": {
+                    "aliases": [
+                        "login_unix_socket"
+                    ],
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "usage_on_types": {
+                    "default": true,
+                    "description": [
+                        "When adding default privileges, the module always implicitly adds ``USAGE ON TYPES``.",
+                        "To avoid this behavior, set I(usage_on_types) to C(no).",
+                        "Added to save backwards compatibility.",
+                        "Used only when adding default privileges, ignored otherwise."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "module": "community.postgresql.postgresql_user"
+                },
+                {
+                    "module": "community.postgresql.postgresql_owner"
+                },
+                {
+                    "module": "community.postgresql.postgresql_membership"
+                },
+                {
+                    "description": "General information about PostgreSQL privileges.",
+                    "link": "https://www.postgresql.org/docs/current/ddl-priv.html",
+                    "name": "PostgreSQL privileges"
+                },
+                {
+                    "description": "Complete reference of the PostgreSQL GRANT command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-grant.html",
+                    "name": "PostgreSQL GRANT command reference"
+                },
+                {
+                    "description": "Complete reference of the PostgreSQL REVOKE command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-revoke.html",
+                    "name": "PostgreSQL REVOKE command reference"
+                }
+            ],
+            "short_description": "Grant or revoke privileges on PostgreSQL database objects"
+        },
+        "examples": "\n# On database \"library\":\n# GRANT SELECT, INSERT, UPDATE ON TABLE public.books, public.authors\n# TO librarian, reader WITH GRANT OPTION\n- name: Grant privs to librarian and reader on database library\n  community.postgresql.postgresql_privs:\n    database: library\n    state: present\n    privs: SELECT,INSERT,UPDATE\n    type: table\n    objs: books,authors\n    schema: public\n    roles: librarian,reader\n    grant_option: yes\n\n- name: Same as above leveraging default values\n  community.postgresql.postgresql_privs:\n    db: library\n    privs: SELECT,INSERT,UPDATE\n    objs: books,authors\n    roles: librarian,reader\n    grant_option: yes\n\n# REVOKE GRANT OPTION FOR INSERT ON TABLE books FROM reader\n# Note that role \"reader\" will be *granted* INSERT privilege itself if this\n# isn't already the case (since state: present).\n- name: Revoke privs from reader\n  community.postgresql.postgresql_privs:\n    db: library\n    state: present\n    priv: INSERT\n    obj: books\n    role: reader\n    grant_option: no\n\n# \"public\" is the default schema. This also works for PostgreSQL 8.x.\n- name: REVOKE INSERT, UPDATE ON ALL TABLES IN SCHEMA public FROM reader\n  community.postgresql.postgresql_privs:\n    db: library\n    state: absent\n    privs: INSERT,UPDATE\n    objs: ALL_IN_SCHEMA\n    role: reader\n\n- name: GRANT ALL PRIVILEGES ON SCHEMA public, math TO librarian\n  community.postgresql.postgresql_privs:\n    db: library\n    privs: ALL\n    type: schema\n    objs: public,math\n    role: librarian\n\n# Note the separation of arguments with colons.\n- name: GRANT ALL PRIVILEGES ON FUNCTION math.add(int, int) TO librarian, reader\n  community.postgresql.postgresql_privs:\n    db: library\n    privs: ALL\n    type: function\n    obj: add(int:int)\n    schema: math\n    roles: librarian,reader\n\n# Note that group role memberships apply cluster-wide and therefore are not\n# restricted to database \"library\" here.\n- name: GRANT librarian, reader TO alice, bob WITH ADMIN OPTION\n  community.postgresql.postgresql_privs:\n    db: library\n    type: group\n    objs: librarian,reader\n    roles: alice,bob\n    admin_option: yes\n\n# Note that here \"db: postgres\" specifies the database to connect to, not the\n# database to grant privileges on (which is specified via the \"objs\" param)\n- name: GRANT ALL PRIVILEGES ON DATABASE library TO librarian\n  community.postgresql.postgresql_privs:\n    db: postgres\n    privs: ALL\n    type: database\n    obj: library\n    role: librarian\n\n# If objs is omitted for type \"database\", it defaults to the database\n# to which the connection is established\n- name: GRANT ALL PRIVILEGES ON DATABASE library TO librarian\n  community.postgresql.postgresql_privs:\n    db: library\n    privs: ALL\n    type: database\n    role: librarian\n\n# Available since version 2.7\n# Objs must be set, ALL_DEFAULT to TABLES/SEQUENCES/TYPES/FUNCTIONS\n# ALL_DEFAULT works only with privs=ALL\n# For specific\n- name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO librarian\n  community.postgresql.postgresql_privs:\n    db: library\n    objs: ALL_DEFAULT\n    privs: ALL\n    type: default_privs\n    role: librarian\n    grant_option: yes\n\n# Available since version 2.7\n# Objs must be set, ALL_DEFAULT to TABLES/SEQUENCES/TYPES/FUNCTIONS\n# ALL_DEFAULT works only with privs=ALL\n# For specific\n- name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO reader, step 1\n  community.postgresql.postgresql_privs:\n    db: library\n    objs: TABLES,SEQUENCES\n    privs: SELECT\n    type: default_privs\n    role: reader\n\n- name: ALTER DEFAULT PRIVILEGES ON DATABASE library TO reader, step 2\n  community.postgresql.postgresql_privs:\n    db: library\n    objs: TYPES\n    privs: USAGE\n    type: default_privs\n    role: reader\n\n# Available since version 2.8\n- name: GRANT ALL PRIVILEGES ON FOREIGN DATA WRAPPER fdw TO reader\n  community.postgresql.postgresql_privs:\n    db: test\n    objs: fdw\n    privs: ALL\n    type: foreign_data_wrapper\n    role: reader\n\n# Available since community.postgresql 0.2.0\n- name: GRANT ALL PRIVILEGES ON TYPE customtype TO reader\n  community.postgresql.postgresql_privs:\n    db: test\n    objs: customtype\n    privs: ALL\n    type: type\n    role: reader\n\n# Available since version 2.8\n- name: GRANT ALL PRIVILEGES ON FOREIGN SERVER fdw_server TO reader\n  community.postgresql.postgresql_privs:\n    db: test\n    objs: fdw_server\n    privs: ALL\n    type: foreign_server\n    role: reader\n\n# Available since version 2.8\n# Grant 'execute' permissions on all functions in schema 'common' to role 'caller'\n- name: GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA common TO caller\n  community.postgresql.postgresql_privs:\n    type: function\n    state: present\n    privs: EXECUTE\n    roles: caller\n    objs: ALL_IN_SCHEMA\n    schema: common\n\n# Available since collection version 1.3.0\n# Grant 'execute' permissions on all procedures in schema 'common' to role 'caller'\n# Needs PostreSQL 11 or higher and community.postgresql 1.3.0 or higher\n- name: GRANT EXECUTE ON ALL PROCEDURES IN SCHEMA common TO caller\n  community.postgresql.postgresql_privs:\n    type: prucedure\n    state: present\n    privs: EXECUTE\n    roles: caller\n    objs: ALL_IN_SCHEMA\n    schema: common\n\n# Available since version 2.8\n# ALTER DEFAULT PRIVILEGES FOR ROLE librarian IN SCHEMA library GRANT SELECT ON TABLES TO reader\n# GRANT SELECT privileges for new TABLES objects created by librarian as\n# default to the role reader.\n# For specific\n- name: ALTER privs\n  community.postgresql.postgresql_privs:\n    db: library\n    schema: library\n    objs: TABLES\n    privs: SELECT\n    type: default_privs\n    role: reader\n    target_roles: librarian\n\n# Available since version 2.8\n# ALTER DEFAULT PRIVILEGES FOR ROLE librarian IN SCHEMA library REVOKE SELECT ON TABLES FROM reader\n# REVOKE SELECT privileges for new TABLES objects created by librarian as\n# default from the role reader.\n# For specific\n- name: ALTER privs\n  community.postgresql.postgresql_privs:\n    db: library\n    state: absent\n    schema: library\n    objs: TABLES\n    privs: SELECT\n    type: default_privs\n    role: reader\n    target_roles: librarian\n\n# Available since community.postgresql 0.2.0\n- name: Grant type privileges for pg_catalog.numeric type to alice\n  community.postgresql.postgresql_privs:\n    type: type\n    roles: alice\n    privs: ALL\n    objs: numeric\n    schema: pg_catalog\n    db: acme\n",
+        "metadata": null,
+        "return": {
+            "queries": {
+                "description": "List of executed queries.",
+                "returned": "always",
+                "sample": [
+                    "REVOKE GRANT OPTION FOR INSERT ON TABLE \"books\" FROM \"reader\";"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,144 @@
+{
+    "community.network.ce_bfd_global": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages BFD global configuration on HUAWEI CloudEngine devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_bfd_global.py",
+            "has_action": false,
+            "module": "ce_bfd_global",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "bfd_enable": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "Enables the global Bidirectional Forwarding Detection (BFD) function."
+                    ]
+                },
+                "damp_init_wait_time": {
+                    "description": [
+                        "Specifies an initial flapping suppression time for a BFD session. The value is an integer ranging from 1 to 3600000, in milliseconds. The default value is 2000."
+                    ]
+                },
+                "damp_max_wait_time": {
+                    "description": [
+                        "Specifies a maximum flapping suppression time for a BFD session. The value is an integer ranging from 1 to 3600000, in milliseconds. The default value is 15000."
+                    ]
+                },
+                "damp_second_wait_time": {
+                    "description": [
+                        "Specifies a secondary flapping suppression time for a BFD session. The value is an integer ranging from 1 to 3600000, in milliseconds. The default value is 5000."
+                    ]
+                },
+                "default_ip": {
+                    "description": [
+                        "Specifies the default multicast IP address. The value ranges from 224.0.0.107 to 224.0.0.250."
+                    ]
+                },
+                "delay_up_time": {
+                    "description": [
+                        "Specifies the delay before a BFD session becomes Up. The value is an integer ranging from 1 to 600, in seconds. The default value is 0, indicating that a BFD session immediately becomes Up."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                },
+                "tos_exp_dynamic": {
+                    "description": [
+                        "Indicates the priority of BFD control packets for dynamic BFD sessions. The value is an integer ranging from 0 to 7. The default priority is 7, which is the highest priority of BFD control packets."
+                    ]
+                },
+                "tos_exp_static": {
+                    "description": [
+                        "Indicates the priority of BFD control packets for static BFD sessions. The value is an integer ranging from 0 to 7. The default priority is 7, which is the highest priority of BFD control packets."
+                    ]
+                }
+            },
+            "short_description": "Manages BFD global configuration on HUAWEI CloudEngine devices."
+        },
+        "examples": "\n- name: Bfd global module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n  - name: Enable the global BFD function\n    community.network.ce_bfd_global:\n      bfd_enable: enable\n      provider: '{{ cli }}'\n\n  - name: Set the default multicast IP address to 224.0.0.150\n    community.network.ce_bfd_global:\n      bfd_enable: enable\n      default_ip: 224.0.0.150\n      state: present\n      provider: '{{ cli }}'\n\n  - name: Set the priority of BFD control packets for dynamic and static BFD sessions\n    community.network.ce_bfd_global:\n      bfd_enable: enable\n      tos_exp_dynamic: 5\n      tos_exp_static: 6\n      state: present\n      provider: '{{ cli }}'\n\n  - name: Disable the global BFD function\n    community.network.ce_bfd_global:\n      bfd_enable: disable\n      provider: '{{ cli }}'\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "verbose mode",
+                "sample": {
+                    "global": {
+                        "bfdEnable": "true",
+                        "dampInitWaitTime": "2000",
+                        "dampMaxWaitTime": "12000",
+                        "dampSecondWaitTime": "5000",
+                        "defaultIp": "224.0.0.184",
+                        "delayUpTimer": null,
+                        "tosExp": "7",
+                        "tosExpStatic": "7"
+                    }
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "verbose mode",
+                "sample": {
+                    "global": {
+                        "bfdEnable": "false",
+                        "dampInitWaitTime": "2000",
+                        "dampMaxWaitTime": "12000",
+                        "dampSecondWaitTime": "5000",
+                        "defaultIp": "224.0.0.184",
+                        "delayUpTimer": null,
+                        "tosExp": "7",
+                        "tosExpStatic": "7"
+                    }
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "verbose mode",
+                "sample": {
+                    "bfd_enalbe": "enable",
+                    "damp_init_wait_time": null,
+                    "damp_max_wait_time": null,
+                    "damp_second_wait_time": null,
+                    "default_ip": null,
+                    "delayUpTimer": null,
+                    "state": "present",
+                    "tos_exp_dynamic": null,
+                    "tos_exp_static": null
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "bfd"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

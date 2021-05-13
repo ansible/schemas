@@ -1,0 +1,428 @@
+{
+    "community.crypto.x509_certificate_pipe": {
+        "doc": {
+            "author": [
+                "Yanis Guenane (@Spredzy)",
+                "Markus Teufelberger (@MarkusTeufelberger)",
+                "Felix Fontein (@felixfontein)"
+            ],
+            "collection": "community.crypto",
+            "description": [
+                "If both the cryptography and PyOpenSSL libraries are available (and meet the minimum version requirements) cryptography will be preferred as a backend over PyOpenSSL (unless the backend is forced with C(select_crypto_backend)). Please note that the PyOpenSSL backend was deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0.",
+                "It implements a notion of provider (ie. C(selfsigned), C(ownca), C(entrust)) for your certificate.",
+                "It uses the pyOpenSSL or cryptography python library to interact with OpenSSL.",
+                "Please note that the module regenerates an existing certificate if it does not match the module's options, or if it seems to be corrupt. If you are concerned that this could overwrite your existing certificate, consider using the I(backup) option.",
+                "The C(ownca) provider is intended for generating an OpenSSL certificate signed with your own CA (Certificate Authority) certificate (self-signed certificate).",
+                "This module allows one to (re)generate OpenSSL certificates."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/x509_certificate_pipe.py",
+            "has_action": false,
+            "module": "x509_certificate_pipe",
+            "notes": [
+                "Supports C(check_mode).",
+                "All ASN.1 TIME values should be specified following the YYYYMMDDHHMMSSZ pattern.",
+                "Date specified should be UTC. Minutes and seconds are mandatory.",
+                "For security reason, when you use C(ownca) provider, you should NOT run M(community.crypto.x509_certificate) on a target machine, but on a dedicated CA machine. It is recommended not to store the CA private key on the target machine. Once signed, the certificate can be moved to the target machine.",
+                "For the C(selfsigned) provider, I(csr_path) and I(csr_content) are optional. If not provided, a certificate without any information (Subject, Subject Alternative Names, Key Usage, etc.) is created."
+            ],
+            "options": {
+                "content": {
+                    "description": [
+                        "The existing certificate."
+                    ],
+                    "type": "str"
+                },
+                "csr_content": {
+                    "description": [
+                        "Content of the Certificate Signing Request (CSR) used to generate this certificate.",
+                        "This is mutually exclusive with I(csr_path)."
+                    ],
+                    "type": "str"
+                },
+                "csr_path": {
+                    "description": [
+                        "Path to the Certificate Signing Request (CSR) used to generate this certificate.",
+                        "This is mutually exclusive with I(csr_content)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_client_cert_key_path": {
+                    "description": [
+                        "The path to the private key of the client certificate used to authenticate to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_client_cert_path": {
+                    "description": [
+                        "The path to the client certificate used to authenticate to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_key": {
+                    "description": [
+                        "The key (password) for authentication to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_api_specification_path": {
+                    "default": "https://cloud.entrust.net/EntrustCloud/documentation/cms-api-2.1.0.yaml",
+                    "description": [
+                        "The path to the specification file defining the Entrust Certificate Services (ECS) API configuration.",
+                        "You can use this to keep a local copy of the specification to avoid downloading it every time the module is used.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "path"
+                },
+                "entrust_api_user": {
+                    "description": [
+                        "The username for authentication to the Entrust Certificate Services (ECS) API.",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_cert_type": {
+                    "choices": [
+                        "STANDARD_SSL",
+                        "ADVANTAGE_SSL",
+                        "UC_SSL",
+                        "EV_SSL",
+                        "WILDCARD_SSL",
+                        "PRIVATE_SSL",
+                        "PD_SSL",
+                        "CDS_ENT_LITE",
+                        "CDS_ENT_PRO",
+                        "SMIME_ENT"
+                    ],
+                    "default": "STANDARD_SSL",
+                    "description": [
+                        "Specify the type of certificate requested.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "str"
+                },
+                "entrust_not_after": {
+                    "default": "+365d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as an absolute timestamp.",
+                        "A valid absolute time format is C(ASN.1 TIME) such as C(2019-06-18).",
+                        "A valid relative time format is C([+-]timespec) where timespec can be an integer + C([w | d | h | m | s]), such as C(+365d) or C(+32w1d2h)).",
+                        "Time will always be interpreted as UTC.",
+                        "Note that only the date (day, month, year) is supported for specifying the expiry date of the issued certificate.",
+                        "The full date-time is adjusted to EST (GMT -5:00) before issuance, which may result in a certificate with an expiration date one day earlier than expected if a relative time is used.",
+                        "The minimum certificate lifetime is 90 days, and maximum is three years.",
+                        "If this value is not specified, the certificate will stop being valid 365 days the date of issue.",
+                        "This is only used by the C(entrust) provider."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_email": {
+                    "description": [
+                        "The email of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_name": {
+                    "description": [
+                        "The name of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "entrust_requester_phone": {
+                    "description": [
+                        "The phone number of the requester of the certificate (for tracking purposes).",
+                        "This is only used by the C(entrust) provider.",
+                        "This is required if the provider is C(entrust)."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Generate the certificate, even if it already exists."
+                    ],
+                    "type": "bool"
+                },
+                "ownca_content": {
+                    "description": [
+                        "Content of the CA (Certificate Authority) certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_path)."
+                    ],
+                    "type": "str"
+                },
+                "ownca_create_authority_key_identifier": {
+                    "default": true,
+                    "description": [
+                        "Create a Authority Key Identifier from the CA's certificate. If the CSR provided a authority key identifier, it is ignored.",
+                        "The Authority Key Identifier is generated from the CA certificate's Subject Key Identifier, if available. If it is not available, the CA certificate's public key will be used.",
+                        "This is only used by the C(ownca) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "bool"
+                },
+                "ownca_create_subject_key_identifier": {
+                    "choices": [
+                        "create_if_not_provided",
+                        "always_create",
+                        "never_create"
+                    ],
+                    "default": "create_if_not_provided",
+                    "description": [
+                        "Whether to create the Subject Key Identifier (SKI) from the public key.",
+                        "A value of C(create_if_not_provided) (default) only creates a SKI when the CSR does not provide one.",
+                        "A value of C(always_create) always creates a SKI. If the CSR provides one, that one is ignored.",
+                        "A value of C(never_create) never creates a SKI. If the CSR provides one, that one is used.",
+                        "This is only used by the C(ownca) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "str"
+                },
+                "ownca_digest": {
+                    "default": "sha256",
+                    "description": [
+                        "The digest algorithm to be used for the C(ownca) certificate.",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_not_after": {
+                    "default": "+3650d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will stop being valid 10 years from now.",
+                        "This is only used by the C(ownca) provider.",
+                        "On macOS 10.15 and onwards, TLS server certificates must have a validity period of 825 days or fewer. Please see U(https://support.apple.com/en-us/HT210176) for more details."
+                    ],
+                    "type": "str"
+                },
+                "ownca_not_before": {
+                    "default": "+0s",
+                    "description": [
+                        "The point in time the certificate is valid from.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will start being valid from now.",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_path": {
+                    "description": [
+                        "Remote absolute path of the CA (Certificate Authority) certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_content)."
+                    ],
+                    "type": "path"
+                },
+                "ownca_privatekey_content": {
+                    "description": [
+                        "Content of the CA (Certificate Authority) private key to use when signing the certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_privatekey_path)."
+                    ],
+                    "type": "str"
+                },
+                "ownca_privatekey_passphrase": {
+                    "description": [
+                        "The passphrase for the I(ownca_privatekey_path) resp. I(ownca_privatekey_content).",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "str"
+                },
+                "ownca_privatekey_path": {
+                    "description": [
+                        "Path to the CA (Certificate Authority) private key to use when signing the certificate.",
+                        "This is only used by the C(ownca) provider.",
+                        "This is mutually exclusive with I(ownca_privatekey_content)."
+                    ],
+                    "type": "path"
+                },
+                "ownca_version": {
+                    "default": 3,
+                    "description": [
+                        "The version of the C(ownca) certificate.",
+                        "Nowadays it should almost always be C(3).",
+                        "This is only used by the C(ownca) provider."
+                    ],
+                    "type": "int"
+                },
+                "privatekey_content": {
+                    "description": [
+                        "Path to the private key to use when signing the certificate.",
+                        "This is mutually exclusive with I(privatekey_path)."
+                    ],
+                    "type": "str"
+                },
+                "privatekey_passphrase": {
+                    "description": [
+                        "The passphrase for the I(privatekey_path) resp. I(privatekey_content).",
+                        "This is required if the private key is password protected."
+                    ],
+                    "type": "str"
+                },
+                "privatekey_path": {
+                    "description": [
+                        "Path to the private key to use when signing the certificate.",
+                        "This is mutually exclusive with I(privatekey_content)."
+                    ],
+                    "type": "path"
+                },
+                "provider": {
+                    "choices": [
+                        "entrust",
+                        "ownca",
+                        "selfsigned"
+                    ],
+                    "description": [
+                        "Name of the provider to use to generate/retrieve the OpenSSL certificate.",
+                        "The C(entrust) provider requires credentials for the L(Entrust Certificate Services,https://www.entrustdatacard.com/products/categories/ssl-certificates) (ECS) API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "select_crypto_backend": {
+                    "choices": [
+                        "auto",
+                        "cryptography",
+                        "pyopenssl"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Determines which crypto backend to use.",
+                        "The default choice is C(auto), which tries to use C(cryptography) if available, and falls back to C(pyopenssl).",
+                        "If set to C(pyopenssl), will try to use the L(pyOpenSSL,https://pypi.org/project/pyOpenSSL/) library.",
+                        "If set to C(cryptography), will try to use the L(cryptography,https://cryptography.io/) library.",
+                        "Please note that the C(pyopenssl) backend has been deprecated in Ansible 2.9, and will be removed in community.crypto 2.0.0. From that point on, only the C(cryptography) backend will be available."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_create_subject_key_identifier": {
+                    "choices": [
+                        "create_if_not_provided",
+                        "always_create",
+                        "never_create"
+                    ],
+                    "default": "create_if_not_provided",
+                    "description": [
+                        "Whether to create the Subject Key Identifier (SKI) from the public key.",
+                        "A value of C(create_if_not_provided) (default) only creates a SKI when the CSR does not provide one.",
+                        "A value of C(always_create) always creates a SKI. If the CSR provides one, that one is ignored.",
+                        "A value of C(never_create) never creates a SKI. If the CSR provides one, that one is used.",
+                        "This is only used by the C(selfsigned) provider.",
+                        "Note that this is only supported if the C(cryptography) backend is used!"
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_digest": {
+                    "default": "sha256",
+                    "description": [
+                        "Digest algorithm to be used when self-signing the certificate.",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_not_after": {
+                    "aliases": [
+                        "selfsigned_notAfter"
+                    ],
+                    "default": "+3650d",
+                    "description": [
+                        "The point in time at which the certificate stops being valid.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will stop being valid 10 years from now.",
+                        "This is only used by the C(selfsigned) provider.",
+                        "On macOS 10.15 and onwards, TLS server certificates must have a validity period of 825 days or fewer. Please see U(https://support.apple.com/en-us/HT210176) for more details."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_not_before": {
+                    "aliases": [
+                        "selfsigned_notBefore"
+                    ],
+                    "default": "+0s",
+                    "description": [
+                        "The point in time the certificate is valid from.",
+                        "Time can be specified either as relative time or as absolute timestamp.",
+                        "Time will always be interpreted as UTC.",
+                        "Valid format is C([+-]timespec | ASN.1 TIME) where timespec can be an integer + C([w | d | h | m | s]) (e.g. C(+32w1d2h).",
+                        "Note that if using relative time this module is NOT idempotent.",
+                        "If this value is not specified, the certificate will start being valid from now.",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "str"
+                },
+                "selfsigned_version": {
+                    "default": 3,
+                    "description": [
+                        "Version of the C(selfsigned) certificate.",
+                        "Nowadays it should almost always be C(3).",
+                        "This is only used by the C(selfsigned) provider."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "PyOpenSSL >= 0.15 or cryptography >= 1.6 (if using C(selfsigned), C(ownca) or C(assertonly) provider)"
+            ],
+            "seealso": [
+                {
+                    "module": "community.crypto.x509_certificate"
+                },
+                {
+                    "module": "community.crypto.openssl_csr"
+                },
+                {
+                    "module": "community.crypto.openssl_csr_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_dhparam"
+                },
+                {
+                    "module": "community.crypto.openssl_pkcs12"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey"
+                },
+                {
+                    "module": "community.crypto.openssl_privatekey_pipe"
+                },
+                {
+                    "module": "community.crypto.openssl_publickey"
+                }
+            ],
+            "short_description": "Generate and/or check OpenSSL certificates",
+            "version_added": "1.3.0",
+            "version_added_collection": "community.crypto"
+        },
+        "examples": "\n- name: Generate a Self Signed OpenSSL certificate\n  community.crypto.x509_certificate_pipe:\n    provider: selfsigned\n    privatekey_path: /etc/ssl/private/ansible.com.pem\n    csr_path: /etc/ssl/csr/ansible.com.csr\n  register: result\n- name: Print the certificate\n  ansible.builtin.debug:\n    var: result.certificate\n\n# In the following example, both CSR and certificate file are stored on the\n# machine where ansible-playbook is executed, while the OwnCA data (certificate,\n# private key) are stored on the remote machine.\n\n- name: (1/2) Generate an OpenSSL Certificate with the CSR provided inline\n  community.crypto.x509_certificate_pipe:\n    provider: ownca\n    content: \"{{ lookup('file', '/etc/ssl/csr/www.ansible.com.crt') }}\"\n    csr_content: \"{{ lookup('file', '/etc/ssl/csr/www.ansible.com.csr') }}\"\n    ownca_cert: /path/to/ca_cert.crt\n    ownca_privatekey: /path/to/ca_cert.key\n    ownca_privatekey_passphrase: hunter2\n  register: result\n\n- name: (2/2) Store certificate\n  ansible.builtin.copy:\n    dest: /etc/ssl/csr/www.ansible.com.crt\n    content: \"{{ result.certificate }}\"\n  delegate_to: localhost\n  when: result is changed\n\n# In the following example, the certificate from another machine is signed by\n# our OwnCA whose private key and certificate are only available on this\n# machine (where ansible-playbook is executed), without having to write\n# the certificate file to disk on localhost. The CSR could have been\n# provided by community.crypto.openssl_csr_pipe earlier, or also have been\n# read from the remote machine.\n\n- name: (1/3) Read certificate's contents from remote machine\n  ansible.builtin.slurp:\n    src: /etc/ssl/csr/www.ansible.com.crt\n  register: certificate_content\n\n- name: (2/3) Generate an OpenSSL Certificate with the CSR provided inline\n  community.crypto.x509_certificate_pipe:\n    provider: ownca\n    content: \"{{ certificate_content.content | b64decode }}\"\n    csr_content: \"{{ the_csr }}\"\n    ownca_cert: /path/to/ca_cert.crt\n    ownca_privatekey: /path/to/ca_cert.key\n    ownca_privatekey_passphrase: hunter2\n  delegate_to: localhost\n  register: result\n\n- name: (3/3) Store certificate\n  ansible.builtin.copy:\n    dest: /etc/ssl/csr/www.ansible.com.crt\n    content: \"{{ result.certificate }}\"\n  when: result is changed\n",
+        "metadata": null,
+        "return": {
+            "certificate": {
+                "description": "The (current or generated) certificate's content.",
+                "returned": "changed or success",
+                "type": "str"
+            }
+        }
+    }
+}

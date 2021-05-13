@@ -1,0 +1,147 @@
+{
+    "community.general.aix_filesystem": {
+        "doc": {
+            "author": [
+                "Kairo Araujo (@kairoaraujo)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module creates, removes, mount and unmount LVM and NFS file system for AIX using C(/etc/filesystems).",
+                "For LVM file systems is possible to resize a file system."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/aix_filesystem.py",
+            "has_action": false,
+            "module": "aix_filesystem",
+            "notes": [
+                "For more C(attributes), please check \"crfs\" AIX manual."
+            ],
+            "options": {
+                "account_subsystem": {
+                    "default": false,
+                    "description": [
+                        "Specifies whether the file system is to be processed by the accounting subsystem."
+                    ],
+                    "type": "bool"
+                },
+                "attributes": {
+                    "default": "agblksize='4096',isnapshot='no'",
+                    "description": [
+                        "Specifies attributes for files system separated by comma."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "auto_mount": {
+                    "default": true,
+                    "description": [
+                        "File system is automatically mounted at system restart."
+                    ],
+                    "type": "bool"
+                },
+                "device": {
+                    "description": [
+                        "Logical volume (LV) device name or remote export device to create a NFS file system.",
+                        "It is used to create a file system on an already existing logical volume or the exported NFS file system.",
+                        "If not mentioned a new logical volume name will be created following AIX standards (LVM)."
+                    ],
+                    "type": "str"
+                },
+                "filesystem": {
+                    "description": [
+                        "Specifies the mount point, which is the directory where the file system will be mounted."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "fs_type": {
+                    "default": "jfs2",
+                    "description": [
+                        "Specifies the virtual file system type."
+                    ],
+                    "type": "str"
+                },
+                "mount_group": {
+                    "description": [
+                        "Specifies the mount group."
+                    ],
+                    "type": "str"
+                },
+                "nfs_server": {
+                    "description": [
+                        "Specifies a Network File System (NFS) server."
+                    ],
+                    "type": "str"
+                },
+                "permissions": {
+                    "choices": [
+                        "ro",
+                        "rw"
+                    ],
+                    "default": "rw",
+                    "description": [
+                        "Set file system permissions. C(rw) (read-write) or C(ro) (read-only)."
+                    ],
+                    "type": "str"
+                },
+                "rm_mount_point": {
+                    "default": false,
+                    "description": [
+                        "Removes the mount point directory when used with state C(absent)."
+                    ],
+                    "type": "bool"
+                },
+                "size": {
+                    "description": [
+                        "Specifies the file system size.",
+                        "For already C(present) it will be resized.",
+                        "512-byte blocks, Megabytes or Gigabytes. If the value has M specified it will be in Megabytes. If the value has G specified it will be in Gigabytes.",
+                        "If no M or G the value will be 512-byte blocks.",
+                        "If \"+\" is specified in begin of value, the value will be added.",
+                        "If \"-\" is specified in begin of value, the value will be removed.",
+                        "If \"+\" or \"-\" is not specified, the total value will be the specified.",
+                        "Size will respects the LVM AIX standards."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "mounted",
+                        "present",
+                        "unmounted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Controls the file system state.",
+                        "C(present) check if file system exists, creates or resize.",
+                        "C(absent) removes existing file system if already C(unmounted).",
+                        "C(mounted) checks if the file system is mounted or mount the file system.",
+                        "C(unmounted) check if the file system is unmounted or unmount the file system."
+                    ],
+                    "type": "str"
+                },
+                "vg": {
+                    "description": [
+                        "Specifies an existing volume group (VG)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Configure LVM and NFS file systems for AIX"
+        },
+        "examples": "\n- name: Create filesystem in a previously defined logical volume.\n  community.general.aix_filesystem:\n    device: testlv\n    community.general.filesystem: /testfs\n    state: present\n\n- name: Creating NFS filesystem from nfshost.\n  community.general.aix_filesystem:\n    device: /home/ftp\n    nfs_server: nfshost\n    community.general.filesystem: /home/ftp\n    state: present\n\n- name: Creating a new file system without a previously logical volume.\n  community.general.aix_filesystem:\n    community.general.filesystem: /newfs\n    size: 1G\n    state: present\n    vg: datavg\n\n- name: Unmounting /testfs.\n  community.general.aix_filesystem:\n    community.general.filesystem: /testfs\n    state: unmounted\n\n- name: Resizing /mksysb to +512M.\n  community.general.aix_filesystem:\n    community.general.filesystem: /mksysb\n    size: +512M\n    state: present\n\n- name: Resizing /mksysb to 11G.\n  community.general.aix_filesystem:\n    community.general.filesystem: /mksysb\n    size: 11G\n    state: present\n\n- name: Resizing /mksysb to -2G.\n  community.general.aix_filesystem:\n    community.general.filesystem: /mksysb\n    size: -2G\n    state: present\n\n- name: Remove NFS filesystem /home/ftp.\n  community.general.aix_filesystem:\n    community.general.filesystem: /home/ftp\n    rm_mount_point: yes\n    state: absent\n\n- name: Remove /newfs.\n  community.general.aix_filesystem:\n    community.general.filesystem: /newfs\n    rm_mount_point: yes\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Return changed for aix_filesystems actions as true or false.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "msg": {
+                "description": "Return message regarding the action.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

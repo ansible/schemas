@@ -1,0 +1,247 @@
+{
+    "community.postgresql.postgresql_publication": {
+        "doc": {
+            "author": [
+                "Loic Blot (@nerzhul) <loic.blot@unix-experience.fr>",
+                "Andrew Klychkov (@Andersson007) <aaklychkov@mail.ru>"
+            ],
+            "collection": "community.postgresql",
+            "description": [
+                "Add, update, or remove PostgreSQL publication."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/postgresql/plugins/modules/postgresql_publication.py",
+            "has_action": false,
+            "module": "postgresql_publication",
+            "notes": [
+                "PostgreSQL version must be 10 or greater.",
+                "Supports C(check_mode).",
+                "The default authentication assumes that you are either logging in as or sudo'ing to the C(postgres) account on the host.",
+                "To avoid \"Peer authentication failed for user postgres\" error, use postgres user as a I(become_user).",
+                "This module uses psycopg2, a Python PostgreSQL database adapter. You must ensure that psycopg2 is installed on the host before using this module.",
+                "If the remote host is the PostgreSQL server (which is the default case), then PostgreSQL must also be installed on the remote host.",
+                "For Ubuntu-based systems, install the postgresql, libpq-dev, and python-psycopg2 packages on the remote host before using this module.",
+                "The ca_cert parameter requires at least Postgres version 8.4 and I(psycopg2) version 2.4.3."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_rootcert"
+                    ],
+                    "description": [
+                        "Specifies the name of a file containing SSL certificate authority (CA) certificate(s).",
+                        "If the file exists, the server's certificate will be verified to be signed by one of these authorities."
+                    ],
+                    "type": "str"
+                },
+                "cascade": {
+                    "default": false,
+                    "description": [
+                        "Drop publication dependencies. Has effect with I(state=absent) only."
+                    ],
+                    "type": "bool"
+                },
+                "db": {
+                    "aliases": [
+                        "login_db"
+                    ],
+                    "description": [
+                        "Name of the database to connect to and where the publication state will be changed."
+                    ],
+                    "type": "str"
+                },
+                "login_host": {
+                    "description": [
+                        "Host running the database."
+                    ],
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "login_unix_socket": {
+                    "description": [
+                        "Path to a Unix domain socket for local connections."
+                    ],
+                    "type": "str"
+                },
+                "login_user": {
+                    "default": "postgres",
+                    "description": [
+                        "The username used to authenticate with."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the publication to add, update, or remove."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "owner": {
+                    "description": [
+                        "Publication owner.",
+                        "If I(owner) is not defined, the owner will be set as I(login_user) or I(session_role)."
+                    ],
+                    "type": "str"
+                },
+                "parameters": {
+                    "description": [
+                        "Dictionary with optional publication parameters.",
+                        "Available parameters depend on PostgreSQL version."
+                    ],
+                    "type": "dict"
+                },
+                "port": {
+                    "aliases": [
+                        "login_port"
+                    ],
+                    "default": 5432,
+                    "description": [
+                        "Database port to connect to."
+                    ],
+                    "type": "int"
+                },
+                "session_role": {
+                    "description": [
+                        "Switch to session_role after connecting. The specified session_role must be a role that the current login_user is a member of.",
+                        "Permissions checking for SQL commands is carried out as though the session_role were the one that had logged in originally."
+                    ],
+                    "type": "str",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                },
+                "ssl_mode": {
+                    "choices": [
+                        "allow",
+                        "disable",
+                        "prefer",
+                        "require",
+                        "verify-ca",
+                        "verify-full"
+                    ],
+                    "default": "prefer",
+                    "description": [
+                        "Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server.",
+                        "See U(https://www.postgresql.org/docs/current/static/libpq-ssl.html) for more information on the modes.",
+                        "Default of C(prefer) matches libpq default."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The publication state."
+                    ],
+                    "type": "str"
+                },
+                "tables": {
+                    "description": [
+                        "List of tables to add to the publication.",
+                        "If no value is set all tables are targeted.",
+                        "If the publication already exists for specific tables and I(tables) is not passed, nothing will be changed.",
+                        "If you need to add all tables to the publication with the same name, drop existent and create new without passing I(tables)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "trust_input": {
+                    "default": true,
+                    "description": [
+                        "If C(no), check whether values of parameters I(name), I(tables), I(owner), I(session_role), I(params) are potentially dangerous.",
+                        "It makes sense to use C(no) only when SQL injections via the parameters are possible."
+                    ],
+                    "type": "bool",
+                    "version_added": "0.2.0",
+                    "version_added_collection": "community.postgresql"
+                }
+            },
+            "requirements": [
+                "psycopg2"
+            ],
+            "seealso": [
+                {
+                    "description": "Complete reference of the CREATE PUBLICATION command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-createpublication.html",
+                    "name": "CREATE PUBLICATION reference"
+                },
+                {
+                    "description": "Complete reference of the ALTER PUBLICATION command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-alterpublication.html",
+                    "name": "ALTER PUBLICATION reference"
+                },
+                {
+                    "description": "Complete reference of the DROP PUBLICATION command documentation.",
+                    "link": "https://www.postgresql.org/docs/current/sql-droppublication.html",
+                    "name": "DROP PUBLICATION reference"
+                }
+            ],
+            "short_description": "Add, update, or remove PostgreSQL publication"
+        },
+        "examples": "\n- name: Create a new publication with name \"acme\" targeting all tables in database \"test\"\n  community.postgresql.postgresql_publication:\n    db: test\n    name: acme\n\n- name: Create publication \"acme\" publishing only prices and vehicles tables\n  community.postgresql.postgresql_publication:\n    name: acme\n    tables:\n    - prices\n    - vehicles\n\n- name: >\n    Create publication \"acme\", set user alice as an owner, targeting all tables\n    Allowable DML operations are INSERT and UPDATE only\n  community.postgresql.postgresql_publication:\n    name: acme\n    owner: alice\n    parameters:\n      publish: 'insert,update'\n\n- name: >\n    Assuming publication \"acme\" exists and there are targeted\n    tables \"prices\" and \"vehicles\", add table \"stores\" to the publication\n  community.postgresql.postgresql_publication:\n    name: acme\n    tables:\n    - prices\n    - vehicles\n    - stores\n\n- name: Remove publication \"acme\" if exists in database \"test\"\n  community.postgresql.postgresql_publication:\n    db: test\n    name: acme\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "alltables": {
+                "description": [
+                    "Flag indicates that all tables are published."
+                ],
+                "returned": "if publication exists",
+                "sample": false,
+                "type": "bool"
+            },
+            "exists": {
+                "description": [
+                    "Flag indicates the publication exists or not at the end of runtime."
+                ],
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "owner": {
+                "description": "Owner of the publication at the end of runtime.",
+                "returned": "if publication exists",
+                "sample": "alice",
+                "type": "str"
+            },
+            "parameters": {
+                "description": "Publication parameters at the end of runtime.",
+                "returned": "if publication exists",
+                "sample": {
+                    "publish": {
+                        "delete": false,
+                        "insert": false,
+                        "update": true
+                    }
+                },
+                "type": "dict"
+            },
+            "queries": {
+                "description": "List of executed queries.",
+                "returned": "always",
+                "sample": [
+                    "DROP PUBLICATION \"acme\" CASCADE"
+                ],
+                "type": "str"
+            },
+            "tables": {
+                "description": [
+                    "List of tables in the publication at the end of runtime.",
+                    "If all tables are published, returns empty list."
+                ],
+                "returned": "if publication exists",
+                "sample": [
+                    "\"public\".\"prices\"",
+                    "\"public\".\"vehicles\""
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

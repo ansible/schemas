@@ -1,0 +1,166 @@
+{
+    "community.network.ironware_command": {
+        "doc": {
+            "author": "Paul Baker (@paulquack)",
+            "collection": "community.network",
+            "description": [
+                "Sends arbitrary commands to a Extreme Ironware node and returns the results read from the device. This module includes a I(wait_for) argument that will cause the module to wait for a specific condition before returning or timing out if the condition is not met."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ironware_command.py",
+            "has_action": false,
+            "module": "ironware_command",
+            "notes": [
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`"
+            ],
+            "options": {
+                "authorize": {
+                    "default": false,
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.7 we recommend using C(connection: network_cli) and C(become: yes).",
+                        "For more information please see the L(IronWare Platform Options guide, ../network/user_guide/platform_ironware.html).",
+                        "HORIZONTALLINE",
+                        "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                    ],
+                    "type": "bool"
+                },
+                "commands": {
+                    "description": [
+                        "List of commands to send to the remote device over the configured provider. The resulting output from the command is returned. If the I(wait_for) argument is provided, the module is not returned until the condition is satisfied or the number of retires as expired."
+                    ],
+                    "required": true
+                },
+                "interval": {
+                    "default": 1,
+                    "description": [
+                        "Configures the interval in seconds to wait between retries of the command. If the command does not pass the specified conditions, the interval indicates how long to wait before trying the command again."
+                    ]
+                },
+                "match": {
+                    "choices": [
+                        "any",
+                        "all"
+                    ],
+                    "default": "all",
+                    "description": [
+                        "The I(match) argument is used in conjunction with the I(wait_for) argument to specify the match policy. If the value is set to C(all) then all conditionals in the I(wait_for) must be satisfied.  If the value is set to C(any) then only one of the values must be satisfied."
+                    ]
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.7 we recommend using C(connection: network_cli) and C(become: yes).",
+                        "For more information please see the L(IronWare Platform Options guide, ../network/user_guide/platform_ironware.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "authorize": {
+                            "default": false,
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "default": 22,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "default": 10,
+                            "description": [
+                                "Specifies idle timeout in seconds for the connection, in seconds. Useful if the console freezes before continuing. For example when saving configurations."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "retries": {
+                    "default": 10,
+                    "description": [
+                        "Specifies the number of retries a command should by tried before it is considered failed. The command is run on the target device every retry and evaluated against the I(wait_for) conditions."
+                    ]
+                },
+                "wait_for": {
+                    "description": [
+                        "List of conditions to evaluate against the output of the command. The task will wait for each condition to be true before moving forward. If the conditional is not true within the configured number of retries, the task fails. See examples."
+                    ]
+                }
+            },
+            "short_description": "Run arbitrary commands on Extreme IronWare devices"
+        },
+        "examples": "\n- name: Run a command\n  community.network.ironware_command:\n    commands:\n      - show version\n\n- name: Run several commands\n  community.network.ironware_command:\n    commands:\n      - show interfaces brief wide\n      - show mpls vll\n",
+        "metadata": null,
+        "return": {
+            "failed_conditions": {
+                "description": "the conditionals that failed",
+                "returned": "failed",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout": {
+                "description": "the set of responses from the commands",
+                "returned": "always",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout_lines": {
+                "description": "The value of stdout split into a list",
+                "returned": "always",
+                "sample": [
+                    [
+                        "...",
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ]
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

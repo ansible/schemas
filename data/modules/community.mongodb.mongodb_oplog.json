@@ -1,0 +1,197 @@
+{
+    "community.mongodb.mongodb_oplog": {
+        "doc": {
+            "author": "Rhys Campbell (@rhysmeister)",
+            "collection": "community.mongodb",
+            "description": [
+                "Resizes the MongoDB oplog.",
+                "This module should only be used with MongoDB 3.6 and above.",
+                "Old MongoDB versions should use an alternative method.",
+                "Consult U(https://docs.mongodb.com/manual/tutorial/change-oplog-size) for further info."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/mongodb/plugins/modules/mongodb_oplog.py",
+            "has_action": false,
+            "module": "mongodb_oplog",
+            "notes": [
+                "Requires the pymongo Python package on the remote host, version 2.4.2+. This can be installed using pip or the OS package manager. @see U(http://api.mongodb.org/python/current/installation.html)"
+            ],
+            "options": {
+                "auth_mechanism": {
+                    "choices": [
+                        "SCRAM-SHA-256",
+                        "SCRAM-SHA-1",
+                        "MONGODB-X509",
+                        "GSSAPI",
+                        "PLAIN"
+                    ],
+                    "description": [
+                        "Authentication type."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "compact": {
+                    "default": false,
+                    "description": [
+                        "Runs compact against the oplog.rs collection in the local database to reclaim disk space.",
+                        "Performs no actions against PRIMARY members.",
+                        "The MongoDB user must have the compact role on the local database for this feature to work."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "connection_options": {
+                    "description": [
+                        "Additional connection options.",
+                        "Supply as a list of dicts or strings containing key value pairs seperated with '='."
+                    ],
+                    "elements": "raw",
+                    "required": false,
+                    "type": "list"
+                },
+                "login_database": {
+                    "default": "admin",
+                    "description": [
+                        "The database where login credentials are stored."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_host": {
+                    "default": "localhost",
+                    "description": [
+                        "The host running MongoDB instance to login to."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with.",
+                        "Required when I(login_user) is specified."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_port": {
+                    "default": 27017,
+                    "description": [
+                        "The MongoDB server port to login to."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "login_user": {
+                    "description": [
+                        "The MongoDB user to login with.",
+                        "Required when I(login_password) is specified."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "oplog_size_mb": {
+                    "description": [
+                        "New size of the oplog in MB."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "ssl": {
+                    "default": false,
+                    "description": [
+                        "Whether to use an SSL connection when connecting to the database."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ssl_ca_certs": {
+                    "description": [
+                        "The ssl_ca_certs option takes a path to a CA file."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_cert_reqs": {
+                    "choices": [
+                        "CERT_NONE",
+                        "CERT_OPTIONAL",
+                        "CERT_REQUIRED"
+                    ],
+                    "default": "CERT_REQUIRED",
+                    "description": [
+                        "Specifies whether a certificate is required from the other side of the connection, and whether it will be validated if provided."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_certfile": {
+                    "description": [
+                        "Present a client certificate using the ssl_certfile option."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_crlfile": {
+                    "description": [
+                        "The ssl_crlfile option takes a path to a CRL file."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_keyfile": {
+                    "description": [
+                        "Private key for the client certificate."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_pem_passphrase": {
+                    "description": [
+                        "Passphrase to decrypt encrypted private keys."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ver": {
+                    "default": "3.6",
+                    "description": [
+                        "Version of MongoDB this module is supported from.",
+                        "You probably don't want to modifiy this.",
+                        "Included here for internal testing."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "pymongo"
+            ],
+            "short_description": "Resizes the MongoDB oplog.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.mongodb"
+        },
+        "examples": "\n- name: Resize oplog to 16 gigabytes, or 16000 megabytes\n  community.mongodb.mongodb_oplog:\n    oplog_size_mb: 16000\n\n- name: Resize oplog to 8 gigabytes and compact secondaries to reclaim space\n  community.mongodb.mongodb_oplog:\n    oplog_size_mb: 8000\n    compact: true\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Whether the member oplog was modified.",
+                "returned": "success",
+                "type": "bool"
+            },
+            "compacted": {
+                "description": "Whether the member oplog was compacted.",
+                "returned": "success",
+                "type": "bool"
+            },
+            "failed": {
+                "description": "If something went wrong",
+                "returned": "failed",
+                "type": "bool"
+            },
+            "msg": {
+                "description": "A short description of what happened.",
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

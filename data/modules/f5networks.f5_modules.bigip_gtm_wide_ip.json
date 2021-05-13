@@ -1,0 +1,314 @@
+{
+    "f5networks.f5_modules.bigip_gtm_wide_ip": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages the F5 BIG-IP GTM (now BIG-IP DNS) Wide IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_gtm_wide_ip.py",
+            "has_action": false,
+            "module": "bigip_gtm_wide_ip",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "aliases": {
+                    "description": [
+                        "Specifies alternate domain names for the web site content you are load balancing.",
+                        "You can use the same wildcard characters for aliases as you can for actual Wide IP names."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "irules": {
+                    "description": [
+                        "List of rules to be applied.",
+                        "If you want to remove all existing iRules, specify a single empty value; C(\"\"). See the documentation for an example."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "last_resort_pool": {
+                    "description": [
+                        "Specifies which GTM pool for the system to use as the last resort pool for the Wide IP.",
+                        "The valid pools for this parameter are those with the C(type) specified in this module."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "wide_ip"
+                    ],
+                    "description": [
+                        "Wide IP name. This name must be formatted as a fully qualified domain name (FQDN). You can also use the alias C(wide_ip) but this is deprecated and will be removed in a future Ansible version."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "persist_cidr_ipv4": {
+                    "description": [
+                        "Specifies a mask used to group IPv4 LDNS addresses. This feature allows one persistence record to be shared by LDNS addresses that match within this mask."
+                    ],
+                    "type": "int"
+                },
+                "persist_cidr_ipv6": {
+                    "description": [
+                        "Specifies a mask used to group IPv6 LDNS addresses. This feature allows one persistence record to be shared by LDNS addresses that match within this mask."
+                    ],
+                    "type": "int"
+                },
+                "persistence": {
+                    "description": [
+                        "When C(yes), ensures that when a local DNS makes repetitive requests on behalf of a client, the system reconnects the client to the same resource as previous requests.",
+                        "When C(no), ensures repetitive requests do not reconnect the client to the same resource."
+                    ],
+                    "type": "bool"
+                },
+                "persistence_ttl": {
+                    "description": [
+                        "Specifies the time to maintain a connection between an local DNS and a particular virtual server."
+                    ],
+                    "type": "int"
+                },
+                "pool_lb_method": {
+                    "aliases": [
+                        "lb_method"
+                    ],
+                    "choices": [
+                        "round-robin",
+                        "ratio",
+                        "topology",
+                        "global-availability"
+                    ],
+                    "description": [
+                        "Specifies the load balancing method used to select a pool in this wide IP. This setting is relevant only when multiple pools are configured for a Wide IP."
+                    ],
+                    "type": "str"
+                },
+                "pools": {
+                    "description": [
+                        "The pools you want associated with the Wide IP.",
+                        "If C(ratio) is not provided when creating a new Wide IP, it will default to 1."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "The name of the pool to include."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "order": {
+                            "description": [
+                                "Order of the pool in relation to other pools attached to this Wide IP.",
+                                "Pool order is significant when the Global Availability load balancing method is used.",
+                                "When C(order) is not provided, the module assigns it value of C(0)."
+                            ],
+                            "type": "int"
+                        },
+                        "ratio": {
+                            "description": [
+                                "Ratio for the pool.",
+                                "The system uses this number with the Ratio load balancing method.",
+                                "When C(ratio) is not provided, the module assigns it value of C(0)."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "disabled",
+                        "enabled"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present) or C(enabled), ensures the Wide IP exists and is enabled.",
+                        "When C(absent), ensures the Wide IP has been removed.",
+                        "When C(disabled), ensures the Wide IP exists and is disabled."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "a",
+                        "aaaa",
+                        "cname",
+                        "mx",
+                        "naptr",
+                        "srv"
+                    ],
+                    "description": [
+                        "Specifies the type of Wide IP. GTM Wide IPs need to be keyed by query type in addition to name, because pool members need different attributes depending on the response RDATA they are meant to supply."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages F5 BIG-IP GTM Wide IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Set lb method\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Add iRules to the Wide IP\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    irules:\n      - irule1\n      - irule2\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Remove one iRule from the Virtual Server\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    irules:\n      - irule1\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Remove all iRules from the Virtual Server\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    irules: \"\"\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Assign a pool with ratio to the Wide IP\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    pools:\n      - name: pool1\n        ratio: 100\n        order: 2\n      - name: pool1\n        ratio: 100\n        order: 1\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n\n- name: Assign a pool with persistence to the Wide IP\n  bigip_gtm_wide_ip:\n    pool_lb_method: round-robin\n    name: my-wide-ip.example.com\n    type: a\n    pools:\n      - name: pool1\n        persistence: yes\n        persist_cidr_ipv4: 24\n        persist_cidr_ipv6: 120\n        persistence_ttl: 3500\n    provider:\n      user: admin\n      password: secret\n      server: lb.mydomain.com\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "aliases": {
+                "description": "Aliases set on the Wide IP.",
+                "returned": "changed",
+                "sample": [
+                    "alias1.foo.com",
+                    "*.wildcard.domain"
+                ],
+                "type": "list"
+            },
+            "irules": {
+                "description": "iRules set on the Wide IP.",
+                "returned": "changed",
+                "sample": [
+                    "/Common/irule1",
+                    "/Common/irule2"
+                ],
+                "type": "list"
+            },
+            "lb_method": {
+                "description": "The new load balancing method used by the Wide IP.",
+                "returned": "changed",
+                "sample": "topology",
+                "type": "str"
+            },
+            "persist_cidr_ipv4": {
+                "description": "Specifies a mask used to group IPv4 LDNS addresses.",
+                "returned": "changed",
+                "sample": 32,
+                "type": "int"
+            },
+            "persist_cidr_ipv6": {
+                "description": "Specifies a mask used to group IPv6 LDNS addresses.",
+                "returned": "changed",
+                "sample": 128,
+                "type": "int"
+            },
+            "persistence": {
+                "description": "Whether pool connections will be persisted.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "persistence_ttl": {
+                "description": "Specifies the persistence TTL between an local DNS and a particular virtual server.",
+                "returned": "changed",
+                "sample": 3600,
+                "type": "int"
+            },
+            "state": {
+                "description": "The new state of the Wide IP.",
+                "returned": "changed",
+                "sample": "disabled",
+                "type": "str"
+            }
+        }
+    }
+}

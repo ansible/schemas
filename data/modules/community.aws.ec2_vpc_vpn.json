@@ -1,0 +1,380 @@
+{
+    "community.aws.ec2_vpc_vpn": {
+        "doc": {
+            "author": "Sloane Hertel (@s-hertel)",
+            "collection": "community.aws",
+            "description": [
+                "This module creates, modifies, and deletes VPN connections. Idempotence is achieved by using the filters option or specifying the VPN connection identifier."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_vpc_vpn.py",
+            "has_action": false,
+            "module": "ec2_vpc_vpn",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "connection_type": {
+                    "default": "ipsec.1",
+                    "description": [
+                        "The type of VPN connection.",
+                        "At this time only C(ipsec.1) is supported."
+                    ],
+                    "type": "str"
+                },
+                "customer_gateway_id": {
+                    "description": [
+                        "The ID of the customer gateway."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "delay": {
+                    "default": 15,
+                    "description": [
+                        "The time, in seconds, to wait before checking operation again."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "filters": {
+                    "description": [
+                        "An alternative to using I(vpn_connection_id). If multiple matches are found, vpn_connection_id is required. If one of the following suboptions is a list of items to filter by, only one item needs to match to find the VPN that correlates. e.g. if the filter I(cidr) is C(['194.168.2.0/24', '192.168.2.0/24']) and the VPN route only has the destination cidr block of C(192.168.2.0/24) it will be found with this filter (assuming there are not multiple VPNs that are matched). Another example, if the filter I(vpn) is equal to C(['vpn-ccf7e7ad', 'vpn-cb0ae2a2']) and one of of the VPNs has the state deleted (exists but is unmodifiable) and the other exists and is not deleted, it will be found via this filter. See examples."
+                    ],
+                    "suboptions": {
+                        "bgp": {
+                            "description": [
+                                "The BGP ASN number associated with a BGP device. Only works if the connection is attached. This filtering option is currently not working."
+                            ]
+                        },
+                        "cgw": {
+                            "description": [
+                                "The customer gateway id as a string or a list of those strings."
+                            ]
+                        },
+                        "cgw-config": {
+                            "description": [
+                                "The customer gateway configuration of the VPN as a string (in the format of the return value) or a list of those strings."
+                            ]
+                        },
+                        "cidr": {
+                            "description": [
+                                "The destination cidr of the VPN's route as a string or a list of those strings."
+                            ]
+                        },
+                        "static-routes-only": {
+                            "description": [
+                                "The type of routing; C(true) or C(false)."
+                            ]
+                        },
+                        "tag-keys": {
+                            "description": [
+                                "The key of a tag as a string or a list of those strings."
+                            ]
+                        },
+                        "tag-values": {
+                            "description": [
+                                "The value of a tag as a string or a list of those strings."
+                            ]
+                        },
+                        "tags": {
+                            "description": [
+                                "A dict of key value pairs."
+                            ]
+                        },
+                        "vgw": {
+                            "description": [
+                                "The virtual private gateway as a string or a list of those strings."
+                            ]
+                        },
+                        "vpn": {
+                            "description": [
+                                "The VPN connection id as a string or a list of those strings."
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_routes": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to delete VPN connections routes that are not specified in the task."
+                    ],
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to delete VPN connections tags that are associated with the connection but not specified in the task."
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "routes": {
+                    "description": [
+                        "Routes to add to the connection."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The desired state of the VPN connection."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "static_only": {
+                    "default": false,
+                    "description": [
+                        "Indicates whether the VPN connection uses static routes only. Static routes must be used for devices that don't support BGP."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "tags": {
+                    "description": [
+                        "Tags to attach to the VPN connection."
+                    ],
+                    "type": "dict"
+                },
+                "tunnel_options": {
+                    "description": [
+                        "An optional list object containing no more than two dict members, each of which may contain I(TunnelInsideCidr) and/or I(PreSharedKey) keys with appropriate string values.  AWS defaults will apply in absence of either of the aforementioned keys."
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "PreSharedKey": {
+                            "description": "The pre-shared key (PSK) to establish initial authentication between the virtual private gateway and customer gateway.",
+                            "type": "str"
+                        },
+                        "TunnelInsideCidr": {
+                            "description": "The range of inside IP addresses for the tunnel.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpn_connection_id": {
+                    "description": [
+                        "The ID of the VPN connection. Required to modify or delete a connection if the filters option does not provide a unique match."
+                    ],
+                    "type": "str"
+                },
+                "vpn_gateway_id": {
+                    "description": [
+                        "The ID of the virtual private gateway."
+                    ],
+                    "type": "str"
+                },
+                "wait_timeout": {
+                    "default": 600,
+                    "description": [
+                        "How long, in seconds, before wait gives up."
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Create, modify, and delete EC2 VPN connections.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: None of these examples set aws_access_key, aws_secret_key, or region.\n# It is assumed that their matching environment variables are set.\n\n- name: create a VPN connection\n  community.aws.ec2_vpc_vpn:\n    state: present\n    vpn_gateway_id: vgw-XXXXXXXX\n    customer_gateway_id: cgw-XXXXXXXX\n\n- name: modify VPN connection tags\n  community.aws.ec2_vpc_vpn:\n    state: present\n    vpn_connection_id: vpn-XXXXXXXX\n    tags:\n      Name: ansible-tag-1\n      Other: ansible-tag-2\n\n- name: delete a connection\n  community.aws.ec2_vpc_vpn:\n    vpn_connection_id: vpn-XXXXXXXX\n    state: absent\n\n- name: modify VPN tags (identifying VPN by filters)\n  community.aws.ec2_vpc_vpn:\n    state: present\n    filters:\n      cidr: 194.168.1.0/24\n      tag-keys:\n        - Ansible\n        - Other\n    tags:\n      New: Tag\n    purge_tags: true\n    static_only: true\n\n- name: set up VPN with tunnel options utilizing 'TunnelInsideCidr' only\n  community.aws.ec2_vpc_vpn:\n    state: present\n    filters:\n      vpn: vpn-XXXXXXXX\n    static_only: true\n    tunnel_options:\n      -\n        TunnelInsideCidr: '169.254.100.1/30'\n      -\n        TunnelInsideCidr: '169.254.100.5/30'\n\n- name: add routes and remove any preexisting ones\n  community.aws.ec2_vpc_vpn:\n    state: present\n    filters:\n      vpn: vpn-XXXXXXXX\n    routes:\n      - 195.168.2.0/24\n      - 196.168.2.0/24\n    purge_routes: true\n\n- name: remove all routes\n  community.aws.ec2_vpc_vpn:\n    state: present\n    vpn_connection_id: vpn-XXXXXXXX\n    routes: []\n    purge_routes: true\n\n- name: delete a VPN identified by filters\n  community.aws.ec2_vpc_vpn:\n    state: absent\n    filters:\n      tags:\n        Ansible: Tag\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "If the VPN connection has changed.",
+                "returned": "always",
+                "sample": {
+                    "changed": true
+                },
+                "type": "bool"
+            },
+            "customer_gateway_configuration": {
+                "description": "The configuration of the VPN connection.",
+                "returned": "I(state=present)",
+                "type": "str"
+            },
+            "customer_gateway_id": {
+                "description": "The customer gateway connected via the connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "customer_gateway_id": "cgw-1220c87b"
+                },
+                "type": "str"
+            },
+            "options": {
+                "contains": {
+                    "static_routes_only": {
+                        "description": "If the VPN connection only allows static routes.",
+                        "returned": "I(state=present)",
+                        "sample": {
+                            "static_routes_only": true
+                        },
+                        "type": "str"
+                    }
+                },
+                "description": "The VPN connection options (currently only containing static_routes_only).",
+                "returned": "I(state=present)",
+                "type": "complex"
+            },
+            "routes": {
+                "description": "The routes of the VPN connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "routes": [
+                        {
+                            "destination_cidr_block": "192.168.1.0/24",
+                            "state": "available"
+                        }
+                    ]
+                },
+                "type": "list"
+            },
+            "state": {
+                "description": "The status of the VPN connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "state": "available"
+                },
+                "type": "str"
+            },
+            "tags": {
+                "description": "The tags associated with the connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "tags": {
+                        "name": "ansible-test",
+                        "other": "tag"
+                    }
+                },
+                "type": "dict"
+            },
+            "type": {
+                "description": "The type of VPN connection (currently only ipsec.1 is available).",
+                "returned": "I(state=present)",
+                "sample": {
+                    "type": "ipsec.1"
+                },
+                "type": "str"
+            },
+            "vgw_telemetry": {
+                "description": "The telemetry for the VPN tunnel.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "vgw_telemetry": [
+                        {
+                            "accepted_route_count": 123,
+                            "last_status_change": "datetime(2015, 1, 1)",
+                            "outside_ip_address": "string",
+                            "status": "up",
+                            "status_message": "string"
+                        }
+                    ]
+                },
+                "type": "list"
+            },
+            "vpn_connection_id": {
+                "description": "The identifier for the VPN connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "vpn_connection_id": "vpn-781e0e19"
+                },
+                "type": "str"
+            },
+            "vpn_gateway_id": {
+                "description": "The virtual private gateway connected via the connection.",
+                "returned": "I(state=present)",
+                "sample": {
+                    "vpn_gateway_id": "vgw-cb0ae2a2"
+                },
+                "type": "str"
+            }
+        }
+    }
+}

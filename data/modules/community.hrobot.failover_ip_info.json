@@ -1,0 +1,96 @@
+{
+    "community.hrobot.failover_ip_info": {
+        "doc": {
+            "author": [
+                "Felix Fontein (@felixfontein)"
+            ],
+            "collection": "community.hrobot",
+            "description": [
+                "Retrieve information on Hetzner's failover IPs."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/hrobot/plugins/modules/failover_ip_info.py",
+            "has_action": false,
+            "module": "failover_ip_info",
+            "options": {
+                "failover_ip": {
+                    "description": "The failover IP address.",
+                    "required": true,
+                    "type": "str"
+                },
+                "hetzner_password": {
+                    "description": "The password for the Robot webservice user.",
+                    "required": true,
+                    "type": "str"
+                },
+                "hetzner_user": {
+                    "description": "The username for the Robot webservice user.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "description": "Hetzner's documentation on failover IPs.",
+                    "link": "https://wiki.hetzner.de/index.php/Failover/en",
+                    "name": "Failover IP documentation"
+                },
+                {
+                    "description": "Manage failover IPs.",
+                    "module": "community.hrobot.failover_ip"
+                }
+            ],
+            "short_description": "Retrieve information on Hetzner's failover IPs"
+        },
+        "examples": "\n- name: Get value of failover IP 1.2.3.4\n  community.hrobot.failover_ip_info:\n    hetzner_user: foo\n    hetzner_password: bar\n    failover_ip: 1.2.3.4\n    value: 5.6.7.8\n  register: result\n\n- name: Print value of failover IP 1.2.3.4 in case it is routed\n  ansible.builtin.debug:\n    msg: \"1.2.3.4 routes to {{ result.value }}\"\n  when: result.state == 'routed'\n",
+        "metadata": null,
+        "return": {
+            "failover_ip": {
+                "description": [
+                    "The failover IP."
+                ],
+                "returned": "success",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "failover_netmask": {
+                "description": [
+                    "The netmask for the failover IP."
+                ],
+                "returned": "success",
+                "sample": "255.255.255.255",
+                "type": "str"
+            },
+            "server_ip": {
+                "description": [
+                    "The main IP of the server this failover IP is associated to.",
+                    "This is I(not) the server the failover IP is routed to."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "server_number": {
+                "description": [
+                    "The number of the server this failover IP is associated to.",
+                    "This is I(not) the server the failover IP is routed to."
+                ],
+                "returned": "success",
+                "type": "int"
+            },
+            "state": {
+                "description": [
+                    "Will be C(routed) or C(unrouted)."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "value": {
+                "description": [
+                    "The value of the failover IP.",
+                    "Will be C(none) if the IP is unrouted."
+                ],
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

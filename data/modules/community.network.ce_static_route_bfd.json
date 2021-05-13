@@ -1,0 +1,210 @@
+{
+    "community.network.ce_static_route_bfd": {
+        "doc": {
+            "author": "xuxiaowei0512 (@CloudEngine-Ansible)",
+            "collection": "community.network",
+            "description": [
+                "Manages the static routes on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_static_route_bfd.py",
+            "has_action": false,
+            "module": "ce_static_route_bfd",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks.",
+                "If no vrf is supplied, vrf is set to default.",
+                "If I(state=absent), the route configuration will be removed, regardless of the non-required parameters."
+            ],
+            "options": {
+                "aftype": {
+                    "choices": [
+                        "v4",
+                        "v6"
+                    ],
+                    "description": [
+                        "Destination ip address family type of static route."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "bfd_session_name": {
+                    "description": [
+                        "bfd name (range 1-15)."
+                    ],
+                    "type": "str"
+                },
+                "commands": {
+                    "description": [
+                        "Incoming command line is used to send sys,undo ip route-static default-bfd,commit."
+                    ],
+                    "type": "list"
+                },
+                "description": {
+                    "description": [
+                        "Name of the route. Used with the name parameter on the CLI."
+                    ],
+                    "type": "str"
+                },
+                "destvrf": {
+                    "description": [
+                        "VPN instance of next hop ip address."
+                    ],
+                    "type": "str"
+                },
+                "detect_multiplier": {
+                    "description": [
+                        "Configure the BFD multiplier (range 3-50)."
+                    ],
+                    "type": "int"
+                },
+                "function_flag": {
+                    "choices": [
+                        "globalBFD",
+                        "singleBFD",
+                        "dynamicBFD",
+                        "staticBFD"
+                    ],
+                    "description": [
+                        "Used to distinguish between command line functions."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "mask": {
+                    "description": [
+                        "Destination ip mask of static route."
+                    ],
+                    "type": "str"
+                },
+                "min_rx_interval": {
+                    "description": [
+                        "Set the minimum BFD receive interval (range 50-1000)."
+                    ],
+                    "type": "int"
+                },
+                "min_tx_interval": {
+                    "description": [
+                        "Set the minimum BFD session sending interval (range 50-1000)."
+                    ],
+                    "type": "int"
+                },
+                "next_hop": {
+                    "description": [
+                        "Next hop address of static route."
+                    ],
+                    "type": "str"
+                },
+                "nhp_interface": {
+                    "description": [
+                        "Next hop interface full name of static route."
+                    ],
+                    "type": "str"
+                },
+                "pref": {
+                    "description": [
+                        "Preference or administrative difference of route (range 1-255)."
+                    ],
+                    "type": "int"
+                },
+                "prefix": {
+                    "description": [
+                        "Destination ip address of static route."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify desired state of the resource."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tag": {
+                    "description": [
+                        "Route tag value (numeric)."
+                    ],
+                    "type": "int"
+                },
+                "vrf": {
+                    "description": [
+                        "VPN instance of destination ip address."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages static route configuration on HUAWEI CloudEngine switches.",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.network"
+        },
+        "examples": "\n  #ip route-static bfd interface-type interface-number nexthop-address [ local-address address ]\n  #[ min-rx-interval min-rx-interval | min-tx-interval min-tx-interval | detect-multiplier multiplier ]\n  - name: Config an ip route-static bfd 10GE1/0/1 3.3.3.3 min-rx-interval 50 min-tx-interval 50 detect-multiplier 5\n    community.network.ce_static_route_bfd:\n      function_flag: 'singleBFD'\n      nhp_interface: 10GE1/0/1\n      next_hop: 3.3.3.3\n      min_tx_interval: 50\n      min_rx_interval: 50\n      detect_multiplier: 5\n      aftype: v4\n      state: present\n\n  #undo ip route-static bfd [ interface-type interface-number | vpn-instance vpn-instance-name ] nexthop-address\n  - name: Undo ip route-static bfd 10GE1/0/1 3.3.3.4\n    community.network.ce_static_route_bfd:\n      function_flag: 'singleBFD'\n      nhp_interface: 10GE1/0/1\n      next_hop: 3.3.3.4\n      aftype: v4\n      state: absent\n\n  #ip route-static default-bfd { min-rx-interval {min-rx-interval} | min-tx-interval {min-tx-interval} | detect-multiplier {multiplier}}\n  - name: Config an ip route-static default-bfd min-rx-interval 50 min-tx-interval 50 detect-multiplier 6\n    community.network.ce_static_route_bfd:\n      function_flag: 'globalBFD'\n      min_tx_interval: 50\n      min_rx_interval: 50\n      detect_multiplier: 6\n      aftype: v4\n      state: present\n\n  - name: Undo ip route-static default-bfd\n    community.network.ce_static_route_bfd:\n      function_flag: 'globalBFD'\n      aftype: v4\n      state: absent\n      commands: 'sys,undo ip route-static default-bfd,commit'\n\n  - name: Config an ipv4 static route 2.2.2.0/24 2.2.2.1 preference 1 tag 2 description test for staticBFD\n    community.network.ce_static_route_bfd:\n      function_flag: 'staticBFD'\n      prefix: 2.2.2.2\n      mask: 24\n      next_hop: 2.2.2.1\n      tag: 2\n      description: test\n      pref: 1\n      aftype: v4\n      bfd_session_name: btoa\n      state: present\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of switchport after module execution",
+                "returned": "always",
+                "sample": {
+                    "bfd_session_name": "btoa",
+                    "description": "testing",
+                    "function_flag": "staticBFD",
+                    "mask": "24",
+                    "next_hop": "3.3.3.3",
+                    "pref": "100",
+                    "prefix": "192.168.20.0",
+                    "tag": "null"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing switchport",
+                "returned": "always",
+                "sample": {
+                    "bfd_session_name": "btoa",
+                    "description": "testing",
+                    "function_flag": "",
+                    "mask": "24",
+                    "next_hop": "",
+                    "pref": "101",
+                    "prefix": "192.168.20.0",
+                    "tag": "null"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "bfd_session_name": "btoa",
+                    "description": "testing",
+                    "function_flag": "staticBFD",
+                    "mask": "24",
+                    "next_hop": "3.3.3.3",
+                    "pref": "100",
+                    "prefix": "192.168.20.642",
+                    "vrf": "_public_"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command list sent to the device",
+                "returned": "always",
+                "sample": [
+                    "ip route-static 192.168.20.0 255.255.255.0 3.3.3.3 preference 100 description testing"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

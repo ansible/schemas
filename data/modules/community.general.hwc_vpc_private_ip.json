@@ -1,0 +1,124 @@
+{
+    "community.general.hwc_vpc_private_ip": {
+        "doc": {
+            "author": "Huawei Inc. (@huaweicloud)",
+            "collection": "community.general",
+            "description": [
+                "vpc private ip management."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/hwc_vpc_private_ip.py",
+            "has_action": false,
+            "module": "hwc_vpc_private_ip",
+            "notes": [
+                "If I(id) option is provided, it takes precedence over I(subnet_id), I(ip_address) for private ip selection.",
+                "I(subnet_id), I(ip_address) are used for private ip selection. If more than one private ip with this options exists, execution is aborted.",
+                "No parameter support updating. If one of option is changed, the module will create a new resource.",
+                "For authentication, you can set identity_endpoint using the C(ANSIBLE_HWC_IDENTITY_ENDPOINT) env variable.",
+                "For authentication, you can set user using the C(ANSIBLE_HWC_USER) env variable.",
+                "For authentication, you can set password using the C(ANSIBLE_HWC_PASSWORD) env variable.",
+                "For authentication, you can set domain using the C(ANSIBLE_HWC_DOMAIN) env variable.",
+                "For authentication, you can set project using the C(ANSIBLE_HWC_PROJECT) env variable.",
+                "For authentication, you can set region using the C(ANSIBLE_HWC_REGION) env variable.",
+                "Environment variables values will only be used if the playbook values are not set."
+            ],
+            "options": {
+                "domain": {
+                    "description": [
+                        "The name of the Domain to scope to (Identity v3). (currently only domain names are supported, and not domain IDs)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "id": {
+                    "description": [
+                        "The id of resource to be managed."
+                    ],
+                    "type": "str"
+                },
+                "identity_endpoint": {
+                    "description": [
+                        "The Identity authentication URL."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ip_address": {
+                    "description": [
+                        "Specifies the target IP address. The value can be an available IP address in the subnet. If it is not specified, the system automatically assigns an IP address. Cannot be changed after creating the private ip."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "The password to login with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "project": {
+                    "description": [
+                        "The name of the Tenant (Identity v2) or Project (Identity v3). (currently only project names are supported, and not project IDs)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "The region to which the project belongs."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the given object should exist in Huawei Cloud."
+                    ],
+                    "type": "str"
+                },
+                "subnet_id": {
+                    "description": [
+                        "Specifies the ID of the subnet from which IP addresses are assigned. Cannot be changed after creating the private ip."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "The user name to login with (currently only user names are supported, and not user IDs)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "keystoneauth1 >= 3.6.0"
+            ],
+            "short_description": "Creates a resource of Vpc/PrivateIP in Huawei Cloud",
+            "version_added": "0.2.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n# create a private ip\n- name: Create vpc\n  hwc_network_vpc:\n    cidr: \"192.168.100.0/24\"\n    name: \"ansible_network_vpc_test\"\n  register: vpc\n- name: Create subnet\n  hwc_vpc_subnet:\n    gateway_ip: \"192.168.100.32\"\n    name: \"ansible_network_subnet_test\"\n    dhcp_enable: True\n    vpc_id: \"{{ vpc.id }}\"\n    cidr: \"192.168.100.0/26\"\n  register: subnet\n- name: Create a private ip\n  community.general.hwc_vpc_private_ip:\n    subnet_id: \"{{ subnet.id }}\"\n    ip_address: \"192.168.100.33\"\n",
+        "metadata": null,
+        "return": {
+            "ip_address": {
+                "description": [
+                    "Specifies the target IP address. The value can be an available IP address in the subnet. If it is not specified, the system automatically assigns an IP address."
+                ],
+                "returned": "success",
+                "type": "str"
+            },
+            "subnet_id": {
+                "description": [
+                    "Specifies the ID of the subnet from which IP addresses are assigned."
+                ],
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,202 @@
+{
+    "community.general.dimensiondata_vlan": {
+        "doc": {
+            "author": "Adam Friedman (@tintoy)",
+            "collection": "community.general",
+            "description": [
+                "Manage VLANs in Cloud Control network domains."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/dimensiondata_vlan.py",
+            "has_action": false,
+            "module": "dimensiondata_vlan",
+            "options": {
+                "allow_expand": {
+                    "default": "no",
+                    "description": [
+                        "Permit expansion of the target VLAN's network if the module parameters specify a larger network than the VLAN currently possesses.",
+                        "If C(False), the module will fail under these conditions.",
+                        "This is intended to prevent accidental expansion of a VLAN's network (since this operation is not reversible)."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "A description of the VLAN."
+                    ],
+                    "type": "str"
+                },
+                "location": {
+                    "description": [
+                        "The target datacenter."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "mcp_password": {
+                    "description": [
+                        "The password used to authenticate to the CloudControl API.",
+                        "If not specified, will fall back to C(MCP_PASSWORD) from environment variable or C(~/.dimensiondata).",
+                        "Required if I(mcp_user) is specified."
+                    ],
+                    "type": "str"
+                },
+                "mcp_user": {
+                    "description": [
+                        "The username used to authenticate to the CloudControl API.",
+                        "If not specified, will fall back to C(MCP_USER) from environment variable or C(~/.dimensiondata)."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name of the target VLAN."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "network_domain": {
+                    "description": [
+                        "The Id or name of the target network domain."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "private_ipv4_base_address": {
+                    "description": [
+                        "The base address for the VLAN's IPv4 network (e.g. 192.168.1.0)."
+                    ],
+                    "type": "str"
+                },
+                "private_ipv4_prefix_size": {
+                    "description": [
+                        "The size of the IPv4 address space, e.g 24.",
+                        "Required, if C(private_ipv4_base_address) is specified."
+                    ],
+                    "type": "int"
+                },
+                "region": {
+                    "default": "na",
+                    "description": [
+                        "The target region.",
+                        "Regions are defined in Apache libcloud project [libcloud/common/dimensiondata.py]",
+                        "They are also listed in U(https://libcloud.readthedocs.io/en/latest/compute/drivers/dimensiondata.html)",
+                        "Note that the default value \"na\" stands for \"North America\".",
+                        "The module prepends 'dd-' to the region choice."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "readonly"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The desired state for the target VLAN.",
+                        "C(readonly) ensures that the state is only ever read, not modified (the module will fail if the resource does not exist)."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(false), SSL certificates will not be validated.",
+                        "This should only be used on private instances of the CloudControl API that use self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Should we wait for the task to complete before moving onto the next."
+                    ],
+                    "type": "bool"
+                },
+                "wait_poll_interval": {
+                    "default": 2,
+                    "description": [
+                        "The amount of time (in seconds) to wait between checks for task completion.",
+                        "Only applicable if I(wait=true)."
+                    ],
+                    "type": "int"
+                },
+                "wait_time": {
+                    "default": 600,
+                    "description": [
+                        "The maximum amount of time (in seconds) to wait for the task to complete.",
+                        "Only applicable if I(wait=true)."
+                    ],
+                    "type": "int"
+                }
+            },
+            "short_description": "Manage a VLAN in a Cloud Control network domain."
+        },
+        "examples": "\n- name: Add or update VLAN\n  community.general.dimensiondata_vlan:\n    region: na\n    location: NA5\n    network_domain: test_network\n    name: my_vlan1\n    description: A test VLAN\n    private_ipv4_base_address: 192.168.23.0\n    private_ipv4_prefix_size: 24\n    state: present\n    wait: yes\n\n- name: Read / get VLAN details\n  community.general.dimensiondata_vlan:\n    region: na\n    location: NA5\n    network_domain: test_network\n    name: my_vlan1\n    state: readonly\n    wait: yes\n\n- name: Delete a VLAN\n  community.general.dimensiondata_vlan:\n    region: na\n    location: NA5\n    network_domain: test_network\n    name: my_vlan_1\n    state: absent\n    wait: yes\n",
+        "metadata": null,
+        "return": {
+            "vlan": {
+                "contains": {
+                    "description": {
+                        "description": "VLAN description.",
+                        "sample": "My VLAN description",
+                        "type": "str"
+                    },
+                    "id": {
+                        "description": "VLAN ID.",
+                        "sample": "aaaaa000-a000-4050-a215-2808934ccccc",
+                        "type": "str"
+                    },
+                    "location": {
+                        "description": "Datacenter location.",
+                        "sample": "NA3",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "VLAN name.",
+                        "sample": "My VLAN",
+                        "type": "str"
+                    },
+                    "private_ipv4_base_address": {
+                        "description": "The base address for the VLAN's private IPV4 network.",
+                        "sample": "192.168.23.0",
+                        "type": "str"
+                    },
+                    "private_ipv4_gateway_address": {
+                        "description": "The gateway address for the VLAN's private IPV4 network.",
+                        "sample": "192.168.23.1",
+                        "type": "str"
+                    },
+                    "private_ipv4_prefix_size": {
+                        "description": "The prefix size for the VLAN's private IPV4 network.",
+                        "sample": 24,
+                        "type": "int"
+                    },
+                    "private_ipv6_base_address": {
+                        "description": "The base address for the VLAN's IPV6 network.",
+                        "sample": "2402:9900:111:1195:0:0:0:0",
+                        "type": "str"
+                    },
+                    "private_ipv6_gateway_address": {
+                        "description": "The gateway address for the VLAN's IPV6 network.",
+                        "sample": "2402:9900:111:1195:0:0:0:1",
+                        "type": "str"
+                    },
+                    "private_ipv6_prefix_size": {
+                        "description": "The prefix size for the VLAN's IPV6 network.",
+                        "sample": 64,
+                        "type": "int"
+                    },
+                    "status": {
+                        "description": "VLAN status.",
+                        "sample": "NORMAL",
+                        "type": "str"
+                    }
+                },
+                "description": "Dictionary describing the VLAN.",
+                "returned": "On success when I(state) is 'present'",
+                "type": "complex"
+            }
+        }
+    }
+}

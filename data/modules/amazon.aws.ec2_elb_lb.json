@@ -1,0 +1,261 @@
+{
+    "amazon.aws.ec2_elb_lb": {
+        "doc": {
+            "author": [
+                "Jim Dalton (@jsdalton)"
+            ],
+            "collection": "amazon.aws",
+            "description": [
+                "Returns information about the load balancer.",
+                "Will be marked changed when called only if state is changed."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2_elb_lb.py",
+            "has_action": false,
+            "module": "ec2_elb_lb",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "access_logs": {
+                    "description": [
+                        "An associative array of access logs configuration settings (see example)"
+                    ],
+                    "type": "dict"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "connection_draining_timeout": {
+                    "description": [
+                        "Wait a specified timeout allowing connections to drain before terminating an instance"
+                    ],
+                    "type": "int"
+                },
+                "cross_az_load_balancing": {
+                    "default": false,
+                    "description": [
+                        "Distribute load across all configured Availability Zones"
+                    ],
+                    "type": "bool"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "health_check": {
+                    "description": [
+                        "An associative array of health check configuration settings (see example)"
+                    ],
+                    "type": "dict"
+                },
+                "idle_timeout": {
+                    "description": [
+                        "ELB connections from clients and to servers are timed out after this amount of time"
+                    ],
+                    "type": "int"
+                },
+                "instance_ids": {
+                    "description": [
+                        "List of instance ids to attach to this ELB"
+                    ],
+                    "type": "list"
+                },
+                "listeners": {
+                    "description": [
+                        "List of ports/protocols for this ELB to listen on (see example)"
+                    ],
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "The name of the ELB"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_instance_ids": {
+                    "default": false,
+                    "description": [
+                        "Purge existing instance ids on ELB that are not found in instance_ids"
+                    ],
+                    "type": "bool"
+                },
+                "purge_listeners": {
+                    "default": true,
+                    "description": [
+                        "Purge existing listeners on ELB that are not found in listeners"
+                    ],
+                    "type": "bool"
+                },
+                "purge_subnets": {
+                    "default": false,
+                    "description": [
+                        "Purge existing subnet on ELB that are not found in subnets"
+                    ],
+                    "type": "bool"
+                },
+                "purge_zones": {
+                    "default": false,
+                    "description": [
+                        "Purge existing availability zones on ELB that are not found in zones"
+                    ],
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "scheme": {
+                    "choices": [
+                        "internal",
+                        "internet-facing"
+                    ],
+                    "default": "internet-facing",
+                    "description": [
+                        "The scheme to use when creating the ELB. For a private VPC-visible ELB use 'internal'. If you choose to update your scheme with a different value the ELB will be destroyed and recreated. To update scheme you must use the option wait."
+                    ],
+                    "type": "str"
+                },
+                "security_group_ids": {
+                    "description": [
+                        "A list of security groups to apply to the elb"
+                    ],
+                    "type": "list"
+                },
+                "security_group_names": {
+                    "description": [
+                        "A list of security group names to apply to the elb"
+                    ],
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "description": [
+                        "Create or destroy the ELB"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "stickiness": {
+                    "description": [
+                        "An associative array of stickiness policy settings. Policy will be applied to all listeners ( see example )"
+                    ],
+                    "type": "dict"
+                },
+                "subnets": {
+                    "description": [
+                        "A list of VPC subnets to use when creating ELB. Zones should be empty if using this."
+                    ],
+                    "type": "list"
+                },
+                "tags": {
+                    "description": [
+                        "An associative array of tags. To delete all tags, supply an empty dict."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to C(no), SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "When specified, Ansible will check the status of the load balancer to ensure it has been successfully removed from AWS."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 60,
+                    "description": [
+                        "Used in conjunction with wait. Number of seconds to wait for the elb to be terminated. A maximum of 600 seconds (10 minutes) is allowed."
+                    ],
+                    "type": "int"
+                },
+                "zones": {
+                    "description": [
+                        "List of availability zones to enable on this ELB"
+                    ],
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Creates, updates or destroys an Amazon ELB."
+        },
+        "examples": "\n# Note: None of these examples set aws_access_key, aws_secret_key, or region.\n# It is assumed that their matching environment variables are set.\n\n# Basic provisioning example (non-VPC)\n\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: present\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http # options are http, https, ssl, tcp\n        load_balancer_port: 80\n        instance_port: 80\n        proxy_protocol: True\n      - protocol: https\n        load_balancer_port: 443\n        instance_protocol: http # optional, defaults to value of protocol setting\n        instance_port: 80\n        # ssl certificate required for https or ssl\n        ssl_certificate_id: \"arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert\"\n\n# Internal ELB example\n\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-vpc\"\n    scheme: internal\n    state: present\n    instance_ids:\n      - i-abcd1234\n    purge_instance_ids: true\n    subnets:\n      - subnet-abcd1234\n      - subnet-1a2b3c4d\n    listeners:\n      - protocol: http # options are http, https, ssl, tcp\n        load_balancer_port: 80\n        instance_port: 80\n\n# Configure a health check and the access logs\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: present\n    zones:\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    health_check:\n        ping_protocol: http # options are http, https, ssl, tcp\n        ping_port: 80\n        ping_path: \"/index.html\" # not required for tcp or ssl\n        response_timeout: 5 # seconds\n        interval: 30 # seconds\n        unhealthy_threshold: 2\n        healthy_threshold: 10\n    access_logs:\n        interval: 5 # minutes (defaults to 60)\n        s3_location: \"my-bucket\" # This value is required if access_logs is set\n        s3_prefix: \"logs\"\n\n# Ensure ELB is gone\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: absent\n\n# Ensure ELB is gone and wait for check (for default timeout)\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: absent\n    wait: yes\n\n# Ensure ELB is gone and wait for check with timeout value\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: absent\n    wait: yes\n    wait_timeout: 600\n\n# Normally, this module will purge any listeners that exist on the ELB\n# but aren't specified in the listeners parameter. If purge_listeners is\n# false it leaves them alone\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: present\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    purge_listeners: no\n\n# Normally, this module will leave availability zones that are enabled\n# on the ELB alone. If purge_zones is true, then any extraneous zones\n# will be removed\n- local_action:\n    module: ec2_elb_lb\n    name: \"test-please-delete\"\n    state: present\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    purge_zones: yes\n\n# Creates a ELB and assigns a list of subnets to it.\n- local_action:\n    module: ec2_elb_lb\n    state: present\n    name: 'New ELB'\n    security_group_ids: 'sg-123456, sg-67890'\n    region: us-west-2\n    subnets: 'subnet-123456,subnet-67890'\n    purge_subnets: yes\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n\n# Create an ELB with connection draining, increased idle timeout and cross availability\n# zone load balancing\n- local_action:\n    module: ec2_elb_lb\n    name: \"New ELB\"\n    state: present\n    connection_draining_timeout: 60\n    idle_timeout: 300\n    cross_az_load_balancing: \"yes\"\n    region: us-east-1\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n\n# Create an ELB with load balancer stickiness enabled\n- local_action:\n    module: ec2_elb_lb\n    name: \"New ELB\"\n    state: present\n    region: us-east-1\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    stickiness:\n      type: loadbalancer\n      enabled: yes\n      expiration: 300\n\n# Create an ELB with application stickiness enabled\n- local_action:\n    module: ec2_elb_lb\n    name: \"New ELB\"\n    state: present\n    region: us-east-1\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    stickiness:\n      type: application\n      enabled: yes\n      cookie: SESSIONID\n\n# Create an ELB and add tags\n- local_action:\n    module: ec2_elb_lb\n    name: \"New ELB\"\n    state: present\n    region: us-east-1\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    tags:\n      Name: \"New ELB\"\n      stack: \"production\"\n      client: \"Bob\"\n\n# Delete all tags from an ELB\n- local_action:\n    module: ec2_elb_lb\n    name: \"New ELB\"\n    state: present\n    region: us-east-1\n    zones:\n      - us-east-1a\n      - us-east-1d\n    listeners:\n      - protocol: http\n        load_balancer_port: 80\n        instance_port: 80\n    tags: {}\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

@@ -1,0 +1,96 @@
+{
+    "netapp_eseries.santricity.na_santricity_client_certificate": {
+        "doc": {
+            "author": "Nathan Swartz (@ndswartz)",
+            "collection": "netapp_eseries.santricity",
+            "description": "Manage NetApp E-Series storage array's remote server certificates.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/na_santricity_client_certificate.py",
+            "has_action": false,
+            "module": "na_santricity_client_certificate",
+            "notes": [
+                "Set I(ssid==\"0\") or I(ssid==\"proxy\") to specifically reference SANtricity Web Services Proxy.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API.",
+                        "Example https://prod-1.wahoo.acme.com:8443/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "certificates": {
+                    "description": [
+                        "List of certificate files",
+                        "Each item must include the path to the file"
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "cryptography"
+            ],
+            "short_description": "NetApp E-Series manage remote server certificates."
+        },
+        "examples": "\n- name: Upload certificates\n  na_santricity_client_certificate:\n    ssid: 1\n    api_url: https://192.168.1.100:8443/devmgr/v2\n    api_username: admin\n    api_password: adminpass\n    certificates: [\"/path/to/certificates.crt\", \"/path/to/another_certificate.crt\"]\n- name: Remove all certificates\n  na_santricity_client_certificate:\n    ssid: 1\n    api_url: https://192.168.1.100:8443/devmgr/v2\n    api_username: admin\n    api_password: adminpass\n",
+        "metadata": null,
+        "return": {
+            "add_certificates": {
+                "description": "Any SSL certificates that were added.",
+                "returned": "always",
+                "sample": [
+                    "added_cerificiate.crt"
+                ],
+                "type": "list"
+            },
+            "changed": {
+                "description": "Whether changes have been made.",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "removed_certificates": {
+                "description": "Any SSL certificates that were removed.",
+                "returned": "always",
+                "sample": [
+                    "removed_cerificiate.crt"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

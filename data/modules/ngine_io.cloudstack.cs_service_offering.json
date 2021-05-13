@@ -1,0 +1,464 @@
+{
+    "ngine_io.cloudstack.cs_service_offering": {
+        "doc": {
+            "author": "Ren\u00e9 Moser (@resmo)",
+            "collection": "ngine_io.cloudstack",
+            "description": [
+                "Create and delete service offerings for guest and system VMs.",
+                "Update display_text of existing service offering."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/cloudstack/plugins/modules/cs_service_offering.py",
+            "has_action": false,
+            "module": "cs_service_offering",
+            "notes": [
+                "A detailed guide about cloudstack modules can be found in the L(CloudStack Cloud Guide,../scenario_guides/guide_cloudstack.html).",
+                "This module supports check mode."
+            ],
+            "options": {
+                "api_http_method": {
+                    "choices": [
+                        "get",
+                        "post"
+                    ],
+                    "default": "get",
+                    "description": [
+                        "HTTP method used to query the API endpoint.",
+                        "If not given, the C(CLOUDSTACK_METHOD) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the CloudStack API.",
+                        "If not given, the C(CLOUDSTACK_KEY) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_secret": {
+                    "description": [
+                        "Secret key of the CloudStack API.",
+                        "If not set, the C(CLOUDSTACK_SECRET) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_timeout": {
+                    "default": 10,
+                    "description": [
+                        "HTTP timeout in seconds.",
+                        "If not given, the C(CLOUDSTACK_TIMEOUT) env variable is considered."
+                    ],
+                    "type": "int"
+                },
+                "api_url": {
+                    "description": [
+                        "URL of the CloudStack API e.g. https://cloud.example.com/client/api.",
+                        "If not given, the C(CLOUDSTACK_ENDPOINT) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_verify_ssl_cert": {
+                    "description": [
+                        "Verify CA authority cert file.",
+                        "If not given, the C(CLOUDSTACK_VERIFY) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "cpu_number": {
+                    "description": [
+                        "The number of CPUs of the service offering."
+                    ],
+                    "type": "int"
+                },
+                "cpu_speed": {
+                    "description": [
+                        "The CPU speed of the service offering in MHz."
+                    ],
+                    "type": "int"
+                },
+                "deployment_planner": {
+                    "description": [
+                        "The deployment planner heuristics used to deploy a VM of this offering.",
+                        "If not set, the value of global config I(vm.deployment.planner) is used."
+                    ],
+                    "type": "str"
+                },
+                "disk_bytes_read_rate": {
+                    "aliases": [
+                        "bytes_read_rate"
+                    ],
+                    "description": [
+                        "Bytes read rate of the disk offering."
+                    ],
+                    "type": "int"
+                },
+                "disk_bytes_write_rate": {
+                    "aliases": [
+                        "bytes_write_rate"
+                    ],
+                    "description": [
+                        "Bytes write rate of the disk offering."
+                    ],
+                    "type": "int"
+                },
+                "disk_iops_max": {
+                    "description": [
+                        "Max. iops of the compute offering."
+                    ],
+                    "type": "int"
+                },
+                "disk_iops_min": {
+                    "description": [
+                        "Min. iops of the compute offering."
+                    ],
+                    "type": "int"
+                },
+                "disk_iops_read_rate": {
+                    "description": [
+                        "IO requests read rate of the disk offering."
+                    ],
+                    "type": "int"
+                },
+                "disk_iops_write_rate": {
+                    "description": [
+                        "IO requests write rate of the disk offering."
+                    ],
+                    "type": "int"
+                },
+                "display_text": {
+                    "description": [
+                        "Display text of the service offering.",
+                        "If not set, I(name) will be used as I(display_text) while creating."
+                    ],
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "Domain the service offering is related to.",
+                        "Public for all domains and subdomains if not set."
+                    ],
+                    "type": "str"
+                },
+                "host_tags": {
+                    "aliases": [
+                        "host_tag"
+                    ],
+                    "description": [
+                        "The host tags for this service offering."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "hypervisor_snapshot_reserve": {
+                    "description": [
+                        "Hypervisor snapshot reserve space as a percent of a volume.",
+                        "Only for managed storage using Xen or VMware."
+                    ],
+                    "type": "int"
+                },
+                "is_customized": {
+                    "description": [
+                        "Whether the offering is customizable or not."
+                    ],
+                    "type": "bool"
+                },
+                "is_iops_customized": {
+                    "aliases": [
+                        "disk_iops_customized"
+                    ],
+                    "description": [
+                        "Whether compute offering iops is custom or not."
+                    ],
+                    "type": "bool"
+                },
+                "is_system": {
+                    "default": false,
+                    "description": [
+                        "Whether it is a system VM offering or not."
+                    ],
+                    "type": "bool"
+                },
+                "is_volatile": {
+                    "description": [
+                        "Whether the virtual machine needs to be volatile or not.",
+                        "Every reboot of VM the root disk is detached then destroyed and a fresh root disk is created and attached to VM."
+                    ],
+                    "type": "bool"
+                },
+                "limit_cpu_usage": {
+                    "description": [
+                        "Restrict the CPU usage to committed service offering."
+                    ],
+                    "type": "bool"
+                },
+                "memory": {
+                    "description": [
+                        "The total memory of the service offering in MB."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of the service offering."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "network_rate": {
+                    "description": [
+                        "Data transfer rate in Mb/s allowed.",
+                        "Supported only for non-system offering and system offerings having I(system_vm_type=domainrouter)."
+                    ],
+                    "type": "int"
+                },
+                "offer_ha": {
+                    "description": [
+                        "Whether HA is set for the service offering."
+                    ],
+                    "type": "bool"
+                },
+                "provisioning_type": {
+                    "choices": [
+                        "thin",
+                        "sparse",
+                        "fat"
+                    ],
+                    "description": [
+                        "Provisioning type used to create volumes."
+                    ],
+                    "type": "str"
+                },
+                "service_offering_details": {
+                    "description": [
+                        "Details for planner, used to store specific parameters.",
+                        "A list of dictionaries having keys C(key) and C(value)."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the service offering."
+                    ],
+                    "type": "str"
+                },
+                "storage_tags": {
+                    "aliases": [
+                        "storage_tag"
+                    ],
+                    "description": [
+                        "The storage tags for this service offering."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "storage_type": {
+                    "choices": [
+                        "local",
+                        "shared"
+                    ],
+                    "description": [
+                        "The storage type of the service offering."
+                    ],
+                    "type": "str"
+                },
+                "system_vm_type": {
+                    "choices": [
+                        "domainrouter",
+                        "consoleproxy",
+                        "secondarystoragevm"
+                    ],
+                    "description": [
+                        "The system VM type.",
+                        "Required if I(is_system=yes)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "cs >= 0.9.0"
+            ],
+            "short_description": "Manages service offerings on Apache CloudStack based clouds.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.cloudstack"
+        },
+        "examples": "\n- name: Create a non-volatile compute service offering with local storage\n  ngine_io.cloudstack.cs_service_offering:\n    name: Micro\n    display_text: Micro 512mb 1cpu\n    cpu_number: 1\n    cpu_speed: 2198\n    memory: 512\n    host_tags: eco\n    storage_type: local\n\n- name: Create a volatile compute service offering with shared storage\n  ngine_io.cloudstack.cs_service_offering:\n    name: Tiny\n    display_text: Tiny 1gb 1cpu\n    cpu_number: 1\n    cpu_speed: 2198\n    memory: 1024\n    storage_type: shared\n    is_volatile: yes\n    host_tags: eco\n    storage_tags: eco\n\n- name: Create or update a volatile compute service offering with shared storage\n  ngine_io.cloudstack.cs_service_offering:\n    name: Tiny\n    display_text: Tiny 1gb 1cpu\n    cpu_number: 1\n    cpu_speed: 2198\n    memory: 1024\n    storage_type: shared\n    is_volatile: yes\n    host_tags: eco\n    storage_tags: eco\n\n- name: Create or update a custom compute service offering\n  ngine_io.cloudstack.cs_service_offering:\n    name: custom\n    display_text: custom compute offer\n    is_customized: yes\n    storage_type: shared\n    host_tags: eco\n    storage_tags: eco\n\n- name: Remove a compute service offering\n  ngine_io.cloudstack.cs_service_offering:\n    name: Tiny\n    state: absent\n\n- name: Create or update a system offering for the console proxy\n  ngine_io.cloudstack.cs_service_offering:\n    name: System Offering for Console Proxy 2GB\n    display_text: System Offering for Console Proxy 2GB RAM\n    is_system: yes\n    system_vm_type: consoleproxy\n    cpu_number: 1\n    cpu_speed: 2198\n    memory: 2048\n    storage_type: shared\n    storage_tags: perf\n\n- name: Remove a system offering\n  ngine_io.cloudstack.cs_service_offering:\n    name: System Offering for Console Proxy 2GB\n    is_system: yes\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "cpu_number": {
+                "description": "Number of CPUs in the service offering",
+                "returned": "success",
+                "sample": 4,
+                "type": "int"
+            },
+            "cpu_speed": {
+                "description": "Speed of CPUs in MHz in the service offering",
+                "returned": "success",
+                "sample": 2198,
+                "type": "int"
+            },
+            "created": {
+                "description": "Date the offering was created",
+                "returned": "success",
+                "sample": "2017-11-19T10:48:59+0000",
+                "type": "str"
+            },
+            "disk_bytes_read_rate": {
+                "description": "Bytes read rate of the service offering",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "disk_bytes_write_rate": {
+                "description": "Bytes write rate of the service offering",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "disk_iops_max": {
+                "description": "Max iops of the disk offering",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "disk_iops_min": {
+                "description": "Min iops of the disk offering",
+                "returned": "success",
+                "sample": 500,
+                "type": "int"
+            },
+            "disk_iops_read_rate": {
+                "description": "IO requests per second read rate of the service offering",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "disk_iops_write_rate": {
+                "description": "IO requests per second write rate of the service offering",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "display_text": {
+                "description": "Display text of the offering",
+                "returned": "success",
+                "sample": "Micro 512mb 1cpu",
+                "type": "str"
+            },
+            "domain": {
+                "description": "Domain the offering is into",
+                "returned": "success",
+                "sample": "ROOT",
+                "type": "str"
+            },
+            "host_tags": {
+                "description": "List of host tags",
+                "returned": "success",
+                "sample": [
+                    "eco"
+                ],
+                "type": "list"
+            },
+            "id": {
+                "description": "UUID of the service offering",
+                "returned": "success",
+                "sample": "a6f7a5fc-43f8-11e5-a151-feff819cdc9f",
+                "type": "str"
+            },
+            "is_customized": {
+                "description": "Whether the offering is customizable or not",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "is_iops_customized": {
+                "description": "Whether the offering uses custom IOPS or not",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "is_system": {
+                "description": "Whether the offering is for system VMs or not",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "is_volatile": {
+                "description": "Whether the offering is volatile or not",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "limit_cpu_usage": {
+                "description": "Whether the CPU usage is restricted to committed service offering",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "memory": {
+                "description": "Memory of the system offering",
+                "returned": "success",
+                "sample": 512,
+                "type": "int"
+            },
+            "name": {
+                "description": "Name of the system offering",
+                "returned": "success",
+                "sample": "Micro",
+                "type": "str"
+            },
+            "network_rate": {
+                "description": "Data transfer rate in megabits per second allowed",
+                "returned": "success",
+                "sample": 1000,
+                "type": "int"
+            },
+            "offer_ha": {
+                "description": "Whether HA support is enabled in the offering or not",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "provisioning_type": {
+                "description": "Provisioning type used to create volumes",
+                "returned": "success",
+                "sample": "thin",
+                "type": "str"
+            },
+            "service_offering_details": {
+                "description": "Additioanl service offering details",
+                "returned": "success",
+                "sample": "{'vgpuType': 'GRID K180Q','pciDevice':'Group of NVIDIA Corporation GK107GL [GRID K1] GPUs'}",
+                "type": "dict"
+            },
+            "storage_tags": {
+                "description": "List of storage tags",
+                "returned": "success",
+                "sample": [
+                    "eco"
+                ],
+                "type": "list"
+            },
+            "storage_type": {
+                "description": "Storage type used to create volumes",
+                "returned": "success",
+                "sample": "shared",
+                "type": "str"
+            },
+            "system_vm_type": {
+                "description": "System VM type of this offering",
+                "returned": "success",
+                "sample": "consoleproxy",
+                "type": "str"
+            }
+        }
+    }
+}

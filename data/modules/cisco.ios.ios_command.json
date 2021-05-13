@@ -1,0 +1,168 @@
+{
+    "cisco.ios.ios_command": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "cisco.ios",
+            "description": [
+                "Sends arbitrary commands to an ios node and returns the results read from the device. This module includes an argument that will cause the module to wait for a specific condition before returning or timing out if the condition is not met.",
+                "This module does not support running commands in configuration mode. Please use M(ios_config) to configure IOS devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/ios/plugins/modules/ios_command.py",
+            "has_action": true,
+            "module": "ios_command",
+            "notes": [
+                "Tested against IOS 15.6",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_."
+            ],
+            "options": {
+                "commands": {
+                    "description": [
+                        "List of commands to send to the remote ios device over the configured provider. The resulting output from the command is returned. If the I(wait_for) argument is provided, the module is not returned until the condition is satisfied or the number of retries has expired. If a command sent to the device requires answering a prompt, it is possible to pass a dict containing I(command), I(answer) and I(prompt). Common answers are 'y' or \"\\r\" (carriage return, must be double quotes). See examples."
+                    ],
+                    "elements": "raw",
+                    "required": true,
+                    "type": "list"
+                },
+                "interval": {
+                    "default": 1,
+                    "description": [
+                        "Configures the interval in seconds to wait between retries of the command. If the command does not pass the specified conditions, the interval indicates how long to wait before trying the command again."
+                    ],
+                    "type": "int"
+                },
+                "match": {
+                    "choices": [
+                        "any",
+                        "all"
+                    ],
+                    "default": "all",
+                    "description": [
+                        "The I(match) argument is used in conjunction with the I(wait_for) argument to specify the match policy.  Valid values are C(all) or C(any).  If the value is set to C(all) then all conditionals in the wait_for must be satisfied.  If the value is set to C(any) then only one of the values must be satisfied."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli).",
+                        "For more information please see the L(IOS Platform Options guide, ../network/user_guide/platform_ios.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "authorize": {
+                            "default": false,
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "retries": {
+                    "default": 10,
+                    "description": [
+                        "Specifies the number of retries a command should by tried before it is considered failed. The command is run on the target device every retry and evaluated against the I(wait_for) conditions."
+                    ],
+                    "type": "int"
+                },
+                "wait_for": {
+                    "aliases": [
+                        "waitfor"
+                    ],
+                    "description": [
+                        "List of conditions to evaluate against the output of the command. The task will wait for each condition to be true before moving forward. If the conditional is not true within the configured number of retries, the task fails. See examples."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "short_description": "Run commands on remote devices running Cisco IOS",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.ios"
+        },
+        "examples": "\n- name: run show version on remote devices\n  cisco.ios.ios_command:\n    commands: show version\n\n- name: run show version and check to see if output contains IOS\n  cisco.ios.ios_command:\n    commands: show version\n    wait_for: result[0] contains IOS\n\n- name: run multiple commands on remote nodes\n  cisco.ios.ios_command:\n    commands:\n    - show version\n    - show interfaces\n\n- name: run multiple commands and evaluate the output\n  cisco.ios.ios_command:\n    commands:\n    - show version\n    - show interfaces\n    wait_for:\n    - result[0] contains IOS\n    - result[1] contains Loopback0\n\n- name: run commands that require answering a prompt\n  cisco.ios.ios_command:\n    commands:\n    - command: clear counters GigabitEthernet0/1\n      prompt: Clear \"show interface\" counters on this interface [confirm]\n      answer: y\n    - command: clear counters GigabitEthernet0/2\n      prompt: '[confirm]'\n      answer: '\r'\n",
+        "metadata": null,
+        "return": {
+            "failed_conditions": {
+                "description": "The list of conditionals that have failed",
+                "returned": "failed",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout": {
+                "description": "The set of responses from the commands",
+                "returned": "always apart from low level errors (such as action plugin)",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "stdout_lines": {
+                "description": "The value of stdout split into a list",
+                "returned": "always apart from low level errors (such as action plugin)",
+                "sample": [
+                    [
+                        "...",
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ],
+                    [
+                        "..."
+                    ]
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

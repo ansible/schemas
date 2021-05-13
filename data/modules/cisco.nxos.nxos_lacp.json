@@ -1,0 +1,113 @@
+{
+    "cisco.nxos.nxos_lacp": {
+        "doc": {
+            "author": "Trishna Guha (@trishnaguha)",
+            "collection": "cisco.nxos",
+            "description": "This module manages Global Link Aggregation Control Protocol (LACP) on NX-OS devices.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/nxos/plugins/modules/nxos_lacp.py",
+            "has_action": true,
+            "module": "nxos_lacp",
+            "notes": [
+                "Tested against NXOS 7.3.(0)D1(1) on VIRL.",
+                "Feature lacp should be enabled for this module."
+            ],
+            "options": {
+                "config": {
+                    "description": "LACP global options.",
+                    "suboptions": {
+                        "system": {
+                            "description": [
+                                "LACP system options"
+                            ],
+                            "suboptions": {
+                                "mac": {
+                                    "description": [
+                                        "MAC address to be used for the LACP Protocol exchanges"
+                                    ],
+                                    "suboptions": {
+                                        "address": {
+                                            "description": [
+                                                "MAC-address (FORMAT :xxxx.xxxx.xxxx)."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "role": {
+                                            "choices": [
+                                                "primary",
+                                                "secondary"
+                                            ],
+                                            "description": [
+                                                "The role for the Switch."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "priority": {
+                                    "description": [
+                                        "The system priority to use in LACP negotiations."
+                                    ],
+                                    "type": "int"
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the NX-OS device by executing the command B(show running-config | include lacp).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "LACP resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "cisco.nxos"
+        },
+        "examples": "\n# Using merged\n\n# Before state:\n# -------------\n#\n\n- name: Merge provided configuration with device configuration.\n  cisco.nxos.nxos_lacp:\n    config:\n      system:\n        priority: 10\n        mac:\n          address: 00c1.4c00.bd15\n    state: merged\n\n# After state:\n# ------------\n#\n# lacp system-priority 10\n# lacp system-mac 00c1.4c00.bd15\n\n\n# Using replaced\n\n# Before state:\n# -------------\n#\n# lacp system-priority 10\n\n- name: Replace device global lacp configuration with the given configuration.\n  cisco.nxos.nxos_lacp:\n    config:\n      system:\n        mac:\n          address: 00c1.4c00.bd15\n    state: replaced\n\n# After state:\n# ------------\n#\n# lacp system-mac 00c1.4c00.bd15\n\n\n# Using deleted\n\n# Before state:\n# -------------\n#\n# lacp system-priority 10\n\n- name: Delete global LACP configurations.\n  cisco.nxos.nxos_lacp:\n    state: deleted\n\n# After state:\n# ------------\n#\n\n# Using rendered\n\n- name: Render platform specific configuration lines (without connecting to the device)\n  cisco.nxos.nxos_lacp:\n    config:\n      system:\n        priority: 10\n        mac:\n          address: 00c1.4c00.bd15\n          role: secondary\n    state: rendered\n\n# Task Output (redacted)\n# -----------------------\n\n# rendered:\n#   - \"lacp system-priority 10\"\n#   - \"lacp system-mac 00c1.4c00.bd15 role secondary\"\n\n# Using parsed\n\n# parsed.cfg\n# ------------\n# lacp system-priority 10\n# lacp system-mac 00c1.4c00.bd15 role secondary\n\n- name: Use parsed state to convert externally supplied config to structured format\n  cisco.nxos.nxos_lacp:\n    running_config: \"{{ lookup('file', 'parsed.cfg') }}\"\n    state: parsed\n\n# Task output (redacted)\n# -----------------------\n# parsed:\n#  system:\n#    priority: 10\n#    mac:\n#      address: 00c1.4c00.bd15\n#      role: secondary\n\n# Using gathered\n\n# Existing device config state\n# -------------------------------\n# Nexus9000v# show running-config | include lacp\n# lacp system-priority 11\n# lacp system-mac 00c1.4c00.bd15 role primary\n\n- name: Gather lacp facts from the device using nxos_lacp\n  cisco.nxos.nxos_lacp:\n    state: gathered\n\n# Task output (redacted)\n# -----------------------\n# gathered:\n#  system:\n#    priority: 11\n#    mac:\n#      address: 00c1.4c00.bd15\n#      role: primary\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "dict"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "lacp system-priority 15",
+                    "lacp system-mac 00c1.4c00.bd15 role primary"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

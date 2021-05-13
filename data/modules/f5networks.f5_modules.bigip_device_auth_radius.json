@@ -1,0 +1,209 @@
+{
+    "f5networks.f5_modules.bigip_device_auth_radius": {
+        "doc": {
+            "author": [
+                "Andrey Kashcheev (@andreykashcheev)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Module creates a RADIUS configuration."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_device_auth_radius.py",
+            "has_action": false,
+            "module": "bigip_device_auth_radius",
+            "notes": [
+                "This module is based on the command line (TMSH) configuration capabilities of RADIUS authentication, not the GUI.",
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "accounting_bug": {
+                    "description": [
+                        "Enables or disables validation of the accounting response vector.",
+                        "This option should be necessary only on older servers."
+                    ],
+                    "type": "bool"
+                },
+                "fallback_to_local": {
+                    "description": [
+                        "Specifies the system uses the Local authentication method if the remote authentication method is not available.",
+                        "Option only available on C(TMOS 13.0.0) and above."
+                    ],
+                    "type": "bool"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "retries": {
+                    "description": [
+                        "Specifies the number of authentication retries the BIG-IP Local Traffic Management system allows before authentication fails."
+                    ],
+                    "type": "int"
+                },
+                "servers": {
+                    "description": [
+                        "Specifies the names of RADIUS servers for use with RADIUS authentication profiles."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "service_type": {
+                    "choices": [
+                        "authenticate-only",
+                        "login",
+                        "default",
+                        "framed",
+                        "callback-login",
+                        "callback-framed",
+                        "outbound",
+                        "administrative",
+                        "nas-prompt",
+                        "callback-nas-prompt",
+                        "call-check",
+                        "callback-administrative"
+                    ],
+                    "description": [
+                        "Specifies the type of service requested from the RADIUS server. The default value is C(authenticate-only)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state) is C(present), ensures the RADIUS server exists.",
+                        "When C(state) is C(absent), ensures the RADIUS server is removed."
+                    ],
+                    "type": "str"
+                },
+                "use_for_auth": {
+                    "description": [
+                        "Specifies whether or not this auth source is put in use on the system.",
+                        "If C(yes), the module sets the current system auth type to the value of C(radius).",
+                        "If C(no), the module sets the authentication type to C(local), similar behavior to when C(state) is C(absent), without removing the configured RADIUS resource."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manages RADIUS auth configuration on a BIG-IP device",
+            "version_added": "1.3.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create an RADIUS device configuration\n  bigip_device_auth_radius:\n    servers:\n      - \"ansible_test1\"\n      - \"ansible_test2\"\n    retries: 3\n    service_type: authenticate-only\n    accounting_bug: no\n    use_for_auth: yes\n    fallback_to_local: yes\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Update an RADIUS device configuration\n  bigip_device_auth_radius:\n    retries: 5\n    service_type: administrative\n    accounting_bug: yes\n    state: present\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Delete RADIUS auth configuration\n  bigip_device_auth_radius:\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "accounting_bug": {
+                "description": "Enables or disables validation of the accounting response vector.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "retries": {
+                "description": "Number of authentication retries before authentication fails.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "servers": {
+                "description": "The servers value of the resource.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "list"
+            },
+            "service_type": {
+                "description": "Type of service requested from the RADIUS server.",
+                "returned": "changed",
+                "sample": "login",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,1054 @@
+{
+    "community.windows.win_disk_facts": {
+        "doc": {
+            "author": [
+                "Marc Tschapek (@marqelme)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "With the module you can retrieve and output detailed information about the attached disks of the target and its volumes and partitions if existent."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_disk_facts.py",
+            "has_action": false,
+            "module": "win_disk_facts",
+            "notes": [
+                "In order to understand all the returned properties and values please visit the following site and open the respective MSFT class U(https://msdn.microsoft.com/en-us/library/windows/desktop/hh830612.aspx)"
+            ],
+            "requirements": [
+                "Windows 8.1 / Windows 2012 (NT 6.2)"
+            ],
+            "short_description": "Show the attached disks and disk information of the target host"
+        },
+        "examples": "\n- name: Get disk facts\n  community.windows.win_disk_facts:\n\n- name: Output first disk size\n  debug:\n    var: ansible_facts.disks[0].size\n\n- name: Convert first system disk into various formats\n  debug:\n    msg: '{{ disksize_gib }} vs {{ disksize_gib_human }}'\n  vars:\n    # Get first system disk\n    disk: '{{ ansible_facts.disks|selectattr(\"system_disk\")|first }}'\n\n    # Show disk size in Gibibytes\n    disksize_gib_human: '{{ disk.size|filesizeformat(true) }}'   # returns \"223.6 GiB\" (human readable)\n    disksize_gib: '{{ (disk.size/1024|pow(3))|round|int }} GiB'  # returns \"224 GiB\" (value in GiB)\n\n    # Show disk size in Gigabytes\n    disksize_gb_human: '{{ disk.size|filesizeformat }}'        # returns \"240.1 GB\" (human readable)\n    disksize_gb: '{{ (disk.size/1000|pow(3))|round|int }} GB'  # returns \"240 GB\" (value in GB)\n\n- name: Output second disk serial number\n  debug:\n    var: ansible_facts.disks[1].serial_number\n",
+        "metadata": null,
+        "return": {
+            "ansible_facts": {
+                "contains": {
+                    "ansible_disks": {
+                        "contains": {
+                            "bootable": {
+                                "description": "Information whether the particular disk is a bootable disk.",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "bus_type": {
+                                "description": "Bus type of the particular disk.",
+                                "returned": "always",
+                                "sample": "SCSI",
+                                "type": "str"
+                            },
+                            "clustered": {
+                                "description": "Information whether the particular disk is clustered (part of a failover cluster).",
+                                "returned": "always",
+                                "sample": false,
+                                "type": "bool"
+                            },
+                            "firmware_version": {
+                                "description": "Firmware version of the particular disk.",
+                                "returned": "always",
+                                "sample": "0001",
+                                "type": "str"
+                            },
+                            "friendly_name": {
+                                "description": "Friendly name of the particular disk.",
+                                "returned": "always",
+                                "sample": "Red Hat VirtIO SCSI Disk Device",
+                                "type": "str"
+                            },
+                            "guid": {
+                                "description": "GUID of the particular disk on the target.",
+                                "returned": "if existent",
+                                "sample": "{efa5f928-57b9-47fc-ae3e-902e85fbe77f}",
+                                "type": "str"
+                            },
+                            "location": {
+                                "description": "Location of the particular disk on the target.",
+                                "returned": "always",
+                                "sample": "PCIROOT(0)#PCI(0400)#SCSI(P00T00L00)",
+                                "type": "str"
+                            },
+                            "manufacturer": {
+                                "description": "Manufacturer of the particular disk.",
+                                "returned": "always",
+                                "sample": "Red Hat",
+                                "type": "str"
+                            },
+                            "model": {
+                                "description": "Model specification of the particular disk.",
+                                "returned": "always",
+                                "sample": "VirtIO",
+                                "type": "str"
+                            },
+                            "number": {
+                                "description": "Disk number of the particular disk.",
+                                "returned": "always",
+                                "sample": 0,
+                                "type": "int"
+                            },
+                            "operational_status": {
+                                "description": "Operational status of the particular disk.",
+                                "returned": "always",
+                                "sample": "Online",
+                                "type": "str"
+                            },
+                            "partition_count": {
+                                "description": "Number of partitions on the particular disk.",
+                                "returned": "always",
+                                "sample": 4,
+                                "type": "int"
+                            },
+                            "partition_style": {
+                                "description": "Partition style of the particular disk.",
+                                "returned": "always",
+                                "sample": "MBR",
+                                "type": "str"
+                            },
+                            "partitions": {
+                                "contains": {
+                                    "access_paths": {
+                                        "description": "Access paths of the particular partition.",
+                                        "returned": "if existent",
+                                        "sample": "\\\\?\\Volume{85bdc4a8-f8eb-11e6-80fa-806e6f6e6963}\\",
+                                        "type": "str"
+                                    },
+                                    "active": {
+                                        "description": "Information whether the particular partition is an active partition or not.",
+                                        "returned": "if partition_style property of the particular disk has value \"MBR\"",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "drive_letter": {
+                                        "description": "Drive letter of the particular partition.",
+                                        "returned": "if existent",
+                                        "sample": "C",
+                                        "type": "str"
+                                    },
+                                    "gpt_type": {
+                                        "description": "gpt type of the particular partition.",
+                                        "returned": "if partition_style property of the particular disk has value \"GPT\"",
+                                        "sample": "{e3c9e316-0b5c-4db8-817d-f92df00215ae}",
+                                        "type": "str"
+                                    },
+                                    "guid": {
+                                        "description": "GUID of the particular partition.",
+                                        "returned": "if existent",
+                                        "sample": "{302e475c-6e64-4674-a8e2-2f1c7018bf97}",
+                                        "type": "str"
+                                    },
+                                    "hidden": {
+                                        "description": "Information whether the particular partition is hidden or not.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "mbr_type": {
+                                        "description": "mbr type of the particular partition.",
+                                        "returned": "if partition_style property of the particular disk has value \"MBR\"",
+                                        "sample": 7,
+                                        "type": "int"
+                                    },
+                                    "no_default_driveletter": {
+                                        "description": "Information whether the particular partition has a default drive letter or not.",
+                                        "returned": "if partition_style property of the particular disk has value \"GPT\"",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "number": {
+                                        "description": "Number of the particular partition.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "offset": {
+                                        "description": "Offset of the particular partition.",
+                                        "returned": "always",
+                                        "sample": 368050176,
+                                        "type": "int"
+                                    },
+                                    "shadow_copy": {
+                                        "description": "Information whether the particular partition is a shadow copy of another partition.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "size": {
+                                        "description": [
+                                            "Size in bytes of the particular partition."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 838860800,
+                                        "type": "int"
+                                    },
+                                    "transition_state": {
+                                        "description": "Transition state of the particular partition.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "type": {
+                                        "description": "Type of the particular partition.",
+                                        "returned": "always",
+                                        "sample": "IFS",
+                                        "type": "str"
+                                    },
+                                    "volumes": {
+                                        "contains": {
+                                            "allocation_unit_size": {
+                                                "description": "Allocation unit size in bytes of the particular volume.",
+                                                "returned": "always",
+                                                "sample": 4096,
+                                                "type": "int"
+                                            },
+                                            "drive_type": {
+                                                "description": "Drive type of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "Fixed",
+                                                "type": "str"
+                                            },
+                                            "health_status": {
+                                                "description": "Health status of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "Healthy",
+                                                "type": "str"
+                                            },
+                                            "label": {
+                                                "description": "File system label of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "System Reserved",
+                                                "type": "str"
+                                            },
+                                            "object_id": {
+                                                "description": "Object ID of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "\\\\?\\Volume{85bdc4a9-f8eb-11e6-80fa-806e6f6e6963}\\",
+                                                "type": "str"
+                                            },
+                                            "path": {
+                                                "description": "Path of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "\\\\?\\Volume{85bdc4a9-f8eb-11e6-80fa-806e6f6e6963}\\",
+                                                "type": "str"
+                                            },
+                                            "size": {
+                                                "description": [
+                                                    "Size in bytes of the particular volume."
+                                                ],
+                                                "returned": "always",
+                                                "sample": 838856704,
+                                                "type": "int"
+                                            },
+                                            "size_remaining": {
+                                                "description": [
+                                                    "Remaining size in bytes of the particular volume."
+                                                ],
+                                                "returned": "always",
+                                                "sample": 395620352,
+                                                "type": "int"
+                                            },
+                                            "type": {
+                                                "description": "File system type of the particular volume.",
+                                                "returned": "always",
+                                                "sample": "NTFS",
+                                                "type": "str"
+                                            }
+                                        },
+                                        "description": "Detailed information about one particular volume on the specified partition.",
+                                        "returned": "if existent",
+                                        "type": "list"
+                                    }
+                                },
+                                "description": "Detailed information about one particular partition on the specified disk.",
+                                "returned": "if existent",
+                                "type": "list"
+                            },
+                            "path": {
+                                "description": "Path of the particular disk on the target.",
+                                "returned": "always",
+                                "sample": "\\\\?\\scsi#disk&ven_red_hat&prod_virtio#4&23208fd0&1&000000#{<id>}",
+                                "type": "str"
+                            },
+                            "physical_disk": {
+                                "contains": {
+                                    "allocated_size": {
+                                        "description": [
+                                            "Allocated size in bytes of the particular physical disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 240057409536,
+                                        "type": "int"
+                                    },
+                                    "bus_type": {
+                                        "description": "Bus type of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "SCSI",
+                                        "type": "str"
+                                    },
+                                    "can_pool": {
+                                        "description": "Information whether the particular physical disk can be added to a storage pool.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "cannot_pool_reason": {
+                                        "description": "Information why the particular physical disk can not be added to a storage pool.",
+                                        "returned": "if can_pool property has value false",
+                                        "sample": "Insufficient Capacity",
+                                        "type": "str"
+                                    },
+                                    "device_id": {
+                                        "description": "Device ID of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "0",
+                                        "type": "str"
+                                    },
+                                    "friendly_name": {
+                                        "description": "Friendly name of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "PhysicalDisk0",
+                                        "type": "str"
+                                    },
+                                    "health_status": {
+                                        "description": "Health status of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "Healthy",
+                                        "type": "str"
+                                    },
+                                    "indication_enabled": {
+                                        "description": "Information whether indication is enabled for the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "manufacturer": {
+                                        "description": "Manufacturer of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "SUSE",
+                                        "type": "str"
+                                    },
+                                    "media_type": {
+                                        "description": "Media type of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "UnSpecified",
+                                        "type": "str"
+                                    },
+                                    "model": {
+                                        "description": "Model of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "Xen Block",
+                                        "type": "str"
+                                    },
+                                    "object_id": {
+                                        "description": "Object ID of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "{1}\\\\\\\\HOST\\\\root/Microsoft/Windows/Storage/Providers_v2\\\\SPACES_PhysicalDisk.ObjectId=\\\"{<object_id>}:PD:{<pd>}\\\"",
+                                        "type": "str"
+                                    },
+                                    "operational_status": {
+                                        "description": "Operational status of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "OK",
+                                        "type": "str"
+                                    },
+                                    "partial": {
+                                        "description": "Information whether the particular physical disk is partial.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "physical_location": {
+                                        "description": "Physical location of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "Integrated : Adapter 3 : Port 0 : Target 0 : LUN 0",
+                                        "type": "str"
+                                    },
+                                    "serial_number": {
+                                        "description": "Serial number of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "b62beac80c3645e5877f",
+                                        "type": "str"
+                                    },
+                                    "size": {
+                                        "description": [
+                                            "Size in bytes of the particular physical disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 240057409536,
+                                        "type": "int"
+                                    },
+                                    "spindle_speed": {
+                                        "description": "Spindle speed in rpm of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": 4294967295,
+                                        "type": "int"
+                                    },
+                                    "supported_usages": {
+                                        "contains": {
+                                            "Count": {
+                                                "description": "Count of supported usage types.",
+                                                "returned": "always",
+                                                "sample": 5,
+                                                "type": "int"
+                                            },
+                                            "value": {
+                                                "description": "List of supported usage types.",
+                                                "returned": "always",
+                                                "sample": "Auto-Select, Hot Spare",
+                                                "type": "str"
+                                            }
+                                        },
+                                        "description": "Supported usage types of the particular physical disk.",
+                                        "returned": "always",
+                                        "type": "complex"
+                                    },
+                                    "unique_id": {
+                                        "description": "Unique ID of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "3141463431303031",
+                                        "type": "str"
+                                    },
+                                    "usage_type": {
+                                        "description": "Usage type of the particular physical disk.",
+                                        "returned": "always",
+                                        "sample": "Auto-Select",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Detailed information about physical disk properties of the particular disk.",
+                                "returned": "if existent",
+                                "type": "complex"
+                            },
+                            "read_only": {
+                                "description": "Read only status of the particular disk.",
+                                "returned": "always",
+                                "sample": true,
+                                "type": "bool"
+                            },
+                            "sector_size": {
+                                "description": "Sector size in bytes of the particular disk.",
+                                "returned": "always",
+                                "sample": 4096,
+                                "type": "int"
+                            },
+                            "serial_number": {
+                                "description": "Serial number of the particular disk on the target.",
+                                "returned": "always",
+                                "sample": "b62beac80c3645e5877f",
+                                "type": "str"
+                            },
+                            "size": {
+                                "description": "Size in bytes of the particular disk.",
+                                "returned": "always",
+                                "sample": 227727638528,
+                                "type": "int"
+                            },
+                            "system_disk": {
+                                "description": "Information whether the particular disk is a system disk.",
+                                "returned": "always",
+                                "sample": true,
+                                "type": "bool"
+                            },
+                            "unique_id": {
+                                "description": "Unique ID of the particular disk on the target.",
+                                "returned": "always",
+                                "sample": "3141463431303031",
+                                "type": "str"
+                            },
+                            "virtual_disk": {
+                                "contains": {
+                                    "access": {
+                                        "description": "Access of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Read/Write",
+                                        "type": "str"
+                                    },
+                                    "allocated_size": {
+                                        "description": [
+                                            "Allocated size in bytes of the particular virtual disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 240057409536,
+                                        "type": "int"
+                                    },
+                                    "allocation_unit_size": {
+                                        "description": "Allocation unit size in bytes of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 4096,
+                                        "type": "int"
+                                    },
+                                    "available_copies": {
+                                        "description": "Number of the available copies of the particular virtual disk.",
+                                        "returned": "if existent",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "columns": {
+                                        "description": "Number of the columns of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 2,
+                                        "type": "int"
+                                    },
+                                    "deduplication_enabled": {
+                                        "description": "Information whether deduplication is enabled for the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "detached_reason": {
+                                        "description": "Detached reason of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "None",
+                                        "type": "str"
+                                    },
+                                    "enclosure_aware": {
+                                        "description": "Information whether the particular virtual disk is enclosure aware.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "fault_domain_awareness": {
+                                        "description": "Fault domain awareness of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "PhysicalDisk",
+                                        "type": "str"
+                                    },
+                                    "footprint_on_pool": {
+                                        "description": [
+                                            "Footprint on pool in bytes of the particular virtual disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 240057409536,
+                                        "type": "int"
+                                    },
+                                    "friendly_name": {
+                                        "description": "Friendly name of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Prod2 Virtual Disk",
+                                        "type": "str"
+                                    },
+                                    "groups": {
+                                        "description": "Number of the groups of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "health_status": {
+                                        "description": "Health status of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Healthy",
+                                        "type": "str"
+                                    },
+                                    "inter_leave": {
+                                        "description": [
+                                            "Inter leave in bytes of the particular virtual disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 102400,
+                                        "type": "int"
+                                    },
+                                    "logical_sector_size": {
+                                        "description": "Logical sector size in byte of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 512,
+                                        "type": "int"
+                                    },
+                                    "manual_attach": {
+                                        "description": "Information whether the particular virtual disk is manual attached.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "media_type": {
+                                        "description": "Media type of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Unspecified",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "Name of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "vDisk1",
+                                        "type": "str"
+                                    },
+                                    "object_id": {
+                                        "description": "Object ID of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "{1}\\\\\\\\HOST\\\\root/Microsoft/Windows/Storage/Providers_v2\\\\SPACES_VirtualDisk.ObjectId=\\\"{<object_id>}:VD:{<vd>}\\\"",
+                                        "type": "str"
+                                    },
+                                    "operational_status": {
+                                        "description": "Operational status of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "OK",
+                                        "type": "str"
+                                    },
+                                    "parity_layout": {
+                                        "description": "Parity layout of the particular virtual disk.",
+                                        "returned": "if existent",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "physical_disk_redundancy": {
+                                        "description": "Type of the physical disk redundancy of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "physical_sector_size": {
+                                        "description": "Physical sector size in bytes of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 4096,
+                                        "type": "int"
+                                    },
+                                    "provisioning_type": {
+                                        "description": "Provisioning type of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Thin",
+                                        "type": "str"
+                                    },
+                                    "read_cache_size": {
+                                        "description": "Read cache size in byte of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "request_no_spof": {
+                                        "description": "Information whether the particular virtual disk requests no single point of failure.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "resiliency_setting_name": {
+                                        "description": "Type of the physical disk redundancy of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 1,
+                                        "type": "int"
+                                    },
+                                    "size": {
+                                        "description": [
+                                            "Size in bytes of the particular virtual disk."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 240057409536,
+                                        "type": "int"
+                                    },
+                                    "snapshot": {
+                                        "description": "Information whether the particular virtual disk is a snapshot.",
+                                        "returned": "always",
+                                        "sample": false,
+                                        "type": "bool"
+                                    },
+                                    "tiered": {
+                                        "description": "Information whether the particular virtual disk is tiered.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "unique_id": {
+                                        "description": "Unique ID of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "260542E4C6B01D47A8FA7630FD90FFDE",
+                                        "type": "str"
+                                    },
+                                    "unique_id_format": {
+                                        "description": "Unique ID format of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": "Vendor Specific",
+                                        "type": "str"
+                                    },
+                                    "write_cache_size": {
+                                        "description": "Write cache size in byte of the particular virtual disk.",
+                                        "returned": "always",
+                                        "sample": 100,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Detailed information about virtual disk properties of the particular disk.",
+                                "returned": "if existent",
+                                "type": "complex"
+                            },
+                            "win32_disk_drive": {
+                                "contains": {
+                                    "availability": {
+                                        "description": "Availability and status of the device.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "bytes_per_sector": {
+                                        "description": "Number of bytes in each sector for the physical disk drive.",
+                                        "returned": "always",
+                                        "sample": 512,
+                                        "type": "int"
+                                    },
+                                    "capabilities": {
+                                        "description": [
+                                            "Array of capabilities of the media access device.",
+                                            "For example, the device may support random access (3), removable media (7), and automatic cleaning (9)."
+                                        ],
+                                        "returned": "always",
+                                        "sample": [
+                                            3,
+                                            4
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "capability_descriptions": {
+                                        "description": [
+                                            "List of more detailed explanations for any of the access device features indicated in the Capabilities array.",
+                                            "Note, each entry of this array is related to the entry in the Capabilities array that is located at the same index."
+                                        ],
+                                        "returned": "always",
+                                        "sample": [
+                                            "Random Access",
+                                            "Supports Writing"
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "caption": {
+                                        "description": "Short description of the object.",
+                                        "returned": "always",
+                                        "sample": "VMware Virtual disk SCSI Disk Device",
+                                        "type": "str"
+                                    },
+                                    "compression_method": {
+                                        "description": "Algorithm or tool used by the device to support compression.",
+                                        "returned": "always",
+                                        "sample": "Compressed",
+                                        "type": "str"
+                                    },
+                                    "config_manager_error_code": {
+                                        "description": "Windows Configuration Manager error code.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "config_manager_user_config": {
+                                        "description": "If True, the device is using a user-defined configuration.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "creation_class_name": {
+                                        "description": [
+                                            "Name of the first concrete class to appear in the inheritance chain used in the creation of an instance.",
+                                            "When used with the other key properties of the class, the property allows all instances of this class",
+                                            "and its subclasses to be uniquely identified."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "Win32_DiskDrive",
+                                        "type": "str"
+                                    },
+                                    "default_block_size": {
+                                        "description": "Default block size, in bytes, for this device.",
+                                        "returned": "always",
+                                        "sample": 512,
+                                        "type": "int"
+                                    },
+                                    "description": {
+                                        "description": "Description of the object.",
+                                        "returned": "always",
+                                        "sample": "Disk drive",
+                                        "type": "str"
+                                    },
+                                    "device_id": {
+                                        "description": "Unique identifier of the disk drive with other devices on the system.",
+                                        "returned": "always",
+                                        "sample": "\\\\.\\PHYSICALDRIVE0",
+                                        "type": "str"
+                                    },
+                                    "error_cleared": {
+                                        "description": "If True, the error reported in LastErrorCode is now cleared.",
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "error_description": {
+                                        "description": [
+                                            "More information about the error recorded in LastErrorCode,",
+                                            "and information on any corrective actions that may be taken."
+                                        ],
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "error_methodology": {
+                                        "description": "Type of error detection and correction supported by this device.",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "firmware_revision": {
+                                        "description": "Revision for the disk drive firmware that is assigned by the manufacturer.",
+                                        "returned": "always",
+                                        "sample": 1.0,
+                                        "type": "str"
+                                    },
+                                    "index": {
+                                        "description": [
+                                            "Physical drive number of the given drive.",
+                                            "This property is filled by the STORAGE_DEVICE_NUMBER structure returned from the IOCTL_STORAGE_GET_DEVICE_NUMBER control code",
+                                            "A value of 0xffffffff indicates that the given drive does not map to a physical drive."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "install_date": {
+                                        "description": "Date and time the object was installed. This property does not need a value to indicate that the object is installed.",
+                                        "returned": "always",
+                                        "type": "str"
+                                    },
+                                    "interface_type": {
+                                        "description": "Interface type of physical disk drive.",
+                                        "returned": "always",
+                                        "sample": "SCSI",
+                                        "type": "str"
+                                    },
+                                    "last_error_code": {
+                                        "description": "Last error code reported by the logical device.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "manufacturer": {
+                                        "description": "Name of the disk drive manufacturer.",
+                                        "returned": "always",
+                                        "sample": "Seagate",
+                                        "type": "str"
+                                    },
+                                    "max_block_size": {
+                                        "description": "Maximum block size, in bytes, for media accessed by this device.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "max_media_size": {
+                                        "description": "Maximum media size, in kilobytes, of media supported by this device.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "media_loaded": {
+                                        "description": [
+                                            "If True, the media for a disk drive is loaded, which means that the device has a readable file system and is accessible.",
+                                            "For fixed disk drives, this property will always be TRUE."
+                                        ],
+                                        "returned": "always",
+                                        "sample": true,
+                                        "type": "bool"
+                                    },
+                                    "media_type": {
+                                        "description": "Type of media used or accessed by this device.",
+                                        "returned": "always",
+                                        "sample": "Fixed hard disk media",
+                                        "type": "str"
+                                    },
+                                    "min_block_size": {
+                                        "description": "Minimum block size, in bytes, for media accessed by this device.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "model": {
+                                        "description": "Manufacturer's model number of the disk drive.",
+                                        "returned": "always",
+                                        "sample": "ST32171W",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "Label by which the object is known. When subclassed, the property can be overridden to be a key property.",
+                                        "returned": "always",
+                                        "sample": "\\\\\\\\.\\\\PHYSICALDRIVE0",
+                                        "type": "str"
+                                    },
+                                    "needs_cleaning": {
+                                        "description": [
+                                            "If True, the media access device needs cleaning.",
+                                            "Whether manual or automatic cleaning is possible is indicated in the Capabilities property."
+                                        ],
+                                        "returned": "always",
+                                        "type": "bool"
+                                    },
+                                    "number_of_media_supported": {
+                                        "description": [
+                                            "Maximum number of media which can be supported or inserted",
+                                            "(when the media access device supports multiple individual media)."
+                                        ],
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "partitions": {
+                                        "description": "Number of partitions on this physical disk drive that are recognized by the operating system.",
+                                        "returned": "always",
+                                        "sample": 3,
+                                        "type": "int"
+                                    },
+                                    "pnp_device_id": {
+                                        "description": "Windows Plug and Play device identifier of the logical device.",
+                                        "returned": "always",
+                                        "sample": "SCSI\\DISK&VEN_VMWARE&PROD_VIRTUAL_DISK\\5&1982005&0&000000",
+                                        "type": "str"
+                                    },
+                                    "power_management_capabilities": {
+                                        "description": "Array of the specific power-related capabilities of a logical device.",
+                                        "returned": "always",
+                                        "type": "list"
+                                    },
+                                    "power_management_supported": {
+                                        "description": [
+                                            "If True, the device can be power-managed (can be put into suspend mode, and so on).",
+                                            "The property does not indicate that power management features are currently enabled,",
+                                            "only that the logical device is capable of power management."
+                                        ],
+                                        "returned": "always",
+                                        "type": "bool"
+                                    },
+                                    "scsi_bus": {
+                                        "description": "SCSI bus number of the disk drive.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "scsi_logical_unit": {
+                                        "description": "SCSI logical unit number (LUN) of the disk drive.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "scsi_port": {
+                                        "description": "SCSI port number of the disk drive.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "scsi_target_id": {
+                                        "description": "SCSI identifier number of the disk drive.",
+                                        "returned": "always",
+                                        "sample": 0,
+                                        "type": "int"
+                                    },
+                                    "sectors_per_track": {
+                                        "description": "Number of sectors in each track for this physical disk drive.",
+                                        "returned": "always",
+                                        "sample": 63,
+                                        "type": "int"
+                                    },
+                                    "serial_number": {
+                                        "description": "Number allocated by the manufacturer to identify the physical media.",
+                                        "returned": "always",
+                                        "sample": "6000c298f34101b38cb2b2508926b9de",
+                                        "type": "str"
+                                    },
+                                    "signature": {
+                                        "description": "Disk identification. This property can be used to identify a shared resource.",
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "size": {
+                                        "description": [
+                                            "Size of the disk drive. It is calculated by multiplying the total number of cylinders, tracks in each cylinder,",
+                                            "sectors in each track, and bytes in each sector."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 53686402560,
+                                        "type": "int"
+                                    },
+                                    "status": {
+                                        "description": [
+                                            "Current status of the object. Various operational and nonoperational statuses can be defined.",
+                                            "Operational statuses include: \"OK\", \"Degraded\", and \"Pred Fail\"",
+                                            "(an element, such as a SMART-enabled hard disk drive, may be functioning properly but predicting a failure in the near future).",
+                                            "Nonoperational statuses include: \"Error\", \"Starting\", \"Stopping\", and \"Service\".",
+                                            "\"Service\", could apply during mirror-resilvering of a disk, reload of a user permissions list, or other administrative work.",
+                                            "Not all such work is online, yet the managed element is neither \"OK\" nor in one of the other states."
+                                        ],
+                                        "returned": "always",
+                                        "sample": "OK",
+                                        "type": "str"
+                                    },
+                                    "status_info": {
+                                        "description": [
+                                            "State of the logical device. If this property does not apply to the logical device, the value 5 (Not Applicable) should be used."
+                                        ],
+                                        "returned": "always",
+                                        "type": "int"
+                                    },
+                                    "system_creation_class_name": {
+                                        "description": "Value of the scoping computer's CreationClassName property.",
+                                        "returned": "always",
+                                        "sample": "Win32_ComputerSystem",
+                                        "type": "str"
+                                    },
+                                    "system_name": {
+                                        "description": "Name of the scoping system.",
+                                        "returned": "always",
+                                        "sample": "WILMAR-TEST-123",
+                                        "type": "str"
+                                    },
+                                    "total_cylinders": {
+                                        "description": [
+                                            "Total number of cylinders on the physical disk drive.",
+                                            "Note: the value for this property is obtained through extended functions of BIOS interrupt 13h.",
+                                            "The value may be inaccurate if the drive uses a translation scheme to support high-capacity disk sizes.",
+                                            "Consult the manufacturer for accurate drive specifications."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 6527,
+                                        "type": "int"
+                                    },
+                                    "total_heads": {
+                                        "description": [
+                                            "Total number of heads on the disk drive.",
+                                            "Note: the value for this property is obtained through extended functions of BIOS interrupt 13h.",
+                                            "The value may be inaccurate if the drive uses a translation scheme to support high-capacity disk sizes.",
+                                            "Consult the manufacturer for accurate drive specifications."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 255,
+                                        "type": "int"
+                                    },
+                                    "total_sectors": {
+                                        "description": [
+                                            "Total number of sectors on the physical disk drive.",
+                                            "Note: the value for this property is obtained through extended functions of BIOS interrupt 13h.",
+                                            "The value may be inaccurate if the drive uses a translation scheme to support high-capacity disk sizes.",
+                                            "Consult the manufacturer for accurate drive specifications."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 104856255,
+                                        "type": "int"
+                                    },
+                                    "total_tracks": {
+                                        "description": [
+                                            "Total number of tracks on the physical disk drive.",
+                                            "Note: the value for this property is obtained through extended functions of BIOS interrupt 13h.",
+                                            "The value may be inaccurate if the drive uses a translation scheme to support high-capacity disk sizes.",
+                                            "Consult the manufacturer for accurate drive specifications."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 1664385,
+                                        "type": "int"
+                                    },
+                                    "tracks_per_cylinder": {
+                                        "description": [
+                                            "Number of tracks in each cylinder on the physical disk drive.",
+                                            "Note: the value for this property is obtained through extended functions of BIOS interrupt 13h.",
+                                            "The value may be inaccurate if the drive uses a translation scheme to support high-capacity disk sizes.",
+                                            "Consult the manufacturer for accurate drive specifications."
+                                        ],
+                                        "returned": "always",
+                                        "sample": 255,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "Representation of the Win32_DiskDrive class.",
+                                "returned": "if existent",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Detailed information about one particular disk.",
+                        "returned": "if disks were found",
+                        "type": "list"
+                    }
+                },
+                "description": "Dictionary containing all the detailed information about the disks of the target.",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

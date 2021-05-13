@@ -1,0 +1,184 @@
+{
+    "community.general.scaleway_compute": {
+        "doc": {
+            "author": "Remy Leone (@sieben)",
+            "collection": "community.general",
+            "description": [
+                "This module manages compute instances on Scaleway."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/scaleway_compute.py",
+            "has_action": false,
+            "module": "scaleway_compute",
+            "notes": [
+                "Also see the API documentation on U(https://developer.scaleway.com/)",
+                "If C(api_token) is not set within the module, the following environment variables can be used in decreasing order of precedence C(SCW_TOKEN), C(SCW_API_KEY), C(SCW_OAUTH_TOKEN) or C(SCW_API_TOKEN).",
+                "If one wants to use a different C(api_url) one can also set the C(SCW_API_URL) environment variable."
+            ],
+            "options": {
+                "api_timeout": {
+                    "aliases": [
+                        "timeout"
+                    ],
+                    "default": 30,
+                    "description": [
+                        "HTTP timeout to Scaleway API in seconds."
+                    ],
+                    "type": "int"
+                },
+                "api_token": {
+                    "aliases": [
+                        "oauth_token"
+                    ],
+                    "description": [
+                        "Scaleway OAuth token."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "aliases": [
+                        "base_url"
+                    ],
+                    "default": "https://api.scaleway.com",
+                    "description": [
+                        "Scaleway API URL."
+                    ],
+                    "type": "str"
+                },
+                "commercial_type": {
+                    "description": [
+                        "Commercial name of the compute node"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enable_ipv6": {
+                    "default": false,
+                    "description": [
+                        "Enable public IPv6 connectivity on the instance"
+                    ],
+                    "type": "bool"
+                },
+                "image": {
+                    "description": [
+                        "Image identifier used to start the instance with"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the instance"
+                    ],
+                    "type": "str"
+                },
+                "organization": {
+                    "description": [
+                        "Organization identifier"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "public_ip": {
+                    "default": "absent",
+                    "description": [
+                        "Manage public IP on a Scaleway server",
+                        "Could be Scaleway IP address UUID",
+                        "C(dynamic) Means that IP is destroyed at the same time the host is destroyed",
+                        "C(absent) Means no public IP at all"
+                    ],
+                    "type": "str"
+                },
+                "query_parameters": {
+                    "default": {},
+                    "description": [
+                        "List of parameters passed to the query string."
+                    ],
+                    "type": "dict"
+                },
+                "region": {
+                    "choices": [
+                        "ams1",
+                        "EMEA-NL-EVS",
+                        "par1",
+                        "EMEA-FR-PAR1",
+                        "par2",
+                        "EMEA-FR-PAR2",
+                        "waw1",
+                        "EMEA-PL-WAW1"
+                    ],
+                    "description": [
+                        "Scaleway compute zone"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "security_group": {
+                    "description": [
+                        "Security group unique identifier",
+                        "If no value provided, the default security group or current security group will be used"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "running",
+                        "restarted",
+                        "stopped"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the instance."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "default": [],
+                    "description": [
+                        "List of tags to apply to the instance (5 max)"
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Validate SSL certs of the Scaleway API."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "default": "no",
+                    "description": [
+                        "Wait for the instance to reach its desired state before returning."
+                    ],
+                    "type": "bool"
+                },
+                "wait_sleep_time": {
+                    "default": 3,
+                    "description": [
+                        "Time to wait before every attempt to check the state of the server"
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "Time to wait for the server to reach the expected state"
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "short_description": "Scaleway compute management module"
+        },
+        "examples": "\n- name: Create a server\n  community.general.scaleway_compute:\n    name: foobar\n    state: present\n    image: 89ee4018-f8c3-4dc4-a6b5-bca14f985ebe\n    organization: 951df375-e094-4d26-97c1-ba548eeb9c42\n    region: ams1\n    commercial_type: VC1S\n    tags:\n      - test\n      - www\n\n- name: Create a server attached to a security group\n  community.general.scaleway_compute:\n    name: foobar\n    state: present\n    image: 89ee4018-f8c3-4dc4-a6b5-bca14f985ebe\n    organization: 951df375-e094-4d26-97c1-ba548eeb9c42\n    region: ams1\n    commercial_type: VC1S\n    security_group: 4a31b633-118e-4900-bd52-facf1085fc8d\n    tags:\n      - test\n      - www\n\n- name: Destroy it right after\n  community.general.scaleway_compute:\n    name: foobar\n    state: absent\n    image: 89ee4018-f8c3-4dc4-a6b5-bca14f985ebe\n    organization: 951df375-e094-4d26-97c1-ba548eeb9c42\n    region: ams1\n    commercial_type: VC1S\n",
+        "metadata": null,
+        "return": null
+    }
+}

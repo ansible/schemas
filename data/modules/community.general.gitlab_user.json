@@ -1,0 +1,191 @@
+{
+    "community.general.gitlab_user": {
+        "doc": {
+            "author": [
+                "Werner Dijkerman (@dj-wasabi)",
+                "Guillaume Martinez (@Lunik)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "When the user does not exist in GitLab, it will be created.",
+                "When the user exists and state=absent, the user will be deleted.",
+                "When the user exists and state=blocked, the user will be blocked.",
+                "When changes are made to user, the user will be updated."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/gitlab_user.py",
+            "has_action": false,
+            "module": "gitlab_user",
+            "notes": [
+                "From community.general 0.2.0 and onwards, name, email and password are optional while deleting the user."
+            ],
+            "options": {
+                "access_level": {
+                    "choices": [
+                        "guest",
+                        "reporter",
+                        "developer",
+                        "master",
+                        "maintainer",
+                        "owner"
+                    ],
+                    "default": "guest",
+                    "description": [
+                        "The access level to the group. One of the following can be used.",
+                        "guest",
+                        "reporter",
+                        "developer",
+                        "master (alias for maintainer)",
+                        "maintainer",
+                        "owner"
+                    ],
+                    "type": "str"
+                },
+                "api_password": {
+                    "description": [
+                        "The password to use for authentication against the API"
+                    ],
+                    "type": "str"
+                },
+                "api_token": {
+                    "description": [
+                        "GitLab token for logging in."
+                    ],
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The resolvable endpoint for the API"
+                    ],
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to use for authentication against the API"
+                    ],
+                    "type": "str"
+                },
+                "confirm": {
+                    "default": true,
+                    "description": [
+                        "Require confirmation."
+                    ],
+                    "type": "bool"
+                },
+                "email": {
+                    "description": [
+                        "The email that belongs to the user.",
+                        "Required only if C(state) is set to C(present)."
+                    ],
+                    "type": "str"
+                },
+                "external": {
+                    "default": false,
+                    "description": [
+                        "Define external parameter for this user."
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Id or Full path of parent group in the form of group/name.",
+                        "Add user as an member to this group."
+                    ],
+                    "type": "str"
+                },
+                "isadmin": {
+                    "default": false,
+                    "description": [
+                        "Grant admin privileges to the user."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Name of the user you want to create.",
+                        "Required only if C(state) is set to C(present)."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "The password of the user.",
+                        "GitLab server enforces minimum password length to 8, set this value with 8 or more characters.",
+                        "Required only if C(state) is set to C(present)."
+                    ],
+                    "type": "str"
+                },
+                "sshkey_file": {
+                    "description": [
+                        "The ssh key itself."
+                    ],
+                    "type": "str"
+                },
+                "sshkey_name": {
+                    "description": [
+                        "The name of the sshkey"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "blocked",
+                        "unblocked"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create, delete or block a user."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "The username of the user."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to validate SSL certs when supplying a https endpoint."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "python-gitlab python module",
+                "administrator rights on the GitLab server"
+            ],
+            "short_description": "Creates/updates/deletes/blocks/unblocks GitLab Users"
+        },
+        "examples": "\n- name: \"Delete GitLab User\"\n  community.general.gitlab_user:\n    api_url: https://gitlab.example.com/\n    api_token: \"{{ access_token }}\"\n    validate_certs: False\n    username: myusername\n    state: absent\n\n- name: \"Create GitLab User\"\n  community.general.gitlab_user:\n    api_url: https://gitlab.example.com/\n    validate_certs: True\n    api_username: dj-wasabi\n    api_password: \"MySecretPassword\"\n    name: My Name\n    username: myusername\n    password: mysecretpassword\n    email: me@example.com\n    sshkey_name: MySSH\n    sshkey_file: ssh-rsa AAAAB3NzaC1yc...\n    state: present\n    group: super_group/mon_group\n    access_level: owner\n\n- name: \"Block GitLab User\"\n  community.general.gitlab_user:\n    api_url: https://gitlab.example.com/\n    api_token: \"{{ access_token }}\"\n    validate_certs: False\n    username: myusername\n    state: blocked\n\n- name: \"Unblock GitLab User\"\n  community.general.gitlab_user:\n    api_url: https://gitlab.example.com/\n    api_token: \"{{ access_token }}\"\n    validate_certs: False\n    username: myusername\n    state: unblocked\n",
+        "metadata": null,
+        "return": {
+            "error": {
+                "description": "the error message returned by the GitLab API",
+                "returned": "failed",
+                "sample": "400: path is already in use",
+                "type": "str"
+            },
+            "msg": {
+                "description": "Success or failure message",
+                "returned": "always",
+                "sample": "Success",
+                "type": "str"
+            },
+            "result": {
+                "description": "json parsed response from the server",
+                "returned": "always",
+                "type": "dict"
+            },
+            "user": {
+                "description": "API object",
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

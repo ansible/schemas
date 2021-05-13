@@ -1,0 +1,135 @@
+{
+    "netapp_eseries.santricity.netapp_e_lun_mapping": {
+        "doc": {
+            "author": [
+                "Kevin Hulquest (@hulquest)",
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "Create, delete, or modify mappings between a volume and a targeted host/host+ group."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_lun_mapping.py",
+            "has_action": false,
+            "module": "netapp_e_lun_mapping",
+            "notes": [
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "lun": {
+                    "description": [
+                        "The LUN value you wish to give the mapping.",
+                        "If the supplied I(volume_name) is associated with a different LUN, it will be updated to what is supplied here.",
+                        "LUN value will be determine by the storage-system when not specified."
+                    ],
+                    "required": false,
+                    "type": "int",
+                    "version_added": 2.7,
+                    "version_added_collection": "netapp_eseries.santricity"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "description": [
+                        "Present will ensure the mapping exists, absent will remove the mapping."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "target": {
+                    "description": [
+                        "The name of host or hostgroup you wish to assign to the mapping",
+                        "If omitted, the default hostgroup is used.",
+                        "If the supplied I(volume_name) is associated with a different target, it will be updated to what is supplied here."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "target_type": {
+                    "choices": [
+                        "host",
+                        "group"
+                    ],
+                    "description": [
+                        "This option specifies the whether the target should be a host or a group of hosts",
+                        "Only necessary when the target name is used for both a host and a group of hosts"
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": 2.7,
+                    "version_added_collection": "netapp_eseries.santricity"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "volume_name": {
+                    "aliases": [
+                        "volume"
+                    ],
+                    "description": [
+                        "The name of the volume you wish to include in the mapping."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "NetApp E-Series create, delete, or modify lun mappings",
+            "version_added": "2.2",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n---\n    - name: Map volume1 to the host target host1\n      netapp_e_lun_mapping:\n        ssid: 1\n        api_url: \"{{ netapp_api_url }}\"\n        api_username: \"{{ netapp_api_username }}\"\n        api_password: \"{{ netapp_api_password }}\"\n        validate_certs: no\n        state: present\n        target: host1\n        volume: volume1\n    - name: Delete the lun mapping between volume1 and host1\n      netapp_e_lun_mapping:\n        ssid: 1\n        api_url: \"{{ netapp_api_url }}\"\n        api_username: \"{{ netapp_api_username }}\"\n        api_password: \"{{ netapp_api_password }}\"\n        validate_certs: yes\n        state: absent\n        target: host1\n        volume: volume1\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "success of the module",
+                "returned": "always",
+                "sample": "Lun mapping is complete",
+                "type": "str"
+            }
+        }
+    }
+}

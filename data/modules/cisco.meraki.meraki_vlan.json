@@ -1,0 +1,486 @@
+{
+    "cisco.meraki.meraki_vlan": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Create, edit, query, or delete VLANs in a Meraki environment."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_vlan.py",
+            "has_action": false,
+            "module": "meraki_mx_vlan",
+            "notes": [
+                "Meraki's API will return an error if VLANs aren't enabled on a network. VLANs are returned properly if VLANs are enabled on a network.",
+                "Some of the options are likely only used for developers within Meraki.",
+                "Meraki's API defaults to networks having VLAN support disabled and there is no way to enable VLANs support in the API. VLAN support must be enabled manually.",
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "appliance_ip": {
+                    "description": [
+                        "IP address of appliance.",
+                        "Address must be within subnet specified in C(subnet) parameter."
+                    ],
+                    "type": "str"
+                },
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "dhcp_boot_filename": {
+                    "description": [
+                        "Filename to boot from for DHCP boot"
+                    ],
+                    "type": "str"
+                },
+                "dhcp_boot_next_server": {
+                    "description": [
+                        "DHCP boot option to direct boot clients to the server to load boot file from."
+                    ],
+                    "type": "str"
+                },
+                "dhcp_boot_options_enabled": {
+                    "description": [
+                        "Enable DHCP boot options"
+                    ],
+                    "type": "bool"
+                },
+                "dhcp_handling": {
+                    "choices": [
+                        "Run a DHCP server",
+                        "Relay DHCP to another server",
+                        "Do not respond to DHCP requests",
+                        "none",
+                        "server",
+                        "relay"
+                    ],
+                    "description": [
+                        "How to handle DHCP packets on network."
+                    ],
+                    "type": "str"
+                },
+                "dhcp_lease_time": {
+                    "choices": [
+                        "30 minutes",
+                        "1 hour",
+                        "4 hours",
+                        "12 hours",
+                        "1 day",
+                        "1 week"
+                    ],
+                    "description": [
+                        "DHCP lease timer setting"
+                    ],
+                    "type": "str"
+                },
+                "dhcp_options": {
+                    "description": [
+                        "List of DHCP option values"
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "code": {
+                            "description": [
+                                "DHCP option number."
+                            ],
+                            "type": "int"
+                        },
+                        "type": {
+                            "choices": [
+                                "text",
+                                "ip",
+                                "hex",
+                                "integer"
+                            ],
+                            "description": [
+                                "Type of value for DHCP option."
+                            ],
+                            "type": "str"
+                        },
+                        "value": {
+                            "description": [
+                                "Value for DHCP option."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "dhcp_relay_server_ips": {
+                    "description": [
+                        "IP addresses to forward DHCP packets to."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "dns_nameservers": {
+                    "description": [
+                        "Semi-colon delimited list of DNS IP addresses.",
+                        "Specify one of the following options for preprogrammed DNS entries opendns, google_dns, upstream_dns"
+                    ],
+                    "type": "str"
+                },
+                "fixed_ip_assignments": {
+                    "description": [
+                        "Static IP address assignments to be distributed via DHCP by MAC address."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "ip": {
+                            "description": "IP address for fixed IP assignment binding.",
+                            "type": "str"
+                        },
+                        "mac": {
+                            "description": "MAC address for fixed IP assignment binding.",
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": "Descriptive name of IP assignment binding.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "aliases": [
+                        "vlan_name"
+                    ],
+                    "description": [
+                        "Name of VLAN."
+                    ],
+                    "type": "str"
+                },
+                "net_id": {
+                    "description": [
+                        "ID of network which VLAN is in or should be in."
+                    ],
+                    "type": "str"
+                },
+                "net_name": {
+                    "aliases": [
+                        "network"
+                    ],
+                    "description": [
+                        "Name of network which VLAN is in or should be in."
+                    ],
+                    "type": "str"
+                },
+                "org_id": {
+                    "description": [
+                        "ID of organization."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "reserved_ip_range": {
+                    "description": [
+                        "IP address ranges which should be reserve and not distributed via DHCP."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "comment": {
+                            "description": "Description of IP addresses reservation",
+                            "type": "str"
+                        },
+                        "end": {
+                            "description": "Last IP address of reserved IP address range, inclusive.",
+                            "type": "str"
+                        },
+                        "start": {
+                            "description": "First IP address of reserved IP address range, inclusive.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "query"
+                    ],
+                    "default": "query",
+                    "description": [
+                        "Specifies whether object should be queried, created/modified, or removed."
+                    ],
+                    "type": "str"
+                },
+                "subnet": {
+                    "description": [
+                        "CIDR notation of network subnet."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                },
+                "vlan_id": {
+                    "description": [
+                        "ID number of VLAN.",
+                        "ID should be between 1-4096."
+                    ],
+                    "type": "int"
+                },
+                "vpn_nat_subnet": {
+                    "description": [
+                        "The translated VPN subnet if VPN and VPN subnet translation are enabled on the VLAN."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage VLANs in the Meraki cloud"
+        },
+        "examples": "\n- name: Query all VLANs in a network.\n  meraki_vlan:\n    auth_key: abc12345\n    org_name: YourOrg\n    net_name: YourNet\n    state: query\n  delegate_to: localhost\n\n- name: Query information about a single VLAN by ID.\n  meraki_vlan:\n    auth_key: abc12345\n    org_name: YourOrg\n    net_name: YourNet\n    vlan_id: 2\n    state: query\n  delegate_to: localhost\n\n- name: Create a VLAN.\n  meraki_vlan:\n    auth_key: abc12345\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    vlan_id: 2\n    name: TestVLAN\n    subnet: 192.0.1.0/24\n    appliance_ip: 192.0.1.1\n  delegate_to: localhost\n\n- name: Update a VLAN.\n  meraki_vlan:\n    auth_key: abc12345\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    vlan_id: 2\n    name: TestVLAN\n    subnet: 192.0.1.0/24\n    appliance_ip: 192.168.250.2\n    fixed_ip_assignments:\n      - mac: \"13:37:de:ad:be:ef\"\n        ip: 192.168.250.10\n        name: fixed_ip\n    reserved_ip_range:\n      - start: 192.168.250.10\n        end: 192.168.250.20\n        comment: reserved_range\n    dns_nameservers: opendns\n  delegate_to: localhost\n\n- name: Enable DHCP on VLAN with options\n  meraki_vlan:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: YourNet\n    vlan_id: 2\n    name: TestVLAN\n    subnet: 192.168.250.0/24\n    appliance_ip: 192.168.250.2\n    dhcp_handling: server\n    dhcp_lease_time: 1 hour\n    dhcp_boot_options_enabled: false\n    dhcp_options:\n      - code: 5\n        type: ip\n        value: 192.0.1.1\n  delegate_to: localhost\n\n- name: Delete a VLAN.\n  meraki_vlan:\n    auth_key: abc12345\n    org_name: YourOrg\n    net_name: YourNet\n    state: absent\n    vlan_id: 2\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "response": {
+                "contains": {
+                    "appliance_ip": {
+                        "description": "IP address of Meraki appliance in the VLAN",
+                        "returned": "success",
+                        "sample": "192.0.1.1",
+                        "type": "str"
+                    },
+                    "dhcp_boot_filename": {
+                        "description": "Filename for boot file.",
+                        "returned": "success",
+                        "sample": "boot.txt",
+                        "type": "str"
+                    },
+                    "dhcp_boot_next_server": {
+                        "description": "DHCP boot option to direct boot clients to the server to load the boot file from.",
+                        "returned": "success",
+                        "sample": "192.0.1.2",
+                        "type": "str"
+                    },
+                    "dhcp_boot_options_enabled": {
+                        "description": "Whether DHCP boot options are enabled.",
+                        "returned": "success",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "dhcp_handling": {
+                        "description": "Status of DHCP server on VLAN.",
+                        "returned": "success",
+                        "sample": "Run a DHCP server",
+                        "type": "str"
+                    },
+                    "dhcp_lease_time": {
+                        "description": "DHCP lease time when server is active.",
+                        "returned": "success",
+                        "sample": "1 day",
+                        "type": "str"
+                    },
+                    "dhcp_options": {
+                        "contains": {
+                            "code": {
+                                "description": [
+                                    "Code for DHCP option.",
+                                    "Integer between 2 and 254."
+                                ],
+                                "returned": "success",
+                                "sample": 43,
+                                "type": "int"
+                            },
+                            "type": {
+                                "description": [
+                                    "Type for DHCP option.",
+                                    "Choices are C(text), C(ip), C(hex), C(integer)."
+                                ],
+                                "returned": "success",
+                                "sample": "text",
+                                "type": "str"
+                            },
+                            "value": {
+                                "description": "Value for the DHCP option.",
+                                "returned": "success",
+                                "sample": "192.0.1.2",
+                                "type": "str"
+                            }
+                        },
+                        "description": "DHCP options.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "dnsnamservers": {
+                        "description": "IP address or Meraki defined DNS servers which VLAN should use by default",
+                        "returned": "success",
+                        "sample": "upstream_dns",
+                        "type": "str"
+                    },
+                    "fixed_ip_assignments": {
+                        "contains": {
+                            "macaddress": {
+                                "contains": {
+                                    "ip": {
+                                        "description": "IP address which is assigned to the MAC address.",
+                                        "returned": "success",
+                                        "sample": "192.0.1.4",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "Descriptive name for binding.",
+                                        "returned": "success",
+                                        "sample": "fixed_ip",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "MAC address which has IP address assigned to it. Key value is the actual MAC address.",
+                                "returned": "success",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "List of MAC addresses which have IP addresses assigned.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "id": {
+                        "description": "VLAN ID number.",
+                        "returned": "success",
+                        "sample": 2,
+                        "type": "int"
+                    },
+                    "name": {
+                        "description": "Descriptive name of VLAN.",
+                        "returned": "success",
+                        "sample": "TestVLAN",
+                        "type": "str"
+                    },
+                    "networkId": {
+                        "description": "ID number of Meraki network which VLAN is associated to.",
+                        "returned": "success",
+                        "sample": "N_12345",
+                        "type": "str"
+                    },
+                    "reserved_ip_ranges": {
+                        "contains": {
+                            "comment": {
+                                "description": "Description for IP address reservation.",
+                                "returned": "success",
+                                "sample": "reserved_range",
+                                "type": "str"
+                            },
+                            "end": {
+                                "description": "Last IP address in reservation range.",
+                                "returned": "success",
+                                "sample": "192.0.1.10",
+                                "type": "str"
+                            },
+                            "start": {
+                                "description": "First IP address in reservation range.",
+                                "returned": "success",
+                                "sample": "192.0.1.5",
+                                "type": "str"
+                            }
+                        },
+                        "description": "List of IP address ranges which are reserved for static assignment.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "subnet": {
+                        "description": "CIDR notation IP subnet of VLAN.",
+                        "returned": "success",
+                        "sample": "192.0.1.0/24",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the organization which was created or modified",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,92 @@
+{
+    "community.fortios.fmgr_query": {
+        "doc": {
+            "author": "Luke Weighall (@lweighall)",
+            "collection": "community.fortios",
+            "description": [
+                "Provides information on data objects within FortiManager so that playbooks can perform conditionals."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/fortios/plugins/modules/fmgr_query.py",
+            "has_action": false,
+            "module": "fmgr_query",
+            "notes": [
+                "Full Documentation at U(https://ftnt-ansible-docs.readthedocs.io/en/latest/)."
+            ],
+            "options": {
+                "adom": {
+                    "default": "root",
+                    "description": [
+                        "The ADOM the configuration should belong to."
+                    ],
+                    "required": false
+                },
+                "custom_dict": {
+                    "description": [
+                        "ADVANCED USERS ONLY! REQUIRES KNOWLEDGE OF FMGR JSON API!",
+                        "DICTIONARY JSON FORMAT ONLY -- Custom dictionary/datagram to send to the endpoint."
+                    ],
+                    "required": false
+                },
+                "custom_endpoint": {
+                    "description": [
+                        "ADVANCED USERS ONLY! REQUIRES KNOWLEDGE OF FMGR JSON API!",
+                        "The HTTP Endpoint on FortiManager you wish to GET from."
+                    ],
+                    "required": false
+                },
+                "device_ip": {
+                    "description": [
+                        "The IP of the device you want to query."
+                    ],
+                    "required": false
+                },
+                "device_serial": {
+                    "description": [
+                        "The serial number of the device you want to query."
+                    ],
+                    "required": false
+                },
+                "device_unique_name": {
+                    "description": [
+                        "The desired \"friendly\" name of the device you want to query."
+                    ],
+                    "required": false
+                },
+                "nodes": {
+                    "description": [
+                        "A LIST of firewalls in the cluster you want to verify i.e. [\"firewall_A\",\"firewall_B\"]."
+                    ],
+                    "required": false
+                },
+                "object": {
+                    "choices": [
+                        "device",
+                        "cluster_nodes",
+                        "task",
+                        "custom"
+                    ],
+                    "description": [
+                        "The data object we wish to query (device, package, rule, etc). Will expand choices as improves."
+                    ],
+                    "required": true
+                },
+                "task_id": {
+                    "description": [
+                        "The ID of the task you wish to query status on. If left blank and object = 'task' a list of tasks are returned."
+                    ],
+                    "required": false
+                }
+            },
+            "short_description": "Query FortiManager data objects for use in Ansible workflows."
+        },
+        "examples": "\n- name: QUERY FORTIGATE DEVICE BY IP\n  community.fortios.fmgr_query:\n    object: \"device\"\n    adom: \"ansible\"\n    device_ip: \"10.7.220.41\"\n\n- name: QUERY FORTIGATE DEVICE BY SERIAL\n  community.fortios.fmgr_query:\n    adom: \"ansible\"\n    object: \"device\"\n    device_serial: \"FGVM000000117992\"\n\n- name: QUERY FORTIGATE DEVICE BY FRIENDLY NAME\n  community.fortios.fmgr_query:\n    adom: \"ansible\"\n    object: \"device\"\n    device_unique_name: \"ansible-fgt01\"\n\n- name: VERIFY CLUSTER MEMBERS AND STATUS\n  community.fortios.fmgr_query:\n    adom: \"ansible\"\n    object: \"cluster_nodes\"\n    device_unique_name: \"fgt-cluster01\"\n    nodes: [\"ansible-fgt01\", \"ansible-fgt02\", \"ansible-fgt03\"]\n\n- name: GET STATUS OF TASK ID\n  community.fortios.fmgr_query:\n    adom: \"ansible\"\n    object: \"task\"\n    task_id: \"3\"\n\n- name: USE CUSTOM TYPE TO QUERY AVAILABLE SCRIPTS\n  community.fortios.fmgr_query:\n    adom: \"ansible\"\n    object: \"custom\"\n    custom_endpoint: \"/dvmdb/adom/ansible/script\"\n    custom_dict: { \"type\": \"cli\" }\n",
+        "metadata": null,
+        "return": {
+            "api_result": {
+                "description": "full API response, includes status code and message",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

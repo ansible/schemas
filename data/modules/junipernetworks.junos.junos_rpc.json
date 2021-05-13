@@ -1,0 +1,140 @@
+{
+    "junipernetworks.junos.junos_rpc": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "junipernetworks.junos",
+            "description": [
+                "Sends a request to the remote device running JUNOS to execute the specified RPC using the NetConf transport.  The reply is then returned to the playbook in the C(xml) key.  If an alternate output format is requested, the reply is transformed to the requested output."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/junipernetworks/junos/plugins/modules/junos_rpc.py",
+            "has_action": true,
+            "module": "junos_rpc",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Tested against vSRX JUNOS version 15.1X49-D15.4, vqfx-10000 JUNOS Version 15.1X53-D60.4.",
+                "Recommended connection is C(netconf). See L(the Junos OS Platform Options,../network/user_guide/platform_junos.html).",
+                "This module also works with C(local) connections for legacy playbooks.",
+                "For information on using CLI and netconf see the :ref:`Junos OS Platform Options guide <junos_platform_options>`",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Juniper network devices see U(https://www.ansible.com/ansible-juniper)."
+            ],
+            "options": {
+                "args": {
+                    "description": [
+                        "The C(args) argument provides a set of arguments for the RPC call and are encoded in the request message.  This argument accepts a set of key=value arguments."
+                    ],
+                    "type": "dict"
+                },
+                "attrs": {
+                    "description": [
+                        "The C(attrs) arguments defines a list of attributes and their values to set for the RPC call. This accepts a dictionary of key-values."
+                    ],
+                    "type": "dict"
+                },
+                "output": {
+                    "choices": [
+                        "xml",
+                        "json",
+                        "text"
+                    ],
+                    "default": "xml",
+                    "description": [
+                        "The C(output) argument specifies the desired output of the return data.  This argument accepts one of C(xml), C(text), or C(json).  For C(json), the JUNOS device must be running a version of software that supports native JSON output."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli) or C(connection: netconf).",
+                        "For more information please see the L(Junos OS Platform Options guide, ../network/user_guide/platform_junos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device.  The port value will default to the well known SSH port of 22 (for C(transport=cli)) or port 830 (for C(transport=netconf)) device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "netconf"
+                            ],
+                            "default": "netconf",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "rpc": {
+                    "description": [
+                        "The C(rpc) argument specifies the RPC call to send to the remote devices to be executed.  The RPC Reply message is parsed and the contents are returned to the playbook."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "ncclient (>=v0.5.2)"
+            ],
+            "short_description": "Runs an arbitrary RPC over NetConf on an Juniper JUNOS device",
+            "version_added": "1.0.0",
+            "version_added_collection": "junipernetworks.junos"
+        },
+        "examples": "\n- name: collect interface information using rpc\n  junipernetworks.junos.junos_rpc:\n    rpc: get-interface-information\n    args:\n      interface-name: em0\n      media: true\n\n- name: get system information\n  junipernetworks.junos.junos_rpc:\n    rpc: get-system-information\n\n- name: load configuration\n  junipernetworks.junos.junos_rpc:\n    rpc: load-configuration\n    attrs:\n      action: override\n      url: /tmp/config.conf\n",
+        "metadata": null,
+        "return": {
+            "output": {
+                "description": "The rpc rely converted to the output format.",
+                "returned": "always",
+                "type": "str"
+            },
+            "output_lines": {
+                "description": "The text output split into lines for readability.",
+                "returned": "always",
+                "type": "list"
+            },
+            "xml": {
+                "description": "The xml return string from the rpc request.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

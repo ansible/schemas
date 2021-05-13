@@ -1,0 +1,558 @@
+{
+    "vyos.vyos.vyos_firewall_rules": {
+        "doc": {
+            "author": [
+                "Rohit Thakur (@rohitthakur2590)"
+            ],
+            "collection": "vyos.vyos",
+            "description": "This module manages firewall rule-set attributes on VyOS devices",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/vyos/vyos/plugins/modules/vyos_firewall_rules.py",
+            "has_action": true,
+            "module": "vyos_firewall_rules",
+            "notes": [
+                "Tested against VyOS 1.1.8 (helium).",
+                "This module works with connection C(network_cli). See L(the VyOS OS Platform Options,../network/user_guide/platform_vyos.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of Firewall rule-set options.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "afi": {
+                            "choices": [
+                                "ipv4",
+                                "ipv6"
+                            ],
+                            "description": [
+                                "Specifies the type of rule-set."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "rule_sets": {
+                            "description": [
+                                "The Firewall rule-set list."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "default_action": {
+                                    "choices": [
+                                        "drop",
+                                        "reject",
+                                        "accept"
+                                    ],
+                                    "description": [
+                                        "Default action for rule-set.",
+                                        "drop (Drop if no prior rules are hit (default))",
+                                        "reject (Drop and notify source if no prior rules are hit)",
+                                        "accept (Accept if no prior rules are hit)"
+                                    ],
+                                    "type": "str"
+                                },
+                                "description": {
+                                    "description": [
+                                        "Rule set description."
+                                    ],
+                                    "type": "str"
+                                },
+                                "enable_default_log": {
+                                    "description": [
+                                        "Option to log packets hitting default-action."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "name": {
+                                    "description": [
+                                        "Firewall rule set name."
+                                    ],
+                                    "type": "str"
+                                },
+                                "rules": {
+                                    "description": [
+                                        "A ditionary that specifies the rule-set configurations."
+                                    ],
+                                    "elements": "dict",
+                                    "suboptions": {
+                                        "action": {
+                                            "choices": [
+                                                "drop",
+                                                "reject",
+                                                "accept",
+                                                "inspect"
+                                            ],
+                                            "description": [
+                                                "Specifying the action."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "description": {
+                                            "description": [
+                                                "Description of this rule."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "destination": {
+                                            "description": [
+                                                "Specifying the destination parameters."
+                                            ],
+                                            "suboptions": {
+                                                "address": {
+                                                    "description": [
+                                                        "Destination ip address subnet or range.",
+                                                        "IPv4/6 address, subnet or range to match.",
+                                                        "Match everything except the specified address, subnet or range.",
+                                                        "Destination ip address subnet or range."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "group": {
+                                                    "description": [
+                                                        "Destination group."
+                                                    ],
+                                                    "suboptions": {
+                                                        "address_group": {
+                                                            "description": [
+                                                                "Group of addresses."
+                                                            ],
+                                                            "type": "str"
+                                                        },
+                                                        "network_group": {
+                                                            "description": [
+                                                                "Group of networks."
+                                                            ],
+                                                            "type": "str"
+                                                        },
+                                                        "port_group": {
+                                                            "description": [
+                                                                "Group of ports."
+                                                            ],
+                                                            "type": "str"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                },
+                                                "port": {
+                                                    "description": [
+                                                        "Multiple destination ports can be specified as a comma-separated list.",
+                                                        "The whole list can also be \"negated\" using '!'.",
+                                                        "For example:'!22,telnet,http,123,1001-1005'."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "disabled": {
+                                            "description": [
+                                                "Option to disable firewall rule."
+                                            ],
+                                            "type": "bool"
+                                        },
+                                        "fragment": {
+                                            "choices": [
+                                                "match-frag",
+                                                "match-non-frag"
+                                            ],
+                                            "description": [
+                                                "IP fragment match."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "icmp": {
+                                            "description": [
+                                                "ICMP type and code information."
+                                            ],
+                                            "suboptions": {
+                                                "code": {
+                                                    "description": [
+                                                        "ICMP code."
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "type": {
+                                                    "description": [
+                                                        "ICMP type."
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "type_name": {
+                                                    "choices": [
+                                                        "any",
+                                                        "echo-reply",
+                                                        "destination-unreachable",
+                                                        "network-unreachable",
+                                                        "host-unreachable",
+                                                        "protocol-unreachable",
+                                                        "port-unreachable",
+                                                        "fragmentation-needed",
+                                                        "source-route-failed",
+                                                        "network-unknown",
+                                                        "host-unknown",
+                                                        "network-prohibited",
+                                                        "host-prohibited",
+                                                        "TOS-network-unreachable",
+                                                        "TOS-host-unreachable",
+                                                        "communication-prohibited",
+                                                        "host-precedence-violation",
+                                                        "precedence-cutoff",
+                                                        "source-quench",
+                                                        "redirect",
+                                                        "network-redirect",
+                                                        "host-redirect",
+                                                        "TOS-network-redirect",
+                                                        "TOS-host-redirect",
+                                                        "echo-request",
+                                                        "router-advertisement",
+                                                        "router-solicitation",
+                                                        "time-exceeded",
+                                                        "ttl-zero-during-transit",
+                                                        "ttl-zero-during-reassembly",
+                                                        "parameter-problem",
+                                                        "ip-header-bad",
+                                                        "required-option-missing",
+                                                        "timestamp-request",
+                                                        "timestamp-reply",
+                                                        "address-mask-request",
+                                                        "address-mask-reply",
+                                                        "ping",
+                                                        "pong",
+                                                        "ttl-exceeded"
+                                                    ],
+                                                    "description": [
+                                                        "ICMP type-name."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "ipsec": {
+                                            "choices": [
+                                                "match-ipsec",
+                                                "match-none"
+                                            ],
+                                            "description": [
+                                                "Inboud ip sec packets."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "limit": {
+                                            "description": [
+                                                "Rate limit using a token bucket filter."
+                                            ],
+                                            "suboptions": {
+                                                "burst": {
+                                                    "description": [
+                                                        "Maximum number of packets to allow in excess of rate."
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "rate": {
+                                                    "description": [
+                                                        "format for rate (integer/time unit).",
+                                                        "any one of second, minute, hour or day may be used to specify time unit.",
+                                                        "eg. 1/second implies rule to be matched at an average of once per second."
+                                                    ],
+                                                    "suboptions": {
+                                                        "number": {
+                                                            "description": [
+                                                                "This is the integer value."
+                                                            ],
+                                                            "type": "int"
+                                                        },
+                                                        "unit": {
+                                                            "description": [
+                                                                "This is the time unit."
+                                                            ],
+                                                            "type": "str"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "number": {
+                                            "description": [
+                                                "Rule number."
+                                            ],
+                                            "required": true,
+                                            "type": "int"
+                                        },
+                                        "p2p": {
+                                            "description": [
+                                                "P2P application packets."
+                                            ],
+                                            "elements": "dict",
+                                            "suboptions": {
+                                                "application": {
+                                                    "choices": [
+                                                        "all",
+                                                        "applejuice",
+                                                        "bittorrent",
+                                                        "directconnect",
+                                                        "edonkey",
+                                                        "gnutella",
+                                                        "kazaa"
+                                                    ],
+                                                    "description": [
+                                                        "Name of the application."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "list"
+                                        },
+                                        "protocol": {
+                                            "description": [
+                                                "Protocol to match (protocol name in /etc/protocols or protocol number or all).",
+                                                "<text> IP protocol name from /etc/protocols (e.g. \"tcp\" or \"udp\").",
+                                                "<0-255> IP protocol number.",
+                                                "tcp_udp Both TCP and UDP.",
+                                                "all All IP protocols.",
+                                                "(!)All IP protocols except for the specified name or number."
+                                            ],
+                                            "type": "str"
+                                        },
+                                        "recent": {
+                                            "description": [
+                                                "Parameters for matching recently seen sources."
+                                            ],
+                                            "suboptions": {
+                                                "count": {
+                                                    "description": [
+                                                        "Source addresses seen more than N times."
+                                                    ],
+                                                    "type": "int"
+                                                },
+                                                "time": {
+                                                    "description": [
+                                                        "Source addresses seen in the last N seconds."
+                                                    ],
+                                                    "type": "int"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "source": {
+                                            "description": [
+                                                "Source parameters."
+                                            ],
+                                            "suboptions": {
+                                                "address": {
+                                                    "description": [
+                                                        "Source ip address subnet or range.",
+                                                        "IPv4/6 address, subnet or range to match.",
+                                                        "Match everything except the specified address, subnet or range.",
+                                                        "Source ip address subnet or range."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "group": {
+                                                    "description": [
+                                                        "Source group."
+                                                    ],
+                                                    "suboptions": {
+                                                        "address_group": {
+                                                            "description": [
+                                                                "Group of addresses."
+                                                            ],
+                                                            "type": "str"
+                                                        },
+                                                        "network_group": {
+                                                            "description": [
+                                                                "Group of networks."
+                                                            ],
+                                                            "type": "str"
+                                                        },
+                                                        "port_group": {
+                                                            "description": [
+                                                                "Group of ports."
+                                                            ],
+                                                            "type": "str"
+                                                        }
+                                                    },
+                                                    "type": "dict"
+                                                },
+                                                "mac_address": {
+                                                    "description": [
+                                                        "<MAC address> MAC address to match.",
+                                                        "<!MAC address> Match everything except the specified MAC address."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "port": {
+                                                    "description": [
+                                                        "Multiple source ports can be specified as a comma-separated list.",
+                                                        "The whole list can also be \"negated\" using '!'.",
+                                                        "For example:'!22,telnet,http,123,1001-1005'."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "state": {
+                                            "description": [
+                                                "Session state."
+                                            ],
+                                            "suboptions": {
+                                                "established": {
+                                                    "description": [
+                                                        "Established state."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "invalid": {
+                                                    "description": [
+                                                        "Invalid state."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "new": {
+                                                    "description": [
+                                                        "New state."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "related": {
+                                                    "description": [
+                                                        "Related state."
+                                                    ],
+                                                    "type": "bool"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "tcp": {
+                                            "description": [
+                                                "TCP flags to match."
+                                            ],
+                                            "suboptions": {
+                                                "flags": {
+                                                    "description": [
+                                                        "TCP flags to be matched."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "time": {
+                                            "description": [
+                                                "Time to match rule."
+                                            ],
+                                            "suboptions": {
+                                                "monthdays": {
+                                                    "description": [
+                                                        "Monthdays to match rule on."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "startdate": {
+                                                    "description": [
+                                                        "Date to start matching rule."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "starttime": {
+                                                    "description": [
+                                                        "Time of day to start matching rule."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "stopdate": {
+                                                    "description": [
+                                                        "Date to stop matching rule."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "stoptime": {
+                                                    "description": [
+                                                        "Time of day to stop matching rule."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "utc": {
+                                                    "description": [
+                                                        "Interpret times for startdate, stopdate, starttime and stoptime to be UTC."
+                                                    ],
+                                                    "type": "bool"
+                                                },
+                                                "weekdays": {
+                                                    "description": [
+                                                        "Weekdays to match rule on."
+                                                    ],
+                                                    "type": "str"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        }
+                                    },
+                                    "type": "list"
+                                }
+                            },
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the VyOS device by executing the command B(show configuration commands | grep firewall).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "rendered",
+                        "parsed"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in"
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "FIREWALL rules resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "vyos.vyos"
+        },
+        "examples": "\n# Using deleted to delete firewall rules based on rule-set name\n#\n# Before state\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall name Downlink default-action 'accept'\n# set firewall name Downlink description 'IPv4 INBOUND rule set'\n# set firewall name Downlink rule 501 action 'accept'\n# set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\n# set firewall name Downlink rule 501 ipsec 'match-ipsec'\n# set firewall name Downlink rule 502 action 'reject'\n# set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\n# set firewall name Downlink rule 502 ipsec 'match-ipsec'\n#\n- name: Delete attributes of given firewall rules.\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv4\n      rule_sets:\n      - name: Downlink\n    state: deleted\n#\n#\n# ------------------------\n# Module Execution Results\n# ------------------------\n#\n#    \"before\": [\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"Downlink\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 501 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 501\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 502 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 502\n#                        }\n#                    ]\n#               }\n#            ]\n#        }\n#    ]\n#    \"commands\": [\n#        \"delete firewall name Downlink\"\n#    ]\n#\n# \"after\": []\n# After state\n# ------------\n# vyos@vyos# run show configuration commands | grep firewall\n# set firewall group address-group 'inbound'\n\n\n# Using deleted to delete firewall rules based on afi\n#\n# Before state\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n# set firewall group address-group 'inbound'\n# set firewall name Downlink default-action 'accept'\n# set firewall name Downlink description 'IPv4 INBOUND rule set'\n# set firewall name Downlink rule 501 action 'accept'\n# set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\n# set firewall name Downlink rule 501 ipsec 'match-ipsec'\n# set firewall name Downlink rule 502 action 'reject'\n# set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\n# set firewall name Downlink rule 502 ipsec 'match-ipsec'\n\n#\n- name: Delete attributes of given firewall rules.\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv4\n    state: deleted\n#\n#\n# ------------------------\n# Module Execution Results\n# ------------------------\n#\n#    \"before\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 1 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 1\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 2 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 2\n#                        }\n#                    ]\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"Downlink\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 501 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 501\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 502 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 502\n#                        }\n#                    ]\n#               }\n#            ]\n#        }\n#    ]\n#    \"commands\": [\n#        \"delete firewall name\"\n#    ]\n#\n# \"after\": []\n# After state\n# ------------\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n\n\n# Using deleted to delete all the the firewall rules when provided config is empty\n#\n# Before state\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall name Downlink default-action 'accept'\n# set firewall name Downlink description 'IPv4 INBOUND rule set'\n# set firewall name Downlink rule 501 action 'accept'\n# set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\n# set firewall name Downlink rule 501 ipsec 'match-ipsec'\n# set firewall name Downlink rule 502 action 'reject'\n# set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\n# set firewall name Downlink rule 502 ipsec 'match-ipsec'\n#\n- name: Delete attributes of given firewall rules.\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    state: deleted\n#\n#\n# ------------------------\n# Module Execution Results\n# ------------------------\n#\n#    \"before\": [\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"Downlink\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 501 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 501\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 502 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 502\n#                        }\n#                    ]\n#               }\n#            ]\n#        }\n#    ]\n#    \"commands\": [\n#        \"delete firewall name\"\n#    ]\n#\n# \"after\": []\n# After state\n# ------------\n# vyos@vyos# run show configuration commands | grep firewall\n# set firewall group address-group 'inbound'\n\n\n# Using merged\n#\n# Before state:\n# -------------\n#\n# vyos@vyos# run show  configuration commands | grep firewall\n# set firewall group address-group 'inbound'\n#\n- name: Merge the provided configuration with the exisiting running configuration\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv6\n      rule_sets:\n      - name: UPLINK\n        description: This is ipv6 specific rule-set\n        default_action: accept\n        rules:\n        - number: 1\n          action: accept\n          description: Fwipv6-Rule 1 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 2\n          action: accept\n          description: Fwipv6-Rule 2 is configured by Ansible\n          ipsec: match-ipsec\n\n    - afi: ipv4\n      rule_sets:\n      - name: INBOUND\n        description: IPv4 INBOUND rule set\n        default_action: accept\n        rules:\n        - number: 101\n          action: accept\n          description: Rule 101 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 102\n          action: reject\n          description: Rule 102 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 103\n          action: accept\n          description: Rule 103 is configured by Ansible\n          destination:\n            group:\n              address_group: inbound\n          source:\n            address: 192.0.2.0\n          state:\n            established: true\n            new: false\n            invalid: false\n            related: true\n    state: merged\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n# before\": []\n#\n#    \"commands\": [\n#       \"set firewall ipv6-name UPLINK default-action 'accept'\",\n#       \"set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\",\n#       \"set firewall ipv6-name UPLINK rule 1 action 'accept'\",\n#       \"set firewall ipv6-name UPLINK rule 1\",\n#       \"set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\",\n#       \"set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\",\n#       \"set firewall ipv6-name UPLINK rule 2 action 'accept'\",\n#       \"set firewall ipv6-name UPLINK rule 2\",\n#       \"set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\",\n#       \"set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\",\n#       \"set firewall name INBOUND default-action 'accept'\",\n#       \"set firewall name INBOUND description 'IPv4 INBOUND rule set'\",\n#       \"set firewall name INBOUND rule 101 action 'accept'\",\n#       \"set firewall name INBOUND rule 101\",\n#       \"set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\",\n#       \"set firewall name INBOUND rule 101 ipsec 'match-ipsec'\",\n#       \"set firewall name INBOUND rule 102 action 'reject'\",\n#       \"set firewall name INBOUND rule 102\",\n#       \"set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\",\n#       \"set firewall name INBOUND rule 102 ipsec 'match-ipsec'\",\n#       \"set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\",\n#       \"set firewall name INBOUND rule 103 destination group address-group inbound\",\n#       \"set firewall name INBOUND rule 103\",\n#       \"set firewall name INBOUND rule 103 source address 192.0.2.0\",\n#       \"set firewall name INBOUND rule 103 state established enable\",\n#       \"set firewall name INBOUND rule 103 state related enable\",\n#       \"set firewall name INBOUND rule 103 state invalid disable\",\n#       \"set firewall name INBOUND rule 103 state new disable\",\n#       \"set firewall name INBOUND rule 103 action 'accept'\"\n#    ]\n#\n# \"after\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 1 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 1\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 2 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 2\n#                        }\n#                    ]\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"INBOUND\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 101 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 101\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 102 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 102\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 103 is configured by Ansible\",\n#                            \"destination\": {\n#                                \"group\": {\n#                                    \"address_group\": \"inbound\"\n#                                }\n#                            },\n#                            \"number\": 103,\n#                            \"source\": {\n#                                \"address\": \"192.0.2.0\"\n#                            },\n#                            \"state\": {\n#                                \"established\": true,\n#                                \"invalid\": false,\n#                                \"new\": false,\n#                                \"related\": true\n#                            }\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n#\n# After state:\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 102 action 'reject'\n# set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\n# set firewall name INBOUND rule 102 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 103 action 'accept'\n# set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\n# set firewall name INBOUND rule 103 destination group address-group 'inbound'\n# set firewall name INBOUND rule 103 source address '192.0.2.0'\n# set firewall name INBOUND rule 103 state established 'enable'\n# set firewall name INBOUND rule 103 state invalid 'disable'\n# set firewall name INBOUND rule 103 state new 'disable'\n# set firewall name INBOUND rule 103 state related 'enable'\n\n\n# Using replaced\n#\n# Before state:\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 102 action 'reject'\n# set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\n# set firewall name INBOUND rule 102 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 103 action 'accept'\n# set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\n# set firewall name INBOUND rule 103 destination group address-group 'inbound'\n# set firewall name INBOUND rule 103 source address '192.0.2.0'\n# set firewall name INBOUND rule 103 state established 'enable'\n# set firewall name INBOUND rule 103 state invalid 'disable'\n# set firewall name INBOUND rule 103 state new 'disable'\n# set firewall name INBOUND rule 103 state related 'enable'\n#\n- name: Replace device configurations of listed firewall rules with provided configurations\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv6\n      rule_sets:\n      - name: UPLINK\n        description: This is ipv6 specific rule-set\n        default_action: accept\n    - afi: ipv4\n      rule_sets:\n      - name: INBOUND\n        description: IPv4 INBOUND rule set\n        default_action: accept\n        rules:\n        - number: 101\n          action: accept\n          description: Rule 101 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 104\n          action: reject\n          description: Rule 104 is configured by Ansible\n          ipsec: match-none\n    state: replaced\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#    \"before\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 1 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 1\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 2 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 2\n#                        }\n#                    ]\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"INBOUND\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 101 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 101\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 102 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 102\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 103 is configured by Ansible\",\n#                            \"destination\": {\n#                                \"group\": {\n#                                    \"address_group\": \"inbound\"\n#                                }\n#                            },\n#                            \"number\": 103,\n#                            \"source\": {\n#                                \"address\": \"192.0.2.0\"\n#                            },\n#                            \"state\": {\n#                                \"established\": true,\n#                                \"invalid\": false,\n#                                \"new\": false,\n#                                \"related\": true\n#                            }\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n#\n# \"commands\": [\n#        \"delete firewall ipv6-name UPLINK rule 1\",\n#        \"delete firewall ipv6-name UPLINK rule 2\",\n#        \"delete firewall name INBOUND rule 102\",\n#        \"delete firewall name INBOUND rule 103\",\n#        \"set firewall name INBOUND rule 104 action 'reject'\",\n#        \"set firewall name INBOUND rule 104 description 'Rule 104 is configured by Ansible'\",\n#        \"set firewall name INBOUND rule 104\",\n#        \"set firewall name INBOUND rule 104 ipsec 'match-none'\"\n#    ]\n#\n#    \"after\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\"\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"INBOUND\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 101 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 101\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 104 is configured by Ansible\",\n#                            \"ipsec\": \"match-none\",\n#                            \"number\": 104\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n#\n# After state:\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 104 action 'reject'\n# set firewall name INBOUND rule 104 description 'Rule 104 is configured by Ansible'\n# set firewall name INBOUND rule 104 ipsec 'match-none'\n\n\n# Using overridden\n#\n# Before state\n# --------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 104 action 'reject'\n# set firewall name INBOUND rule 104 description 'Rule 104 is configured by Ansible'\n# set firewall name INBOUND rule 104 ipsec 'match-none'\n#\n- name: Overrides all device configuration with provided configuration\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv4\n      rule_sets:\n      - name: Downlink\n        description: IPv4 INBOUND rule set\n        default_action: accept\n        rules:\n        - number: 501\n          action: accept\n          description: Rule 501 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 502\n          action: reject\n          description: Rule 502 is configured by Ansible\n          ipsec: match-ipsec\n    state: overridden\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n# \"before\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\"\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"INBOUND\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 101 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 101\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 104 is configured by Ansible\",\n#                            \"ipsec\": \"match-none\",\n#                            \"number\": 104\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n#\n#    \"commands\": [\n#        \"delete firewall ipv6-name UPLINK\",\n#        \"delete firewall name INBOUND\",\n#        \"set firewall name Downlink default-action 'accept'\",\n#        \"set firewall name Downlink description 'IPv4 INBOUND rule set'\",\n#        \"set firewall name Downlink rule 501 action 'accept'\",\n#        \"set firewall name Downlink rule 501\",\n#        \"set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\",\n#        \"set firewall name Downlink rule 501 ipsec 'match-ipsec'\",\n#        \"set firewall name Downlink rule 502 action 'reject'\",\n#        \"set firewall name Downlink rule 502\",\n#        \"set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\",\n#        \"set firewall name Downlink rule 502 ipsec 'match-ipsec'\"\n#\n#\n#    \"after\": [\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"Downlink\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 501 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 501\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 502 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 502\n#                        }\n#                    ]\n#               }\n#            ]\n#        }\n#    ]\n#\n#\n# After state\n# ------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall name Downlink default-action 'accept'\n# set firewall name Downlink description 'IPv4 INBOUND rule set'\n# set firewall name Downlink rule 501 action 'accept'\n# set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\n# set firewall name Downlink rule 501 ipsec 'match-ipsec'\n# set firewall name Downlink rule 502 action 'reject'\n# set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\n# set firewall name Downlink rule 502 ipsec 'match-ipsec'\n\n\n# Using gathered\n#\n# Before state:\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 102 action 'reject'\n# set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\n# set firewall name INBOUND rule 102 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 103 action 'accept'\n# set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\n# set firewall name INBOUND rule 103 destination group address-group 'inbound'\n# set firewall name INBOUND rule 103 source address '192.0.2.0'\n# set firewall name INBOUND rule 103 state established 'enable'\n# set firewall name INBOUND rule 103 state invalid 'disable'\n# set firewall name INBOUND rule 103 state new 'disable'\n# set firewall name INBOUND rule 103 state related 'enable'\n#\n- name: Gather listed firewall rules with provided configurations\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    state: gathered\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#    \"gathered\": [\n#        {\n#            \"afi\": \"ipv6\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"This is ipv6 specific rule-set\",\n#                    \"name\": \"UPLINK\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 1 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 1\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Fwipv6-Rule 2 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 2\n#                        }\n#                    ]\n#                }\n#            ]\n#        },\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"INBOUND\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 101 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 101\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 102 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 102\n#                        },\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 103 is configured by Ansible\",\n#                            \"destination\": {\n#                                \"group\": {\n#                                    \"address_group\": \"inbound\"\n#                                }\n#                            },\n#                            \"number\": 103,\n#                            \"source\": {\n#                                \"address\": \"192.0.2.0\"\n#                            },\n#                            \"state\": {\n#                                \"established\": true,\n#                                \"invalid\": false,\n#                                \"new\": false,\n#                                \"related\": true\n#                            }\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n#\n#\n# After state:\n# -------------\n#\n# vyos@vyos:~$ show configuration commands| grep firewall\n# set firewall group address-group 'inbound'\n# set firewall ipv6-name UPLINK default-action 'accept'\n# set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\n# set firewall ipv6-name UPLINK rule 1 action 'accept'\n# set firewall ipv6-name UPLINK rule 1 description 'Fwipv6-Rule 1 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 1 ipsec 'match-ipsec'\n# set firewall ipv6-name UPLINK rule 2 action 'accept'\n# set firewall ipv6-name UPLINK rule 2 description 'Fwipv6-Rule 2 is configured by Ansible'\n# set firewall ipv6-name UPLINK rule 2 ipsec 'match-ipsec'\n# set firewall name INBOUND default-action 'accept'\n# set firewall name INBOUND description 'IPv4 INBOUND rule set'\n# set firewall name INBOUND rule 101 action 'accept'\n# set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\n# set firewall name INBOUND rule 101 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 102 action 'reject'\n# set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\n# set firewall name INBOUND rule 102 ipsec 'match-ipsec'\n# set firewall name INBOUND rule 103 action 'accept'\n# set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\n# set firewall name INBOUND rule 103 destination group address-group 'inbound'\n# set firewall name INBOUND rule 103 source address '192.0.2.0'\n# set firewall name INBOUND rule 103 state established 'enable'\n# set firewall name INBOUND rule 103 state invalid 'disable'\n# set firewall name INBOUND rule 103 state new 'disable'\n# set firewall name INBOUND rule 103 state related 'enable'\n\n\n# Using rendered\n#\n#\n- name: Render the commands for provided  configuration\n  vyos.vyos.vyos_firewall_rules:\n    config:\n    - afi: ipv6\n      rule_sets:\n      - name: UPLINK\n        description: This is ipv6 specific rule-set\n        default_action: accept\n    - afi: ipv4\n      rule_sets:\n      - name: INBOUND\n        description: IPv4 INBOUND rule set\n        default_action: accept\n        rules:\n        - number: 101\n          action: accept\n          description: Rule 101 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 102\n          action: reject\n          description: Rule 102 is configured by Ansible\n          ipsec: match-ipsec\n        - number: 103\n          action: accept\n          description: Rule 103 is configured by Ansible\n          destination:\n            group:\n              address_group: inbound\n          source:\n            address: 192.0.2.0\n          state:\n            established: true\n            new: false\n            invalid: false\n            related: true\n    state: rendered\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#\n# \"rendered\": [\n#        \"set firewall ipv6-name UPLINK default-action 'accept'\",\n#        \"set firewall ipv6-name UPLINK description 'This is ipv6 specific rule-set'\",\n#        \"set firewall name INBOUND default-action 'accept'\",\n#        \"set firewall name INBOUND description 'IPv4 INBOUND rule set'\",\n#        \"set firewall name INBOUND rule 101 action 'accept'\",\n#        \"set firewall name INBOUND rule 101\",\n#        \"set firewall name INBOUND rule 101 description 'Rule 101 is configured by Ansible'\",\n#        \"set firewall name INBOUND rule 101 ipsec 'match-ipsec'\",\n#        \"set firewall name INBOUND rule 102 action 'reject'\",\n#        \"set firewall name INBOUND rule 102\",\n#        \"set firewall name INBOUND rule 102 description 'Rule 102 is configured by Ansible'\",\n#        \"set firewall name INBOUND rule 102 ipsec 'match-ipsec'\",\n#        \"set firewall name INBOUND rule 103 description 'Rule 103 is configured by Ansible'\",\n#        \"set firewall name INBOUND rule 103 destination group address-group inbound\",\n#        \"set firewall name INBOUND rule 103\",\n#        \"set firewall name INBOUND rule 103 source address 192.0.2.0\",\n#        \"set firewall name INBOUND rule 103 state established enable\",\n#        \"set firewall name INBOUND rule 103 state related enable\",\n#        \"set firewall name INBOUND rule 103 state invalid disable\",\n#        \"set firewall name INBOUND rule 103 state new disable\",\n#        \"set firewall name INBOUND rule 103 action 'accept'\"\n#    ]\n\n\n# Using parsed\n#\n#\n- name: Parsed the provided input commands.\n  vyos.vyos.vyos_firewall_rules:\n    running_config:\n      \"set firewall group address-group 'inbound'\n       set firewall name Downlink default-action 'accept'\n       set firewall name Downlink description 'IPv4 INBOUND rule set'\n       set firewall name Downlink rule 501 action 'accept'\n       set firewall name Downlink rule 501 description 'Rule 501 is configured by Ansible'\n       set firewall name Downlink rule 501 ipsec 'match-ipsec'\n       set firewall name Downlink rule 502 action 'reject'\n       set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'\n       set firewall name Downlink rule 502 ipsec 'match-ipsec'\"\n    state: parsed\n#\n#\n# -------------------------\n# Module Execution Result\n# -------------------------\n#\n#\n# \"parsed\": [\n#        {\n#            \"afi\": \"ipv4\",\n#            \"rule_sets\": [\n#                {\n#                    \"default_action\": \"accept\",\n#                    \"description\": \"IPv4 INBOUND rule set\",\n#                    \"name\": \"Downlink\",\n#                    \"rules\": [\n#                        {\n#                            \"action\": \"accept\",\n#                            \"description\": \"Rule 501 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 501\n#                        },\n#                        {\n#                            \"action\": \"reject\",\n#                            \"description\": \"Rule 502 is configured by Ansible\",\n#                            \"ipsec\": \"match-ipsec\",\n#                            \"number\": 502\n#                        }\n#                    ]\n#                }\n#            ]\n#        }\n#    ]\n\n\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The resulting configuration model invocation.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "before": {
+                "description": "The configuration prior to the model invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "list"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "set firewall name Downlink default-action 'accept'",
+                    "set firewall name Downlink description 'IPv4 INBOUND rule set'",
+                    "set firewall name Downlink rule 501 action 'accept'",
+                    "set firewall name Downlink rule 502 description 'Rule 502 is configured by Ansible'",
+                    "set firewall name Downlink rule 502 ipsec 'match-ipsec'"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

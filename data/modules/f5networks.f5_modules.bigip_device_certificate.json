@@ -1,0 +1,309 @@
+{
+    "f5networks.f5_modules.bigip_device_certificate": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Module used to create and/or renew self-signed device certificates for BIG-IP."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_device_certificate.py",
+            "has_action": false,
+            "module": "bigip_device_certificate",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "add_to_trusted": {
+                    "default": false,
+                    "description": [
+                        "Specified if the certificate should be added to the trusted client and server certificate files."
+                    ],
+                    "type": "bool"
+                },
+                "cert_name": {
+                    "default": "server.crt",
+                    "description": [
+                        "Specifies the full name of the certificate file.",
+                        "If the name is not default C(server.crt), the module will configure C(httpd) to use them prior to restarting the C(httpd) daemon."
+                    ],
+                    "type": "str"
+                },
+                "days_valid": {
+                    "description": [
+                        "Specifies the interval for which the self-signed certificate is valid.",
+                        "The maximum value is 25 years: C(9125) days"
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "When C(yes), will update or overwrite the existing certificate when it is not expired on the device.",
+                        "When C(no), the certificate will only be updated/overwritten if expired.",
+                        "Generally should be C(yes) only in cases where you need to update certificate that is about to expire.",
+                        "This option is also needed when generating a new certificate to replace non-expired one."
+                    ],
+                    "type": "bool"
+                },
+                "issuer": {
+                    "description": [
+                        "Certificate properties, required when generating new certificates."
+                    ],
+                    "suboptions": {
+                        "common_name": {
+                            "description": [
+                                "Specifies the Common Name attribute for the certificate."
+                            ],
+                            "type": "str"
+                        },
+                        "country": {
+                            "description": [
+                                "Specifies the Country name attribute for the certificate."
+                            ],
+                            "type": "str"
+                        },
+                        "division": {
+                            "description": [
+                                "Specifies the department name attribute for the certificate."
+                            ],
+                            "type": "str"
+                        },
+                        "email": {
+                            "description": [
+                                "Specifies the email address of the domain administrator."
+                            ],
+                            "type": "str"
+                        },
+                        "locality": {
+                            "description": [
+                                "Specifies the city or town name for the certificate."
+                            ],
+                            "type": "str"
+                        },
+                        "organization": {
+                            "description": [
+                                "Specifies the Organization attribute for the certificate."
+                            ],
+                            "type": "str"
+                        },
+                        "state": {
+                            "description": [
+                                "Specifies the State or Province attribute for the certificate."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "key_name": {
+                    "default": "server.key",
+                    "description": [
+                        "Specifies the full name of the key file.",
+                        "If the name is not default C(server.key), the module will configure C(httpd) to use them prior to restarting the C(httpd) daemon."
+                    ],
+                    "type": "str"
+                },
+                "key_size": {
+                    "choices": [
+                        512,
+                        1024,
+                        2048,
+                        4096
+                    ],
+                    "default": 2048,
+                    "description": [
+                        "Specifies the desired key size in bits.",
+                        "Mandatory option when generating a new certificate."
+                    ],
+                    "type": "int"
+                },
+                "new_cert": {
+                    "default": false,
+                    "description": [
+                        "Specified if the module should generate a new certificate.",
+                        "When C(yes), the device certificate and key will be replaced."
+                    ],
+                    "type": "bool"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 22,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH keyfile to use to authenticate the connection to the remote device.  This argument is only used for I(cli) transports.",
+                                "You may omit this option by setting the environment variable C(ANSIBLE_NET_SSH_KEYFILE)."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli"
+                            ],
+                            "default": "cli",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                }
+            },
+            "short_description": "Manage self-signed device certificates",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Update expired certificate\n  bigip_device_certificate:\n    days_valid: 365\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n      transport: cli\n      server_port: 22\n  delegate_to: localhost\n\n- name: Update expired certificate non-default names\n  bigip_device_certificate:\n    days_valid: 60\n    cert_name: custom.crt\n    key_name: custom.key\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n      transport: cli\n      server_port: 22\n  delegate_to: localhost\n\n- name: Force update not expired certificate\n  bigip_device_certificate:\n    days_valid: 365\n    force: yes\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n      transport: cli\n      server_port: 22\n  delegate_to: localhost\n\n- name: Create a new certificate to replace expired certificate\n  bigip_device_certificate:\n    days_valid: 365\n    new_cert: yes\n    issuer:\n      country: US\n      state: WA\n      common_name: foobar.foo.local\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n      transport: cli\n      server_port: 22\n  delegate_to: localhost\n\n- name: Force create a new custom named certificate to replace not expired certificate\n  bigip_device_certificate:\n    days_valid: 365\n    cert_name: custom.crt\n    key_name: custom.key\n    new_cert: yes\n    force: yes\n    issuer:\n      country: US\n      state: WA\n      common_name: foobar.foo.local\n    key_size: 2048\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n      transport: cli\n      server_port: 22\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "cert_name": {
+                "description": "The full name of the certificate file.",
+                "returned": "changed",
+                "sample": "common.crt",
+                "type": "str"
+            },
+            "days_valid": {
+                "description": "The interval for which the self-signed certificate is valid.",
+                "returned": "changed",
+                "sample": 365,
+                "type": "int"
+            },
+            "issuer": {
+                "contains": {
+                    "common_name": {
+                        "description": "The Common Name attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "foo.bar.local",
+                        "type": "str"
+                    },
+                    "country": {
+                        "description": "The Country name attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "US",
+                        "type": "str"
+                    },
+                    "division": {
+                        "description": "The department name attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "IT",
+                        "type": "str"
+                    },
+                    "email": {
+                        "description": "The domain administrator's email address.",
+                        "returned": "changed",
+                        "sample": "admin@foo.bar.local",
+                        "type": "str"
+                    },
+                    "locality": {
+                        "description": "The city or town name attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "Seattle",
+                        "type": "str"
+                    },
+                    "organization": {
+                        "description": "The Organization attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "F5",
+                        "type": "str"
+                    },
+                    "state": {
+                        "description": "The State or Province attribute of the certificate.",
+                        "returned": "changed",
+                        "sample": "WA",
+                        "type": "str"
+                    }
+                },
+                "description": "Specifies certificate properties.",
+                "returned": "changed",
+                "type": "complex"
+            },
+            "key_name": {
+                "description": "The full name of the key file.",
+                "returned": "changed",
+                "sample": "common.key",
+                "type": "str"
+            },
+            "key_size": {
+                "description": "The desired key size in bits.",
+                "returned": "changed",
+                "sample": 2048,
+                "type": "int"
+            }
+        }
+    }
+}

@@ -1,0 +1,163 @@
+{
+    "community.network.enos_facts": {
+        "doc": {
+            "author": "Anil Kumar Muraleedharan (@amuraleedhar)",
+            "collection": "community.network",
+            "description": [
+                "Collects a base set of device facts from a remote Lenovo device running on ENOS.  This module prepends all of the base network fact keys with C(ansible_net_<fact>).  The facts module will always collect a base set of facts from the device and can enable or disable collection of additional facts."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/enos_facts.py",
+            "has_action": false,
+            "module": "enos_facts",
+            "notes": [
+                "Tested against ENOS 8.4.1"
+            ],
+            "options": {
+                "auth_pass": {
+                    "description": [
+                        "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                    ]
+                },
+                "authorize": {
+                    "default": false,
+                    "description": [
+                        "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                    ],
+                    "type": "bool"
+                },
+                "gather_subset": {
+                    "default": "!config",
+                    "description": [
+                        "When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include all, hardware, config, and interfaces.  Can specify a list of values to include a larger subset.  Values can also be used with an initial C(!) to specify that a specific subset should not be collected."
+                    ],
+                    "required": false
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_pass": {
+                            "description": [
+                                "Specifies the password to use if required to enter privileged mode on the remote device.  If I(authorize) is false, then this argument does nothing. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTH_PASS) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "authorize": {
+                            "default": false,
+                            "description": [
+                                "Instructs the module to enter privileged mode on the remote device before sending any commands.  If not specified, the device will attempt to execute all commands in non-privileged mode. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_AUTHORIZE) will be used instead."
+                            ],
+                            "type": "bool"
+                        },
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "default": 22,
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "default": 10,
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                }
+            },
+            "short_description": "Collect facts from remote devices running Lenovo ENOS"
+        },
+        "examples": "\nTasks: The following are examples of using the module enos_facts.\n---\n- name: Test Enos Facts\n  community.network.enos_facts:\n    provider={{ cli }}\n\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: 22\n      username: admin\n      password: admin\n      transport: cli\n      timeout: 30\n      authorize: True\n      auth_pass:\n\n---\n# Collect all facts from the device\n- community.network.enos_facts:\n    gather_subset: all\n    provider: \"{{ cli }}\"\n\n# Collect only the config and default facts\n- community.network.enos_facts:\n    gather_subset:\n      - config\n    provider: \"{{ cli }}\"\n\n# Do not collect hardware facts\n- community.network.enos_facts:\n    gather_subset:\n      - \"!hardware\"\n    provider: \"{{ cli }}\"\n\n",
+        "metadata": null,
+        "return": {
+            "ansible_net_all_ipv4_addresses": {
+                "description": "All IPv4 addresses configured on the device",
+                "returned": "when interfaces is configured",
+                "type": "list"
+            },
+            "ansible_net_all_ipv6_addresses": {
+                "description": "All IPv6 addresses configured on the device",
+                "returned": "when interfaces is configured",
+                "type": "list"
+            },
+            "ansible_net_config": {
+                "description": "The current active config from the device",
+                "returned": "when config is configured",
+                "type": "str"
+            },
+            "ansible_net_gather_subset": {
+                "description": "The list of fact subsets collected from the device",
+                "returned": "always",
+                "type": "list"
+            },
+            "ansible_net_hostname": {
+                "description": "The configured hostname of the device",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_image": {
+                "description": "Indicates the active image for the device",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_interfaces": {
+                "description": "A hash of all interfaces running on the system. This gives information on description, mac address, mtu, speed, duplex and operstatus",
+                "returned": "when interfaces is configured",
+                "type": "dict"
+            },
+            "ansible_net_memfree_mb": {
+                "description": "The available free memory on the remote device in MB",
+                "returned": "when hardware is configured",
+                "type": "int"
+            },
+            "ansible_net_model": {
+                "description": "The model name returned from the Lenovo ENOS device",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_neighbors": {
+                "description": "The list of LLDP neighbors from the remote device",
+                "returned": "when interfaces is configured",
+                "type": "dict"
+            },
+            "ansible_net_serialnum": {
+                "description": "The serial number of the Lenovo ENOS device",
+                "returned": "always",
+                "type": "str"
+            },
+            "ansible_net_version": {
+                "description": "The ENOS operating system version running on the remote device",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

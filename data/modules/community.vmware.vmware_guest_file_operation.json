@@ -1,0 +1,206 @@
+{
+    "community.vmware.vmware_guest_file_operation": {
+        "doc": {
+            "author": [
+                "St\u00e9phane Travassac (@stravassac)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Module to copy a file to a VM, fetch a file from a VM and create or delete a directory in the guest OS."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_file_operation.py",
+            "has_action": false,
+            "module": "vmware_guest_file_operation",
+            "notes": [
+                "Tested on vSphere 6",
+                "Only the first match against vm_id is used, even if there are multiple matches"
+            ],
+            "options": {
+                "cluster": {
+                    "description": [
+                        "The cluster hosting the virtual machine.",
+                        "If set, it will help to speed up virtual machine search."
+                    ],
+                    "type": "str"
+                },
+                "copy": {
+                    "description": [
+                        "Copy file to vm without requiring network.",
+                        "Valid attributes are:",
+                        "  src: file source absolute or relative",
+                        "  dest: file destination, path must be exist",
+                        "  overwrite: False or True (not required, default False)"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "datacenter": {
+                    "description": [
+                        "The datacenter hosting the virtual machine.",
+                        "If set, it will help to speed up virtual machine search."
+                    ],
+                    "type": "str"
+                },
+                "directory": {
+                    "description": [
+                        "Create or delete a directory.",
+                        "Can be used to create temp directory inside guest using mktemp operation.",
+                        "mktemp sets variable C(dir) in the result with the name of the new directory.",
+                        "mktemp operation option is added in version 2.8",
+                        "Valid attributes are:",
+                        "  operation (str): Valid values are: create, delete, mktemp",
+                        "  path (str): directory path (required for create or remove)",
+                        "  prefix (str): temporary directory prefix (required for mktemp)",
+                        "  suffix (str): temporary directory suffix (required for mktemp)",
+                        "  recurse (boolean): Not required, default (false)"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "fetch": {
+                    "description": [
+                        "Get file from virtual machine without requiring network.",
+                        "Valid attributes are:",
+                        "  src: The file on the remote system to fetch. This I(must) be a file, not a directory",
+                        "  dest: file destination on localhost, path must be exist"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "folder": {
+                    "description": [
+                        "Destination folder, absolute path to find an existing guest or create the new guest.",
+                        "The folder should include the datacenter. ESX's datacenter is ha-datacenter",
+                        "Used only if C(vm_id_type) is C(inventory_path).",
+                        "Examples:",
+                        "   folder: /ha-datacenter/vm",
+                        "   folder: ha-datacenter/vm",
+                        "   folder: /datacenter1/vm",
+                        "   folder: datacenter1/vm",
+                        "   folder: /datacenter1/vm/folder1",
+                        "   folder: datacenter1/vm/folder1",
+                        "   folder: /folder1/datacenter1/vm",
+                        "   folder: folder1/datacenter1/vm",
+                        "   folder: /folder1/datacenter1/vm/folder2",
+                        "   folder: vm/folder2",
+                        "   folder: folder2"
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "vm_id": {
+                    "description": [
+                        "Name of the virtual machine to work with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "vm_id_type": {
+                    "choices": [
+                        "uuid",
+                        "instance_uuid",
+                        "dns_name",
+                        "inventory_path",
+                        "vm_name"
+                    ],
+                    "default": "vm_name",
+                    "description": [
+                        "The VMware identification method by which the virtual machine will be identified."
+                    ],
+                    "type": "str"
+                },
+                "vm_password": {
+                    "description": [
+                        "The password used to login-in to the virtual machine."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "vm_username": {
+                    "description": [
+                        "The user to login in to the virtual machine."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi",
+                "requests"
+            ],
+            "short_description": "Files operation in a VMware guest operating system without network"
+        },
+        "examples": "\n- name: Create directory inside a vm\n  community.vmware.vmware_guest_file_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    vm_id: \"{{ guest_name }}\"\n    vm_username: \"{{ guest_username }}\"\n    vm_password: \"{{ guest_userpassword }}\"\n    directory:\n      path: \"/test\"\n      operation: create\n      recurse: no\n  delegate_to: localhost\n\n- name: copy file to vm\n  community.vmware.vmware_guest_file_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    vm_id: \"{{ guest_name }}\"\n    vm_username: \"{{ guest_username }}\"\n    vm_password: \"{{ guest_userpassword }}\"\n    copy:\n        src: \"files/test.zip\"\n        dest: \"/root/test.zip\"\n        overwrite: False\n  delegate_to: localhost\n\n- name: fetch file from vm\n  community.vmware.vmware_guest_file_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    vm_id: \"{{ guest_name }}\"\n    vm_username: \"{{ guest_username }}\"\n    vm_password: \"{{ guest_userpassword }}\"\n    fetch:\n        src: \"/root/test.zip\"\n        dest: \"files/test.zip\"\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,514 @@
+{
+    "community.windows.win_scheduled_task": {
+        "doc": {
+            "author": [
+                "Peter Mounce (@petemounce)",
+                "Jordan Borean (@jborean93)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "Creates/modified or removes Windows scheduled tasks."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_scheduled_task.py",
+            "has_action": false,
+            "module": "win_scheduled_task",
+            "notes": [
+                "The option names and structure for actions and triggers of a service follow the C(RegisteredTask) naming standard and requirements, it would be useful to read up on this guide if coming across any issues U(https://msdn.microsoft.com/en-us/library/windows/desktop/aa382542.aspx).",
+                "A Group Managed Service Account (gMSA) can be used by setting C(logon_type) to C(password) and omitting the password parameter. For more information on gMSAs, see U(https://techcommunity.microsoft.com/t5/Core-Infrastructure-and-Security/Windows-Server-2012-Group-Managed-Service-Accounts/ba-p/255910)"
+            ],
+            "options": {
+                "actions": {
+                    "description": [
+                        "A list of action to configure for the task.",
+                        "See suboptions for details on how to construct each list entry.",
+                        "When creating a task there MUST be at least one action but when deleting a task this can be a null or an empty list.",
+                        "The ordering of this list is important, the module will ensure the order is kept when modifying the task.",
+                        "This module only supports the C(ExecAction) type but can still delete the older legacy types."
+                    ],
+                    "suboptions": {
+                        "arguments": {
+                            "description": [
+                                "An argument string to supply for the executable."
+                            ],
+                            "type": "str"
+                        },
+                        "path": {
+                            "description": [
+                                "The path to the executable for the ExecAction."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "working_directory": {
+                            "description": [
+                                "The working directory to run the executable from."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "allow_demand_start": {
+                    "description": [
+                        "Whether the task can be started by using either the Run command or the Context menu."
+                    ],
+                    "type": "bool"
+                },
+                "allow_hard_terminate": {
+                    "description": [
+                        "Whether the task can be terminated by using TerminateProcess."
+                    ],
+                    "type": "bool"
+                },
+                "author": {
+                    "description": [
+                        "The author of the task."
+                    ],
+                    "type": "str"
+                },
+                "compatibility": {
+                    "choices": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    "description": [
+                        "The integer value with indicates which version of Task Scheduler a task is compatible with.",
+                        "C(0) means the task is compatible with the AT command.",
+                        "C(1) means the task is compatible with Task Scheduler 1.0(Windows Vista, Windows Server 2008 and older).",
+                        "C(2) means the task is compatible with Task Scheduler 2.0(Windows 7, Windows Server 2008 R2).",
+                        "C(3) means the task is compatible with Task Scheduler 2.0(Windows 7, Windows Server 2008 R2).",
+                        "C(4) means the task is compatible with Task Scheduler 2.0(Windows 10, Windows Server 2019)."
+                    ],
+                    "type": "int"
+                },
+                "date": {
+                    "description": [
+                        "The date when the task was registered."
+                    ],
+                    "type": "str"
+                },
+                "delete_expired_task_after": {
+                    "description": [
+                        "The amount of time that the Task Scheduler will wait before deleting the task after it expires.",
+                        "A task expires after the end_boundary has been exceeded for all triggers associated with the task.",
+                        "This is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The description of the task."
+                    ],
+                    "type": "str"
+                },
+                "disallow_start_if_on_batteries": {
+                    "description": [
+                        "Whether the task will not be started if the computer is running on battery power."
+                    ],
+                    "type": "bool"
+                },
+                "display_name": {
+                    "description": [
+                        "The name of the user/group that is displayed in the Task Scheduler UI."
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "description": [
+                        "Whether the task is enabled, the task can only run when C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "execution_time_limit": {
+                    "description": [
+                        "The amount of time allowed to complete the task.",
+                        "When set to `PT0S`, the time limit is infinite.",
+                        "When omitted, the default time limit is 72 hours.",
+                        "This is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                    ],
+                    "type": "str"
+                },
+                "group": {
+                    "description": [
+                        "The group that will run the task.",
+                        "C(group) and C(username) are exclusive to each other and cannot be set at the same time.",
+                        "C(logon_type) can either be not set or equal C(group)."
+                    ],
+                    "type": "str"
+                },
+                "hidden": {
+                    "description": [
+                        "Whether the task will be hidden in the UI."
+                    ],
+                    "type": "bool"
+                },
+                "logon_type": {
+                    "choices": [
+                        "none",
+                        "password",
+                        "s4u",
+                        "interactive_token",
+                        "group",
+                        "service_account",
+                        "token_or_password"
+                    ],
+                    "description": [
+                        "The logon method that the task will run with.",
+                        "C(password) means the password will be stored and the task has access to network resources.",
+                        "C(s4u) means the existing token will be used to run the task and no password will be stored with the task. Means no network or encrypted files access.",
+                        "C(interactive_token) means the user must already be logged on interactively and will run in an existing interactive session.",
+                        "C(group) means that the task will run as a group.",
+                        "C(service_account) means that a service account like System, Local Service or Network Service will run the task."
+                    ],
+                    "type": "str"
+                },
+                "multiple_instances": {
+                    "choices": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ],
+                    "description": [
+                        "An integer that indicates the behaviour when starting a task that is already running.",
+                        "C(0) will start a new instance in parallel with existing instances of that task.",
+                        "C(1) will wait until other instances of that task to finish running before starting itself.",
+                        "C(2) will not start a new instance if another is running.",
+                        "C(3) will stop other instances of the task and start the new one."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "The name of the scheduled task without the path."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "The password for the user account to run the scheduled task as.",
+                        "This is required when running a task without the user being logged in, excluding the builtin service accounts and Group Managed Service Accounts (gMSA).",
+                        "If set, will always result in a change unless C(update_password) is set to C(no) and no other changes are required for the service."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "default": "\\",
+                    "description": [
+                        "Task folder in which this task will be stored.",
+                        "Will create the folder when C(state=present) and the folder does not already exist.",
+                        "Will remove the folder when C(state=absent) and there are no tasks left in the folder."
+                    ],
+                    "type": "str"
+                },
+                "priority": {
+                    "description": [
+                        "The priority level (0-10) of the task.",
+                        "When creating a new task the default is C(7).",
+                        "See U(https://msdn.microsoft.com/en-us/library/windows/desktop/aa383512.aspx) for details on the priority levels."
+                    ],
+                    "type": "int"
+                },
+                "restart_count": {
+                    "description": [
+                        "The number of times that the Task Scheduler will attempt to restart the task."
+                    ],
+                    "type": "int"
+                },
+                "restart_interval": {
+                    "description": [
+                        "How long the Task Scheduler will attempt to restart the task.",
+                        "If this is set then C(restart_count) must also be set.",
+                        "The maximum allowed time is 31 days.",
+                        "The minimum allowed time is 1 minute.",
+                        "This is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                    ],
+                    "type": "str"
+                },
+                "run_level": {
+                    "aliases": [
+                        "runlevel"
+                    ],
+                    "choices": [
+                        "limited",
+                        "highest"
+                    ],
+                    "description": [
+                        "The level of user rights used to run the task.",
+                        "If not specified the task will be created with limited rights."
+                    ],
+                    "type": "str"
+                },
+                "run_only_if_idle": {
+                    "description": [
+                        "Whether the task will run the task only if the computer is in an idle state."
+                    ],
+                    "type": "bool"
+                },
+                "run_only_if_network_available": {
+                    "description": [
+                        "Whether the task will run only when a network is available."
+                    ],
+                    "type": "bool"
+                },
+                "source": {
+                    "description": [
+                        "The source of the task."
+                    ],
+                    "type": "str"
+                },
+                "start_when_available": {
+                    "description": [
+                        "Whether the task can start at any time after its scheduled time has passed."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state=present) will ensure the task exists.",
+                        "When C(state=absent) will ensure the task does not exist."
+                    ],
+                    "type": "str"
+                },
+                "stop_if_going_on_batteries": {
+                    "description": [
+                        "Whether the task will be stopped if the computer begins to run on battery power."
+                    ],
+                    "type": "bool"
+                },
+                "triggers": {
+                    "description": [
+                        "A list of triggers to configure for the task.",
+                        "See suboptions for details on how to construct each list entry.",
+                        "The ordering of this list is important, the module will ensure the order is kept when modifying the task.",
+                        "There are multiple types of triggers, see U(https://msdn.microsoft.com/en-us/library/windows/desktop/aa383868.aspx) for a list of trigger types and their options.",
+                        "The suboption options listed below are not required for all trigger types, read the description for more details."
+                    ],
+                    "suboptions": {
+                        "days_of_month": {
+                            "description": [
+                                "The days of the month from 1 to 31 for the triggers.",
+                                "If you wish to set the trigger for the last day of any month use C(run_on_last_day_of_month).",
+                                "Can be a list or comma separated string of day numbers.",
+                                "Required when C(type=monthly)."
+                            ],
+                            "type": "str"
+                        },
+                        "days_of_week": {
+                            "description": [
+                                "The days of the week for the trigger.",
+                                "Can be a list or comma separated string of full day names e.g. monday instead of mon.",
+                                "Required when C(type) is C(weekly), C(type=session_state_change).",
+                                "Optional when C(type=monthlydow)."
+                            ],
+                            "type": "str"
+                        },
+                        "delay": {
+                            "description": [
+                                "The time to delay the task from running once the trigger has been fired.",
+                                "Optional when C(type) is C(boot), C(event), C(logon), C(registration), C(session_state_change).",
+                                "Is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                            ],
+                            "type": "str"
+                        },
+                        "enabled": {
+                            "description": [
+                                "Whether to set the trigger to enabled or disabled",
+                                "Used in all trigger types."
+                            ],
+                            "type": "bool"
+                        },
+                        "end_boundary": {
+                            "description": [
+                                "The end time for when the trigger is deactivated.",
+                                "This is in ISO 8601 DateTime format C(YYYY-MM-DDThh:mm:ss)."
+                            ],
+                            "type": "str"
+                        },
+                        "execution_time_limit": {
+                            "description": [
+                                "The maximum amount of time that the task is allowed to run for.",
+                                "Optional for all the trigger types.",
+                                "Is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                            ],
+                            "type": "str"
+                        },
+                        "months_of_year": {
+                            "description": [
+                                "The months of the year for the trigger.",
+                                "Can be a list or comma separated string of full month names e.g. march instead of mar.",
+                                "Optional when C(type) is C(monthlydow), C(monthly)."
+                            ],
+                            "type": "str"
+                        },
+                        "random_delay": {
+                            "description": [
+                                "The delay time that is randomly added to the start time of the trigger.",
+                                "Optional when C(type) is C(daily), C(monthlydow), C(monthly), C(time), C(weekly).",
+                                "Is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                            ],
+                            "type": "str"
+                        },
+                        "repetition": {
+                            "description": [
+                                "Allows you to define the repetition action of the trigger that defines how often the task is run and how long the repetition pattern is repeated after the task is started.",
+                                "It takes in the following keys, C(duration), C(interval), C(stop_at_duration_end)"
+                            ],
+                            "suboptions": {
+                                "duration": {
+                                    "description": [
+                                        "Defines how long the pattern is repeated.",
+                                        "The value is in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S).",
+                                        "By default this is not set which means it will repeat indefinitely."
+                                    ],
+                                    "type": "str"
+                                },
+                                "interval": {
+                                    "description": [
+                                        "The amount of time between each restart of the task.",
+                                        "The value is written in the ISO 8601 Duration format C(P[n]Y[n]M[n]DT[n]H[n]M[n]S)."
+                                    ],
+                                    "type": "str"
+                                },
+                                "stop_at_duration_end": {
+                                    "description": [
+                                        "Whether a running instance of the task is stopped at the end of the repetition pattern."
+                                    ],
+                                    "type": "bool"
+                                }
+                            }
+                        },
+                        "run_on_last_day_of_month": {
+                            "description": [
+                                "Boolean value that sets whether the task runs on the last day of the month.",
+                                "Optional when C(type) is C(monthly)."
+                            ],
+                            "type": "bool"
+                        },
+                        "run_on_last_week_of_month": {
+                            "description": [
+                                "Boolean value that sets whether the task runs on the last week of the month.",
+                                "Optional when C(type) is C(monthlydow)."
+                            ],
+                            "type": "bool"
+                        },
+                        "start_boundary": {
+                            "description": [
+                                "The start time for the task, even if the trigger meets the other start criteria, it won't start until this time is met.",
+                                "If you wish to run a task at 9am on a day you still need to specify the date on which the trigger is activated, you can set any date even ones in the past.",
+                                "Required when C(type) is C(daily), C(monthlydow), C(monthly), C(time), C(weekly), (session_state_change).",
+                                "Optional for the rest of the trigger types.",
+                                "This is in ISO 8601 DateTime format C(YYYY-MM-DDThh:mm:ss)."
+                            ],
+                            "type": "str"
+                        },
+                        "subscription": {
+                            "description": [
+                                "Only used and is required for C(type=event).",
+                                "The XML query string that identifies the event that fires the trigger."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "choices": [
+                                "boot",
+                                "daily",
+                                "event",
+                                "idle",
+                                "logon",
+                                "monthlydow",
+                                "monthly",
+                                "registration",
+                                "time",
+                                "weekly",
+                                "session_state_change"
+                            ],
+                            "description": [
+                                "The trigger type, this value controls what below options are required."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "user_id": {
+                            "description": [
+                                "The username that the trigger will target.",
+                                "Optional when C(type) is C(logon), C(session_state_change).",
+                                "Can be the username or SID of a user.",
+                                "When C(type=logon) and you want the trigger to fire when a user in a group logs on, leave this as null and set C(group) to the group you wish to trigger."
+                            ],
+                            "type": "str"
+                        },
+                        "weeks_interval": {
+                            "description": [
+                                "The interval of weeks to run on, e.g. C(1) means every week while C(2) means every other week.",
+                                "Optional when C(type=weekly)."
+                            ],
+                            "type": "int"
+                        },
+                        "weeks_of_month": {
+                            "description": [
+                                "The weeks of the month for the trigger.",
+                                "Can be a list or comma separated string of the numbers 1 to 4 representing the first to 4th week of the month.",
+                                "Optional when C(type=monthlydow)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "update_password": {
+                    "default": true,
+                    "description": [
+                        "Whether to update the password even when not other changes have occurred.",
+                        "When C(yes) will always result in a change when executing the module."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "The user to run the scheduled task as.",
+                        "Will default to the current user under an interactive token if not specified during creation.",
+                        "The user account specified must have the C(SeBatchLogonRight) logon right which can be added with M(ansible.windows.win_user_right)."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "description": [
+                        "The version number of the task."
+                    ],
+                    "type": "str"
+                },
+                "wake_to_run": {
+                    "description": [
+                        "Whether the task will wake the computer when it is time to run the task."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "community.windows.win_scheduled_task_stat"
+                },
+                {
+                    "module": "ansible.windows.win_user_right"
+                }
+            ],
+            "short_description": "Manage scheduled tasks"
+        },
+        "examples": "\n- name: Create a task to open 2 command prompts as SYSTEM\n  community.windows.win_scheduled_task:\n    name: TaskName\n    description: open command prompt\n    actions:\n    - path: cmd.exe\n      arguments: /c hostname\n    - path: cmd.exe\n      arguments: /c whoami\n    triggers:\n    - type: daily\n      start_boundary: '2017-10-09T09:00:00'\n    username: SYSTEM\n    state: present\n    enabled: yes\n\n- name: Create task to run a PS script as NETWORK service on boot\n  community.windows.win_scheduled_task:\n    name: TaskName2\n    description: Run a PowerShell script\n    actions:\n    - path: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\n      arguments: -ExecutionPolicy Unrestricted -NonInteractive -File C:\\TestDir\\Test.ps1\n    triggers:\n    - type: boot\n    username: NETWORK SERVICE\n    run_level: highest\n    state: present\n\n- name: Update Local Security Policy to allow users to run scheduled tasks\n  ansible.windows.win_user_right:\n    name: SeBatchLogonRight\n    users:\n    - LocalUser\n    - DOMAIN\\NetworkUser\n    action: add\n\n- name: Change above task to run under a domain user account, storing the passwords\n  community.windows.win_scheduled_task:\n    name: TaskName2\n    username: DOMAIN\\User\n    password: Password\n    logon_type: password\n\n- name: Change the above task again, choosing not to store the password\n  community.windows.win_scheduled_task:\n    name: TaskName2\n    username: DOMAIN\\User\n    logon_type: s4u\n\n- name: Change above task to use a gMSA, where the password is managed automatically\n  community.windows.win_scheduled_task:\n    name: TaskName2\n    username: DOMAIN\\gMsaSvcAcct$\n    logon_type: password\n\n- name: Create task with multiple triggers\n  community.windows.win_scheduled_task:\n    name: TriggerTask\n    path: \\Custom\n    actions:\n    - path: cmd.exe\n    triggers:\n    - type: daily\n    - type: monthlydow\n    username: SYSTEM\n\n- name: Set logon type to password but don't force update the password\n  community.windows.win_scheduled_task:\n    name: TriggerTask\n    path: \\Custom\n    actions:\n    - path: cmd.exe\n    username: Administrator\n    password: password\n    update_password: no\n\n- name: Disable a task that already exists\n  community.windows.win_scheduled_task:\n    name: TaskToDisable\n    enabled: no\n\n- name: Create a task that will be repeated every minute for five minutes\n  community.windows.win_scheduled_task:\n    name: RepeatedTask\n    description: open command prompt\n    actions:\n    - path: cmd.exe\n      arguments: /c hostname\n    triggers:\n    - type: registration\n      repetition:\n        interval: PT1M\n        duration: PT5M\n        stop_at_duration_end: yes\n\n- name: Create task to run a PS script in Windows 10 compatibility on boot with a delay of 1min\n  community.windows.win_scheduled_task:\n    name: TriggerTask\n    path: \\Custom\n    actions:\n    - path: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\n      arguments: -ExecutionPolicy Unrestricted -NonInteractive -File C:\\TestDir\\Test.ps1\n    triggers:\n    - type: boot\n      delay: PT1M\n    username: SYSTEM\n    compatibility: 4\n",
+        "metadata": null,
+        "return": null
+    }
+}

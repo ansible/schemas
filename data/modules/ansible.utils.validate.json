@@ -1,0 +1,68 @@
+{
+    "ansible.utils.validate": {
+        "doc": {
+            "author": [
+                "Bradley Thornton (@cidrblock)",
+                "Ganesh Nalawade (@ganeshrn)"
+            ],
+            "collection": "ansible.utils",
+            "description": [
+                "Validate data with provided criteria based on the validation engine."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/utils/plugins/modules/validate.py",
+            "has_action": true,
+            "module": "validate",
+            "notes": [
+                "For the type of options I(data) and I(criteria) refer to the individual validate plugin documentation that is represented in the value of I(engine) option.",
+                "For additional plugin configuration options refer to the individual validate plugin documentation that is represented by the value of I(engine) option.",
+                "The plugin configuration option can be either passed as task or environment variables.",
+                "The precedence of the validate plugin configurable option is task variables followed by the environment variables."
+            ],
+            "options": {
+                "criteria": {
+                    "description": [
+                        "The criteria used for validation of I(data). For the type of criteria refer to the documentation of individual validate plugins."
+                    ],
+                    "required": true,
+                    "type": "raw"
+                },
+                "data": {
+                    "description": [
+                        "Data that will be validated against I(criteria). For the type of data refer to the documentation of individual validate plugins."
+                    ],
+                    "required": true,
+                    "type": "raw"
+                },
+                "engine": {
+                    "default": "ansible.utils.jsonschema",
+                    "description": [
+                        "The name of the validate plugin to use. The engine value should follow the fully qualified collection name format, that is <org-name>.<collection-name>.<validate-plugin-name>."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Validate data with provided criteria",
+            "version_added": "1.0.0",
+            "version_added_collection": "ansible.utils"
+        },
+        "examples": "\n- name: set facts for data and criteria\n  ansible.builtin.set_fact:\n    data: \"{{ lookup('ansible.builtin.file', './validate/data/show_interfaces_iosxr.json')}}\"\n    criteria: \"{{ lookup('ansible.builtin.file', './validate/criteria/jsonschema/show_interfaces_iosxr.json')}}\"\n\n- name: validate data in with jsonschema engine (by passing task vars as configurable plugin options)\n  ansible.utils.validate:\n    data: \"{{ data }}\"\n    criteria: \"{{ criteria }}\"\n    engine: ansible.utils.jsonschema\n  vars:\n    ansible_jsonschema_draft: draft7\n",
+        "metadata": null,
+        "return": {
+            "errors": {
+                "description": "The list of errors in I(data) based on the I(criteria).",
+                "elements": "str",
+                "returned": "when I(data) value is invalid",
+                "type": "list"
+            },
+            "msg": {
+                "description": [
+                    "The msg indicates if the I(data) is valid as per the I(criteria).",
+                    "In case data is valid return success message B(all checks passed).",
+                    "In case data is invalid return error message B(Validation errors were found) along with more information on error is available."
+                ],
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

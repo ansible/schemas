@@ -1,0 +1,213 @@
+{
+    "awx.awx.tower_job_launch": {
+        "doc": {
+            "author": "Wayne Witzel III (@wwitzel3)",
+            "collection": "awx.awx",
+            "description": [
+                "Launch an Ansible Tower jobs. See U(https://www.ansible.com/tower) for an overview."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/awx/awx/plugins/modules/tower_job_launch.py",
+            "has_action": false,
+            "module": "tower_job_launch",
+            "notes": [
+                "If no I(config_file) is provided we will attempt to use the tower-cli library defaults to find your Tower host information.",
+                "I(config_file) should contain Tower configuration in the following format host=hostname username=username password=password"
+            ],
+            "options": {
+                "credential_passwords": {
+                    "description": [
+                        "Passwords for credentials which are set to prompt on launch"
+                    ],
+                    "type": "dict"
+                },
+                "credentials": {
+                    "aliases": [
+                        "credential"
+                    ],
+                    "description": [
+                        "Credential to use for job, only used if prompt for credential is set."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "diff_mode": {
+                    "description": [
+                        "Show the changes made by Ansible tasks where supported"
+                    ],
+                    "type": "bool"
+                },
+                "extra_vars": {
+                    "description": [
+                        "extra_vars to use for the Job Template.",
+                        "ask_extra_vars needs to be set to True via tower_job_template module when creating the Job Template."
+                    ],
+                    "type": "dict"
+                },
+                "interval": {
+                    "default": 1,
+                    "description": [
+                        "The interval to request an update from Tower."
+                    ],
+                    "required": false,
+                    "type": "float"
+                },
+                "inventory": {
+                    "description": [
+                        "Inventory to use for the job, only used if prompt for inventory is set."
+                    ],
+                    "type": "str"
+                },
+                "job_type": {
+                    "choices": [
+                        "run",
+                        "check"
+                    ],
+                    "description": [
+                        "Job_type to use for the job, only used if prompt for job_type is set."
+                    ],
+                    "type": "str"
+                },
+                "limit": {
+                    "description": [
+                        "Limit to use for the I(job_template)."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "job_template"
+                    ],
+                    "description": [
+                        "Name of the job template to use."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "scm_branch": {
+                    "description": [
+                        "A specific of the SCM project to run the template on.",
+                        "This is only applicable if your project allows for branch override."
+                    ],
+                    "type": "str"
+                },
+                "skip_tags": {
+                    "description": [
+                        "Specific tags to skip from the playbook."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "tags": {
+                    "description": [
+                        "Specific tags to use for from playbook."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "timeout": {
+                    "description": [
+                        "If waiting for the job to complete this will abort after this amount of seconds"
+                    ],
+                    "type": "int"
+                },
+                "tower_config_file": {
+                    "description": [
+                        "Path to the Tower or AWX config file.",
+                        "If provided, the other locations for config files will not be considered."
+                    ],
+                    "type": "path"
+                },
+                "tower_host": {
+                    "description": [
+                        "URL to your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_HOST) and then config files",
+                        "If value not specified by any means, the value of C(127.0.0.1) will be used"
+                    ],
+                    "type": "str"
+                },
+                "tower_oauthtoken": {
+                    "description": [
+                        "The Tower OAuth token to use.",
+                        "This value can be in one of two formats.",
+                        "A string which is the token itself. (i.e. bqV5txm97wqJqtkxlMkhQz0pKhRMMX)",
+                        "A dictionary structure as returned by the tower_token module.",
+                        "If value not set, will try environment variable C(TOWER_OAUTH_TOKEN) and then config files"
+                    ],
+                    "type": "raw",
+                    "version_added": "3.7",
+                    "version_added_collection": "awx.awx"
+                },
+                "tower_password": {
+                    "description": [
+                        "Password for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_PASSWORD) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "tower_username": {
+                    "description": [
+                        "Username for your Tower or AWX instance.",
+                        "If value not set, will try environment variable C(TOWER_USERNAME) and then config files"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "tower_verify_ssl"
+                    ],
+                    "description": [
+                        "Whether to allow insecure connections to Tower or AWX.",
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates.",
+                        "If value not set, will try environment variable C(TOWER_VERIFY_SSL) and then config files"
+                    ],
+                    "type": "bool"
+                },
+                "verbosity": {
+                    "choices": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "description": [
+                        "Verbosity level for this job run"
+                    ],
+                    "type": "int"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Wait for the job to complete."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Launch an Ansible Job."
+        },
+        "examples": "\n- name: Launch a job\n  tower_job_launch:\n    job_template: \"My Job Template\"\n  register: job\n\n- name: Launch a job template with extra_vars on remote Tower instance\n  tower_job_launch:\n    job_template: \"My Job Template\"\n    extra_vars:\n      var1: \"My First Variable\"\n      var2: \"My Second Variable\"\n      var3: \"My Third Variable\"\n    job_type: run\n\n- name: Launch a job with inventory and credential\n  tower_job_launch:\n    job_template: \"My Job Template\"\n    inventory: \"My Inventory\"\n    credential: \"My Credential\"\n  register: job\n- name: Wait for job max 120s\n  tower_job_wait:\n    job_id: \"{{ job.id }}\"\n    timeout: 120\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "id": {
+                "description": "job id of the newly launched job",
+                "returned": "success",
+                "sample": 86,
+                "type": "int"
+            },
+            "status": {
+                "description": "status of newly launched job",
+                "returned": "success",
+                "sample": "pending",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,159 @@
+{
+    "netbox.netbox.netbox_circuit_termination": {
+        "doc": {
+            "author": [
+                "Mikhail Yohman (@FragmentedPacket)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates, updates or removes circuit terminations from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_circuit_termination.py",
+            "has_action": false,
+            "module": "netbox_circuit_termination",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the circuit termination configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "circuit": {
+                            "description": [
+                                "The circuit to assign to circuit termination"
+                            ],
+                            "required": true,
+                            "type": "raw"
+                        },
+                        "description": {
+                            "description": [
+                                "Description of the circuit termination"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "port_speed": {
+                            "description": [
+                                "The speed of the port (Kbps)"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "pp_info": {
+                            "description": [
+                                "Patch panel information"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "site": {
+                            "description": [
+                                "The site the circuit termination will be assigned to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "term_side": {
+                            "choices": [
+                                "A",
+                                "Z"
+                            ],
+                            "description": [
+                                "The side of the circuit termination"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "upstream_speed": {
+                            "description": [
+                                "The upstream speed of the circuit termination"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "xconnect_id": {
+                            "description": [
+                                "The cross connect ID of the circuit termination"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Create, update or delete circuit terminations within Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox modules\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n\n  tasks:\n    - name: Create circuit termination within Netbox with only required information\n      netbox_circuit_termination:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          circuit: Test Circuit\n          term_side: A\n          site: Test Site\n          port_speed: 10000\n        state: present\n\n    - name: Update circuit termination with other fields\n      netbox_circuit_termination:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          circuit: Test Circuit\n          term_side: A\n          upstream_speed: 1000\n          xconnect_id: 10X100\n          pp_info: PP10-24\n          description: \"Test description\"\n        state: present\n\n    - name: Delete circuit termination within netbox\n      netbox_circuit_termination:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          circuit: Test Circuit\n          term_side: A\n        state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "circuit_termination": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "success (when I(state=present))",
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

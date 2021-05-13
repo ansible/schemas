@@ -1,0 +1,72 @@
+{
+    "community.windows.win_regmerge": {
+        "doc": {
+            "author": [
+                "Jon Hawkesworth (@jhawkesworth)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "Wraps the reg.exe command to import the contents of a registry file.",
+                "Suitable for use with registry files created using M(ansible.windows.win_template).",
+                "Windows registry files have a specific format and must be constructed correctly with carriage return and line feed line endings otherwise they will not be merged.",
+                "Exported registry files often start with a Byte Order Mark which must be removed if the file is to templated using M(ansible.windows.win_template).",
+                "Registry file format is described at U(https://support.microsoft.com/en-us/kb/310516)",
+                "See also M(ansible.windows.win_template), M(ansible.windows.win_regedit)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_regmerge.py",
+            "has_action": false,
+            "module": "win_regmerge",
+            "notes": [
+                "Organise your registry files so that they contain a single root registry key if you want to use the compare_to functionality.",
+                "This module does not force registry settings to be in the state described in the file.  If registry settings have been modified externally the module will merge the contents of the file but continue to report differences on subsequent runs.",
+                "To force registry change, use M(ansible.windows.win_regedit) with C(state=absent) before using C(community.windows.win_regmerge)."
+            ],
+            "options": {
+                "compare_key": {
+                    "description": [
+                        "The parent key to use when comparing the contents of the registry to the contents of the file.  Needs to be in HKLM or HKCU part of registry. Use a PS-Drive style path for example HKLM:\\SOFTWARE not HKEY_LOCAL_MACHINE\\SOFTWARE If not supplied, or the registry key is not found, no comparison will be made, and the module will report changed."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The full path including file name to the registry file on the remote machine to be merged"
+                    ],
+                    "required": true,
+                    "type": "path"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_reg_stat"
+                },
+                {
+                    "module": "ansible.windows.win_regedit"
+                }
+            ],
+            "short_description": "Merges the contents of a registry file into the Windows registry"
+        },
+        "examples": "\n- name: Merge in a registry file without comparing to current registry\n  community.windows.win_regmerge:\n    path: C:\\autodeploy\\myCompany-settings.reg\n\n- name: Compare and merge registry file\n  community.windows.win_regmerge:\n    path: C:\\autodeploy\\myCompany-settings.reg\n    compare_to: HKLM:\\SOFTWARE\\myCompany\n",
+        "metadata": null,
+        "return": {
+            "compare_to_key_found": {
+                "description": "whether the parent registry key has been found for comparison",
+                "returned": "when comparison key not found in registry",
+                "sample": false,
+                "type": "bool"
+            },
+            "compared": {
+                "description": "whether a comparison has taken place between the registry and the file",
+                "returned": "when a comparison key has been supplied and comparison has been attempted",
+                "sample": true,
+                "type": "bool"
+            },
+            "difference_count": {
+                "description": "number of differences between the registry and the file",
+                "returned": "changed",
+                "sample": 1,
+                "type": "int"
+            }
+        }
+    }
+}

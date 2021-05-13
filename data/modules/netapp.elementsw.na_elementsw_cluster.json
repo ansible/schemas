@@ -1,0 +1,170 @@
+{
+    "netapp.elementsw.na_elementsw_cluster": {
+        "doc": {
+            "author": "NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>",
+            "collection": "netapp.elementsw",
+            "description": [
+                "Initialize Element Software node ownership to form a cluster.",
+                "If the cluster does not exist, username/password are still required but ignored for initial creation.",
+                "username/password are used as the node credentials to see if the cluster already exists.",
+                "username/password can also be used to set the cluster credentials.",
+                "If the cluster already exists, no error is returned, but changed is set to false.",
+                "Cluster modifications are not supported and are ignored."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp/elementsw/plugins/modules/na_elementsw_cluster.py",
+            "has_action": false,
+            "module": "na_elementsw_cluster",
+            "notes": [
+                "The modules prefixed with na\\\\_elementsw are built to support the SolidFire storage platform."
+            ],
+            "options": {
+                "accept_eula": {
+                    "description": [
+                        "Required to indicate your acceptance of the End User License Agreement when creating this cluster.",
+                        "To accept the EULA, set this parameter to true."
+                    ],
+                    "type": "bool"
+                },
+                "attributes": {
+                    "description": [
+                        "List of name-value pairs in JSON object format."
+                    ],
+                    "type": "dict"
+                },
+                "cluster_admin_password": {
+                    "description": [
+                        "Initial password for the cluster admin account.",
+                        "If not provided, default to password."
+                    ],
+                    "type": "str"
+                },
+                "cluster_admin_username": {
+                    "description": [
+                        "Username for the cluster admin.",
+                        "If not provided, default to username."
+                    ],
+                    "type": "str"
+                },
+                "encryption": {
+                    "description": "to enable or disable encryption at rest",
+                    "type": "bool",
+                    "version_added": "20.10.0",
+                    "version_added_collection": "netapp.elementsw"
+                },
+                "fail_if_cluster_already_exists_with_larger_ensemble": {
+                    "default": true,
+                    "description": [
+                        "If the cluster exists, the default is to verify that I(nodes) is a superset of the existing ensemble.",
+                        "A superset is accepted because some nodes may have a different role.",
+                        "But the module reports an error if the existing ensemble contains a node not listed in I(nodes).",
+                        "This checker is disabled when this option is set to false."
+                    ],
+                    "type": "bool",
+                    "version_added": "20.8.0",
+                    "version_added_collection": "netapp.elementsw"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the SolidFire cluster.",
+                        "For na_elementsw_cluster, the Management IP (MIP) or hostname of the node to initiate the cluster creation from."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "management_virtual_ip": {
+                    "description": [
+                        "Floating (virtual) IP address for the cluster on the management network."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nodes": {
+                    "description": [
+                        "Storage IP (SIP) addresses of the initial set of nodes making up the cluster.",
+                        "nodes IP must be in the list."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "order_number": {
+                    "description": "(experimental) order number as provided by NetApp",
+                    "type": "str",
+                    "version_added": "20.10.0",
+                    "version_added_collection": "netapp.elementsw"
+                },
+                "password": {
+                    "aliases": [
+                        "pass"
+                    ],
+                    "description": [
+                        "Password for the specified user."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "replica_count": {
+                    "default": 2,
+                    "description": [
+                        "Number of replicas of each piece of data to store in the cluster."
+                    ],
+                    "type": "int"
+                },
+                "serial_number": {
+                    "description": "(experimental) serial number as provided by NetApp",
+                    "type": "str",
+                    "version_added": "20.10.0",
+                    "version_added_collection": "netapp.elementsw"
+                },
+                "storage_virtual_ip": {
+                    "description": [
+                        "Floating (virtual) IP address for the cluster on the storage (iSCSI) network."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 100,
+                    "description": [
+                        "Time to wait for cluster creation to complete."
+                    ],
+                    "type": "int",
+                    "version_added": "20.8.0",
+                    "version_added_collection": "netapp.elementsw"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "Please ensure that the user has the adequate permissions. For more information, please read the official documentation U(https://mysupport.netapp.com/documentation/docweb/index.html?productID=62636&language=en-US)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "The modules were developed with SolidFire 10.1",
+                "solidfire-sdk-python (1.1.0.92) or greater. Install using 'pip install solidfire-sdk-python'"
+            ],
+            "short_description": "NetApp Element Software Create Cluster",
+            "version_added": "2.7.0",
+            "version_added_collection": "netapp.elementsw"
+        },
+        "examples": "\n\n  - name: Initialize new cluster\n    tags:\n    - elementsw_cluster\n    na_elementsw_cluster:\n      hostname: \"{{ elementsw_hostname }}\"\n      username: \"{{ elementsw_username }}\"\n      password: \"{{ elementsw_password }}\"\n      management_virtual_ip: 10.226.108.32\n      storage_virtual_ip: 10.226.109.68\n      replica_count: 2\n      accept_eula: true\n      nodes:\n      - 10.226.109.72\n      - 10.226.109.74\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "msg": {
+                "description": "Success message",
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

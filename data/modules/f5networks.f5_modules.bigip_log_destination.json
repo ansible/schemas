@@ -1,0 +1,339 @@
+{
+    "f5networks.f5_modules.bigip_log_destination": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manages log destinations on a BIG-IP device."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_log_destination.py",
+            "has_action": false,
+            "module": "bigip_log_destination",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "address": {
+                    "description": [
+                        "Specifies the IP address that will receive messages from the specified local Log Destination.",
+                        "This parameter is only available when C(type) is C(management-port).",
+                        "When creating a new log destination and C(type) is C(management-port), this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "The description of the log destination."
+                    ],
+                    "type": "str"
+                },
+                "distribution": {
+                    "choices": [
+                        "adaptive",
+                        "balanced",
+                        "replicated"
+                    ],
+                    "description": [
+                        "Specifies the distribution method used by the Remote High Speed Log destination to send messages to pool members.",
+                        "When C(adaptive), connections to pool members will be added as required to provide enough logging bandwidth. This can have the undesirable effect of logs accumulating on only one pool member when it provides sufficient logging bandwidth on its own.",
+                        "When C(balanced), sends each successive log to a new pool member, balancing the logs among them according to the pool's load balancing method.",
+                        "When C(replicated), replicates each log to all pool members, for redundancy.",
+                        "When creating a new log destination and C(type) is C(remote-high-speed-log), if this parameter is not specified, the default is C(adaptive)."
+                    ],
+                    "type": "str"
+                },
+                "forward_to": {
+                    "description": [
+                        "When C(type) is C(remote-syslog), specifies the management port log destination, which will be used to forward the logs to a single log server, or a remote high-speed log destination, which will be used to forward the logs to a pool of remote log servers.",
+                        "When C(type) is C(splunk) or C(arcsight), specifies the log destination to which logs are forwarded. This log destination may be a management port destination, a remote high-speed log destination, or a remote Syslog destination which is configured to send logs to an ArcSight or Splunk server.",
+                        "When creating a new log destination and C(type) is C(remote-syslog), C(splunk), or C(arcsight), this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the log destination."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "pool": {
+                    "description": [
+                        "When C(type) is C(remote-high-speed-log), specifies the existing pool of remote high-speed log servers where logs will be sent.",
+                        "When C(type) is C(ipfix), specifies the existing LTM pool of remote IPFIX collectors. Any BIG-IP application that uses this log destination sends its IP-traffic logs to this pool of collectors.",
+                        "When creating a new destination and C(type) is C(remote-high-speed-log) or C(ipfix), this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Specifies the port of the IP address that will receive messages from the specified local Log Destination.",
+                        "This parameter is only available when C(type) is C(management-port).",
+                        "When creating a new log destination and C(type) is C(management-port), this parameter is required."
+                    ],
+                    "type": "int"
+                },
+                "protocol": {
+                    "choices": [
+                        "tcp",
+                        "udp",
+                        "ipfix",
+                        "netflow-9"
+                    ],
+                    "description": [
+                        "When C(type) is C(remote-high-speed-log), specifies the protocol for the system to use to send logs to the pool of remote high-speed log servers, where the logs are stored.",
+                        "When C(type) is C(ipfix), can be IPFIX or Netflow v9, depending on the type of collectors you have in the pool that you specify.",
+                        "When C(type) is C(management-port), specifies the protocol used to send messages to the specified location.",
+                        "When C(type) is C(management-port), only C(tcp) and C(udp) are valid values."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "server_ssl_profile": {
+                    "description": [
+                        "If the C(transport_profile) is a TCP profile, you can use this field to choose a Secure Socket Layer (SSL) profile for sending logs to the IPFIX collectors.",
+                        "An SSL server profile defines how to communicate securely over SSL or Transport Layer Security (TLS).",
+                        "This parameter is only available when C(type) is C(ipfix)."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                },
+                "syslog_format": {
+                    "choices": [
+                        "bsd-syslog",
+                        "syslog",
+                        "legacy-bigip",
+                        "rfc5424",
+                        "rfc3164"
+                    ],
+                    "description": [
+                        "Specifies the method to use to format the logs associated with the remote Syslog log destination.",
+                        "When creating a new log destination (and C(type) is C(remote-syslog)), if this parameter is not specified, the default is C(bsd-syslog).",
+                        "The C(syslog) and C(rfc5424) choices are the same.",
+                        "The C(bsd-syslog) and C(rfc3164) choices are the same."
+                    ],
+                    "type": "str"
+                },
+                "template_delete_delay": {
+                    "description": [
+                        "Enter the time (in seconds) that the BIG-IP device should pause between deleting an obsolete IPFIX template and reusing its template ID.",
+                        "This feature is useful for systems where you use iRules to create customized IPFIX templates."
+                    ],
+                    "type": "int"
+                },
+                "template_retransmit_interval": {
+                    "description": [
+                        "Enter the time (in seconds) between each transmission of IPFIX templates to the pool of IPFIX collectors.",
+                        "The logging destination periodically retransmits all of its IPFIX templates at the interval you set in this field. These retransmissions are helpful for UDP, a lossy transport mechanism.",
+                        "This parameter is only available when C(type) is C(ipfix)."
+                    ],
+                    "type": "int"
+                },
+                "transport_profile": {
+                    "description": [
+                        "Is a transport profile based on either TCP or UDP.",
+                        "This profile defines the TCP or UDP options used to send IP-traffic logs to the pool of collectors.",
+                        "This parameter is only available when C(type) is C(ipfix)."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "remote-high-speed-log",
+                        "remote-syslog",
+                        "arcsight",
+                        "splunk",
+                        "management-port",
+                        "ipfix"
+                    ],
+                    "description": [
+                        "Specifies the type of log destination.",
+                        "Once created, this parameter cannot be changed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages log destinations on a BIG-IP.",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a high-speed logging destination\n  bigip_log_destination:\n    name: foo\n    type: remote-high-speed-log\n    pool: my-ltm-pool\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create a remote-syslog logging destination\n  bigip_log_destination:\n    name: foo\n    type: remote-syslog\n    syslog_format: rfc5424\n    forward_to: my-destination\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "address": {
+                "description": "The new Address value.",
+                "returned": "changed",
+                "sample": "1.2.3.2",
+                "type": "str"
+            },
+            "distribution": {
+                "description": "The new Distribution Method value.",
+                "returned": "changed",
+                "sample": "balanced",
+                "type": "str"
+            },
+            "forward_to": {
+                "description": "The new Forward To value.",
+                "returned": "changed",
+                "sample": "/Common/dest1",
+                "type": "str"
+            },
+            "pool": {
+                "description": "The new Pool value.",
+                "returned": "changed",
+                "sample": "/Common/pool1",
+                "type": "str"
+            },
+            "port": {
+                "description": "The new Port value.",
+                "returned": "changed",
+                "sample": 2020,
+                "type": "int"
+            },
+            "protocol": {
+                "description": "The new Protocol value.",
+                "returned": "changed",
+                "sample": "tcp",
+                "type": "str"
+            },
+            "server_ssl_profile": {
+                "description": "The new Server SSL Profile value.",
+                "returned": "changed",
+                "sample": "/Common/serverssl",
+                "type": "str"
+            },
+            "syslog_format": {
+                "description": "The new Syslog format value.",
+                "returned": "changed",
+                "sample": "syslog",
+                "type": "str"
+            },
+            "template_delete_delay": {
+                "description": "The new Template Delete Delay value.",
+                "returned": "changed",
+                "sample": 20,
+                "type": "int"
+            },
+            "template_retransmit_interval": {
+                "description": "The new Template Retransmit Interval value.",
+                "returned": "changed",
+                "sample": 200,
+                "type": "int"
+            },
+            "transport_profile": {
+                "description": "The new Transport Profile value.",
+                "returned": "changed",
+                "sample": "/Common/tcp",
+                "type": "str"
+            }
+        }
+    }
+}

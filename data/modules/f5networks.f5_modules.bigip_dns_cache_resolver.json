@@ -1,0 +1,204 @@
+{
+    "f5networks.f5_modules.bigip_dns_cache_resolver": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage the DNS resolver cache configuration on BIG-IP devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_dns_cache_resolver.py",
+            "has_action": false,
+            "module": "bigip_dns_cache_resolver",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "answer_default_zones": {
+                    "description": [
+                        "Specifies whether the system answers DNS queries for the default zones localhost, reverse 127.0.0.1 and ::1, and AS112.",
+                        "When creating a new cache resolver, if this parameter is not specified, the default is C(no)."
+                    ],
+                    "type": "bool"
+                },
+                "forward_zones": {
+                    "description": [
+                        "Forward zones associated with the cache.",
+                        "To remove all forward zones, specify a value of C(none)."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Specifies an FQDN for the forward zone."
+                            ],
+                            "type": "str"
+                        },
+                        "nameservers": {
+                            "description": [
+                                "Specifies the IP address and service port of a recursive nameserver that answers DNS queries for the zone when the response cannot be found in the DNS cache."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "address": {
+                                    "description": [
+                                        "Address of recursive nameserver."
+                                    ],
+                                    "type": "str"
+                                },
+                                "port": {
+                                    "description": [
+                                        "Port of recursive nameserver.",
+                                        "When specifying new nameservers, if this value is not provided, the default is C(53)."
+                                    ],
+                                    "type": "int"
+                                }
+                            },
+                            "type": "list"
+                        }
+                    },
+                    "type": "raw"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the cache."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "route_domain": {
+                    "description": [
+                        "Specifies the route domain the resolver uses for outbound traffic."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage DNS resolver cache configuration on a BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a DNS resolver cache\n  bigip_dns_cache:\n    name: foo\n    answer_default_zones: yes\n    forward_zones:\n      - name: foo.bar.com\n        nameservers:\n          - address: 1.2.3.4\n            port: 53\n          - address: 5.6.7.8\n    route_domain: 0\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "param1": {
+                "description": "The new param1 value of the resource.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "param2": {
+                "description": "The new param2 value of the resource.",
+                "returned": "changed",
+                "sample": "Foo is bar",
+                "type": "str"
+            }
+        }
+    }
+}

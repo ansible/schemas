@@ -1,0 +1,155 @@
+{
+    "community.network.ce_interface_ospf": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages configuration of an OSPF interface instanceon HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_interface_ospf.py",
+            "has_action": false,
+            "module": "ce_interface_ospf",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "area": {
+                    "description": [
+                        "Ospf area associated with this ospf process. Valid values are a string, formatted as an IP address (i.e. \"0.0.0.0\") or as an integer between 1 and 4294967295."
+                    ],
+                    "required": true
+                },
+                "auth_key_id": {
+                    "description": [
+                        "Authentication key id when C(auth_mode) is 'hmac-sha256', 'md5' or 'hmac-md5. Valid value is an integer is in the range from 1 to 255."
+                    ]
+                },
+                "auth_mode": {
+                    "choices": [
+                        "none",
+                        "null",
+                        "hmac-sha256",
+                        "md5",
+                        "hmac-md5",
+                        "simple"
+                    ],
+                    "description": [
+                        "Specifies the authentication type."
+                    ]
+                },
+                "auth_text_md5": {
+                    "description": [
+                        "Specifies a password for MD5, HMAC-MD5, or HMAC-SHA256 authentication. The value is a string of 1 to 255 case-sensitive characters, spaces not supported."
+                    ]
+                },
+                "auth_text_simple": {
+                    "description": [
+                        "Specifies a password for simple authentication. The value is a string of 1 to 8 characters."
+                    ]
+                },
+                "cost": {
+                    "description": [
+                        "The cost associated with this interface. Valid values are an integer in the range from 1 to 65535."
+                    ]
+                },
+                "dead_interval": {
+                    "description": [
+                        "Time interval an ospf neighbor waits for a hello packet before tearing down adjacencies. Valid values are an integer in the range from 1 to 235926000."
+                    ]
+                },
+                "hello_interval": {
+                    "description": [
+                        "Time between sending successive hello packets. Valid values are an integer in the range from 1 to 65535."
+                    ]
+                },
+                "interface": {
+                    "description": [
+                        "Full name of interface, i.e. 40GE1/0/10."
+                    ],
+                    "required": true
+                },
+                "process_id": {
+                    "description": [
+                        "Specifies a process ID. The value is an integer ranging from 1 to 4294967295."
+                    ],
+                    "required": true
+                },
+                "silent_interface": {
+                    "default": "no",
+                    "description": [
+                        "Setting to true will prevent this interface from receiving HELLO packets. Valid values are 'true' and 'false'."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                }
+            },
+            "short_description": "Manages configuration of an OSPF interface instanceon HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: Eth_trunk module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n  - name: Enables OSPF and sets the cost on an interface\n    community.network.ce_interface_ospf:\n      interface: 10GE1/0/30\n      process_id: 1\n      area: 100\n      cost: 100\n      provider: '{{ cli }}'\n\n  - name: Sets the dead interval of the OSPF neighbor\n    community.network.ce_interface_ospf:\n      interface: 10GE1/0/30\n      process_id: 1\n      area: 100\n      dead_interval: 100\n      provider: '{{ cli }}'\n\n  - name: Sets the interval for sending Hello packets on an interface\n    community.network.ce_interface_ospf:\n      interface: 10GE1/0/30\n      process_id: 1\n      area: 100\n      hello_interval: 2\n      provider: '{{ cli }}'\n\n  - name: Disables an interface from receiving and sending OSPF packets\n    community.network.ce_interface_ospf:\n      interface: 10GE1/0/30\n      process_id: 1\n      area: 100\n      silent_interface: true\n      provider: '{{ cli }}'\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "verbose mode",
+                "sample": {
+                    "area": "0.0.0.100",
+                    "auth_mode": "none",
+                    "cost": "100",
+                    "dead_interval": "40",
+                    "hello_interval": "10",
+                    "interface": "10GE1/0/30",
+                    "process_id": "1",
+                    "silent_interface": "false"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "verbose mode",
+                "sample": {
+                    "area": "0.0.0.100",
+                    "process_id": "1"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "verbose mode",
+                "sample": {
+                    "area": "0.0.0.100",
+                    "cost": "100",
+                    "interface": "10GE1/0/30",
+                    "process_id": "1"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "interface 10GE1/0/30",
+                    "ospf enable 1 area 0.0.0.100",
+                    "ospf cost 100"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

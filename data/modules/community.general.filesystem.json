@@ -1,0 +1,108 @@
+{
+    "community.general.filesystem": {
+        "doc": {
+            "author": [
+                "Alexander Bulimov (@abulimov)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module creates a filesystem."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/filesystem.py",
+            "has_action": false,
+            "module": "filesystem",
+            "notes": [
+                "Potential filesystem on I(dev) are checked using C(blkid), in case C(blkid) isn't able to detect an existing filesystem, this filesystem is overwritten even if I(force) is C(no).",
+                "This module supports I(check_mode)."
+            ],
+            "options": {
+                "dev": {
+                    "aliases": [
+                        "device"
+                    ],
+                    "description": [
+                        "Target path to device or image file."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "force": {
+                    "default": "no",
+                    "description": [
+                        "If C(yes), allows to create new filesystem on devices that already has filesystem."
+                    ],
+                    "type": "bool"
+                },
+                "fstype": {
+                    "aliases": [
+                        "type"
+                    ],
+                    "choices": [
+                        "btrfs",
+                        "ext2",
+                        "ext3",
+                        "ext4",
+                        "ext4dev",
+                        "f2fs",
+                        "lvm",
+                        "ocfs2",
+                        "reiserfs",
+                        "xfs",
+                        "vfat",
+                        "swap"
+                    ],
+                    "description": [
+                        "Filesystem type to be created. This option is required with C(state=present) (or if I(state) is omitted).",
+                        "reiserfs support was added in 2.2.",
+                        "lvm support was added in 2.5.",
+                        "since 2.5, I(dev) can be an image file.",
+                        "vfat support was added in 2.5",
+                        "ocfs2 support was added in 2.6",
+                        "f2fs support was added in 2.7",
+                        "swap support was added in 2.8"
+                    ],
+                    "type": "str"
+                },
+                "opts": {
+                    "description": [
+                        "List of options to be passed to mkfs command."
+                    ],
+                    "type": "str"
+                },
+                "resizefs": {
+                    "default": "no",
+                    "description": [
+                        "If C(yes), if the block device and filesystem size differ, grow the filesystem into the space.",
+                        "Supported for C(ext2), C(ext3), C(ext4), C(ext4dev), C(f2fs), C(lvm), C(xfs) and C(vfat) filesystems. Attempts to resize other filesystem types will fail.",
+                        "XFS Will only grow if mounted. Currently, the module is based on commands from C(util-linux) package to perform operations, so resizing of XFS is not supported on FreeBSD systems.",
+                        "vFAT will likely fail if fatresize < 1.04."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(state=present), the filesystem is created if it doesn't already exist, that is the default behaviour if I(state) is omitted.",
+                        "If C(state=absent), filesystem signatures on I(dev) are wiped if it contains a filesystem (as known by C(blkid)).",
+                        "When C(state=absent), all other options but I(dev) are ignored, and the module doesn't fail if the device I(dev) doesn't actually exist.",
+                        "C(state=absent) is not supported and will fail on FreeBSD systems."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                }
+            },
+            "requirements": [
+                "Uses tools related to the I(fstype) (C(mkfs)) and C(blkid) command. When I(resizefs) is enabled, C(blockdev) command is required too."
+            ],
+            "short_description": "Makes a filesystem"
+        },
+        "examples": "\n- name: Create a ext2 filesystem on /dev/sdb1\n  community.general.filesystem:\n    fstype: ext2\n    dev: /dev/sdb1\n\n- name: Create a ext4 filesystem on /dev/sdb1 and check disk blocks\n  community.general.filesystem:\n    fstype: ext4\n    dev: /dev/sdb1\n    opts: -cc\n\n- name: Blank filesystem signature on /dev/sdb1\n  community.general.filesystem:\n    dev: /dev/sdb1\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

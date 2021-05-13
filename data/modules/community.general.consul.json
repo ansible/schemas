@@ -1,0 +1,159 @@
+{
+    "community.general.consul": {
+        "doc": {
+            "author": "Steve Gargan (@sgargan)",
+            "collection": "community.general",
+            "description": [
+                "Registers services and checks for an agent with a consul cluster. A service is some process running on the agent node that should be advertised by consul's discovery mechanism. It may optionally supply a check definition, a periodic service test to notify the consul cluster of service's health.",
+                "Checks may also be registered per node e.g. disk usage, or cpu usage and notify the health of the entire node to the cluster. Service level checks do not require a check name or id as these are derived by Consul from the Service name and id respectively by appending 'service:' Node level checks require a I(check_name) and optionally a I(check_id).",
+                "Currently, there is no complete way to retrieve the script, interval or ttl metadata for a registered check. Without this metadata it is  not possible to tell if the data supplied with ansible represents a change to a check. As a result this does not attempt to determine changes and will always report a changed occurred. An API method is planned to supply this metadata so at that stage change management will be added.",
+                "See U(http://consul.io) for more details."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/consul.py",
+            "has_action": false,
+            "module": "consul",
+            "options": {
+                "check_id": {
+                    "description": [
+                        "an ID for the service check. If I(state=absent), defaults to I(check_name). Ignored if part of a service definition."
+                    ],
+                    "type": "str"
+                },
+                "check_name": {
+                    "description": [
+                        "a name for the service check. Required if standalone, ignored if part of service definition."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "default": "localhost",
+                    "description": [
+                        "host of the consul agent defaults to localhost"
+                    ],
+                    "type": "str"
+                },
+                "http": {
+                    "description": [
+                        "checks can be registered with an HTTP endpoint. This means that consul will check that the http endpoint returns a successful HTTP status. I(interval) must also be provided with this option."
+                    ],
+                    "type": "str"
+                },
+                "interval": {
+                    "description": [
+                        "the interval at which the service check will be run. This is a number with a s or m suffix to signify the units of seconds or minutes e.g C(15s) or C(1m). If no suffix is supplied, m will be used by default e.g. C(1) will be C(1m). Required if the I(script) parameter is specified."
+                    ],
+                    "type": "str"
+                },
+                "notes": {
+                    "description": [
+                        "Notes to attach to check when registering it."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 8500,
+                    "description": [
+                        "the port on which the consul agent is running"
+                    ],
+                    "type": "int"
+                },
+                "scheme": {
+                    "default": "http",
+                    "description": [
+                        "the protocol scheme on which the consul agent is running"
+                    ],
+                    "type": "str"
+                },
+                "script": {
+                    "description": [
+                        "the script/command that will be run periodically to check the health of the service. Scripts require I(interval) and vice versa."
+                    ],
+                    "type": "str"
+                },
+                "service_address": {
+                    "description": [
+                        "the address to advertise that the service will be listening on. This value will be passed as the I(address) parameter to Consul's U(/v1/agent/service/register) API method, so refer to the Consul API documentation for further details."
+                    ],
+                    "type": "str"
+                },
+                "service_id": {
+                    "description": [
+                        "the ID for the service, must be unique per node. If I(state=absent), defaults to the service name if supplied."
+                    ],
+                    "type": "str"
+                },
+                "service_name": {
+                    "description": [
+                        "Unique name for the service on a node, must be unique per node, required if registering a service. May be omitted if registering a node level check"
+                    ],
+                    "type": "str"
+                },
+                "service_port": {
+                    "description": [
+                        "the port on which the service is listening. Can optionally be supplied for registration of a service, i.e. if I(service_name) or I(service_id) is set"
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "register or deregister the consul service, defaults to present"
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "tags that will be attached to the service registration."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "tcp": {
+                    "description": [
+                        "Checks can be registered with a TCP port. This means that consul will check if the connection attempt to that port is successful (that is, the port is currently accepting connections). The format is C(host:port), for example C(localhost:80). I(interval) must also be provided with this option."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "timeout": {
+                    "description": [
+                        "A custom HTTP check timeout. The consul default is 10 seconds. Similar to the interval this is a number with a C(s) or C(m) suffix to signify the units of seconds or minutes, e.g. C(15s) or C(1m)."
+                    ],
+                    "type": "str"
+                },
+                "token": {
+                    "description": [
+                        "the token key identifying an ACL rule set. May be required to register services."
+                    ],
+                    "type": "str"
+                },
+                "ttl": {
+                    "description": [
+                        "checks can be registered with a ttl instead of a I(script) and I(interval) this means that the service will check in with the agent before the ttl expires. If it doesn't the check will be considered failed. Required if registering a check and the script an interval are missing Similar to the interval this is a number with a s or m suffix to signify the units of seconds or minutes e.g C(15s) or C(1m). If no suffix is supplied, C(m) will be used by default e.g. C(1) will be C(1m)"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "whether to verify the TLS certificate of the consul agent"
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python-consul",
+                "requests"
+            ],
+            "short_description": "Add, modify & delete services within a consul cluster."
+        },
+        "examples": "\n- name: Register nginx service with the local consul agent\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n\n- name: Register nginx service with curl check\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n    script: curl http://localhost\n    interval: 60s\n\n- name: register nginx with a tcp check\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n    interval: 60s\n    tcp: localhost:80\n\n- name: Register nginx with an http check\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n    interval: 60s\n    http: http://localhost:80/status\n\n- name: Register external service nginx available at 10.1.5.23\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n    service_address: 10.1.5.23\n\n- name: Register nginx with some service tags\n  community.general.consul:\n    service_name: nginx\n    service_port: 80\n    tags:\n      - prod\n      - webservers\n\n- name: Remove nginx service\n  community.general.consul:\n    service_name: nginx\n    state: absent\n\n- name: Register celery worker service\n  community.general.consul:\n    service_name: celery-worker\n    tags:\n      - prod\n      - worker\n\n- name: Create a node level check to test disk usage\n  community.general.consul:\n    check_name: Disk usage\n    check_id: disk_usage\n    script: /opt/disk_usage.py\n    interval: 5m\n\n- name: Register an http check against a service that's already registered\n  community.general.consul:\n    check_name: nginx-check2\n    check_id: nginx-check2\n    service_id: nginx\n    interval: 60s\n    http: http://localhost:80/morestatus\n",
+        "metadata": null,
+        "return": null
+    }
+}

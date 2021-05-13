@@ -1,0 +1,131 @@
+{
+    "purestorage.flashblade.purefb_ds": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flashblade",
+            "description": [
+                "Create, modify or erase directory services configurations. There is no facility to SSL certificates at this time. Use the FlashBlade GUI for this additional configuration work.",
+                "If updating a directory service and i(bind_password) is provided this will always cause a change, even if the password given isn't different from the current. This makes this part of the module non-idempotent.."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flashblade/plugins/modules/purefb_ds.py",
+            "has_action": false,
+            "module": "purefb_ds",
+            "notes": [
+                "This module requires the C(purity_fb) Python library",
+                "You must set C(PUREFB_URL) and C(PUREFB_API) environment variables if I(fb_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api_token": {
+                    "description": [
+                        "FlashBlade API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "base_dn": {
+                    "description": [
+                        "Sets the base of the Distinguished Name (DN) of the directory service groups. The base should consist of only Domain Components (DCs). The base_dn will populate with a default value when a URI is entered by parsing domain components from the URI. The base DN should specify DC= for each domain component and multiple DCs should be separated by commas."
+                    ],
+                    "type": "str"
+                },
+                "bind_password": {
+                    "description": [
+                        "Sets the password of the bind_user user name account."
+                    ],
+                    "type": "str"
+                },
+                "bind_user": {
+                    "description": [
+                        "Sets the user name that can be used to bind to and query the directory.",
+                        "For Active Directory, enter the username - often referred to as sAMAccountName or User Logon Name - of the account that is used to perform directory lookups.",
+                        "For OpenLDAP, enter the full DN of the user."
+                    ],
+                    "type": "str"
+                },
+                "dstype": {
+                    "choices": [
+                        "management",
+                        "nfs",
+                        "smb"
+                    ],
+                    "description": [
+                        "The type of directory service to work on"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enable": {
+                    "default": false,
+                    "description": [
+                        "Whether to enable or disable directory service support."
+                    ],
+                    "type": "bool"
+                },
+                "fb_url": {
+                    "description": [
+                        "FlashBlade management IP address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "join_ou": {
+                    "description": [
+                        "The optional organizational unit (OU) where the machine account for the directory service will be created."
+                    ],
+                    "type": "str"
+                },
+                "nis_domain": {
+                    "description": [
+                        "The NIS domain to search",
+                        "This cannot be used in conjunction with LDAP configurations."
+                    ],
+                    "type": "str"
+                },
+                "nis_servers": {
+                    "description": [
+                        "A list of up to 30 IP addresses or FQDNs for NIS servers.",
+                        "This cannot be used in conjunction with LDAP configurations."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete directory service configuration"
+                    ],
+                    "type": "str"
+                },
+                "uri": {
+                    "description": [
+                        "A list of up to 30 URIs of the directory servers. Each URI must include the scheme ldap:// or ldaps:// (for LDAP over SSL), a hostname, and a domain name or IP address. For example, ldap://ad.company.com configures the directory service with the hostname \"ad\" in the domain \"company.com\" while specifying the unencrypted LDAP protocol."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purity_fb >= 1.9",
+                "netaddr",
+                "pytz"
+            ],
+            "short_description": "Configure FlashBlade Directory Service",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flashblade"
+        },
+        "examples": "\n- name: Delete existing management directory service\n  purefb_ds:\n    dstype: management\n    state: absent\n    fb_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create NFS directory service (disabled)\n  purefb_ds:\n    dstype: nfs\n    uri: \"ldaps://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    fb_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Enable existing SMB directory service\n  purefb_ds:\n    dstypr: smb\n    enable: true\n    fb_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Disable existing management directory service\n  purefb_ds:\n    dstype: management\n    enable: false\n    fb_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create NFS directory service (enabled)\n  purefb_ds:\n    dstype: nfs\n    enable: true\n    uri: \"ldaps://lab.purestorage.com\"\n    base_dn: \"DC=lab,DC=purestorage,DC=com\"\n    bind_user: Administrator\n    bind_password: password\n    fb_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

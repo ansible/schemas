@@ -1,0 +1,89 @@
+{
+    "community.network.ce_vrf": {
+        "doc": {
+            "author": "Yang yang (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages VPN instance of HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_vrf.py",
+            "has_action": false,
+            "module": "ce_vrf",
+            "notes": [
+                "If I(state=absent), the route will be removed, regardless of the non-required options.",
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "description": {
+                    "description": [
+                        "Description of the vrf, the string length is 1 - 242 ."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Manage the state of the resource."
+                    ]
+                },
+                "vrf": {
+                    "description": [
+                        "VPN instance, the length of vrf name is 1 - 31, i.e. \"test\", but can not be C(_public_)."
+                    ],
+                    "required": true
+                }
+            },
+            "short_description": "Manages VPN instance on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: Vrf module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: Config a vpn install named vpna, description is test\n    community.network.ce_vrf:\n      vrf: vpna\n      description: test\n      state: present\n      provider: \"{{ cli }}\"\n  - name: Delete a vpn install named vpna\n    community.network.ce_vrf:\n      vrf: vpna\n      state: absent\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of switchport after module execution",
+                "returned": "always",
+                "sample": {
+                    "description": "test",
+                    "present": "present",
+                    "vrf": "vpna"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing switchport",
+                "returned": "always",
+                "sample": {},
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "description": "test",
+                    "state": "present",
+                    "vrf": "vpna"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command list sent to the device",
+                "returned": "always",
+                "sample": [
+                    "ip vpn-instance vpna",
+                    "description test"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

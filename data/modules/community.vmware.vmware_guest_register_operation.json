@@ -1,0 +1,181 @@
+{
+    "community.vmware.vmware_guest_register_operation": {
+        "doc": {
+            "author": [
+                "sky-joker (@sky-joker)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can register or unregister VMs to the inventory."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_register_operation.py",
+            "has_action": false,
+            "module": "vmware_guest_register_operation",
+            "options": {
+                "cluster": {
+                    "description": [
+                        "Specify a cluster name to register VM."
+                    ],
+                    "type": "str"
+                },
+                "datacenter": {
+                    "description": [
+                        "Destination datacenter for the register/unregister operation.",
+                        "This parameter is case sensitive."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "The ESXi hostname where the virtual machine will run.",
+                        "This parameter is case sensitive."
+                    ],
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Description folder, absolute path of the target folder.",
+                        "The folder should include the datacenter. ESX's datacenter is ha-datacenter.",
+                        "This parameter is case sensitive.",
+                        "Examples:",
+                        "   folder: /ha-datacenter/vm",
+                        "   folder: ha-datacenter/vm",
+                        "   folder: /datacenter1/vm",
+                        "   folder: datacenter1/vm",
+                        "   folder: /datacenter1/vm/folder1",
+                        "   folder: datacenter1/vm/folder1"
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specify VM name to be registered in the inventory."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Specify the path of vmx file.",
+                        "Examples:",
+                        "    [datastore1] vm/vm.vmx",
+                        "    [datastore1] vm/vm.vmtx"
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "resource_pool": {
+                    "description": [
+                        "Specify a resource pool name to register VM.",
+                        "This parameter is case sensitive.",
+                        "Resource pool should be child of the selected host parent."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specify the state the virtual machine should be in.",
+                        "if set to C(present), register VM in inventory.",
+                        "if set to C(absent), unregister VM from inventory."
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "default": false,
+                    "description": [
+                        "Whether to register VM as a template."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the virtual machine to manage if known, this is VMware's unique identifier.",
+                        "If virtual machine does not exists, then this parameter is ignored."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi"
+            ],
+            "short_description": "VM inventory registration operation"
+        },
+        "examples": "\n- name: Register VM to inventory\n  community.vmware.vmware_guest_register_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    folder: \"/vm\"\n    esxi_hostname: \"{{ esxi_hostname }}\"\n    name: \"{{ vm_name }}\"\n    template: no\n    path: \"[datastore1] vm/vm.vmx\"\n    state: present\n\n- name: Register VM in resource pool\n  community.vmware.vmware_guest_register_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    folder: \"/vm\"\n    resource_pool: \"{{ resource_pool }}\"\n    name: \"{{ vm_name }}\"\n    template: no\n    path: \"[datastore1] vm/vm.vmx\"\n    state: present\n\n- name: Register VM in Cluster\n  community.vmware.vmware_guest_register_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    folder: \"/vm\"\n    cluster: \"{{ cluster_name }}\"\n    name: \"{{ vm_name }}\"\n    template: no\n    path: \"[datastore1] vm/vm.vmx\"\n    state: present\n\n- name: UnRegister VM from inventory\n  community.vmware.vmware_guest_register_operation:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    validate_certs: no\n    datacenter: \"{{ datacenter }}\"\n    folder: \"/vm\"\n    name: \"{{ vm_name }}\"\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

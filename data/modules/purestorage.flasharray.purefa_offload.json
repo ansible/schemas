@@ -1,0 +1,156 @@
+{
+    "purestorage.flasharray.purefa_offload": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Create, modify and delete NFS, S3 or Azure offload targets.",
+                "Only supported on Purity v5.2.0 or higher.",
+                "You must have a correctly configured offload network for offload to work."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_offload.py",
+            "has_action": false,
+            "module": "purefa_offload",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "access_key": {
+                    "description": [
+                        "Access Key ID of the offload target"
+                    ],
+                    "type": "str"
+                },
+                "account": {
+                    "description": [
+                        "Name of the Azure blob storage account"
+                    ],
+                    "type": "str"
+                },
+                "address": {
+                    "description": [
+                        "The IP or FQDN address of the NFS server"
+                    ],
+                    "type": "str"
+                },
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "bucket": {
+                    "description": [
+                        "Name of the bucket for the S3 or GCP target"
+                    ],
+                    "type": "str"
+                },
+                "container": {
+                    "default": "offload",
+                    "description": [
+                        "Name of the blob container of the Azure target"
+                    ],
+                    "type": "str"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "initialize": {
+                    "default": true,
+                    "description": [
+                        "Define whether to initialize the offload bucket"
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The name of the offload target"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "options": {
+                    "default": "",
+                    "description": [
+                        "Additonal mount options for the NFS share",
+                        "Supported mount options include I(port), I(rsize), I(wsize), I(nfsvers), and I(tcp) or I(udp)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "placement": {
+                    "choices": [
+                        "retention-based",
+                        "aws-standard-class"
+                    ],
+                    "default": "retention-based",
+                    "description": [
+                        "AWS S3 placement strategy"
+                    ],
+                    "type": "str"
+                },
+                "protocol": {
+                    "choices": [
+                        "nfs",
+                        "s3",
+                        "azure",
+                        "gcp"
+                    ],
+                    "default": "nfs",
+                    "description": [
+                        "Define which protocol the offload engine uses"
+                    ],
+                    "type": "str"
+                },
+                "secret": {
+                    "description": [
+                        "Secret Access Key for the offload target"
+                    ],
+                    "type": "str"
+                },
+                "share": {
+                    "description": [
+                        "NFS export on the NFS server"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Define state of offload"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Create, modify and delete NFS, S3 or Azure offload targets",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Create NFS offload target\n  purefa_offload:\n    name: nfs-offload\n    protocol: nfs\n    address: 10.21.200.4\n    share: \"/offload_target\"\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create S3 offload target\n  purefa_offload:\n    name: s3-offload\n    protocol: s3\n    access_key: \"3794fb12c6204e19195f\"\n    bucket: offload-bucket\n    secret: \"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\"\n    placement: aws-standard-class\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Create Azure offload target\n  purefa_offload:\n    name: azure-offload\n    protocol: azure\n    secret: \"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\"\n    container: offload-container\n    account: user1\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n- name: Delete offload target\n  purefa_offload:\n    name: nfs-offload\n    protocol: nfs\n    state: absent\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

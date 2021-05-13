@@ -1,0 +1,169 @@
+{
+    "netbox.netbox.netbox_vm_interface": {
+        "doc": {
+            "author": [
+                "Benjamin Vergnaud (@bvergnaud)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates or removes interfaces from virtual machines in Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_vm_interface.py",
+            "has_action": false,
+            "module": "netbox_vm_interface",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the vm interface configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "description": {
+                            "description": [
+                                "The description of the interface"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "enabled": {
+                            "description": [
+                                "Sets whether interface shows enabled or disabled"
+                            ],
+                            "required": false,
+                            "type": "bool"
+                        },
+                        "mac_address": {
+                            "description": [
+                                "The MAC address of the interface"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "mode": {
+                            "description": [
+                                "The mode of the interface"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "mtu": {
+                            "description": [
+                                "The MTU of the interface"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the interface to be created"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "tagged_vlans": {
+                            "description": [
+                                "A list of tagged VLANS to be assigned to interface. Mode must be set to either C(Tagged) or C(Tagged All)"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the prefix may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "untagged_vlan": {
+                            "description": [
+                                "The untagged VLAN to be assigned to interface"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "virtual_machine": {
+                            "description": [
+                                "Name of the virtual machine the interface will be associated with (case-sensitive)"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.\nThis should only be used on personally controlled sites using self-signed certificates.\n"
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Creates or removes interfaces from virtual machines in Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox interface module\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Create interface within Netbox with only required information\n      netbox_vm_interface:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          virtual_machine: test100\n          name: GigabitEthernet1\n        state: present\n\n    - name: Delete interface within netbox\n      netbox_vm_interface:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          virtual_machine: test100\n          name: GigabitEthernet1\n        state: absent\n\n    - name: Create interface as a trunk port\n      netbox_vm_interface:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          virtual_machine: test100\n          name: GigabitEthernet25\n          enabled: false\n          untagged_vlan:\n            name: Wireless\n            site: Test Site\n          tagged_vlans:\n            - name: Data\n              site: Test Site\n            - name: VoIP\n              site: Test Site\n          mtu: 1600\n          mode: Tagged\n        state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "interface": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "on creation",
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

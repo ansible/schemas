@@ -1,0 +1,143 @@
+{
+    "ansible.windows.win_command": {
+        "doc": {
+            "author": [
+                "Matt Davis (@nitzmahone)"
+            ],
+            "collection": "ansible.windows",
+            "description": [
+                "The C(win_command) module takes the command name followed by a list of space-delimited arguments.",
+                "The given command will be executed on all selected nodes. It will not be processed through the shell, so variables like C($env:HOME) and operations like C(\"<\"), C(\">\"), C(\"|\"), and C(\";\") will not work (use the M(ansible.windows.win_shell) module if you need these features).",
+                "For non-Windows targets, use the M(ansible.builtin.command) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/windows/plugins/modules/win_command.py",
+            "has_action": false,
+            "module": "win_command",
+            "notes": [
+                "If you want to run a command through a shell (say you are using C(<), C(>), C(|), etc), you actually want the M(ansible.windows.win_shell) module instead. The M(ansible.windows.win_command) module is much more secure as it's not affected by the user's environment.",
+                "C(creates), C(removes), and C(chdir) can be specified after the command. For instance, if you only want to run a command if a certain file does not exist, use this."
+            ],
+            "options": {
+                "chdir": {
+                    "description": [
+                        "Set the specified path as the current working directory before executing a command."
+                    ],
+                    "type": "path"
+                },
+                "creates": {
+                    "description": [
+                        "A path or path filter pattern; when the referenced path exists on the target host, the task will be skipped."
+                    ],
+                    "type": "path"
+                },
+                "free_form": {
+                    "description": [
+                        "The C(win_command) module takes a free form command to run.",
+                        "There is no parameter actually named 'free form'. See the examples!"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "output_encoding_override": {
+                    "description": [
+                        "This option overrides the encoding of stdout/stderr output.",
+                        "You can use this option when you need to run a command which ignore the console's codepage.",
+                        "You should only need to use this option in very rare circumstances.",
+                        "This value can be any valid encoding C(Name) based on the output of C([System.Text.Encoding]::GetEncodings()). See U(https://docs.microsoft.com/dotnet/api/system.text.encoding.getencodings)."
+                    ],
+                    "type": "str"
+                },
+                "removes": {
+                    "description": [
+                        "A path or path filter pattern; when the referenced path B(does not) exist on the target host, the task will be skipped."
+                    ],
+                    "type": "path"
+                },
+                "stdin": {
+                    "description": [
+                        "Set the stdin of the command directly to the specified value."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.command"
+                },
+                {
+                    "module": "community.windows.psexec"
+                },
+                {
+                    "module": "ansible.builtin.raw"
+                },
+                {
+                    "module": "community.windows.win_psexec"
+                },
+                {
+                    "module": "ansible.windows.win_shell"
+                }
+            ],
+            "short_description": "Executes a command on a remote Windows node"
+        },
+        "examples": "\n- name: Save the result of 'whoami' in 'whoami_out'\n  ansible.windows.win_command: whoami\n  register: whoami_out\n\n- name: Run command that only runs if folder exists and runs from a specific folder\n  ansible.windows.win_command: wbadmin -backupTarget:C:\\backup\\\n  args:\n    chdir: C:\\somedir\\\n    creates: C:\\backup\\\n\n- name: Run an executable and send data to the stdin for the executable\n  ansible.windows.win_command: powershell.exe -\n  args:\n    stdin: Write-Host test\n",
+        "metadata": null,
+        "return": {
+            "cmd": {
+                "description": "The command executed by the task",
+                "returned": "always",
+                "sample": "rabbitmqctl join_cluster rabbit@main",
+                "type": "str"
+            },
+            "delta": {
+                "description": "The command execution delta time",
+                "returned": "always",
+                "sample": "0:00:00.325771",
+                "type": "str"
+            },
+            "end": {
+                "description": "The command execution end time",
+                "returned": "always",
+                "sample": "2016-02-25 09:18:26.755339",
+                "type": "str"
+            },
+            "msg": {
+                "description": "changed",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "rc": {
+                "description": "The command return code (0 means success)",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "start": {
+                "description": "The command execution start time",
+                "returned": "always",
+                "sample": "2016-02-25 09:18:26.429568",
+                "type": "str"
+            },
+            "stderr": {
+                "description": "The command standard error",
+                "returned": "always",
+                "sample": "ls: cannot access foo: No such file or directory",
+                "type": "str"
+            },
+            "stdout": {
+                "description": "The command standard output",
+                "returned": "always",
+                "sample": "Clustering node rabbit@slave1 with rabbit@main ...",
+                "type": "str"
+            },
+            "stdout_lines": {
+                "description": "The command standard output split in lines",
+                "returned": "always",
+                "sample": [
+                    "u'Clustering node rabbit@slave1 with rabbit@main ...'"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

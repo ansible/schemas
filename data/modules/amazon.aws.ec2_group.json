@@ -1,0 +1,409 @@
+{
+    "amazon.aws.ec2_group": {
+        "doc": {
+            "author": "Andrew de Quincey (@adq)",
+            "collection": "amazon.aws",
+            "description": [
+                "Maintains ec2 security groups. This module has a dependency on python-boto >= 2.5."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2_group.py",
+            "has_action": false,
+            "module": "ec2_group",
+            "notes": [
+                "If a rule declares a group_name and that group doesn't exist, it will be automatically created. In that case, group_desc should be provided as well. The module will refuse to create a depended-on group without a description.",
+                "Preview diff mode support is added in version 2.7.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "Description of the security group. Required when C(state) is C(present)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "group_id": {
+                    "description": [
+                        "Id of group to delete (works only with absent).",
+                        "One of and only one of I(name) or I(group_id) is required."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the security group.",
+                        "One of and only one of I(name) or I(group_id) is required.",
+                        "Required if I(state=present)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "purge_rules": {
+                    "aliases": [],
+                    "default": "true",
+                    "description": [
+                        "Purge existing rules on security group that are not found in rules."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "purge_rules_egress": {
+                    "aliases": [],
+                    "default": "true",
+                    "description": [
+                        "Purge existing rules_egress on security group that are not found in rules_egress."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "purge_tags": {
+                    "default": true,
+                    "description": [
+                        "If yes, existing tags will be purged from the resource to match exactly what is defined by I(tags) parameter. If the I(tags) parameter is not set then tags will not be modified."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "rules": {
+                    "description": [
+                        "List of firewall inbound rules to enforce in this group (see example). If none are supplied, no inbound rules will be enabled. Rules list may include its own name in `group_name`. This allows idempotent loopback additions (e.g. allow group to access itself). Rule sources list support was added in version 2.4. This allows to define multiple sources per source type as well as multiple source types per rule. Prior to 2.4 an individual source is allowed. In version 2.5 support for rule descriptions was added."
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "cidr_ip": {
+                            "description": [
+                                "The IPv4 CIDR range traffic is coming from.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "cidr_ipv6": {
+                            "description": [
+                                "The IPv6 CIDR range traffic is coming from.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "from_port": {
+                            "description": "The start of the range of ports that traffic is coming from.  A value of C(-1) indicates all ports.",
+                            "type": "int"
+                        },
+                        "group_desc": {
+                            "description": [
+                                "If the I(group_name) is set and the Security Group doesn't exist a new Security Group will be created with I(group_desc) as the description."
+                            ],
+                            "type": "str"
+                        },
+                        "group_id": {
+                            "description": [
+                                "The ID of the Security Group that traffic is coming from.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "group_name": {
+                            "description": [
+                                "Name of the Security Group that traffic is coming from.",
+                                "If the Security Group doesn't exist a new Security Group will be created with I(group_desc) as the description.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "ip_prefix": {
+                            "description": [
+                                "The IP Prefix U(https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-prefix-lists.html) that traffic is coming from.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "proto": {
+                            "description": [
+                                "The IP protocol name (C(tcp), C(udp), C(icmp), C(icmpv6)) or number (U(https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers))"
+                            ],
+                            "type": "str"
+                        },
+                        "rule_desc": {
+                            "description": "A description for the rule.",
+                            "type": "str"
+                        },
+                        "to_port": {
+                            "description": "The end of the range of ports that traffic is coming from.  A value of C(-1) indicates all ports.",
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "rules_egress": {
+                    "description": [
+                        "List of firewall outbound rules to enforce in this group (see example). If none are supplied, a default all-out rule is assumed. If an empty list is supplied, no outbound rules will be enabled. Rule Egress sources list support was added in version 2.4. In version 2.5 support for rule descriptions was added."
+                    ],
+                    "elements": "dict",
+                    "required": false,
+                    "suboptions": {
+                        "cidr_ip": {
+                            "description": [
+                                "The IPv4 CIDR range traffic is going to.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "cidr_ipv6": {
+                            "description": [
+                                "The IPv6 CIDR range traffic is going to.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "from_port": {
+                            "description": "The start of the range of ports that traffic is going to.  A value of C(-1) indicates all ports.",
+                            "type": "int"
+                        },
+                        "group_desc": {
+                            "description": [
+                                "If the I(group_name) is set and the Security Group doesn't exist a new Security Group will be created with I(group_desc) as the description."
+                            ],
+                            "type": "str"
+                        },
+                        "group_id": {
+                            "description": [
+                                "The ID of the Security Group that traffic is going to.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "group_name": {
+                            "description": [
+                                "Name of the Security Group that traffic is going to.",
+                                "If the Security Group doesn't exist a new Security Group will be created with I(group_desc) as the description.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "ip_prefix": {
+                            "description": [
+                                "The IP Prefix U(https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-prefix-lists.html) that traffic is going to.",
+                                "You can specify only one of I(cidr_ip), I(cidr_ipv6), I(ip_prefix), I(group_id) and I(group_name)."
+                            ],
+                            "type": "str"
+                        },
+                        "proto": {
+                            "description": [
+                                "The IP protocol name (C(tcp), C(udp), C(icmp), C(icmpv6)) or number (U(https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers))"
+                            ],
+                            "type": "str"
+                        },
+                        "rule_desc": {
+                            "description": "A description for the rule.",
+                            "type": "str"
+                        },
+                        "to_port": {
+                            "description": "The end of the range of ports that traffic is going to.  A value of C(-1) indicates all ports.",
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "aliases": [],
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete a security group."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tags": {
+                    "aliases": [
+                        "resource_tags"
+                    ],
+                    "description": [
+                        "A dictionary of one or more tags to assign to the security group."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_id": {
+                    "description": [
+                        "ID of the VPC to create the group in."
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "maintain an ec2 VPC security group."
+        },
+        "examples": "\n- name: example using security group rule descriptions\n  ec2_group:\n    name: \"{{ name }}\"\n    description: sg with rule descriptions\n    vpc_id: vpc-xxxxxxxx\n    profile: \"{{ aws_profile }}\"\n    region: us-east-1\n    rules:\n      - proto: tcp\n        ports:\n        - 80\n        cidr_ip: 0.0.0.0/0\n        rule_desc: allow all on port 80\n\n- name: example ec2 group\n  ec2_group:\n    name: example\n    description: an example EC2 group\n    vpc_id: 12345\n    region: eu-west-1\n    aws_secret_key: SECRET\n    aws_access_key: ACCESS\n    rules:\n      - proto: tcp\n        from_port: 80\n        to_port: 80\n        cidr_ip: 0.0.0.0/0\n      - proto: tcp\n        from_port: 22\n        to_port: 22\n        cidr_ip: 10.0.0.0/8\n      - proto: tcp\n        from_port: 443\n        to_port: 443\n        # this should only be needed for EC2 Classic security group rules\n        # because in a VPC an ELB will use a user-account security group\n        group_id: amazon-elb/sg-87654321/amazon-elb-sg\n      - proto: tcp\n        from_port: 3306\n        to_port: 3306\n        group_id: 123412341234/sg-87654321/exact-name-of-sg\n      - proto: udp\n        from_port: 10050\n        to_port: 10050\n        cidr_ip: 10.0.0.0/8\n      - proto: udp\n        from_port: 10051\n        to_port: 10051\n        group_id: sg-12345678\n      - proto: icmp\n        from_port: 8 # icmp type, -1 = any type\n        to_port:  -1 # icmp subtype, -1 = any subtype\n        cidr_ip: 10.0.0.0/8\n      - proto: all\n        # the containing group name may be specified here\n        group_name: example\n      - proto: all\n        # in the 'proto' attribute, if you specify -1, all, or a protocol number other than tcp, udp, icmp, or 58 (ICMPv6),\n        # traffic on all ports is allowed, regardless of any ports you specify\n        from_port: 10050 # this value is ignored\n        to_port: 10050 # this value is ignored\n        cidr_ip: 10.0.0.0/8\n\n    rules_egress:\n      - proto: tcp\n        from_port: 80\n        to_port: 80\n        cidr_ip: 0.0.0.0/0\n        cidr_ipv6: 64:ff9b::/96\n        group_name: example-other\n        # description to use if example-other needs to be created\n        group_desc: other example EC2 group\n\n- name: example2 ec2 group\n  ec2_group:\n    name: example2\n    description: an example2 EC2 group\n    vpc_id: 12345\n    region: eu-west-1\n    rules:\n      # 'ports' rule keyword was introduced in version 2.4. It accepts a single port value or a list of values including ranges (from_port-to_port).\n      - proto: tcp\n        ports: 22\n        group_name: example-vpn\n      - proto: tcp\n        ports:\n          - 80\n          - 443\n          - 8080-8099\n        cidr_ip: 0.0.0.0/0\n      # Rule sources list support was added in version 2.4. This allows to define multiple sources per source type as well as multiple source types per rule.\n      - proto: tcp\n        ports:\n          - 6379\n          - 26379\n        group_name:\n          - example-vpn\n          - example-redis\n      - proto: tcp\n        ports: 5665\n        group_name: example-vpn\n        cidr_ip:\n          - 172.16.1.0/24\n          - 172.16.17.0/24\n        cidr_ipv6:\n          - 2607:F8B0::/32\n          - 64:ff9b::/96\n        group_id:\n          - sg-edcd9784\n  diff: True\n\n- name: \"Delete group by its id\"\n  ec2_group:\n    region: eu-west-1\n    group_id: sg-33b4ee5b\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "core"
+        },
+        "return": {
+            "description": {
+                "description": "Description of security group",
+                "returned": "on create/update",
+                "sample": "My Security Group",
+                "type": "str"
+            },
+            "group_id": {
+                "description": "Security group id",
+                "returned": "on create/update",
+                "sample": "sg-abcd1234",
+                "type": "str"
+            },
+            "group_name": {
+                "description": "Security group name",
+                "returned": "on create/update",
+                "sample": "My Security Group",
+                "type": "str"
+            },
+            "ip_permissions": {
+                "description": "Inbound rules associated with the security group.",
+                "returned": "on create/update",
+                "sample": [
+                    {
+                        "from_port": 8182,
+                        "ip_protocol": "tcp",
+                        "ip_ranges": [
+                            {
+                                "cidr_ip": "1.1.1.1/32"
+                            }
+                        ],
+                        "ipv6_ranges": [],
+                        "prefix_list_ids": [],
+                        "to_port": 8182,
+                        "user_id_group_pairs": []
+                    }
+                ],
+                "type": "list"
+            },
+            "ip_permissions_egress": {
+                "description": "Outbound rules associated with the security group.",
+                "returned": "on create/update",
+                "sample": [
+                    {
+                        "ip_protocol": -1,
+                        "ip_ranges": [
+                            {
+                                "cidr_ip": "0.0.0.0/0",
+                                "ipv6_ranges": [],
+                                "prefix_list_ids": [],
+                                "user_id_group_pairs": []
+                            }
+                        ]
+                    }
+                ],
+                "type": "list"
+            },
+            "owner_id": {
+                "description": "AWS Account ID of the security group",
+                "returned": "on create/update",
+                "sample": 123456789012,
+                "type": "int"
+            },
+            "tags": {
+                "description": "Tags associated with the security group",
+                "returned": "on create/update",
+                "sample": {
+                    "Name": "My Security Group",
+                    "Purpose": "protecting stuff"
+                },
+                "type": "dict"
+            },
+            "vpc_id": {
+                "description": "ID of VPC to which the security group belongs",
+                "returned": "on create/update",
+                "sample": "vpc-abcd1234",
+                "type": "str"
+            }
+        }
+    }
+}

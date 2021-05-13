@@ -1,0 +1,220 @@
+{
+    "community.aws.aws_acm": {
+        "doc": {
+            "author": [
+                "Matthew Davis (@matt-telstra) on behalf of Telstra Corporation Limited"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Import and delete certificates in Amazon Web Service's Certificate Manager (AWS ACM).",
+                "This module does not currently interact with AWS-provided certificates. It currently only manages certificates provided to AWS by the user.\n",
+                "The ACM API allows users to upload multiple certificates for the same domain name, and even multiple identical certificates. This module attempts to restrict such freedoms, to be idempotent, as per the Ansible philosophy. It does this through applying AWS resource \"Name\" tags to ACM certificates.",
+                "When I(state=present), if there is one certificate in ACM with a C(Name) tag equal to the C(name_tag) parameter, and an identical body and chain, this task will succeed without effect.\n",
+                "When I(state=present), if there is one certificate in ACM a I(Name) tag equal to the I(name_tag) parameter, and a different body, this task will overwrite that certificate.\n",
+                "When I(state=present), if there are multiple certificates in ACM with a I(Name) tag equal to the I(name_tag) parameter, this task will fail.\n",
+                "When I(state=absent) and I(certificate_arn) is defined, this module will delete the ACM resource with that ARN if it exists in this region, and succeed without effect if it doesn't exist.\n",
+                "When I(state=absent) and I(domain_name) is defined, this module will delete all ACM resources in this AWS region with a corresponding domain name. If there are none, it will succeed without effect.\n",
+                "When I(state=absent) and I(certificate_arn) is not defined, and I(domain_name) is not defined, this module will delete all ACM resources in this AWS region with a corresponding I(Name) tag. If there are none, it will succeed without effect.\n",
+                "Note that this may not work properly with keys of size 4096 bits, due to a limitation of the ACM API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_acm.py",
+            "has_action": false,
+            "module": "aws_acm",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "certificate": {
+                    "description": [
+                        "The body of the PEM encoded public certificate.",
+                        "Required when I(state) is not C(absent).",
+                        "If your certificate is in a file, use C(lookup('file', 'path/to/cert.pem'))."
+                    ],
+                    "type": "str"
+                },
+                "certificate_arn": {
+                    "aliases": [
+                        "arn"
+                    ],
+                    "description": [
+                        "The ARN of a certificate in ACM to delete",
+                        "Ignored when I(state=present).",
+                        "If I(state=absent), you must provide one of I(certificate_arn), I(domain_name) or I(name_tag).",
+                        "If I(state=absent) and no resource exists with this ARN in this region, the task will succeed with no effect.\n",
+                        "If I(state=absent) and the corresponding resource exists in a different region, this task may report success without deleting that resource.\n"
+                    ],
+                    "type": "str"
+                },
+                "certificate_chain": {
+                    "description": [
+                        "The body of the PEM encoded chain for your certificate.",
+                        "If your certificate chain is in a file, use C(lookup('file', 'path/to/chain.pem')).",
+                        "Ignored when I(state=absent)"
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "domain_name": {
+                    "aliases": [
+                        "domain"
+                    ],
+                    "description": [
+                        "The domain name of the certificate.",
+                        "If I(state=absent) and I(domain_name) is specified, this task will delete all ACM certificates with this domain.\n",
+                        "Exactly one of I(domain_name), I(name_tag)  and I(certificate_arn) must be provided.",
+                        "If I(state=present) this must not be specified. (Since the domain name is encoded within the public certificate's body.)\n"
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name_tag": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "The unique identifier for tagging resources using AWS tags, with key I(Name).",
+                        "This can be any set of characters accepted by AWS for tag values.",
+                        "This is to ensure Ansible can treat certificates idempotently, even though the ACM API allows duplicate certificates.\n",
+                        "If I(state=preset), this must be specified.",
+                        "If I(state=absent), you must provide exactly one of I(certificate_arn), I(domain_name) or I(name_tag).\n"
+                    ],
+                    "type": "str"
+                },
+                "private_key": {
+                    "description": [
+                        "The body of the PEM encoded private key.",
+                        "Required when I(state=present).",
+                        "Ignored when I(state=absent).",
+                        "If your private key is in a file, use C(lookup('file', 'path/to/key.pem'))."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If I(state=present), the specified public certificate and private key will be uploaded, with I(Name) tag equal to I(name_tag).\n",
+                        "If I(state=absent), any certificates in this region with a corresponding I(domain_name), I(name_tag) or I(certificate_arn) will be deleted.\n"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Upload and delete certificates in the AWS Certificate Manager service",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n\n- name: upload a self-signed certificate\n  community.aws.aws_acm:\n    certificate: \"{{ lookup('file', 'cert.pem' ) }}\"\n    privateKey: \"{{ lookup('file', 'key.pem' ) }}\"\n    name_tag: my_cert # to be applied through an AWS tag as  \"Name\":\"my_cert\"\n    region: ap-southeast-2 # AWS region\n\n- name: create/update a certificate with a chain\n  community.aws.aws_acm:\n    certificate: \"{{ lookup('file', 'cert.pem' ) }}\"\n    privateKey: \"{{ lookup('file', 'key.pem' ) }}\"\n    name_tag: my_cert\n    certificate_chain: \"{{ lookup('file', 'chain.pem' ) }}\"\n    state: present\n    region: ap-southeast-2\n  register: cert_create\n\n- name: print ARN of cert we just created\n  ansible.builtin.debug:\n    var: cert_create.certificate.arn\n\n- name: delete the cert we just created\n  community.aws.aws_acm:\n    name_tag: my_cert\n    state: absent\n    region: ap-southeast-2\n\n- name: delete a certificate with a particular ARN\n  community.aws.aws_acm:\n    certificate_arn: \"arn:aws:acm:ap-southeast-2:123456789012:certificate/01234567-abcd-abcd-abcd-012345678901\"\n    state: absent\n    region: ap-southeast-2\n\n- name: delete all certificates with a particular domain name\n  community.aws.aws_acm:\n    domain_name: acm.ansible.com\n    state: absent\n    region: ap-southeast-2\n\n",
+        "metadata": null,
+        "return": {
+            "arns": {
+                "description": "A list of the ARNs of the certificates in ACM which were deleted",
+                "elements": "str",
+                "returned": "when I(state=absent)",
+                "sample": [
+                    "arn:aws:acm:ap-southeast-2:123456789012:certificate/01234567-abcd-abcd-abcd-012345678901"
+                ],
+                "type": "list"
+            },
+            "certificate": {
+                "contains": {
+                    "arn": {
+                        "description": "The ARN of the certificate in ACM",
+                        "returned": "when I(state=present) and not in check mode",
+                        "sample": "arn:aws:acm:ap-southeast-2:123456789012:certificate/01234567-abcd-abcd-abcd-012345678901",
+                        "type": "str"
+                    },
+                    "domain_name": {
+                        "description": "The domain name encoded within the public certificate",
+                        "returned": "when I(state=present)",
+                        "sample": "acm.ansible.com",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the certificate which was uploaded",
+                "returned": "when I(state=present)",
+                "type": "complex"
+            }
+        }
+    }
+}

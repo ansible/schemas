@@ -1,0 +1,126 @@
+{
+    "community.general.pam_limits": {
+        "doc": {
+            "author": [
+                "Sebastien Rohaut (@usawa)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "The C(pam_limits) module modifies PAM limits.",
+                "The default file is C(/etc/security/limits.conf).",
+                "For the full documentation, see C(man 5 limits.conf)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/pam_limits.py",
+            "has_action": false,
+            "module": "pam_limits",
+            "notes": [
+                "If I(dest) file does not exist, it is created."
+            ],
+            "options": {
+                "backup": {
+                    "default": "no",
+                    "description": [
+                        "Create a backup file including the timestamp information so you can get the original file back if you somehow clobbered it incorrectly."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "comment": {
+                    "default": "",
+                    "description": [
+                        "Comment associated with the limit."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "dest": {
+                    "default": "/etc/security/limits.conf",
+                    "description": [
+                        "Modify the limits.conf path."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "A username, @groupname, wildcard, UID/GID range."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "limit_item": {
+                    "choices": [
+                        "core",
+                        "data",
+                        "fsize",
+                        "memlock",
+                        "nofile",
+                        "rss",
+                        "stack",
+                        "cpu",
+                        "nproc",
+                        "as",
+                        "maxlogins",
+                        "maxsyslogins",
+                        "priority",
+                        "locks",
+                        "sigpending",
+                        "msgqueue",
+                        "nice",
+                        "rtprio",
+                        "chroot"
+                    ],
+                    "description": [
+                        "The limit to be set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "limit_type": {
+                    "choices": [
+                        "hard",
+                        "soft",
+                        "-"
+                    ],
+                    "description": [
+                        "Limit type, see C(man 5 limits.conf) for an explanation."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "use_max": {
+                    "default": "no",
+                    "description": [
+                        "If set to C(yes), the maximal value will be used or conserved.",
+                        "If the specified value is superior to the value in the file, file content is replaced with the new value, else content is not modified."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "use_min": {
+                    "default": "no",
+                    "description": [
+                        "If set to C(yes), the minimal value will be used or conserved.",
+                        "If the specified value is inferior to the value in the file, file content is replaced with the new value, else content is not modified."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "value": {
+                    "description": [
+                        "The value of the limit.",
+                        "Value must either be C(unlimited), C(infinity) or C(-1), all of which indicate no limit, or a limit of 0 or larger.",
+                        "Value must be a number in the range -20 to 19 inclusive, if I(limit_item) is set to C(nice) or C(priority).",
+                        "Refer to the C(man 5 limits.conf) manual pages for more details."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Modify Linux PAM limits"
+        },
+        "examples": "\n- name: Add or modify nofile soft limit for the user joe\n  community.general.pam_limits:\n    domain: joe\n    limit_type: soft\n    limit_item: nofile\n    value: 64000\n\n- name: Add or modify fsize hard limit for the user smith. Keep or set the maximal value\n  community.general.pam_limits:\n    domain: smith\n    limit_type: hard\n    limit_item: fsize\n    value: 1000000\n    use_max: yes\n\n- name: Add or modify memlock, both soft and hard, limit for the user james with a comment\n  community.general.pam_limits:\n    domain: james\n    limit_type: '-'\n    limit_item: memlock\n    value: unlimited\n    comment: unlimited memory lock for james\n\n- name: Add or modify hard nofile limits for wildcard domain\n  community.general.pam_limits:\n    domain: '*'\n    limit_type: hard\n    limit_item: nofile\n    value: 39693561\n",
+        "metadata": null,
+        "return": null
+    }
+}

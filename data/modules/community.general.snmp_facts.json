@@ -1,0 +1,205 @@
+{
+    "community.general.snmp_facts": {
+        "doc": {
+            "author": [
+                "Patrick Ogenstad (@ogenstad)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Retrieve facts for a device using SNMP, the facts will be inserted to the ansible_facts key."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/snmp_facts.py",
+            "has_action": false,
+            "module": "snmp_facts",
+            "options": {
+                "authkey": {
+                    "description": [
+                        "Authentication key.",
+                        "Required I(version) is C(v3)."
+                    ],
+                    "type": "str"
+                },
+                "community": {
+                    "description": [
+                        "The SNMP community string, required if I(version) is C(v2) or C(v2c)."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "Set to target SNMP server (normally C({{ inventory_hostname }}))."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "integrity": {
+                    "choices": [
+                        "md5",
+                        "sha"
+                    ],
+                    "description": [
+                        "Hashing algorithm.",
+                        "Required if I(version) is C(v3)."
+                    ],
+                    "type": "str"
+                },
+                "level": {
+                    "choices": [
+                        "authNoPriv",
+                        "authPriv"
+                    ],
+                    "description": [
+                        "Authentication level.",
+                        "Required if I(version) is C(v3)."
+                    ],
+                    "type": "str"
+                },
+                "privacy": {
+                    "choices": [
+                        "aes",
+                        "des"
+                    ],
+                    "description": [
+                        "Encryption algorithm.",
+                        "Required if I(level) is C(authPriv)."
+                    ],
+                    "type": "str"
+                },
+                "privkey": {
+                    "description": [
+                        "Encryption key.",
+                        "Required if I(level) is C(authPriv)."
+                    ],
+                    "type": "str"
+                },
+                "retries": {
+                    "description": [
+                        "Maximum number of request retries, 0 retries means just a single request."
+                    ],
+                    "type": "int",
+                    "version_added": "2.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "timeout": {
+                    "description": [
+                        "Response timeout in seconds."
+                    ],
+                    "type": "int",
+                    "version_added": "2.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "username": {
+                    "description": [
+                        "Username for SNMPv3.",
+                        "Required if I(version) is C(v3)."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "choices": [
+                        "v2",
+                        "v2c",
+                        "v3"
+                    ],
+                    "description": [
+                        "SNMP Version to use, C(v2), C(v2c) or C(v3)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "pysnmp"
+            ],
+            "short_description": "Retrieve facts for a device using SNMP"
+        },
+        "examples": "\n- name: Gather facts with SNMP version 2\n  community.general.snmp_facts:\n    host: '{{ inventory_hostname }}'\n    version: v2c\n    community: public\n  delegate_to: local\n\n- name: Gather facts using SNMP version 3\n  community.general.snmp_facts:\n    host: '{{ inventory_hostname }}'\n    version: v3\n    level: authPriv\n    integrity: sha\n    privacy: aes\n    username: snmp-user\n    authkey: abc12345\n    privkey: def6789\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "ansible_all_ipv4_addresses": {
+                "description": "List of all IPv4 addresses.",
+                "returned": "success",
+                "sample": [
+                    "127.0.0.1",
+                    "172.17.0.1"
+                ],
+                "type": "list"
+            },
+            "ansible_interfaces": {
+                "description": "Dictionary of each network interface and its metadata.",
+                "returned": "success",
+                "sample": {
+                    "1": {
+                        "adminstatus": "up",
+                        "description": "",
+                        "ifindex": "1",
+                        "ipv4": [
+                            {
+                                "address": "127.0.0.1",
+                                "netmask": "255.0.0.0"
+                            }
+                        ],
+                        "mac": "",
+                        "mtu": "65536",
+                        "name": "lo",
+                        "operstatus": "up",
+                        "speed": "65536"
+                    },
+                    "2": {
+                        "adminstatus": "up",
+                        "description": "",
+                        "ifindex": "2",
+                        "ipv4": [
+                            {
+                                "address": "192.168.213.128",
+                                "netmask": "255.255.255.0"
+                            }
+                        ],
+                        "mac": "000a305a52a1",
+                        "mtu": "1500",
+                        "name": "Intel Corporation 82545EM Gigabit Ethernet Controller (Copper)",
+                        "operstatus": "up",
+                        "speed": "1500"
+                    }
+                },
+                "type": "dict"
+            },
+            "ansible_syscontact": {
+                "description": "The textual identification of the contact person for this managed node, together with information on how to contact this person.",
+                "returned": "success",
+                "sample": "Me <me@example.org>",
+                "type": "str"
+            },
+            "ansible_sysdescr": {
+                "description": "A textual description of the entity.",
+                "returned": "success",
+                "sample": "Linux ubuntu-user 4.4.0-93-generic",
+                "type": "str"
+            },
+            "ansible_syslocation": {
+                "description": "The physical location of this node (e.g., `telephone closet, 3rd floor').",
+                "returned": "success",
+                "sample": "Sitting on the Dock of the Bay",
+                "type": "str"
+            },
+            "ansible_sysname": {
+                "description": "An administratively-assigned name for this managed node.",
+                "returned": "success",
+                "sample": "ubuntu-user",
+                "type": "str"
+            },
+            "ansible_sysobjectid": {
+                "description": "The vendor's authoritative identification of the network management subsystem contained in the entity.",
+                "returned": "success",
+                "sample": "1.3.6.1.4.1.8072.3.2.10",
+                "type": "str"
+            },
+            "ansible_sysuptime": {
+                "description": "The time (in hundredths of a second) since the network management portion of the system was last re-initialized.",
+                "returned": "success",
+                "sample": 42388,
+                "type": "int"
+            }
+        }
+    }
+}

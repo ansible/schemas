@@ -1,0 +1,41 @@
+{
+    "dellemc.os10.mtu_validate": {
+        "doc": {
+            "author": "Senthil Kumar Ganesan (@skg-net)",
+            "collection": "dellemc.os10",
+            "description": [
+                "Get the wiring info using lldp output and show system network summary."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/os10/plugins/modules/mtu_validate.py",
+            "has_action": false,
+            "module": "mtu_validate",
+            "options": {
+                "show_ip_intf_brief": {
+                    "description": [
+                        "show ip intf brief"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_lldp_neighbors_list": {
+                    "description": [
+                        "show lldp neighbor output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                },
+                "show_system_network_summary": {
+                    "description": [
+                        "show system network summary output"
+                    ],
+                    "required": true,
+                    "type": "list"
+                }
+            },
+            "short_description": "Validate the MTU value for lldp neighbors"
+        },
+        "examples": "\nCopy below YAML into a playbook (e.g. play.yml) and run follows:\n\n#$ ansible-playbook -i inv play.yml\nname: show mtu mismatch info\nhosts: localhost\nconnection: local\ngather_facts: False\ntasks:\n - name: \"Get Dell EMC OS10 MTU mismatch info\"\n   os10_command:\n     commands:\n       - command: \"show lldp neighbors\"\n       - command: \"show ip interface brief | display-xml\"\n     provider: \"{{ hostvars[item].cli }}\"\n   with_items: \"{{ groups['all'] }}\"\n   register: show_lldp\n - set_fact:\n      output:  \"{{ output|default([])+ [{'host': item.invocation.module_args.provider.host, 'inv_name': item.item,\n                                         'stdout_show_lldp': item.stdout.0, 'stdout_show_ip': item.stdout.1 }] }}\"\n   loop: \"{{ show_lldp.results }}\"\n - debug: var=output\n - local_action: copy content={{ output }} dest=show1\n - name: call lib to convert ip interface info from xml to dict format\n   base_xml_to_dict:\n      cli_responses: \"{{ item.stdout_show_ip }}\"\n   with_items: \"{{ output }}\"\n   register: show_ip_intf_list\n - local_action: copy content={{ show_ip_intf_list }} dest=show_ip\n\n - name: \"Get Dell EMC OS10 Show system\"\n   import_role:\n     name: os10_fabric_summary\n   register: show_system_network_summary\n - debug: var=show_system_network_summary\n - name: call lib to process\n   mtu_validate:\n     show_lldp_neighbors_list: \"{{ output }}\"\n     show_system_network_summary: \"{{ show_system_network_summary.msg.results }}\"\n     show_ip_intf_brief: \"{{ show_ip_intf_list.results }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

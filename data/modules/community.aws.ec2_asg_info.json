@@ -1,0 +1,309 @@
+{
+    "community.aws.ec2_asg_info": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "community.aws",
+            "description": [
+                "Gather information about ec2 Auto Scaling Groups (ASGs) in AWS",
+                "This module was called C(ec2_asg_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ec2_asg_info.py",
+            "has_action": false,
+            "module": "ec2_asg_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The prefix or name of the auto scaling group(s) you are searching for.",
+                        "Note: This is a regular expression match with implicit '^' (beginning of string). Append '$' for a complete name match."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "A dictionary/hash of tags in the format { tag1_name: 'tag1_value', tag2_name: 'tag2_value' } to match against the auto scaling group(s) you are searching for.\n"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about ec2 Auto Scaling Groups (ASGs) in AWS",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Find all groups\n  community.aws.ec2_asg_info:\n  register: asgs\n\n- name: Find a group with matching name/prefix\n  community.aws.ec2_asg_info:\n    name: public-webserver-asg\n  register: asgs\n\n- name: Find a group with matching tags\n  community.aws.ec2_asg_info:\n    tags:\n      project: webapp\n      env: production\n  register: asgs\n\n- name: Find a group with matching name/prefix and tags\n  community.aws.ec2_asg_info:\n    name: myproject\n    tags:\n      env: production\n  register: asgs\n\n- name: Fail if no groups are found\n  community.aws.ec2_asg_info:\n    name: public-webserver-asg\n  register: asgs\n  failed_when: \"{{ asgs.results | length == 0 }}\"\n\n- name: Fail if more than 1 group is found\n  community.aws.ec2_asg_info:\n    name: public-webserver-asg\n  register: asgs\n  failed_when: \"{{ asgs.results | length > 1 }}\"\n",
+        "metadata": null,
+        "return": {
+            "auto_scaling_group_arn": {
+                "description": "The Amazon Resource Name of the ASG",
+                "returned": "success",
+                "sample": "arn:aws:autoscaling:us-west-2:1234567890:autoScalingGroup:10787c52-0bcb-427d-82ba-c8e4b008ed2e:autoScalingGroupName/public-webapp-production-1",
+                "type": "str"
+            },
+            "auto_scaling_group_name": {
+                "description": "Name of autoscaling group",
+                "returned": "success",
+                "sample": "public-webapp-production-1",
+                "type": "str"
+            },
+            "availability_zones": {
+                "description": "List of Availability Zones that are enabled for this ASG.",
+                "returned": "success",
+                "sample": [
+                    "us-west-2a",
+                    "us-west-2b",
+                    "us-west-2a"
+                ],
+                "type": "list"
+            },
+            "created_time": {
+                "description": "The date and time this ASG was created, in ISO 8601 format.",
+                "returned": "success",
+                "sample": "2015-11-25T00:05:36.309Z",
+                "type": "str"
+            },
+            "default_cooldown": {
+                "description": "The default cooldown time in seconds.",
+                "returned": "success",
+                "sample": 300,
+                "type": "int"
+            },
+            "desired_capacity": {
+                "description": "The number of EC2 instances that should be running in this group.",
+                "returned": "success",
+                "sample": 3,
+                "type": "int"
+            },
+            "health_check_period": {
+                "description": "Length of time in seconds after a new EC2 instance comes into service that Auto Scaling starts checking its health.",
+                "returned": "success",
+                "sample": 30,
+                "type": "int"
+            },
+            "health_check_type": {
+                "description": "The service you want the health status from, one of \"EC2\" or \"ELB\".",
+                "returned": "success",
+                "sample": "ELB",
+                "type": "str"
+            },
+            "instances": {
+                "description": "List of EC2 instances and their status as it relates to the ASG.",
+                "returned": "success",
+                "sample": [
+                    {
+                        "availability_zone": "us-west-2a",
+                        "health_status": "Healthy",
+                        "instance_id": "i-es22ad25",
+                        "launch_configuration_name": "public-webapp-production-1",
+                        "lifecycle_state": "InService",
+                        "protected_from_scale_in": "false"
+                    }
+                ],
+                "type": "list"
+            },
+            "launch_config_name": {
+                "description": "Name of launch configuration associated with the ASG. Same as launch_configuration_name, provided for compatibility with ec2_asg module.\n",
+                "returned": "success",
+                "sample": "public-webapp-production-1",
+                "type": "str"
+            },
+            "launch_configuration_name": {
+                "description": "Name of launch configuration associated with the ASG.",
+                "returned": "success",
+                "sample": "public-webapp-production-1",
+                "type": "str"
+            },
+            "lifecycle_hooks": {
+                "description": "List of lifecycle hooks for the ASG.",
+                "returned": "success",
+                "sample": [
+                    {
+                        "AutoScalingGroupName": "public-webapp-production-1",
+                        "DefaultResult": "ABANDON",
+                        "GlobalTimeout": 172800,
+                        "HeartbeatTimeout": 3600,
+                        "LifecycleHookName": "instance-launch",
+                        "LifecycleTransition": "autoscaling:EC2_INSTANCE_LAUNCHING"
+                    },
+                    {
+                        "AutoScalingGroupName": "public-webapp-production-1",
+                        "DefaultResult": "ABANDON",
+                        "GlobalTimeout": 172800,
+                        "HeartbeatTimeout": 3600,
+                        "LifecycleHookName": "instance-terminate",
+                        "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING"
+                    }
+                ],
+                "type": "list"
+            },
+            "load_balancer_names": {
+                "description": "List of load balancers names attached to the ASG.",
+                "returned": "success",
+                "sample": [
+                    "elb-webapp-prod"
+                ],
+                "type": "list"
+            },
+            "max_size": {
+                "description": "Maximum size of group",
+                "returned": "success",
+                "sample": 3,
+                "type": "int"
+            },
+            "min_size": {
+                "description": "Minimum size of group",
+                "returned": "success",
+                "sample": 1,
+                "type": "int"
+            },
+            "new_instances_protected_from_scale_in": {
+                "description": "Whether or not new instances a protected from automatic scaling in.",
+                "returned": "success",
+                "sample": "false",
+                "type": "bool"
+            },
+            "placement_group": {
+                "description": "Placement group into which instances are launched, if any.",
+                "returned": "success",
+                "sample": "None",
+                "type": "str"
+            },
+            "status": {
+                "description": "The current state of the group when DeleteAutoScalingGroup is in progress.",
+                "returned": "success",
+                "sample": "None",
+                "type": "str"
+            },
+            "tags": {
+                "description": "List of tags for the ASG, and whether or not each tag propagates to instances at launch.",
+                "returned": "success",
+                "sample": [
+                    {
+                        "key": "Name",
+                        "propagate_at_launch": "true",
+                        "resource_id": "public-webapp-production-1",
+                        "resource_type": "auto-scaling-group",
+                        "value": "public-webapp-production-1"
+                    },
+                    {
+                        "key": "env",
+                        "propagate_at_launch": "true",
+                        "resource_id": "public-webapp-production-1",
+                        "resource_type": "auto-scaling-group",
+                        "value": "production"
+                    }
+                ],
+                "type": "list"
+            },
+            "target_group_arns": {
+                "description": "List of ARNs of the target groups that the ASG populates",
+                "returned": "success",
+                "sample": [
+                    "arn:aws:elasticloadbalancing:ap-southeast-2:123456789012:targetgroup/target-group-host-hello/1a2b3c4d5e6f1a2b",
+                    "arn:aws:elasticloadbalancing:ap-southeast-2:123456789012:targetgroup/target-group-path-world/abcd1234abcd1234"
+                ],
+                "type": "list"
+            },
+            "target_group_names": {
+                "description": "List of names of the target groups that the ASG populates",
+                "returned": "success",
+                "sample": [
+                    "target-group-host-hello",
+                    "target-group-path-world"
+                ],
+                "type": "list"
+            },
+            "termination_policies": {
+                "description": "A list of termination policies for the group.",
+                "returned": "success",
+                "sample": [
+                    "Default"
+                ],
+                "type": "str"
+            }
+        }
+    }
+}

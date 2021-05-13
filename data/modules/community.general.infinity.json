@@ -1,0 +1,162 @@
+{
+    "community.general.infinity": {
+        "doc": {
+            "author": [
+                "Meirong Liu (@MeganLiu)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manage Infinity IPAM using REST API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/infinity.py",
+            "has_action": false,
+            "module": "infinity",
+            "options": {
+                "action": {
+                    "choices": [
+                        "add_network",
+                        "delete_network",
+                        "get_network",
+                        "get_network_id",
+                        "release_ip",
+                        "release_network",
+                        "reserve_network",
+                        "reserve_next_available_ip"
+                    ],
+                    "description": [
+                        "Action to perform"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ip_address": {
+                    "default": "",
+                    "description": [
+                        "IP Address for a reservation or a release."
+                    ],
+                    "type": "str"
+                },
+                "network_address": {
+                    "default": "",
+                    "description": [
+                        "Network address with CIDR format (e.g., 192.168.310.0)."
+                    ],
+                    "type": "str"
+                },
+                "network_family": {
+                    "choices": [
+                        4,
+                        6,
+                        "dual"
+                    ],
+                    "default": 4,
+                    "description": [
+                        "Network family defined by Infinity, e.g. IPv4, IPv6 and Dual stack"
+                    ],
+                    "type": "str"
+                },
+                "network_id": {
+                    "default": "",
+                    "description": [
+                        "Network ID."
+                    ],
+                    "type": "str"
+                },
+                "network_location": {
+                    "default": -1,
+                    "description": [
+                        "The parent network id for a given network."
+                    ],
+                    "type": "int"
+                },
+                "network_name": {
+                    "default": "",
+                    "description": [
+                        "The name of a network."
+                    ],
+                    "type": "str"
+                },
+                "network_size": {
+                    "default": "",
+                    "description": [
+                        "Network bitmask (e.g. 255.255.255.220) or CIDR format (e.g., /26)."
+                    ],
+                    "type": "str"
+                },
+                "network_type": {
+                    "choices": [
+                        "lan",
+                        "shared_lan",
+                        "supernet"
+                    ],
+                    "default": "lan",
+                    "description": [
+                        "Network type defined by Infinity"
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Infinity password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "server_ip": {
+                    "description": [
+                        "Infinity server_ip with IP address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Username to access Infinity.",
+                        "The user must have REST API privileges."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage Infinity IPAM using Rest API"
+        },
+        "examples": "\n---\n- hosts: localhost\n  connection: local\n  strategy: debug\n  tasks:\n    - name: Reserve network into Infinity IPAM\n      community.general.infinity:\n        server_ip: 80.75.107.12\n        username: username\n        password: password\n        action: reserve_network\n        network_name: reserve_new_ansible_network\n        network_family: 4\n        network_type: lan\n        network_id: 1201\n        network_size: /28\n      register: infinity\n",
+        "metadata": null,
+        "return": {
+            "ip_info": {
+                "description": "when reserve next available ip address from a network, the ip address info ) is returned.",
+                "returned": "success",
+                "sample": "{\"address\": \"192.168.10.3\", \"hostname\": \"\", \"FQDN\": \"\", \"domainname\": \"\", \"id\": 3229}",
+                "type": "str"
+            },
+            "network_id": {
+                "description": "id for a given network",
+                "returned": "success",
+                "sample": "1501",
+                "type": "str"
+            },
+            "network_info": {
+                "description": "when reserving a LAN network from a Infinity supernet by providing network_size, the information about the reserved network is returned.",
+                "returned": "success",
+                "sample": {
+                    "description": null,
+                    "network_address": "192.168.10.32/28",
+                    "network_family": "4",
+                    "network_id": 3102,
+                    "network_location": "3085",
+                    "network_name": "'reserve_new_ansible_network'",
+                    "network_size": null,
+                    "network_type": "lan",
+                    "ranges": {
+                        "first_ip": null,
+                        "id": 0,
+                        "last_ip": null,
+                        "name": null,
+                        "type": null
+                    }
+                },
+                "type": "str"
+            }
+        }
+    }
+}

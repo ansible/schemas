@@ -1,0 +1,579 @@
+{
+    "cisco.meraki.meraki_nat": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Allows for creation, management, and visibility of NAT rules (1:1, 1:many, port forwarding) within Meraki."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_nat.py",
+            "has_action": false,
+            "module": "meraki_mx_nat",
+            "notes": [
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "net_id": {
+                    "description": [
+                        "ID number of a network."
+                    ],
+                    "type": "str"
+                },
+                "net_name": {
+                    "aliases": [
+                        "name",
+                        "network"
+                    ],
+                    "description": [
+                        "Name of a network."
+                    ],
+                    "type": "str"
+                },
+                "one_to_many": {
+                    "description": [
+                        "List of 1:many NAT rules."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "port_rules": {
+                            "description": [
+                                "List of associated port rules."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "allowed_ips": {
+                                    "description": [
+                                        "Remote IP addresses or ranges that are permitted to access the internal resource via this port forwarding rule, or 'any'."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "local_ip": {
+                                    "description": [
+                                        "Local IP address to which traffic will be forwarded."
+                                    ],
+                                    "type": "str"
+                                },
+                                "local_port": {
+                                    "description": [
+                                        "Destination port of the forwarded traffic that will be sent from the MX to the specified host on the LAN.",
+                                        "If you simply wish to forward the traffic without translating the port, this should be the same as the Public port."
+                                    ],
+                                    "type": "str"
+                                },
+                                "name": {
+                                    "description": [
+                                        "A description of the rule."
+                                    ],
+                                    "type": "str"
+                                },
+                                "protocol": {
+                                    "choices": [
+                                        "tcp",
+                                        "udp"
+                                    ],
+                                    "description": [
+                                        "Protocol to apply NAT rule to."
+                                    ],
+                                    "type": "str"
+                                },
+                                "public_port": {
+                                    "description": [
+                                        "Destination port of the traffic that is arriving on the WAN."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "public_ip": {
+                            "description": [
+                                "The IP address that will be used to access the internal resource from the WAN."
+                            ],
+                            "type": "str"
+                        },
+                        "uplink": {
+                            "choices": [
+                                "both",
+                                "internet1",
+                                "internet2"
+                            ],
+                            "description": [
+                                "The physical WAN interface on which the traffic will arrive."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "one_to_one": {
+                    "description": [
+                        "List of 1:1 NAT rules."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "allowed_inbound": {
+                            "description": [
+                                "The ports this mapping will provide access on, and the remote IPs that will be allowed access to the resource."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "allowed_ips": {
+                                    "description": [
+                                        "ranges of WAN IP addresses that are allowed to make inbound connections on the specified ports or port ranges, or 'any'."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "destination_ports": {
+                                    "description": [
+                                        "List of ports or port ranges that will be forwarded to the host on the LAN."
+                                    ],
+                                    "elements": "str",
+                                    "type": "list"
+                                },
+                                "protocol": {
+                                    "choices": [
+                                        "any",
+                                        "icmp-ping",
+                                        "tcp",
+                                        "udp"
+                                    ],
+                                    "default": "any",
+                                    "description": [
+                                        "Protocol to apply NAT rule to."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "lan_ip": {
+                            "description": [
+                                "The IP address of the server or device that hosts the internal resource that you wish to make available on the WAN."
+                            ],
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "A descriptive name for the rule."
+                            ],
+                            "type": "str"
+                        },
+                        "public_ip": {
+                            "description": [
+                                "The IP address that will be used to access the internal resource from the WAN."
+                            ],
+                            "type": "str"
+                        },
+                        "uplink": {
+                            "choices": [
+                                "both",
+                                "internet1",
+                                "internet2"
+                            ],
+                            "description": [
+                                "The physical WAN interface on which the traffic will arrive."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "org_id": {
+                    "description": [
+                        "ID of organization associated to a network."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "port_forwarding": {
+                    "description": [
+                        "List of port forwarding rules."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "allowed_ips": {
+                            "description": [
+                                "List of ranges of WAN IP addresses that are allowed to make inbound connections on the specified ports or port ranges (or any)."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "lan_ip": {
+                            "description": [
+                                "The IP address of the server or device that hosts the internal resource that you wish to make available on the WAN."
+                            ],
+                            "type": "str"
+                        },
+                        "local_port": {
+                            "description": [
+                                "A port or port ranges that will receive the forwarded traffic from the WAN."
+                            ],
+                            "type": "int"
+                        },
+                        "name": {
+                            "description": [
+                                "A descriptive name for the rule."
+                            ],
+                            "type": "str"
+                        },
+                        "protocol": {
+                            "choices": [
+                                "tcp",
+                                "udp"
+                            ],
+                            "description": [
+                                "Protocol to forward traffic for."
+                            ],
+                            "type": "str"
+                        },
+                        "public_port": {
+                            "description": [
+                                "A port or port ranges that will be forwarded to the host on the LAN."
+                            ],
+                            "type": "int"
+                        },
+                        "uplink": {
+                            "choices": [
+                                "both",
+                                "internet1",
+                                "internet2"
+                            ],
+                            "description": [
+                                "The physical WAN interface on which the traffic will arrive."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "query"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or modify an organization."
+                    ],
+                    "type": "str"
+                },
+                "subset": {
+                    "choices": [
+                        "1:1",
+                        "1:many",
+                        "all",
+                        "port_forwarding"
+                    ],
+                    "default": "all",
+                    "description": [
+                        "Specifies which NAT components to query."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage NAT rules in Meraki cloud"
+        },
+        "examples": "\n- name: Query all NAT rules\n  meraki_nat:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: query\n    subset: all\n  delegate_to: localhost\n\n- name: Query 1:1 NAT rules\n  meraki_nat:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: query\n    subset: '1:1'\n  delegate_to: localhost\n\n- name: Create 1:1 rule\n  meraki_nat:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    one_to_one:\n      - name: Service behind NAT\n        public_ip: 1.2.1.2\n        lan_ip: 192.168.128.1\n        uplink: internet1\n        allowed_inbound:\n          - protocol: tcp\n            destination_ports:\n              - 80\n            allowed_ips:\n              - 10.10.10.10\n  delegate_to: localhost\n\n- name: Create 1:many rule\n  meraki_nat:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    one_to_many:\n      - public_ip: 1.1.1.1\n        uplink: internet1\n        port_rules:\n          - name: Test rule\n            protocol: tcp\n            public_port: 10\n            local_ip: 192.168.128.1\n            local_port: 11\n            allowed_ips:\n              - any\n  delegate_to: localhost\n\n- name: Create port forwarding rule\n  meraki_nat:\n    auth_key: abc123\n    org_name: YourOrg\n    net_name: YourNet\n    state: present\n    port_forwarding:\n      - name: Test map\n        lan_ip: 192.168.128.1\n        uplink: both\n        protocol: tcp\n        allowed_ips:\n          - 1.1.1.1\n        public_port: 10\n        local_port: 11\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "data": {
+                "contains": {
+                    "one_to_many": {
+                        "contains": {
+                            "rules": {
+                                "contains": {
+                                    "portRules": {
+                                        "contains": {
+                                            "allowedIps": {
+                                                "description": "List of IP addresses to be forwarded.",
+                                                "example": "10.80.100.0/24",
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "list"
+                                            },
+                                            "localIp": {
+                                                "description": "Local IP address traffic will be forwarded.",
+                                                "example": "192.0.2.10",
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "str"
+                                            },
+                                            "localPort": {
+                                                "description": "Destination port to be forwarded to.",
+                                                "example": 443,
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "int"
+                                            },
+                                            "name": {
+                                                "description": "Name of NAT object.",
+                                                "example": "Web server behind NAT",
+                                                "returned": "success, when 1:many NAT object is in task",
+                                                "type": "str"
+                                            },
+                                            "protocol": {
+                                                "description": "Protocol to apply NAT rule to.",
+                                                "example": "tcp",
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "str"
+                                            },
+                                            "publicPort": {
+                                                "description": "Destination port of the traffic that is arriving on WAN.",
+                                                "example": 9443,
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "int"
+                                            }
+                                        },
+                                        "description": "List of NAT port rules.",
+                                        "returned": "success, when 1:many NAT object is in task",
+                                        "type": "complex"
+                                    },
+                                    "publicIp": {
+                                        "description": "Public IP address to be mapped.",
+                                        "example": "148.2.5.100",
+                                        "returned": "success, when 1:many NAT object is in task",
+                                        "type": "str"
+                                    },
+                                    "uplink": {
+                                        "description": "Internet port where rule is applied.",
+                                        "example": "internet1",
+                                        "returned": "success, when 1:many NAT object is in task",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "List of 1:many NAT rules.",
+                                "returned": "success, when 1:many NAT object is in task",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Information about 1:many NAT object.",
+                        "returned": "success, when 1:many NAT object is in task",
+                        "type": "complex"
+                    },
+                    "one_to_one": {
+                        "contains": {
+                            "rules": {
+                                "contains": {
+                                    "allowedInbound": {
+                                        "contains": {
+                                            "allowedIps": {
+                                                "description": "List of IP addresses to be forwarded.",
+                                                "example": "10.80.100.0/24",
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "list"
+                                            },
+                                            "destinationPorts": {
+                                                "description": "Ports to apply NAT rule to.",
+                                                "example": 80,
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "str"
+                                            },
+                                            "protocol": {
+                                                "description": "Protocol to apply NAT rule to.",
+                                                "example": "tcp",
+                                                "returned": "success, when 1:1 NAT object is in task",
+                                                "type": "str"
+                                            }
+                                        },
+                                        "description": "List of inbound forwarding rules.",
+                                        "returned": "success, when 1:1 NAT object is in task",
+                                        "type": "complex"
+                                    },
+                                    "lanIp": {
+                                        "description": "Local IP address to be mapped.",
+                                        "example": "192.168.128.22",
+                                        "returned": "success, when 1:1 NAT object is in task",
+                                        "type": "str"
+                                    },
+                                    "name": {
+                                        "description": "Name of NAT object.",
+                                        "example": "Web server behind NAT",
+                                        "returned": "success, when 1:1 NAT object is in task",
+                                        "type": "str"
+                                    },
+                                    "publicIp": {
+                                        "description": "Public IP address to be mapped.",
+                                        "example": "148.2.5.100",
+                                        "returned": "success, when 1:1 NAT object is in task",
+                                        "type": "str"
+                                    },
+                                    "uplink": {
+                                        "description": "Internet port where rule is applied.",
+                                        "example": "internet1",
+                                        "returned": "success, when 1:1 NAT object is in task",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "List of 1:1 NAT rules.",
+                                "returned": "success, when 1:1 NAT object is in task",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Information about 1:1 NAT object.",
+                        "returned": "success, when 1:1 NAT object is in task",
+                        "type": "complex"
+                    },
+                    "port_forwarding": {
+                        "contains": {
+                            "rules": {
+                                "contains": {
+                                    "allowedIps": {
+                                        "description": "List of IP addresses to be forwarded.",
+                                        "example": "10.80.100.0/24",
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "list"
+                                    },
+                                    "lanIp": {
+                                        "description": "Local IP address to be mapped.",
+                                        "example": "192.168.128.22",
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "str"
+                                    },
+                                    "localPort": {
+                                        "description": "Destination port to be forwarded to.",
+                                        "example": 443,
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "int"
+                                    },
+                                    "name": {
+                                        "description": "Name of NAT object.",
+                                        "example": "Web server behind NAT",
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "str"
+                                    },
+                                    "protocol": {
+                                        "description": "Protocol to apply NAT rule to.",
+                                        "example": "tcp",
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "str"
+                                    },
+                                    "publicPort": {
+                                        "description": "Destination port of the traffic that is arriving on WAN.",
+                                        "example": 9443,
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "int"
+                                    },
+                                    "uplink": {
+                                        "description": "Internet port where rule is applied.",
+                                        "example": "internet1",
+                                        "returned": "success, when port forwarding is in task",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "List of port forwarding rules.",
+                                "returned": "success, when port forwarding is in task",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Information about port forwarding rules.",
+                        "returned": "success, when port forwarding is in task",
+                        "type": "complex"
+                    }
+                },
+                "description": "Information about the created or manipulated object.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

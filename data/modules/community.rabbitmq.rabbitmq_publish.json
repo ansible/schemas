@@ -1,0 +1,178 @@
+{
+    "community.rabbitmq.rabbitmq_publish": {
+        "doc": {
+            "author": "John Imison (@Im0)",
+            "collection": "community.rabbitmq",
+            "description": [
+                "Publish a message on a RabbitMQ queue using a blocking connection."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/rabbitmq/plugins/modules/rabbitmq_publish.py",
+            "has_action": false,
+            "module": "rabbitmq_publish",
+            "notes": [
+                "This module requires the pika python library U(https://pika.readthedocs.io/).",
+                "Pika is a pure-Python implementation of the AMQP 0-9-1 protocol that tries to stay fairly independent of the underlying network support library.",
+                "This module is tested against RabbitMQ. Other AMQP 0.9.1 protocol based servers may work but not tested/guaranteed.",
+                "The certificate authentication was tested with certificates created via U(https://www.rabbitmq.com/ssl.html#automated-certificate-generation) and RabbitMQ configuration variables C(ssl_options.verify = verify_peer) & C(ssl_options.fail_if_no_peer_cert = true)."
+            ],
+            "options": {
+                "auto_delete": {
+                    "default": false,
+                    "description": [
+                        "Set the queue to auto delete."
+                    ],
+                    "type": "bool"
+                },
+                "body": {
+                    "description": [
+                        "The body of the message.",
+                        "A C(body) cannot be provided if a C(src) is specified."
+                    ],
+                    "type": "str"
+                },
+                "cafile": {
+                    "description": [
+                        "CA file used during connection to the RabbitMQ server over SSL.",
+                        "If this option is specified, also I(certfile) and I(keyfile) must be specified."
+                    ],
+                    "type": "str"
+                },
+                "certfile": {
+                    "description": [
+                        "Client certificate to establish SSL connection.",
+                        "If this option is specified, also I(cafile) and I(keyfile) must be specified."
+                    ],
+                    "type": "str"
+                },
+                "content_type": {
+                    "default": "text/plain",
+                    "description": [
+                        "The content type of the body."
+                    ],
+                    "type": "str"
+                },
+                "durable": {
+                    "default": false,
+                    "description": [
+                        "Set the queue to be durable."
+                    ],
+                    "type": "bool"
+                },
+                "exchange": {
+                    "description": [
+                        "The exchange to publish a message to."
+                    ],
+                    "type": "str"
+                },
+                "exclusive": {
+                    "default": false,
+                    "description": [
+                        "Set the queue to be exclusive."
+                    ],
+                    "type": "bool"
+                },
+                "headers": {
+                    "default": {},
+                    "description": [
+                        "A dictionary of headers to post with the message."
+                    ],
+                    "type": "dict"
+                },
+                "host": {
+                    "description": [
+                        "The RabbitMQ server hostname or IP."
+                    ],
+                    "type": "str"
+                },
+                "keyfile": {
+                    "description": [
+                        "Client key to establish SSL connection.",
+                        "If this option is specified, also I(cafile) and I(certfile) must be specified."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "The RabbitMQ password."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "The RabbitMQ server port."
+                    ],
+                    "type": "int"
+                },
+                "proto": {
+                    "choices": [
+                        "amqps",
+                        "amqp"
+                    ],
+                    "description": [
+                        "The protocol to use."
+                    ],
+                    "type": "str"
+                },
+                "queue": {
+                    "description": [
+                        "The queue to publish a message to.  If no queue is specified, RabbitMQ will return a random queue name."
+                    ],
+                    "type": "str"
+                },
+                "routing_key": {
+                    "description": [
+                        "The routing key."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "aliases": [
+                        "file"
+                    ],
+                    "description": [
+                        "A file to upload to the queue.  Automatic mime type detection is attempted if content_type is not defined (left as default).",
+                        "A C(src) cannot be provided if a C(body) is specified.",
+                        "The filename is added to the headers of the posted message to RabbitMQ. Key being the C(filename), value is the filename."
+                    ],
+                    "type": "path"
+                },
+                "url": {
+                    "description": [
+                        "An URL connection string to connect to the RabbitMQ server.",
+                        "I(url) and I(host)/I(port)/I(user)/I(pass)/I(vhost) are mutually exclusive, use either or but not both."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "The RabbitMQ username."
+                    ],
+                    "type": "str"
+                },
+                "vhost": {
+                    "description": [
+                        "The virtual host to target.",
+                        "If default vhost is required, use C('%2F')."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "pika"
+            ],
+            "short_description": "Publish a message to a RabbitMQ queue."
+        },
+        "examples": "\n- name: Publish a message to a queue with headers\n  community.rabbitmq.rabbitmq_publish:\n    url: \"amqp://guest:guest@192.168.0.32:5672/%2F\"\n    queue: 'test'\n    body: \"Hello world from ansible module rabbitmq_publish\"\n    content_type: \"text/plain\"\n    headers:\n      myHeader: myHeaderValue\n\n\n- name: Publish a file to a queue\n  community.rabbitmq.rabbitmq_publish:\n    url: \"amqp://guest:guest@192.168.0.32:5672/%2F\"\n    queue: 'images'\n    file: 'path/to/logo.gif'\n\n- name: RabbitMQ auto generated queue\n  community.rabbitmq.rabbitmq_publish:\n    url: \"amqp://guest:guest@192.168.0.32:5672/%2F\"\n    body: \"Hello world random queue from ansible module rabbitmq_publish\"\n    content_type: \"text/plain\"\n\n- name: Publish with certs\n  community.rabbitmq.rabbitmq_publish:\n    url: \"amqps://guest:guest@192.168.0.32:5671/%2F\"\n    body: \"Hello test queue from ansible module rabbitmq_publish via SSL certs\"\n    queue: 'test'\n    content_type: \"text/plain\"\n    cafile: 'ca_certificate.pem'\n    certfile: 'client_certificate.pem'\n    keyfile: 'client_key.pem'\n\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "description": [
+                    "Contains the status I(msg), content type I(content_type) and the queue name I(queue)."
+                ],
+                "returned": "success",
+                "sample": "'result': { 'content_type': 'text/plain', 'msg': 'Successfully published to queue test', 'queue': 'test' }\n",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,129 @@
+{
+    "infinidat.infinibox.infini_vol": {
+        "doc": {
+            "author": "Gregory Shulov (@GR360RY)",
+            "collection": "infinidat.infinibox",
+            "description": [
+                "This module creates, deletes or modifies a volume on Infinibox."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/infinidat/infinibox/plugins/modules/infini_vol.py",
+            "has_action": false,
+            "module": "infini_vol",
+            "notes": [
+                "This module requires infinisdk python library",
+                "You must set INFINIBOX_USER and INFINIBOX_PASSWORD environment variables if user and password arguments are not passed to the module directly",
+                "Ansible uses the infinisdk configuration file C(~/.infinidat/infinisdk.ini) if no credentials are provided. See U(http://infinisdk.readthedocs.io/en/latest/getting_started.html)",
+                "All Infinidat modules support check mode (--check). However, a dryrun that creates resources may fail if the resource dependencies are not met for a task. For example, consider a task that creates a volume in a pool. If the pool does not exist, the volume creation task will fail. It will fail even if there was a previous task in the playbook that would have created the pool but did not because the pool creation was also part of the dry run."
+            ],
+            "options": {
+                "name": {
+                    "description": [
+                        "Volume Name"
+                    ],
+                    "required": true
+                },
+                "parent_volume_name": {
+                    "description": [
+                        "Specify a volume name. This is the volume parent for creating a snapshot. Required if volume_type is snapshot."
+                    ],
+                    "required": false
+                },
+                "password": {
+                    "description": [
+                        "Infinibox User password."
+                    ],
+                    "type": "str"
+                },
+                "pool": {
+                    "description": [
+                        "Pool that master volume will reside within.  Required for creating a master volume, but not a snapshot."
+                    ],
+                    "required": false
+                },
+                "size": {
+                    "description": [
+                        "Volume size in MB, GB or TB units.  Required for creating a master volume, but not a snapshot"
+                    ],
+                    "required": false
+                },
+                "snapshot_lock_expires_at": {
+                    "description": [
+                        "This will cause a snapshot to be locked at the specified date-time. Uses python's datetime format YYYY-mm-dd HH:MM:SS.ffffff, e.g. 2020-02-13 16:21:59.699700"
+                    ],
+                    "required": false
+                },
+                "snapshot_lock_only": {
+                    "default": false,
+                    "description": [
+                        "This will lock an existing snapshot but will suppress refreshing the snapshot."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "stat",
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Creates/Modifies master volume or snapshot when present or removes when absent."
+                    ],
+                    "required": false
+                },
+                "system": {
+                    "description": [
+                        "Infinibox Hostname or IPv4 Address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "thin_provision": {
+                    "default": true,
+                    "description": [
+                        "Whether the master volume should be thin provisioned.  Required for creating a master volume, but not a snapshot."
+                    ],
+                    "required": false,
+                    "type": "bool",
+                    "version_added": "2.8",
+                    "version_added_collection": "infinidat.infinibox"
+                },
+                "user": {
+                    "description": [
+                        "Infinibox User username with sufficient priveledges ( see notes )."
+                    ],
+                    "required": false
+                },
+                "volume_type": {
+                    "choices": [
+                        "master",
+                        "snapshot"
+                    ],
+                    "default": "master",
+                    "description": [
+                        "Specifies the volume type, regular volume or snapshot."
+                    ],
+                    "required": false
+                }
+            },
+            "requirements": [
+                "capacity",
+                "infinisdk (https://infinisdk.readthedocs.io/en/latest/)",
+                "python2 >= 2.7 or python3 >= 3.6"
+            ],
+            "short_description": "Create, Delete or Modify volumes on Infinibox",
+            "version_added": 2.3,
+            "version_added_collection": "infinidat.infinibox"
+        },
+        "examples": "\n- name: Create new volume named foo under pool named bar\n  infini_vol:\n    name: foo\n    # volume_type: master  # Default\n    size: 1TB\n    thin_provision: yes\n    pool: bar\n    state: present\n    user: admin\n    password: secret\n    system: ibox001\n- name: Create snapshot named foo_snap from volume named foo\n  infini_vol:\n    name: foo_snap\n    volume_type: snapshot\n    parent_volume_name: foo\n    state: present\n    user: admin\n    password: secret\n    system: ibox001\n- name: Stat snapshot, also a volume, named foo_snap\n  infini_vol:\n    name: foo_snap\n    state: present\n    user: admin\n    password: secret\n    system: ibox001\n- name: Remove snapshot, also a volume, named foo_snap\n  infini_vol:\n    name: foo_snap\n    state: absent\n    user: admin\n    password: secret\n    system: ibox001\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

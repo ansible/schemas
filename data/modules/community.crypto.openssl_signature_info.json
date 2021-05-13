@@ -1,0 +1,90 @@
+{
+    "community.crypto.openssl_signature_info": {
+        "doc": {
+            "author": [
+                "Patrick Pichler (@aveexy)",
+                "Markus Teufelberger (@MarkusTeufelberger)"
+            ],
+            "collection": "community.crypto",
+            "description": [
+                "This module allows one to verify a signature for a file by a certificate.",
+                "The module can use the cryptography Python library, or the pyOpenSSL Python library. By default, it tries to detect which one is available. This can be overridden with the I(select_crypto_backend) option. Please note that the PyOpenSSL backend was deprecated in Ansible 2.9 and will be removed in community.crypto 2.0.0."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/openssl_signature_info.py",
+            "has_action": false,
+            "module": "openssl_signature_info",
+            "notes": [
+                "When using the C(cryptography) backend, the following key types require at least the following C(cryptography) version:\nRSA keys: C(cryptography) >= 1.4\nDSA and ECDSA keys: C(cryptography) >= 1.5\ned448 and ed25519 keys: C(cryptography) >= 2.6\n",
+                "Supports C(check_mode)."
+            ],
+            "options": {
+                "certificate_content": {
+                    "description": [
+                        "The content of the certificate used to verify the signature.",
+                        "Either I(certificate_path) or I(certificate_content) must be specified, but not both."
+                    ],
+                    "type": "str"
+                },
+                "certificate_path": {
+                    "description": [
+                        "The path to the certificate used to verify the signature.",
+                        "Either I(certificate_path) or I(certificate_content) must be specified, but not both."
+                    ],
+                    "type": "path"
+                },
+                "path": {
+                    "description": [
+                        "The signed file to verify.",
+                        "This file will only be read and not modified."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "select_crypto_backend": {
+                    "choices": [
+                        "auto",
+                        "cryptography",
+                        "pyopenssl"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Determines which crypto backend to use.",
+                        "The default choice is C(auto), which tries to use C(cryptography) if available, and falls back to C(pyopenssl).",
+                        "If set to C(pyopenssl), will try to use the L(pyOpenSSL,https://pypi.org/project/pyOpenSSL/) library.",
+                        "If set to C(cryptography), will try to use the L(cryptography,https://cryptography.io/) library."
+                    ],
+                    "type": "str"
+                },
+                "signature": {
+                    "description": "Base64 encoded signature.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "Either cryptography >= 1.4 (some key types require newer versions)",
+                "Or pyOpenSSL >= 0.11 (Ed25519 and Ed448 keys are not supported with this backend)"
+            ],
+            "seealso": [
+                {
+                    "module": "community.crypto.openssl_signature"
+                },
+                {
+                    "module": "community.crypto.x509_certificate"
+                }
+            ],
+            "short_description": "Verify signatures with openssl",
+            "version_added": "1.1.0",
+            "version_added_collection": "community.crypto"
+        },
+        "examples": "\n- name: Sign example file\n  community.crypto.openssl_signature:\n    privatekey_path: private.key\n    path: /tmp/example_file\n  register: sig\n\n- name: Verify signature of example file\n  community.crypto.openssl_signature_info:\n    certificate_path: cert.pem\n    path: /tmp/example_file\n    signature: \"{{ sig.signature }}\"\n  register: verify\n\n- name: Make sure the signature is valid\n  assert:\n    that:\n      - verify.valid\n",
+        "metadata": null,
+        "return": {
+            "valid": {
+                "description": "C(true) means the signature was valid for the given file, C(false) means it was not.",
+                "returned": "success",
+                "type": "bool"
+            }
+        }
+    }
+}

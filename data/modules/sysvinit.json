@@ -1,0 +1,116 @@
+{
+    "sysvinit": {
+        "doc": {
+            "author": [
+                "Ansible Core Team"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "Controls services on target hosts that use the SysV init system."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/sysvinit.py",
+            "has_action": false,
+            "module": "sysvinit",
+            "notes": [
+                "One option other than name is required."
+            ],
+            "options": {
+                "arguments": {
+                    "aliases": [
+                        "args"
+                    ],
+                    "description": [
+                        "Additional arguments provided on the command line that some init scripts accept."
+                    ]
+                },
+                "daemonize": {
+                    "default": false,
+                    "description": [
+                        "Have the module daemonize as the service itself might not do so properly.",
+                        "This is useful with badly written init scripts or daemons, which commonly manifests as the task hanging as it is still holding the tty or the service dying when the task is over as the connection closes the session."
+                    ],
+                    "type": "bool"
+                },
+                "enabled": {
+                    "description": [
+                        "Whether the service should start on boot. B(At least one of state and enabled are required.)"
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "aliases": [
+                        "service"
+                    ],
+                    "description": [
+                        "Name of the service."
+                    ],
+                    "required": true
+                },
+                "pattern": {
+                    "description": [
+                        "A substring to look for as would be found in the output of the I(ps) command as a stand-in for a status result.",
+                        "If the string is found, the service will be assumed to be running.",
+                        "This option is mainly for use with init scripts that don't support the 'status' option."
+                    ]
+                },
+                "runlevels": {
+                    "description": [
+                        "The runlevels this script should be enabled/disabled from.",
+                        "Use this to override the defaults set by the package or init script itself."
+                    ]
+                },
+                "sleep": {
+                    "default": 1,
+                    "description": [
+                        "If the service is being C(restarted) or C(reloaded) then sleep this many seconds between the stop and start command. This helps to workaround badly behaving services."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "started",
+                        "stopped",
+                        "restarted",
+                        "reloaded"
+                    ],
+                    "description": [
+                        "C(started)/C(stopped) are idempotent actions that will not run commands unless necessary. Not all init scripts support C(restarted) nor C(reloaded) natively, so these will both trigger a stop and start as needed."
+                    ]
+                }
+            },
+            "requirements": [
+                "That the service managed has a corresponding init script."
+            ],
+            "short_description": "Manage SysV services.",
+            "version_added": "2.6",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Make sure apache2 is started\n  sysvinit:\n      name: apache2\n      state: started\n      enabled: yes\n\n- name: Make sure apache2 is started on runlevels 3 and 5\n  sysvinit:\n      name: apache2\n      state: started\n      enabled: yes\n      runlevels:\n        - 3\n        - 5\n",
+        "metadata": null,
+        "return": {
+            "results": {
+                "description": "results from actions taken",
+                "returned": "always",
+                "sample": {
+                    "attempts": 1,
+                    "changed": true,
+                    "name": "apache2",
+                    "status": {
+                        "enabled": {
+                            "changed": true,
+                            "rc": 0,
+                            "stderr": "",
+                            "stdout": ""
+                        },
+                        "stopped": {
+                            "changed": true,
+                            "rc": 0,
+                            "stderr": "",
+                            "stdout": "Stopping web server: apache2.\n"
+                        }
+                    }
+                },
+                "type": "complex"
+            }
+        }
+    }
+}

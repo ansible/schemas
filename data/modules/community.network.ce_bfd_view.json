@@ -1,0 +1,214 @@
+{
+    "community.network.ce_bfd_view": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Manages BFD session view configuration on HUAWEI CloudEngine devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_bfd_view.py",
+            "has_action": false,
+            "module": "ce_bfd_view",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "admin_down": {
+                    "default": "no",
+                    "description": [
+                        "Enables the BFD session to enter the AdminDown state. By default, a BFD session is enabled. The default value is bool type."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "Specifies the description of a BFD session. The value is a string of 1 to 51 case-sensitive characters with spaces."
+                    ]
+                },
+                "detect_multi": {
+                    "description": [
+                        "Specifies the local detection multiplier of a BFD session. The value is an integer that ranges from 3 to 50."
+                    ]
+                },
+                "local_discr": {
+                    "description": [
+                        "Specifies the local discriminator of a BFD session. The value is an integer that ranges from 1 to 16384."
+                    ]
+                },
+                "min_rx_interval": {
+                    "description": [
+                        "Specifies the minimum interval for sending BFD packets. The value is an integer that ranges from 50 to 1000, in milliseconds."
+                    ]
+                },
+                "min_tx_interval": {
+                    "description": [
+                        "Specifies the minimum interval for receiving BFD packets. The value is an integer that ranges from 50 to 1000, in milliseconds."
+                    ]
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.  This is a common argument used for cli transports. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "default": "0 (use common port)",
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device.  This value applies to either I(cli) or I(netconf).  The port value will default to the appropriate transport common port if none is provided in the task.  (cli=22, netconf=22)."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.  This argument is used for the I(cli) transport. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "netconf"
+                            ],
+                            "default": "cli",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device.  The transport argument supports connectivity to the device over cli (ssh)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the CLI login. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    }
+                },
+                "remote_discr": {
+                    "description": [
+                        "Specifies the remote discriminator of a BFD session. The value is an integer that ranges from 1 to 4294967295."
+                    ]
+                },
+                "session_name": {
+                    "description": [
+                        "Specifies the name of a BFD session. The value is a string of 1 to 15 case-sensitive characters without spaces."
+                    ],
+                    "required": true
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                },
+                "tos_exp": {
+                    "description": [
+                        "Specifies a priority for BFD control packets. The value is an integer ranging from 0 to 7. The default value is 7, which is the highest priority."
+                    ]
+                },
+                "wtr_interval": {
+                    "description": [
+                        "Specifies the WTR time of a BFD session. The value is an integer that ranges from 1 to 60, in minutes. The default value is 0."
+                    ]
+                }
+            },
+            "short_description": "Manages BFD session view configuration on HUAWEI CloudEngine devices."
+        },
+        "examples": "\n- name: Bfd view module test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n  - name: Set the local discriminator of a BFD session to 80 and the remote discriminator to 800\n    community.network.ce_bfd_view:\n      session_name: atob\n      local_discr: 80\n      remote_discr: 800\n      state: present\n      provider: '{{ cli }}'\n\n  - name: Set the minimum interval for receiving BFD packets to 500 ms\n    community.network.ce_bfd_view:\n      session_name: atob\n      min_rx_interval: 500\n      state: present\n      provider: '{{ cli }}'\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "always",
+                "sample": {
+                    "session": {
+                        "adminDown": "false",
+                        "createType": "SESS_STATIC",
+                        "description": null,
+                        "detectMulti": "3",
+                        "localDiscr": "80",
+                        "minRxInt": null,
+                        "minTxInt": null,
+                        "remoteDiscr": "800",
+                        "sessName": "atob",
+                        "tosExp": null,
+                        "wtrTimerInt": null
+                    }
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "always",
+                "sample": {
+                    "session": {
+                        "adminDown": "false",
+                        "createType": "SESS_STATIC",
+                        "description": null,
+                        "detectMulti": "3",
+                        "localDiscr": null,
+                        "minRxInt": null,
+                        "minTxInt": null,
+                        "remoteDiscr": null,
+                        "sessName": "atob",
+                        "tosExp": null,
+                        "wtrTimerInt": null
+                    }
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "admin_down": false,
+                    "description": null,
+                    "detect_multi": null,
+                    "local_discr": 80,
+                    "min_rx_interval": null,
+                    "min_tx_interval": null,
+                    "remote_discr": 800,
+                    "session_name": "atob",
+                    "state": "present",
+                    "tos_exp": null,
+                    "wtr_interval": null
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "bfd atob",
+                    "discriminator local 80",
+                    "discriminator remote 800"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

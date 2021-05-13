@@ -1,0 +1,241 @@
+{
+    "community.aws.aws_codepipeline": {
+        "doc": {
+            "author": [
+                "Stefan Horning (@stefanhorning) <horning@mediapeers.com>"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Create or delete a CodePipeline on AWS."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_codepipeline.py",
+            "has_action": false,
+            "module": "aws_codepipeline",
+            "notes": [
+                "for details of the parameters and returns see U(http://boto3.readthedocs.io/en/latest/reference/services/codepipeline.html)",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "artifact_store": {
+                    "description": [
+                        "Location information where artifacts are stored (on S3). Dictionary with fields type and location."
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "location": {
+                            "description": [
+                                "Bucket name for artifacts."
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "description": [
+                                "Type of the artifacts storage (only 'S3' is currently supported)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the pipeline"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "role_arn": {
+                    "description": [
+                        "ARN of the IAM role to use when executing the pipeline"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "stages": {
+                    "description": [
+                        "List of stages to perform in the CodePipeline. List of dictionaries containing name and actions for each stage."
+                    ],
+                    "elements": "dict",
+                    "required": true,
+                    "suboptions": {
+                        "actions": {
+                            "description": [
+                                "List of action configurations for that stage.",
+                                "See the boto3 documentation for full documentation of suboptions:",
+                                "U(https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/codepipeline.html#CodePipeline.Client.create_pipeline)"
+                            ],
+                            "elements": "dict",
+                            "type": "list"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the stage (step) in the codepipeline"
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or remove code pipeline"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "version": {
+                    "description": [
+                        "Version number of the pipeline. This number is automatically incremented when a pipeline is updated."
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Create or delete AWS CodePipelines",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n# Example for creating a pipeline for continuous deploy of Github code to an ECS cluster (container)\n- community.aws.aws_codepipeline:\n    name: my_deploy_pipeline\n    role_arn: arn:aws:iam::123456:role/AWS-CodePipeline-Service\n    artifact_store:\n      type: S3\n      location: my_s3_codepipline_bucket\n    stages:\n      - name: Get_source\n        actions:\n          -\n            name: Git_pull\n            actionTypeId:\n              category: Source\n              owner: ThirdParty\n              provider: GitHub\n              version: '1'\n            outputArtifacts:\n              - { name: my-app-source }\n            configuration:\n              Owner: mediapeers\n              Repo: my_gh_repo\n              PollForSourceChanges: 'true'\n              Branch: master\n              # Generate token like this:\n              # https://docs.aws.amazon.com/codepipeline/latest/userguide/GitHub-rotate-personal-token-CLI.html\n              # GH Link: https://github.com/settings/tokens\n              OAuthToken: 'abc123def456'\n            runOrder: 1\n      - name: Build\n        actions:\n          -\n            name: CodeBuild\n            actionTypeId:\n              category: Build\n              owner: AWS\n              provider: CodeBuild\n              version: '1'\n            inputArtifacts:\n              - { name: my-app-source }\n            outputArtifacts:\n              - { name: my-app-build }\n            configuration:\n              # A project with that name needs to be setup on AWS CodeBuild already (use code_build module).\n              ProjectName: codebuild-project-name\n            runOrder: 1\n      - name: ECS_deploy\n        actions:\n          -\n            name: ECS_deploy\n            actionTypeId:\n              category: Deploy\n              owner: AWS\n              provider: ECS\n              version: '1'\n            inputArtifacts:\n              - { name: vod-api-app-build }\n            configuration:\n              # an ECS cluster with that name needs to be setup on AWS ECS already (use ecs_cluster and ecs_service module)\n              ClusterName: ecs-cluster-name\n              ServiceName: ecs-cluster-service-name\n              FileName: imagedefinitions.json\n    region: us-east-1\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "pipeline": {
+                "contains": {
+                    "artifact_store": {
+                        "contains": {
+                            "encryption_key": {
+                                "description": "The encryption key used to encrypt the artifacts store, such as an AWS KMS key.",
+                                "returned": "when configured",
+                                "type": "str"
+                            },
+                            "location": {
+                                "description": "The location of the artifacts storage (s3 bucket name)",
+                                "returned": "always",
+                                "sample": "my_s3_codepipline_bucket",
+                                "type": "str"
+                            },
+                            "type": {
+                                "description": "The type of the artifacts store, such as S3",
+                                "returned": "always",
+                                "sample": "S3",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about where the build artifacts are stored",
+                        "returned": "always",
+                        "type": "complex"
+                    },
+                    "name": {
+                        "description": "Name of the CodePipeline",
+                        "returned": "always",
+                        "sample": "my_deploy_pipeline",
+                        "type": "str"
+                    },
+                    "role_arn": {
+                        "description": "ARN of the IAM role attached to the code pipeline",
+                        "returned": "always",
+                        "sample": "arn:aws:iam::123123123:role/codepipeline-service-role",
+                        "type": "str"
+                    },
+                    "stages": {
+                        "description": "List of stages configured for this pipeline",
+                        "returned": "always",
+                        "type": "list"
+                    },
+                    "version": {
+                        "description": "The version number of the pipeline. This number is auto incremented when pipeline params are changed.",
+                        "returned": "always",
+                        "type": "int"
+                    }
+                },
+                "description": "Returns the dictionary describing the code pipeline configuration.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

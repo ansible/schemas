@@ -1,0 +1,90 @@
+{
+    "community.general.helm": {
+        "doc": {
+            "author": "Flavio Percoco (@flaper87)",
+            "collection": "community.general",
+            "deprecated": {
+                "alternative": "Use M(community.kubernetes.helm) instead.",
+                "removed_from_collection": "community.general",
+                "removed_in": "3.0.0",
+                "why": "For more details https://github.com/ansible/ansible/issues/61546."
+            },
+            "description": [
+                "Install, upgrade, delete and list packages with the Helm package manager."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/helm.py",
+            "has_action": false,
+            "module": "helm",
+            "options": {
+                "chart": {
+                    "default": {},
+                    "description": [
+                        "A map describing the chart to install. See examples for available options."
+                    ],
+                    "type": "dict"
+                },
+                "disable_hooks": {
+                    "default": "no",
+                    "description": [
+                        "Whether to disable hooks during the uninstall process."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "default": "localhost",
+                    "description": [
+                        "Tiller's server host."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Release name to manage."
+                    ],
+                    "type": "str"
+                },
+                "namespace": {
+                    "default": "default",
+                    "description": [
+                        "Kubernetes namespace where the chart should be installed."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 44134,
+                    "description": [
+                        "Tiller's server port."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "purged",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether to install C(present), remove C(absent), or purge C(purged) a package."
+                    ],
+                    "type": "str"
+                },
+                "values": {
+                    "default": {},
+                    "description": [
+                        "A map of value options for the chart."
+                    ],
+                    "type": "dict"
+                }
+            },
+            "requirements": [
+                "pyhelm",
+                "grpcio"
+            ],
+            "short_description": "Manages Kubernetes packages with the Helm package manager"
+        },
+        "examples": "\n- name: Install helm chart\n  community.general.helm:\n    host: localhost\n    chart:\n      name: memcached\n      version: 0.4.0\n      source:\n        type: repo\n        location: https://kubernetes-charts.storage.googleapis.com\n    state: present\n    name: my-memcached\n    namespace: default\n\n- name: Uninstall helm chart\n  community.general.helm:\n    host: localhost\n    state: absent\n    name: my-memcached\n\n- name: Install helm chart from a git repo\n  community.general.helm:\n    host: localhost\n    chart:\n      source:\n        type: git\n        location: https://github.com/user/helm-chart.git\n    state: present\n    name: my-example\n    namespace: default\n    values:\n      foo: \"bar\"\n\n- name: Install helm chart from a git repo specifying path\n  community.general.helm:\n    host: localhost\n    chart:\n      source:\n        type: git\n        location: https://github.com/helm/charts.git\n        path: stable/memcached\n    state: present\n    name: my-memcached\n    namespace: default\n    values: \"{{ lookup('file', '/path/to/file/values.yaml') | from_yaml }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

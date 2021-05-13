@@ -1,0 +1,205 @@
+{
+    "netbox.netbox.netbox_prefix": {
+        "doc": {
+            "author": [
+                "Mikhail Yohman (@FragmentedPacket)",
+                "Anthony Ruhier (@Anthony25)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates or removes prefixes from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_prefix.py",
+            "has_action": false,
+            "module": "netbox_prefix",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the prefix configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "custom_fields": {
+                            "description": [
+                                "Must exist in Netbox and in key/value format"
+                            ],
+                            "required": false,
+                            "type": "dict"
+                        },
+                        "description": {
+                            "description": [
+                                "The description of the prefix"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "family": {
+                            "description": [
+                                "Specifies which address family the prefix prefix belongs to"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "is_pool": {
+                            "description": [
+                                "All IP Addresses within this prefix are considered usable"
+                            ],
+                            "required": false,
+                            "type": "bool"
+                        },
+                        "parent": {
+                            "description": [
+                                "Required if state is C(present) and first_available is C(yes). Will get a new available prefix in this parent prefix."
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "prefix": {
+                            "description": [
+                                "Required if state is C(present) and first_available is False. Will allocate or free this prefix."
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "prefix_length": {
+                            "description": [
+                                "Required ONLY if state is C(present) and first_available is C(yes).\nWill get a new available prefix of the given prefix_length in this parent prefix.\n"
+                            ],
+                            "required": false,
+                            "type": "int"
+                        },
+                        "prefix_role": {
+                            "description": [
+                                "The role of the prefix"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "site": {
+                            "description": [
+                                "Site that prefix is associated with"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "status": {
+                            "description": [
+                                "The status of the prefix"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the prefix may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "tenant": {
+                            "description": [
+                                "The tenant that the prefix will be assigned to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "vlan": {
+                            "description": [
+                                "The VLAN the prefix will be assigned to"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        },
+                        "vrf": {
+                            "description": [
+                                "VRF that prefix is associated with"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "first_available": {
+                    "default": false,
+                    "description": [
+                        "If C(yes) and state C(present), if an parent is given, it will get the first available prefix of the given prefix_length inside the given parent (and vrf, if given). Unused with state C(absent)."
+                    ],
+                    "type": "bool"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Creates or removes prefixes from Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox prefix module\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n\n  tasks:\n    - name: Create prefix within Netbox with only required information\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          prefix: 10.156.0.0/19\n        state: present\n\n    - name: Delete prefix within netbox\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          prefix: 10.156.0.0/19\n        state: absent\n\n    - name: Create prefix with several specified options\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          family: 4\n          prefix: 10.156.32.0/19\n          site: Test Site\n          vrf: Test VRF\n          tenant: Test Tenant\n          vlan:\n            name: Test VLAN\n            site: Test Site\n            tenant: Test Tenant\n            vlan_group: Test Vlan Group\n          status: Reserved\n          prefix_role: Network of care\n          description: Test description\n          is_pool: true\n          tags:\n            - Schnozzberry\n        state: present\n\n    - name: Get a new /24 inside 10.156.0.0/19 within Netbox - Parent doesn't exist\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          parent: 10.156.0.0/19\n          prefix_length: 24\n        state: present\n        first_available: yes\n\n    - name: Create prefix within Netbox with only required information\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          prefix: 10.156.0.0/19\n        state: present\n\n    - name: Get a new /24 inside 10.156.0.0/19 within Netbox\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          parent: 10.156.0.0/19\n          prefix_length: 24\n        state: present\n        first_available: yes\n\n    - name: Get a new /24 inside 10.157.0.0/19 within Netbox with additional values\n      netbox_prefix:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          parent: 10.157.0.0/19\n          prefix_length: 24\n          vrf: Test VRF\n          site: Test Site\n        state: present\n        first_available: yes\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            },
+            "prefix": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "on creation",
+                "type": "dict"
+            }
+        }
+    }
+}

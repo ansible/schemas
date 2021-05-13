@@ -1,0 +1,71 @@
+{
+    "community.general.crypttab": {
+        "doc": {
+            "author": [
+                "Steve (@groks)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Control Linux encrypted block devices that are set up during system boot in C(/etc/crypttab)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/crypttab.py",
+            "has_action": false,
+            "module": "crypttab",
+            "options": {
+                "backing_device": {
+                    "description": [
+                        "Path to the underlying block device or file, or the UUID of a block-device prefixed with I(UUID=)."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the encrypted block device as it appears in the C(/etc/crypttab) file, or optionally prefixed with C(/dev/mapper/), as it appears in the filesystem. I(/dev/mapper/) will be stripped from I(name)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "opts": {
+                    "description": [
+                        "A comma-delimited list of options. See C(crypttab(5) ) for details."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Encryption password, the path to a file containing the password, or C(-) or unset if the password should be entered at boot."
+                    ],
+                    "type": "path"
+                },
+                "path": {
+                    "default": "/etc/crypttab",
+                    "description": [
+                        "Path to file to use instead of C(/etc/crypttab).",
+                        "This might be useful in a chroot environment."
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "opts_absent",
+                        "opts_present",
+                        "present"
+                    ],
+                    "description": [
+                        "Use I(present) to add a line to C(/etc/crypttab) or update its definition if already present.",
+                        "Use I(absent) to remove a line with matching I(name).",
+                        "Use I(opts_present) to add options to those already present; options with different values will be updated.",
+                        "Use I(opts_absent) to remove options from the existing set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Encrypted Linux block devices"
+        },
+        "examples": "\n- name: Set the options explicitly a device which must already exist\n  community.general.crypttab:\n    name: luks-home\n    state: present\n    opts: discard,cipher=aes-cbc-essiv:sha256\n\n- name: Add the 'discard' option to any existing options for all devices\n  community.general.crypttab:\n    name: '{{ item.device }}'\n    state: opts_present\n    opts: discard\n  loop: '{{ ansible_mounts }}'\n  when: \"'/dev/mapper/luks-' in {{ item.device }}\"\n",
+        "metadata": null,
+        "return": null
+    }
+}

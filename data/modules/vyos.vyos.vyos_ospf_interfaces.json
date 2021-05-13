@@ -1,0 +1,185 @@
+{
+    "vyos.vyos.vyos_ospf_interfaces": {
+        "doc": {
+            "author": "Gomathi Selvi Srinivasan (@GomathiselviS)",
+            "collection": "vyos.vyos",
+            "description": [
+                "This module manages OSPF configuration of interfaces on devices running VYOS."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/vyos/vyos/plugins/modules/vyos_ospf_interfaces.py",
+            "has_action": true,
+            "module": "vyos_ospf_interfaces",
+            "options": {
+                "config": {
+                    "description": "A list of OSPF configuration for interfaces.",
+                    "elements": "dict",
+                    "suboptions": {
+                        "address_family": {
+                            "description": [
+                                "OSPF settings on the interfaces in address-family context."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "afi": {
+                                    "choices": [
+                                        "ipv4",
+                                        "ipv6"
+                                    ],
+                                    "description": [
+                                        "Address Family Identifier (AFI) for OSPF settings on the interfaces."
+                                    ],
+                                    "required": true,
+                                    "type": "str"
+                                },
+                                "authentication": {
+                                    "description": [
+                                        "Authentication settings on the interface."
+                                    ],
+                                    "suboptions": {
+                                        "md5_key": {
+                                            "description": [
+                                                "md5 parameters."
+                                            ],
+                                            "suboptions": {
+                                                "key": {
+                                                    "description": [
+                                                        "md5 key."
+                                                    ],
+                                                    "type": "str"
+                                                },
+                                                "key_id": {
+                                                    "description": [
+                                                        "key id."
+                                                    ],
+                                                    "type": "int"
+                                                }
+                                            },
+                                            "type": "dict"
+                                        },
+                                        "plaintext_password": {
+                                            "description": [
+                                                "Plain Text password."
+                                            ],
+                                            "type": "str"
+                                        }
+                                    },
+                                    "type": "dict"
+                                },
+                                "bandwidth": {
+                                    "description": [
+                                        "Bandwidth of interface (kilobits/sec)"
+                                    ],
+                                    "type": "int"
+                                },
+                                "cost": {
+                                    "description": [
+                                        "metric associated with interface."
+                                    ],
+                                    "type": "int"
+                                },
+                                "dead_interval": {
+                                    "description": [
+                                        "Time interval to detect a dead router."
+                                    ],
+                                    "type": "int"
+                                },
+                                "hello_interval": {
+                                    "description": [
+                                        "Timer interval between transmission of hello packets."
+                                    ],
+                                    "type": "int"
+                                },
+                                "ifmtu": {
+                                    "description": [
+                                        "interface MTU."
+                                    ],
+                                    "type": "int"
+                                },
+                                "instance": {
+                                    "description": [
+                                        "Instance ID."
+                                    ],
+                                    "type": "str"
+                                },
+                                "mtu_ignore": {
+                                    "description": [
+                                        "if True, Disable MTU check for Database Description packets."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "network": {
+                                    "description": [
+                                        "Interface type."
+                                    ],
+                                    "type": "str"
+                                },
+                                "passive": {
+                                    "description": [
+                                        "If True, disables forming adjacency."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "priority": {
+                                    "description": [
+                                        "Interface priority."
+                                    ],
+                                    "type": "int"
+                                },
+                                "retransmit_interval": {
+                                    "description": [
+                                        "LSA retransmission interval."
+                                    ],
+                                    "type": "int"
+                                },
+                                "transmit_delay": {
+                                    "description": [
+                                        "LSA transmission delay."
+                                    ],
+                                    "type": "int"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "name": {
+                            "description": [
+                                "Name/Identifier of the interface."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the IOS device by executing the command B(sh running-config | section ^interface).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "parsed",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state the configuration should be left in."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "OSPF Interfaces Resource Module.",
+            "version_added": "1.2.0",
+            "version_added_collection": "vyos.vyos"
+        },
+        "examples": "\n# Using merged\n#\n# Before state:\n# -------------\n#\n\n# @vyos:~$ show configuration commands | match \"ospf\"\n\n  - name: Merge provided configuration with device configuration\n    vyos.vyos.vyos_ospf_interfaces:\n      config:\n        - name: \"eth1\"\n          address_family:\n            - afi: \"ipv4\"\n              transmit_delay: 50\n              priority: 26\n              network: \"point-to-point\"\n            - afi: \"ipv6\"\n              dead_interval: 39\n        - name: \"bond2\"\n          address_family:\n            - afi: \"ipv4\"\n              transmit_delay: 45\n              bandwidth: 70\n              authentication:\n                md5_key:\n                  key_id: 10\n                  key: \"1111111111232345\"\n            - afi: \"ipv6\"\n              passive: True\n      state: merged\n\n# After State:\n# --------------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n\n# \"after\": [\n#        \"\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"authentication\": {\n#                        \"md5_key\": {\n#                            \"key\": \"1111111111232345\",\n#                            \"key_id\": 10\n#                        }\n#                    },\n#                    \"bandwidth\": 70,\n#                    \"transmit_delay\": 45\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"passive\": true\n#                }\n#            ],\n#            \"name\": \"bond2\"\n#        },\n#        {\n#            \"name\": \"eth0\"\n#        },\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"network\": \"point-to-point\",\n#                    \"priority\": 26,\n#                    \"transmit_delay\": 50\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"dead_interval\": 39\n#                }\n#            ],\n#            \"name\": \"eth1\"\n#        },\n#        {\n#            \"name\": \"eth2\"\n#        },\n#        {\n#            \"name\": \"eth3\"\n#        }\n#    ],\n#    \"before\": [\n#        {\n#            \"name\": \"eth0\"\n#        },\n#        {\n#            \"name\": \"eth1\"\n#        },\n#        {\n#            \"name\": \"eth2\"\n#        },\n#        {\n#            \"name\": \"eth3\"\n#        }\n#    ],\n#    \"changed\": true,\n#    \"commands\": [\n#        \"set interfaces ethernet eth1 ip ospf transmit-delay 50\",\n#        \"set interfaces ethernet eth1 ip ospf priority 26\",\n#        \"set interfaces ethernet eth1 ip ospf network point-to-point\",\n#        \"set interfaces ethernet eth1 ipv6 ospfv3 dead-interval 39\",\n#        \"set interfaces bonding bond2 ip ospf transmit-delay 45\",\n#        \"set interfaces bonding bond2 ip ospf bandwidth 70\",\n#        \"set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key 1111111111232345\",\n#        \"set interfaces bonding bond2 ipv6 ospfv3 passive\"\n#    ],\n\n\n\n\n# Using replaced:\n\n# Before State:\n# ------------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n\n  - name: Replace provided configuration with device configuration\n    vyos.vyos.vyos_ospf_interfaces:\n      config:\n        - name: \"eth1\"\n          address_family:\n            - afi: \"ipv4\"\n              cost: 100\n            - afi: \"ipv6\"\n              ifmtu: 33\n        - name: \"bond2\"\n          address_family:\n            - afi: \"ipv4\"\n              transmit_delay: 45\n            - afi: \"ipv6\"\n              passive: True\n      state: replaced\n\n# After State:\n# -----------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf cost '100'\n# set interfaces ethernet eth1 ipv6 ospfv3 ifmtu '33'\n# vyos@vyos:~$\n\n# Module Execution\n# ----------------\n#    \"after\": [\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"transmit_delay\": 45\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"passive\": true\n#                }\n#            ],\n#            \"name\": \"bond2\"\n#        },\n#        {\n#            \"name\": \"eth0\"\n#        },\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"cost\": 100\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"ifmtu\": 33\n#                }\n#            ],\n#            \"name\": \"eth1\"\n#        },\n#        {\n#            \"name\": \"eth2\"\n#        },\n#        {\n#            \"name\": \"eth3\"\n#        }\n#    ],\n#    \"before\": [\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"authentication\": {\n#                        \"md5_key\": {\n#                            \"key\": \"1111111111232345\",\n#                            \"key_id\": 10\n#                        }\n#                    },\n#                    \"bandwidth\": 70,\n#                    \"transmit_delay\": 45\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"passive\": true\n#                }\n#            ],\n#            \"name\": \"bond2\"\n#        },\n#        {\n#            \"name\": \"eth0\"\n#        },\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"network\": \"point-to-point\",\n#                    \"priority\": 26,\n#                    \"transmit_delay\": 50\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"dead_interval\": 39\n#                }\n#            ],\n#            \"name\": \"eth1\"\n#        },\n#        {\n#            \"name\": \"eth2\"\n#        },\n#        {\n#            \"name\": \"eth3\"\n#        }\n#    ],\n#    \"changed\": true,\n#    \"commands\": [\n#        \"set interfaces ethernet eth1 ip ospf cost 100\",\n#        \"set interfaces ethernet eth1 ipv6 ospfv3 ifmtu 33\",\n#        \"delete interfaces ethernet eth1 ip ospf network point-to-point\",\n#        \"delete interfaces ethernet eth1 ip ospf priority 26\",\n#        \"delete interfaces ethernet eth1 ip ospf transmit-delay 50\",\n#        \"delete interfaces ethernet eth1 ipv6 ospfv3 dead-interval 39\",\n#        \"delete interfaces bonding bond2 ip ospf authentication\",\n#        \"delete interfaces bonding bond2 ip ospf bandwidth 70\"\n#    ],\n#\n\n# Using Overridden:\n# -----------------\n\n# Before State:\n# ------------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf cost '100'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n# set interfaces ethernet eth1 ipv6 ospfv3 ifmtu '33'\n# vyos@vyos:~$\n\n  - name: Override device configuration with provided configuration\n    vyos.vyos.vyos_ospf_interfaces:\n      config:\n        - name: \"eth0\"\n          address_family:\n            - afi: \"ipv4\"\n              cost: 100\n            - afi: \"ipv6\"\n              ifmtu: 33\n              passive: True\n      state: overridden\n# After State:\n# -----------\n\n# 200~vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces ethernet eth0 ip ospf cost '100'\n# set interfaces ethernet eth0 ipv6 ospfv3 ifmtu '33'\n# set interfaces ethernet eth0 ipv6 ospfv3 'passive'\n# vyos@vyos:~$\n#\n#\n#     \"after\": [\n#         {\n#             \"name\": \"bond2\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"cost\": 100\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"ifmtu\": 33,\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"eth0\"\n#         },\n#         {\n#             \"name\": \"eth1\"\n#         },\n#         {\n#             \"name\": \"eth2\"\n#         },\n#         {\n#             \"name\": \"eth3\"\n#         }\n#     ],\n#     \"before\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"md5_key\": {\n#                             \"key\": \"1111111111232345\",\n#                             \"key_id\": 10\n#                         }\n#                     },\n#                     \"bandwidth\": 70,\n#                     \"transmit_delay\": 45\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"bond2\"\n#         },\n#         {\n#             \"name\": \"eth0\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"cost\": 100,\n#                     \"network\": \"point-to-point\",\n#                     \"priority\": 26,\n#                     \"transmit_delay\": 50\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"dead_interval\": 39,\n#                     \"ifmtu\": 33\n#                 }\n#             ],\n#             \"name\": \"eth1\"\n#         },\n#         {\n#             \"name\": \"eth2\"\n#         },\n#         {\n#             \"name\": \"eth3\"\n#         }\n#     ],\n#     \"changed\": true,\n#     \"commands\": [\n#         \"delete interfaces bonding bond2 ip ospf\",\n#         \"delete interfaces bonding bond2 ipv6 ospfv3\",\n#         \"delete interfaces ethernet eth1 ip ospf\",\n#         \"delete interfaces ethernet eth1 ipv6 ospfv3\",\n#         \"set interfaces ethernet eth0 ip ospf cost 100\",\n#         \"set interfaces ethernet eth0 ipv6 ospfv3 ifmtu 33\",\n#         \"set interfaces ethernet eth0 ipv6 ospfv3 passive\"\n#     ],\n#\n\n# Using deleted:\n# -------------\n\n# before state:\n# -------------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth0 ip ospf cost '100'\n# set interfaces ethernet eth0 ipv6 ospfv3 ifmtu '33'\n# set interfaces ethernet eth0 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n# vyos@vyos:~$\n\n  - name: Delete device configuration\n    vyos.vyos.vyos_ospf_interfaces:\n      config:\n        - name: \"eth0\"\n      state: deleted\n\n# After State:\n# -----------\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n# vyos@vyos:~$\n#\n#\n# \"after\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"md5_key\": {\n#                             \"key\": \"1111111111232345\",\n#                             \"key_id\": 10\n#                         }\n#                     },\n#                     \"bandwidth\": 70,\n#                     \"transmit_delay\": 45\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"bond2\"\n#         },\n#         {\n#             \"name\": \"eth0\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"network\": \"point-to-point\",\n#                     \"priority\": 26,\n#                     \"transmit_delay\": 50\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"dead_interval\": 39\n#                 }\n#             ],\n#             \"name\": \"eth1\"\n#         },\n#         {\n#             \"name\": \"eth2\"\n#         },\n#         {\n#             \"name\": \"eth3\"\n#         }\n#     ],\n#     \"before\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"md5_key\": {\n#                             \"key\": \"1111111111232345\",\n#                             \"key_id\": 10\n#                         }\n#                     },\n#                     \"bandwidth\": 70,\n#                     \"transmit_delay\": 45\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"bond2\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"cost\": 100\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"ifmtu\": 33,\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"eth0\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"network\": \"point-to-point\",\n#                     \"priority\": 26,\n#                     \"transmit_delay\": 50\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"dead_interval\": 39\n#                 }\n#             ],\n#             \"name\": \"eth1\"\n#         },\n#         {\n#             \"name\": \"eth2\"\n#         },\n#         {\n#             \"name\": \"eth3\"\n#         }\n#     ],\n#     \"changed\": true,\n#     \"commands\": [\n#         \"delete interfaces ethernet eth0 ip ospf\",\n#         \"delete interfaces ethernet eth0 ipv6 ospfv3\"\n#     ],\n#\n# Using parsed:\n# parsed.cfg:\n\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth0 ip ospf cost '50'\n# set interfaces ethernet eth0 ip ospf priority '26'\n# set interfaces ethernet eth0 ipv6 ospfv3 instance-id '33'\n# set interfaces ethernet eth0 ipv6 ospfv3 'mtu-ignore'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n#\n\n  - name: parse configs\n    vyos.vyos.vyos_ospf_interfaces:\n      running_config: \"{{ lookup('file', './parsed.cfg') }}\"\n      state: parsed\n\n# Module Execution:\n# ----------------\n\n#  \"parsed\": [\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"authentication\": {\n#                         \"md5_key\": {\n#                             \"key\": \"1111111111232345\",\n#                             \"key_id\": 10\n#                         }\n#                     },\n#                     \"bandwidth\": 70,\n#                     \"transmit_delay\": 45\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"passive\": true\n#                 }\n#             ],\n#             \"name\": \"bond2\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"cost\": 50,\n#                     \"priority\": 26\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"instance\": \"33\",\n#                     \"mtu_ignore\": true\n#                 }\n#             ],\n#             \"name\": \"eth0\"\n#         },\n#         {\n#             \"address_family\": [\n#                 {\n#                     \"afi\": \"ipv4\",\n#                     \"network\": \"point-to-point\",\n#                     \"priority\": 26,\n#                     \"transmit_delay\": 50\n#                 },\n#                 {\n#                     \"afi\": \"ipv6\",\n#                     \"dead_interval\": 39\n#                 }\n#             ],\n#             \"name\": \"eth1\"\n#         }\n#     ]\n\n# Using rendered:\n# --------------\n\n  - name: Render\n    vyos.vyos.vyos_ospf_interfaces:\n      config:\n        - name: \"eth1\"\n          address_family:\n            - afi: \"ipv4\"\n              transmit_delay: 50\n              priority: 26\n              network: \"point-to-point\"\n            - afi: \"ipv6\"\n              dead_interval: 39\n        - name: \"bond2\"\n          address_family:\n            - afi: \"ipv4\"\n              transmit_delay: 45\n              bandwidth: 70\n              authentication:\n                md5_key:\n                  key_id: 10\n                  key: \"1111111111232345\"\n            - afi: \"ipv6\"\n              passive: True\n      state: rendered\n\n# Module Execution:\n# ----------------\n\n#    \"rendered\": [\n#        \"set interfaces ethernet eth1 ip ospf transmit-delay 50\",\n#        \"set interfaces ethernet eth1 ip ospf priority 26\",\n#        \"set interfaces ethernet eth1 ip ospf network point-to-point\",\n#        \"set interfaces ethernet eth1 ipv6 ospfv3 dead-interval 39\",\n#        \"set interfaces bonding bond2 ip ospf transmit-delay 45\",\n#        \"set interfaces bonding bond2 ip ospf bandwidth 70\",\n#        \"set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key 1111111111232345\",\n#        \"set interfaces bonding bond2 ipv6 ospfv3 passive\"\n#    ]\n#\n\n# Using Gathered:\n# --------------\n\n# Native Config:\n\n# vyos@vyos:~$ show configuration commands | match \"ospf\"\n# set interfaces bonding bond2 ip ospf authentication md5 key-id 10 md5-key '1111111111232345'\n# set interfaces bonding bond2 ip ospf bandwidth '70'\n# set interfaces bonding bond2 ip ospf transmit-delay '45'\n# set interfaces bonding bond2 ipv6 ospfv3 'passive'\n# set interfaces ethernet eth1 ip ospf network 'point-to-point'\n# set interfaces ethernet eth1 ip ospf priority '26'\n# set interfaces ethernet eth1 ip ospf transmit-delay '50'\n# set interfaces ethernet eth1 ipv6 ospfv3 dead-interval '39'\n# vyos@vyos:~$\n\n  - name: gather configs\n    vyos.vyos.vyos_ospf_interfaces:\n      state: gathered\n\n# Module Execution:\n# -----------------\n\n#    \"gathered\": [\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"authentication\": {\n#                        \"md5_key\": {\n#                            \"key\": \"1111111111232345\",\n#                            \"key_id\": 10\n#                        }\n#                    },\n#                    \"bandwidth\": 70,\n#                    \"transmit_delay\": 45\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"passive\": true\n#                }\n#            ],\n#            \"name\": \"bond2\"\n#        },\n#        {\n#            \"name\": \"eth0\"\n#        },\n#        {\n#            \"address_family\": [\n#                {\n#                    \"afi\": \"ipv4\",\n#                    \"network\": \"point-to-point\",\n#                    \"priority\": 26,\n#                    \"transmit_delay\": 50\n#                },\n#                {\n#                    \"afi\": \"ipv6\",\n#                    \"dead_interval\": 39\n#                }\n#            ],\n#            \"name\": \"eth1\"\n#        },\n#        {\n#            \"name\": \"eth2\"\n#        },\n#        {\n#            \"name\": \"eth3\"\n#        }\n#    ],\n\n\n\n\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

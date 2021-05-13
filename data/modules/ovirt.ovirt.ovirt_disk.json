@@ -1,0 +1,478 @@
+{
+    "ovirt.ovirt.ovirt_disk": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage Virtual Machine and floating disks in oVirt/RHV.",
+                "WARNING: If you are installing the collection from ansible galaxy you need to install 'qemu-img' package."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_disk.py",
+            "has_action": false,
+            "module": "ovirt_disk",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "activate": {
+                    "description": [
+                        "I(True) if the disk should be activated.",
+                        "When creating disk of virtual machine it is set to I(True)."
+                    ],
+                    "type": "bool"
+                },
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "backup": {
+                    "choices": [
+                        "incremental"
+                    ],
+                    "description": [
+                        "The backup behavior supported by the disk."
+                    ],
+                    "type": "str",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "ovirt.ovirt"
+                },
+                "bootable": {
+                    "default": "no",
+                    "description": [
+                        "I(True) if the disk should be bootable. By default when disk is created it isn't bootable."
+                    ],
+                    "type": "bool"
+                },
+                "content_type": {
+                    "choices": [
+                        "data",
+                        "iso",
+                        "hosted_engine",
+                        "hosted_engine_sanlock",
+                        "hosted_engine_metadata",
+                        "hosted_engine_configuration"
+                    ],
+                    "default": "data",
+                    "description": [
+                        "Specify if the disk is a data disk or ISO image or a one of a the Hosted Engine disk types",
+                        "The Hosted Engine disk content types are available with Engine 4.3+ and Ansible 2.8"
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the disk image to manage."
+                    ],
+                    "type": "str"
+                },
+                "download_image_path": {
+                    "description": [
+                        "Path on a file system where disk should be downloaded.",
+                        "Note that you must have an valid oVirt/RHV engine CA in your system trust store or you must provide it in C(ca_file) parameter.",
+                        "Note that the disk is not downloaded when the file already exists, but you can forcibly download the disk when using C(force) I (true)."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "description": [
+                        "Please take a look at C(image_path) documentation to see the correct usage of this parameter."
+                    ],
+                    "type": "bool"
+                },
+                "format": {
+                    "choices": [
+                        "raw",
+                        "cow"
+                    ],
+                    "default": "cow",
+                    "description": [
+                        "Specify format of the disk.",
+                        "Note that this option isn't idempotent as it's not currently possible to change format of the disk via API."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "description": [
+                        "When the hypervisor name is specified the newly created disk or an existing disk will refresh its information about the underlying storage( Disk size, Serial, Product ID, Vendor ID ...) The specified host will be used for gathering the storage related information. This option is only valid for passthrough disks. This option requires at least the logical_unit.id to be specified"
+                    ],
+                    "type": "str"
+                },
+                "id": {
+                    "description": [
+                        "ID of the disk to manage. Either C(id) or C(name) is required."
+                    ],
+                    "type": "str"
+                },
+                "image_provider": {
+                    "description": [
+                        "When C(state) is I(exported) disk is exported to given Glance image provider.",
+                        "When C(state) is I(imported) disk is imported from given Glance image provider.",
+                        "C(**IMPORTANT**)",
+                        "There is no reliable way to achieve idempotency, so every time you specify this parameter the disk is exported, so please handle your playbook accordingly to not export the disk all the time. This option is valid only for template disks."
+                    ],
+                    "type": "str"
+                },
+                "interface": {
+                    "choices": [
+                        "virtio",
+                        "ide",
+                        "sata",
+                        "virtio_scsi"
+                    ],
+                    "description": [
+                        "Driver of the storage interface.",
+                        "It's required parameter when creating the new disk."
+                    ],
+                    "type": "str"
+                },
+                "logical_unit": {
+                    "description": [
+                        "Dictionary which describes LUN to be directly attached to VM:"
+                    ],
+                    "suboptions": {
+                        "address": {
+                            "description": [
+                                "Address of the storage server. Used by iSCSI."
+                            ]
+                        },
+                        "lun_id": {
+                            "description": [
+                                "LUN id."
+                            ]
+                        },
+                        "password": {
+                            "description": [
+                                "CHAP Password of the user to be used to access storage server. Used by iSCSI."
+                            ]
+                        },
+                        "port": {
+                            "description": [
+                                "Port of the storage server. Used by iSCSI."
+                            ]
+                        },
+                        "storage_type": {
+                            "description": [
+                                "Storage type either I(fcp) or I(iscsi)."
+                            ]
+                        },
+                        "target": {
+                            "description": [
+                                "iSCSI target."
+                            ]
+                        },
+                        "username": {
+                            "description": [
+                                "CHAP Username to be used to access storage server. Used by iSCSI."
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "name": {
+                    "aliases": [
+                        "alias"
+                    ],
+                    "description": [
+                        "Name of the disk to manage. Either C(id) or C(name)/C(alias) is required."
+                    ],
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "openstack_volume_type": {
+                    "description": [
+                        "Name of the openstack volume type. This is valid when working with cinder."
+                    ],
+                    "type": "str"
+                },
+                "pass_discard": {
+                    "description": [
+                        "Defines whether the virtual machine passes discard commands to the storage."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "ovirt.ovirt"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "profile": {
+                    "description": [
+                        "Disk profile name to be attached to disk. By default profile is chosen by oVirt/RHV engine."
+                    ],
+                    "type": "str"
+                },
+                "propagate_errors": {
+                    "description": [
+                        "Indicates if disk errors should cause virtual machine to be paused or if disk errors should be",
+                        "propagated to the the guest operating system instead."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "ovirt.ovirt"
+                },
+                "quota_id": {
+                    "description": [
+                        "Disk quota ID to be used for disk. By default quota is chosen by oVirt/RHV engine."
+                    ],
+                    "type": "str"
+                },
+                "scsi_passthrough": {
+                    "choices": [
+                        "disabled",
+                        "filtered",
+                        "unfiltered"
+                    ],
+                    "description": [
+                        "Indicates whether SCSI passthrough is enable and its policy.",
+                        "Setting a value of `filtered`/`unfiltered` will enable SCSI passthrough for a LUN disk with unprivileged/privileged SCSI I/O.",
+                        "To disable SCSI passthrough the value should be set to `disabled`"
+                    ],
+                    "type": "str",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "ovirt.ovirt"
+                },
+                "shareable": {
+                    "description": [
+                        "I(True) if the disk should be shareable. By default when disk is created it isn't shareable."
+                    ],
+                    "type": "bool"
+                },
+                "size": {
+                    "description": [
+                        "Size of the disk. Size should be specified using IEC standard units. For example 10GiB, 1024MiB, etc.",
+                        "Size can be only increased, not decreased."
+                    ],
+                    "type": "str"
+                },
+                "sparse": {
+                    "description": [
+                        "I(True) if the disk should be sparse (also known as I(thin provision)). If the parameter is omitted, cow disks will be created as sparse and raw disks as I(preallocated)",
+                        "Note that this option isn't idempotent as it's not currently possible to change sparseness of the disk via API."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "sparsify": {
+                    "description": [
+                        "I(True) if the disk should be sparsified.",
+                        "Sparsification frees space in the disk image that is not used by its filesystem. As a result, the image will occupy less space on the storage.",
+                        "Note that this parameter isn't idempotent, as it's not possible to check if the disk should be or should not be sparsified."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "attached",
+                        "detached",
+                        "exported",
+                        "imported"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the Virtual Machine disk be present/absent/attached/detached/exported/imported."
+                    ],
+                    "type": "str"
+                },
+                "storage_domain": {
+                    "description": [
+                        "Storage domain name where disk should be created."
+                    ],
+                    "type": "str"
+                },
+                "storage_domains": {
+                    "description": [
+                        "Storage domain names where disk should be copied.",
+                        "C(**IMPORTANT**)",
+                        "There is no reliable way to achieve idempotency, so every time you specify this parameter the disks are copied, so please handle your playbook accordingly to not copy the disks all the time. This is valid only for VM and floating disks, template disks works as expected."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "upload_image_path": {
+                    "aliases": [
+                        "image_path"
+                    ],
+                    "description": [
+                        "Path to disk image, which should be uploaded.",
+                        "Note if C(size) is not specified the size of the disk will be determined by the size of the specified image.",
+                        "Note that currently we support only compatibility version 0.10 of the qcow disk.",
+                        "Note that you must have an valid oVirt/RHV engine CA in your system trust store or you must provide it in C(ca_file) parameter.",
+                        "Note that there is no reliable way to achieve idempotency, so if you want to upload the disk even if the disk with C(id) or C(name) exists, then please use C(force) I(true). If you will use C(force) I(false), which is default, then the disk image won't be uploaded.",
+                        "Note that to upload iso the C(format) should be 'raw'"
+                    ],
+                    "type": "str"
+                },
+                "uses_scsi_reservation": {
+                    "description": [
+                        "Defines whether SCSI reservation is enabled for this disk."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "ovirt.ovirt"
+                },
+                "vm_id": {
+                    "description": [
+                        "ID of the Virtual Machine to manage. Either C(vm_id) or C(vm_name) is required if C(state) is I(attached) or I(detached)."
+                    ],
+                    "type": "str"
+                },
+                "vm_name": {
+                    "description": [
+                        "Name of the Virtual Machine to manage. Either C(vm_id) or C(vm_name) is required if C(state) is I(attached) or I(detached)."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                },
+                "wipe_after_delete": {
+                    "description": [
+                        "If the disk's Wipe After Delete is enabled, then the disk is first wiped."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage Virtual Machine and floating disks in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n# Create and attach new disk to VM\n- ovirt.ovirt.ovirt_disk:\n    name: myvm_disk\n    vm_name: rhel7\n    size: 10GiB\n    format: cow\n    interface: virtio\n    storage_domain: data\n\n# Attach logical unit to VM rhel7\n- ovirt.ovirt.ovirt_disk:\n    vm_name: rhel7\n    logical_unit:\n      target: iqn.2016-08-09.brq.str-01:omachace\n      id: 1IET_000d0001\n      address: 10.34.63.204\n    interface: virtio\n\n# Detach disk from VM\n- ovirt.ovirt.ovirt_disk:\n    state: detached\n    name: myvm_disk\n    vm_name: rhel7\n    size: 10GiB\n    format: cow\n    interface: virtio\n\n# Change Disk Name\n- ovirt.ovirt.ovirt_disk:\n    id: 00000000-0000-0000-0000-000000000000\n    storage_domain: data\n    name: \"new_disk_name\"\n    vm_name: rhel7\n\n# Upload local image to disk and attach it to vm:\n# Since Ansible 2.3\n- ovirt.ovirt.ovirt_disk:\n    name: mydisk\n    vm_name: myvm\n    interface: virtio\n    size: 10GiB\n    format: cow\n    image_path: /path/to/mydisk.qcow2\n    storage_domain: data\n\n# Download disk to local file system:\n# Since Ansible 2.3\n- ovirt.ovirt.ovirt_disk:\n    id: 7de90f31-222c-436c-a1ca-7e655bd5b60c\n    download_image_path: /home/user/mydisk.qcow2\n\n# Export disk as image to Glance domain\n# Since Ansible 2.4\n- ovirt.ovirt.ovirt_disk:\n    id: 7de90f31-222c-436c-a1ca-7e655bd5b60c\n    image_provider: myglance\n    state: exported\n\n# Defining a specific quota while creating a disk image:\n# Since Ansible 2.5\n- ovirt.ovirt.ovirt_quotas_info:\n    data_center: Default\n    name: myquota\n  register: quota\n- ovirt.ovirt.ovirt_disk:\n    name: mydisk\n    size: 10GiB\n    storage_domain: data\n    description: somedescriptionhere\n    quota_id: \"{{ quota.ovirt_quotas[0]['id'] }}\"\n\n# Upload an ISO image\n# Since Ansible 2.8\n- ovirt.ovirt.ovirt_disk:\n    name: myiso\n    upload_image_path: /path/to/iso/image\n    storage_domain: data\n    size: 4 GiB\n    wait: true\n    bootable: true\n    format: raw\n    content_type: iso\n\n# Add fiber chanel disk\n- name: Create disk\n  ovirt.ovirt.ovirt_disk:\n    name: fcp_disk\n    host: my_host\n    logical_unit:\n        id: 3600a09803830447a4f244c4657597777\n        storage_type: fcp\n",
+        "metadata": null,
+        "return": {
+            "disk": {
+                "description": "Dictionary of all the disk attributes. Disk attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/disk.",
+                "returned": "On success if disk is found and C(vm_id) or C(vm_name) wasn't passed.",
+                "type": "dict"
+            },
+            "disk_attachment": {
+                "description": "Dictionary of all the disk attachment attributes. Disk attachment attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/disk_attachment.",
+                "returned": "On success if disk is found and C(vm_id) or C(vm_name) was passed and VM was found.",
+                "type": "dict"
+            },
+            "id": {
+                "description": "ID of the managed disk",
+                "returned": "On success if disk is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,173 @@
+{
+    "ngine_io.cloudstack.cs_image_store": {
+        "doc": {
+            "author": [
+                "Patryk Cichy (@PatTheSilent)"
+            ],
+            "collection": "ngine_io.cloudstack",
+            "description": [
+                "Deploy, remove, recreate CloudStack Image Stores."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/cloudstack/plugins/modules/cs_image_store.py",
+            "has_action": false,
+            "module": "cs_image_store",
+            "notes": [
+                "A detailed guide about cloudstack modules can be found in the L(CloudStack Cloud Guide,../scenario_guides/guide_cloudstack.html).",
+                "This module supports check mode."
+            ],
+            "options": {
+                "api_http_method": {
+                    "choices": [
+                        "get",
+                        "post"
+                    ],
+                    "default": "get",
+                    "description": [
+                        "HTTP method used to query the API endpoint.",
+                        "If not given, the C(CLOUDSTACK_METHOD) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the CloudStack API.",
+                        "If not given, the C(CLOUDSTACK_KEY) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_secret": {
+                    "description": [
+                        "Secret key of the CloudStack API.",
+                        "If not set, the C(CLOUDSTACK_SECRET) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_timeout": {
+                    "default": 10,
+                    "description": [
+                        "HTTP timeout in seconds.",
+                        "If not given, the C(CLOUDSTACK_TIMEOUT) env variable is considered."
+                    ],
+                    "type": "int"
+                },
+                "api_url": {
+                    "description": [
+                        "URL of the CloudStack API e.g. https://cloud.example.com/client/api.",
+                        "If not given, the C(CLOUDSTACK_ENDPOINT) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_verify_ssl_cert": {
+                    "description": [
+                        "Verify CA authority cert file.",
+                        "If not given, the C(CLOUDSTACK_VERIFY) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "force_recreate": {
+                    "default": false,
+                    "description": [
+                        "Set to C(yes) if you're changing an existing Image Store.",
+                        "This will force the recreation of the Image Store.",
+                        "Recreation might fail if there are snapshots present on the Image Store. Delete them before running the recreation."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "The ID of the Image Store. Required when deleting a Image Store."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "The image store provider name. Required when creating a new Image Store"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Stage of the Image Store"
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "description": [
+                        "The URL for the Image Store.",
+                        "Required when I(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "The Zone name for the Image Store."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "cs >= 0.9.0"
+            ],
+            "short_description": "Manages CloudStack Image Stores.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.cloudstack"
+        },
+        "examples": "\n- name: Add a Image Store (NFS)\n  ngine_io.cloudstack.cs_image_store:\n    zone: zone-01\n    name: nfs-01\n    provider: NFS\n    url: nfs://192.168.21.16/exports/secondary\n\n\n# Change the NFS share URL and force a Image Store recreation\n- name: Change the NFS url\n  ngine_io.cloudstack.cs_image_store:\n    zone: zone-01\n    name: nfs-01\n    provider: NFS\n    force_recreate: yes\n    url: nfs://192.168.21.10/shares/secondary\n\n- name: delete the image store\n  ngine_io.cloudstack.cs_image_store:\n    name: nfs-01\n    zone: zone-01\n    state: absent\n\n",
+        "metadata": null,
+        "return": {
+            "id": {
+                "description": "the ID of the image store",
+                "returned": "success",
+                "sample": "feb11a84-a093-45eb-b84d-7f680313c40b",
+                "type": "str"
+            },
+            "name": {
+                "description": "the name of the image store",
+                "returned": "success",
+                "sample": "nfs-01",
+                "type": "str"
+            },
+            "protocol": {
+                "description": "the protocol of the image store",
+                "returned": "success",
+                "sample": "nfs",
+                "type": "str"
+            },
+            "provider_name": {
+                "description": "the provider name of the image store",
+                "returned": "success",
+                "sample": "NFS",
+                "type": "str"
+            },
+            "scope": {
+                "description": "the scope of the image store",
+                "returned": "success",
+                "sample": "ZONE",
+                "type": "str"
+            },
+            "url": {
+                "description": "the url of the image store",
+                "returned": "success",
+                "sample": "nfs://192.168.21.16/exports/secondary",
+                "type": "str"
+            },
+            "zone": {
+                "description": "the Zone name of the image store",
+                "returned": "success",
+                "sample": "zone-01",
+                "type": "str"
+            }
+        }
+    }
+}

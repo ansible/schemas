@@ -1,0 +1,79 @@
+{
+    "community.general.sysupgrade": {
+        "doc": {
+            "author": [
+                "Andrew Klaus (@precurse)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manage OpenBSD system upgrades using sysupgrade."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/sysupgrade.py",
+            "has_action": false,
+            "module": "sysupgrade",
+            "options": {
+                "fetch_only": {
+                    "default": true,
+                    "description": [
+                        "Fetch and verify files and create /bsd.upgrade but do not reboot.",
+                        "Set to C(false) if you want sysupgrade to reboot. This will cause Ansible to error, as it expects the module to exit gracefully. See the examples."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Force upgrade (for snapshots only)."
+                    ],
+                    "type": "bool"
+                },
+                "installurl": {
+                    "description": [
+                        "OpenBSD mirror top-level URL for fetching an upgrade.",
+                        "By default, the mirror URL is pulled from /etc/installurl."
+                    ],
+                    "type": "str"
+                },
+                "keep_files": {
+                    "default": false,
+                    "description": [
+                        "Keep the files under /home/_sysupgrade.",
+                        "By default, the files will be deleted after the upgrade."
+                    ],
+                    "type": "bool"
+                },
+                "snapshot": {
+                    "default": false,
+                    "description": [
+                        "Apply the latest snapshot.",
+                        "Otherwise release will be applied."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage OpenBSD system upgrades",
+            "version_added": "1.1.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Upgrade to latest release\n  community.general.sysupgrade:\n  register: sysupgrade\n\n- name: Upgrade to latest snapshot\n  community.general.sysupgrade:\n    snapshot: yes\n    installurl: https://cloudflare.cdn.openbsd.org/pub/OpenBSD\n  register: sysupgrade\n\n- name: Reboot to apply upgrade if needed\n  ansible.builtin.reboot:\n  when: sysupgrade.changed\n\n# Note: Ansible will error when running this way due to how\n#   the reboot is forcefully handled by sysupgrade:\n\n- name: Have sysupgrade automatically reboot\n  community.general.sysupgrade:\n    fetch_only: no\n  ignore_errors: yes\n",
+        "metadata": null,
+        "return": {
+            "rc": {
+                "description": "The command return code (0 means success).",
+                "returned": "always",
+                "type": "int"
+            },
+            "stderr": {
+                "description": "Sysupgrade standard error.",
+                "returned": "always",
+                "sample": "sysupgrade: need root privileges",
+                "type": "str"
+            },
+            "stdout": {
+                "description": "Sysupgrade standard output.",
+                "returned": "always",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,553 @@
+{
+    "community.zabbix.zabbix_host": {
+        "doc": {
+            "author": [
+                "Cove (@cove)",
+                "Tony Minfei Ding (!UNKNOWN)",
+                "Harrison Gu (@harrisongu)",
+                "Werner Dijkerman (@dj-wasabi)",
+                "Eike Frost (@eikef)"
+            ],
+            "collection": "community.zabbix",
+            "description": [
+                "This module allows you to create, modify and delete Zabbix host entries and associated group and template data."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/zabbix/plugins/modules/zabbix_host.py",
+            "has_action": false,
+            "module": "zabbix_host",
+            "notes": [
+                "If you use I(login_password=zabbix), the word \"zabbix\" is replaced by \"********\" in all module output, because I(login_password) uses C(no_log). See L(this FAQ,https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-is-my-output-sometimes-replaced-with) for more information."
+            ],
+            "options": {
+                "ca_cert": {
+                    "aliases": [
+                        "tls_issuer"
+                    ],
+                    "description": [
+                        "Required certificate issuer.",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the host in Zabbix."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": "yes",
+                    "description": [
+                        "Overwrite the host configuration, even if already present."
+                    ],
+                    "type": "bool"
+                },
+                "host_groups": {
+                    "description": [
+                        "List of host groups the host is part of."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "host_name": {
+                    "description": [
+                        "Name of the host in Zabbix.",
+                        "I(host_name) is the unique identifier used and cannot be updated using this module."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "http_login_password": {
+                    "description": [
+                        "Basic Auth password"
+                    ],
+                    "type": "str"
+                },
+                "http_login_user": {
+                    "description": [
+                        "Basic Auth login"
+                    ],
+                    "type": "str"
+                },
+                "interfaces": {
+                    "default": [],
+                    "description": [
+                        "List of interfaces to be created for the host (see example below).",
+                        "For more information, review host interface documentation at",
+                        "U(https://www.zabbix.com/documentation/4.0/manual/api/reference/hostinterface/object)"
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "bulk": {
+                            "choices": [
+                                0,
+                                1
+                            ],
+                            "default": 1,
+                            "description": [
+                                "Whether to use bulk SNMP requests.",
+                                "Only valid when interface I(type='snmp').",
+                                "0 (don't use bulk requests), 1 (use bulk requests)",
+                                "Works only with Zabbix <= 4.4 and is silently ignored in higher versions.",
+                                "Use I(details) with Zabbix >= 5.0."
+                            ],
+                            "type": "int"
+                        },
+                        "details": {
+                            "default": {},
+                            "description": [
+                                "Additional details for SNMP host interfaces.",
+                                "Required when I(type='snmp').",
+                                "Works only with Zabbix >= 5.0."
+                            ],
+                            "suboptions": {
+                                "authpassphrase": {
+                                    "default": "",
+                                    "description": [
+                                        "SNMPv3 authentication passphrase.",
+                                        "Used when I(securitylevel=1)(authNoPriv) or I(securitylevel=2)(AuthPriv)."
+                                    ],
+                                    "type": "str"
+                                },
+                                "authprotocol": {
+                                    "choices": [
+                                        0,
+                                        1
+                                    ],
+                                    "default": 0,
+                                    "description": [
+                                        "SNMPv3 authentication protocol.",
+                                        "Used when I(securitylevel=1)(authNoPriv) or I(securitylevel=2)(AuthPriv).",
+                                        "0 (MD5), 1 (SHA)"
+                                    ],
+                                    "type": "int"
+                                },
+                                "bulk": {
+                                    "choices": [
+                                        0,
+                                        1
+                                    ],
+                                    "default": 1,
+                                    "description": [
+                                        "Whether to use bulk SNMP requests.",
+                                        "0 (don't use bulk requests), 1 (use bulk requests)"
+                                    ],
+                                    "type": "int"
+                                },
+                                "community": {
+                                    "description": [
+                                        "SNMPv1 and SNMPv2 community string.",
+                                        "Required when I(version=1) or I(version=2)."
+                                    ],
+                                    "type": "str"
+                                },
+                                "contextname": {
+                                    "default": "",
+                                    "description": [
+                                        "SNMPv3 context name."
+                                    ],
+                                    "type": "str"
+                                },
+                                "privpassphrase": {
+                                    "default": "",
+                                    "description": [
+                                        "SNMPv3 privacy passphrase.",
+                                        "Used when I(securitylevel=2)(AuthPriv)."
+                                    ],
+                                    "type": "str"
+                                },
+                                "privprotocol": {
+                                    "choices": [
+                                        0,
+                                        1
+                                    ],
+                                    "default": 0,
+                                    "description": [
+                                        "SNMPv3 privacy protocol.",
+                                        "Used when I(securitylevel=2)(authPriv).",
+                                        "0 (DES), 1 (AES)"
+                                    ],
+                                    "type": "int"
+                                },
+                                "securitylevel": {
+                                    "choices": [
+                                        0,
+                                        1,
+                                        2
+                                    ],
+                                    "default": 0,
+                                    "description": [
+                                        "SNMPv3 security level.",
+                                        "0 (noAuthNoPriv), 1 (authNoPriv), 2 (authPriv)."
+                                    ],
+                                    "type": "int"
+                                },
+                                "securityname": {
+                                    "default": "",
+                                    "description": [
+                                        "SNMPv3 security name."
+                                    ],
+                                    "type": "str"
+                                },
+                                "version": {
+                                    "choices": [
+                                        1,
+                                        2,
+                                        3
+                                    ],
+                                    "default": 2,
+                                    "description": [
+                                        "SNMP version.",
+                                        "1 (SNMPv1), 2 (SNMPv2c), 3 (SNMPv3)"
+                                    ],
+                                    "type": "int"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "dns": {
+                            "default": "",
+                            "description": [
+                                "DNS name of the host interface.",
+                                "Required if I(useip=0)."
+                            ],
+                            "type": "str"
+                        },
+                        "ip": {
+                            "default": "",
+                            "description": [
+                                "IP address used by host interface.",
+                                "Required if I(useip=1)."
+                            ],
+                            "type": "str"
+                        },
+                        "main": {
+                            "choices": [
+                                0,
+                                1
+                            ],
+                            "default": 0,
+                            "description": [
+                                "Whether the interface is used as default.",
+                                "If multiple interfaces with the same type are provided, only one can be default.",
+                                "0 (not default), 1 (default)"
+                            ],
+                            "type": "int"
+                        },
+                        "port": {
+                            "description": [
+                                "Port used by host interface.",
+                                "If not specified, default port for each type of interface is used",
+                                "10050 if I(type='agent')",
+                                "161 if I(type='snmp')",
+                                "623 if I(type='ipmi')",
+                                "12345 if I(type='jmx')"
+                            ],
+                            "type": "str"
+                        },
+                        "type": {
+                            "choices": [
+                                "agent",
+                                "1",
+                                "snmp",
+                                "2",
+                                "ipmi",
+                                "3",
+                                "jmx",
+                                "4"
+                            ],
+                            "description": [
+                                "Interface type to add",
+                                "Numerical values are also accepted for interface type",
+                                "1 = agent",
+                                "2 = snmp",
+                                "3 = ipmi",
+                                "4 = jmx"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "useip": {
+                            "choices": [
+                                0,
+                                1
+                            ],
+                            "default": 0,
+                            "description": [
+                                "Connect to host interface with IP address instead of DNS name.",
+                                "0 (don't use ip), 1 (use ip)"
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "inventory_mode": {
+                    "choices": [
+                        "automatic",
+                        "manual",
+                        "disabled"
+                    ],
+                    "description": [
+                        "Configure the inventory mode."
+                    ],
+                    "type": "str"
+                },
+                "inventory_zabbix": {
+                    "description": [
+                        "Add Facts for a zabbix inventory (e.g. Tag) (see example below).",
+                        "Please review the interface documentation for more information on the supported properties",
+                        "U(https://www.zabbix.com/documentation/3.2/manual/api/reference/host/object#host_inventory)"
+                    ],
+                    "type": "dict"
+                },
+                "ipmi_authtype": {
+                    "description": [
+                        "IPMI authentication algorithm.",
+                        "Please review the Host object documentation for more information on the supported properties",
+                        "https://www.zabbix.com/documentation/3.4/manual/api/reference/host/object",
+                        "Possible values are, C(0) (none), C(1) (MD2), C(2) (MD5), C(4) (straight), C(5) (OEM), C(6) (RMCP+), with -1 being the API default.",
+                        "Please note that the Zabbix API will treat absent settings as default when updating any of the I(ipmi_)-options; this means that if you attempt to set any of the four options individually, the rest will be reset to default values."
+                    ],
+                    "type": "int"
+                },
+                "ipmi_password": {
+                    "description": [
+                        "IPMI password.",
+                        "also see the last note in the I(ipmi_authtype) documentation"
+                    ],
+                    "type": "str"
+                },
+                "ipmi_privilege": {
+                    "description": [
+                        "IPMI privilege level.",
+                        "Please review the Host object documentation for more information on the supported properties",
+                        "https://www.zabbix.com/documentation/3.4/manual/api/reference/host/object",
+                        "Possible values are C(1) (callback), C(2) (user), C(3) (operator), C(4) (admin), C(5) (OEM), with C(2) being the API default.",
+                        "also see the last note in the I(ipmi_authtype) documentation"
+                    ],
+                    "type": "int"
+                },
+                "ipmi_username": {
+                    "description": [
+                        "IPMI username.",
+                        "also see the last note in the I(ipmi_authtype) documentation"
+                    ],
+                    "type": "str"
+                },
+                "link_templates": {
+                    "description": [
+                        "List of templates linked to the host."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "login_password": {
+                    "description": [
+                        "Zabbix user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "login_user": {
+                    "description": [
+                        "Zabbix user name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "macros": {
+                    "aliases": [
+                        "user_macros"
+                    ],
+                    "description": [
+                        "List of user macros to assign to the zabbix host.",
+                        "Providing I(macros=[]) with I(force=yes) will clean all of the existing user macros from the host."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "description": {
+                            "default": "",
+                            "description": [
+                                "Description of the user macro.",
+                                "Works only with >= Zabbix 4.4."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "macro": {
+                            "description": [
+                                "Name of the user macro.",
+                                "Can be in zabbix native format \"{$MACRO}\" or short format \"MACRO\"."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "type": {
+                            "choices": [
+                                "text",
+                                "secret"
+                            ],
+                            "default": "text",
+                            "description": [
+                                "Type of the macro.",
+                                "Works only with >= Zabbix 5.0.",
+                                "Since value is not returned by API for secret macros, there is no reliable way to detect changes in the content of secret macro value.",
+                                "To update secret macro value, please update description alongside it so it passes the check."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "value": {
+                            "description": [
+                                "Value of the user macro."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "proxy": {
+                    "description": [
+                        "The name of the Zabbix proxy to be used."
+                    ],
+                    "type": "str"
+                },
+                "server_url": {
+                    "aliases": [
+                        "url"
+                    ],
+                    "description": [
+                        "URL of Zabbix server, with protocol (http or https). C(url) is an alias for C(server_url)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the host.",
+                        "On C(present), it will create if host does not exist or update the host if the associated data is different.",
+                        "On C(absent) will remove a host if it exists."
+                    ],
+                    "type": "str"
+                },
+                "status": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "Monitoring status of the host."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "aliases": [
+                        "host_tags"
+                    ],
+                    "description": [
+                        "List of host tags to assign to the zabbix host.",
+                        "Works only with >= Zabbix 4.2.",
+                        "Providing I(tags=[]) with I(force=yes) will clean all of the tags from the host."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "tag": {
+                            "description": [
+                                "Name of the host tag."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "value": {
+                            "default": "",
+                            "description": [
+                                "Value of the host tag."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The timeout of API request (seconds)."
+                    ],
+                    "type": "int"
+                },
+                "tls_accept": {
+                    "default": 1,
+                    "description": [
+                        "Specifies what types of connections are allowed for incoming connections.",
+                        "The tls_accept parameter accepts values of 1 to 7",
+                        "Possible values, 1 (no encryption), 2 (PSK), 4 (certificate).",
+                        "Values can be combined.",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "int"
+                },
+                "tls_connect": {
+                    "default": 1,
+                    "description": [
+                        "Specifies what encryption to use for outgoing connections.",
+                        "Possible values, 1 (no encryption), 2 (PSK), 4 (certificate).",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "int"
+                },
+                "tls_psk": {
+                    "description": [
+                        "PSK value is a hard to guess string of hexadecimal digits.",
+                        "The preshared key, at least 32 hex digits. Required if either I(tls_connect) or I(tls_accept) has PSK enabled.",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "str"
+                },
+                "tls_psk_identity": {
+                    "description": [
+                        "It is a unique name by which this specific PSK is referred to by Zabbix components",
+                        "Do not put sensitive information in the PSK identity string, it is transmitted over the network unencrypted.",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "str"
+                },
+                "tls_subject": {
+                    "description": [
+                        "Required certificate subject.",
+                        "Works only with >= Zabbix 3.0"
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If set to False, SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "visible_name": {
+                    "description": [
+                        "Visible name of the host in Zabbix."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "zabbix-api >= 0.5.4"
+            ],
+            "short_description": "Create/update/delete Zabbix hosts"
+        },
+        "examples": "\n- name: Create a new host or update an existing host's info\n  local_action:\n    module: community.zabbix.zabbix_host\n    server_url: http://monitor.example.com\n    login_user: username\n    login_password: password\n    host_name: ExampleHost\n    visible_name: ExampleName\n    description: My ExampleHost Description\n    host_groups:\n      - Example group1\n      - Example group2\n    link_templates:\n      - Example template1\n      - Example template2\n    status: enabled\n    state: present\n    inventory_mode: manual\n    inventory_zabbix:\n      tag: \"{{ your_tag }}\"\n      alias: \"{{ your_alias }}\"\n      notes: \"Special Informations: {{ your_informations | default('None') }}\"\n      location: \"{{ your_location }}\"\n      site_rack: \"{{ your_site_rack }}\"\n      os: \"{{ your_os }}\"\n      hardware: \"{{ your_hardware }}\"\n    ipmi_authtype: 2\n    ipmi_privilege: 4\n    ipmi_username: username\n    ipmi_password: password\n    interfaces:\n      - type: 1\n        main: 1\n        useip: 1\n        ip: 10.xx.xx.xx\n        dns: \"\"\n        port: \"10050\"\n      - type: 4\n        main: 1\n        useip: 1\n        ip: 10.xx.xx.xx\n        dns: \"\"\n        port: \"12345\"\n    proxy: a.zabbix.proxy\n    macros:\n      - macro: '{$EXAMPLEMACRO}'\n        value: ExampleMacroValue\n      - macro: EXAMPLEMACRO2\n        value: ExampleMacroValue2\n        description: Example desc that work only with Zabbix 4.4 and higher\n    tags:\n      - tag: ExampleHostsTag\n      - tag: ExampleHostsTag2\n        value: ExampleTagValue\n\n- name: Update an existing host's TLS settings\n  local_action:\n    module: community.zabbix.zabbix_host\n    server_url: http://monitor.example.com\n    login_user: username\n    login_password: password\n    host_name: ExampleHost\n    visible_name: ExampleName\n    host_groups:\n      - Example group1\n    tls_psk_identity: test\n    tls_connect: 2\n    tls_psk: 123456789abcdef123456789abcdef12\n",
+        "metadata": null,
+        "return": null
+    }
+}

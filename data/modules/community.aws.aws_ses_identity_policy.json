@@ -1,0 +1,139 @@
+{
+    "community.aws.aws_ses_identity_policy": {
+        "doc": {
+            "author": "Ed Costello    (@orthanc)",
+            "collection": "community.aws",
+            "description": [
+                "This module allows the user to manage sending authorization policies associated with an SES identity (email or domain).",
+                "SES authorization sending policies can be used to control what actors are able to send email on behalf of the validated identity and what conditions must be met by the sent emails."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_ses_identity_policy.py",
+            "has_action": false,
+            "module": "aws_ses_identity_policy",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "identity": {
+                    "description": "The SES identity to attach or remove a policy from. This can be either the full ARN or just\nthe verified email or domain.\n",
+                    "required": true,
+                    "type": "str"
+                },
+                "policy": {
+                    "description": "A properly formatted JSON sending authorization policy. Required when I(state=present).",
+                    "type": "json"
+                },
+                "policy_name": {
+                    "description": "The name used to identify the policy within the scope of the identity it's attached to.",
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": "Whether to create(or update) or delete the authorization policy on the identity.",
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Manages SES sending authorization policies",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: add sending authorization policy to domain identity\n  community.aws.aws_ses_identity_policy:\n    identity: example.com\n    policy_name: ExamplePolicy\n    policy: \"{{ lookup('template', 'policy.json.j2') }}\"\n    state: present\n\n- name: add sending authorization policy to email identity\n  community.aws.aws_ses_identity_policy:\n    identity: example@example.com\n    policy_name: ExamplePolicy\n    policy: \"{{ lookup('template', 'policy.json.j2') }}\"\n    state: present\n\n- name: add sending authorization policy to identity using ARN\n  community.aws.aws_ses_identity_policy:\n    identity: \"arn:aws:ses:us-east-1:12345678:identity/example.com\"\n    policy_name: ExamplePolicy\n    policy: \"{{ lookup('template', 'policy.json.j2') }}\"\n    state: present\n\n- name: remove sending authorization policy\n  community.aws.aws_ses_identity_policy:\n    identity: example.com\n    policy_name: ExamplePolicy\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "policies": {
+                "description": "A list of all policies present on the identity after the operation.",
+                "returned": "success",
+                "sample": [
+                    "ExamplePolicy"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

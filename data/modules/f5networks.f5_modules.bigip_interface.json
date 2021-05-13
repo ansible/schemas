@@ -1,0 +1,516 @@
+{
+    "f5networks.f5_modules.bigip_interface": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Module to manage BIG-IP physical interfaces."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_interface.py",
+            "has_action": false,
+            "module": "bigip_interface",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "bundle": {
+                    "choices": [
+                        "enabled",
+                        "disabled",
+                        "not-supported"
+                    ],
+                    "description": [
+                        "Enables or disables bundle capability.",
+                        "This option is only supported on select hardware platforms and interfaces.",
+                        "Attempting to enable this option on a C(VE) or any other unsupported platform/interface will result in module run failure."
+                    ],
+                    "type": "str"
+                },
+                "bundle_speed": {
+                    "choices": [
+                        "100G",
+                        "40G",
+                        "not-supported"
+                    ],
+                    "description": [
+                        "Sets the bundle speed, which is applicable only when the bundle is C(yes).",
+                        "This option is only supported on selected hardware platforms and interfaces.",
+                        "Attempting to enable this option on a C(VE) or any other unsupported platform/interface will result in module run failure."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "User defined description."
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "description": [
+                        "Specifies the current status of the interface.",
+                        "When C(yes), enables the interface to pass traffic.",
+                        "When C(no), disables the interface from passing traffic."
+                    ],
+                    "type": "bool"
+                },
+                "flow_control": {
+                    "choices": [
+                        "none",
+                        "rx",
+                        "tx",
+                        "tx-rx"
+                    ],
+                    "description": [
+                        "Specifies how the system controls the sending of PAUSE frames.",
+                        "When C(tx-rx), the interface honors pause frames from its partner, and also generates pause frames when necessary.",
+                        "When C(tx), the interface ignores pause frames from its partner, and generates pause frames when necessary.",
+                        "When C(rx), the interface honors pause frames from its partner, but does not generate pause frames.",
+                        "When (none), the flow control is disabled on the interface."
+                    ],
+                    "type": "str"
+                },
+                "force_gigabit_fiber": {
+                    "description": [
+                        "Enables or disables forcing of gigabit fiber media.",
+                        "When C(yes) for a gigabit fiber interface, the media setting will be forced, and no auto-negotiation will be performed.",
+                        "When C(no) auto-negotiation will be performed with just a single gigabit fiber option advertised."
+                    ],
+                    "type": "bool"
+                },
+                "forward_error_correction": {
+                    "choices": [
+                        "enabled",
+                        "disabled",
+                        "not-supported",
+                        "auto"
+                    ],
+                    "description": [
+                        "Enables or disables IEEE 802.3bm Clause 91 Reed-Solomon Forward Error Correction on 100G interfaces. Not valid for LR4 media.",
+                        "This option is only supported on selected hardware platforms and interfaces.",
+                        "Attempting to enable this option on a C(VE) or any other unsupported platform/interface will result in module run failure."
+                    ],
+                    "type": "str"
+                },
+                "lldp_admin": {
+                    "choices": [
+                        "disable",
+                        "rxonly",
+                        "txonly",
+                        "txrx"
+                    ],
+                    "description": [
+                        "Specifies LLDP settings on an interface level.",
+                        "When C(disabled), the interface neither transmits (sends) LLDP messages to nor receives LLDP messages from neighboring devices.",
+                        "When C(txonly), the interface transmits LLDP messages to neighbor devices, but does not receive LLDP messages from neighbor devices.",
+                        "When C(rxonly), the interface receives LLDP messages from neighbor devices, but does not transmit LLDP messages to neighbor devices.",
+                        "When C(txrx), the interface transmits LLDP messages to and receives LLDP messages from neighboring devices."
+                    ],
+                    "type": "str"
+                },
+                "lldp_tlvmap": {
+                    "description": [
+                        "Specifies the content of an LLDP message being sent or received.",
+                        "Each LLDP attribute specified with this setting is optional and is in the form of Type, Length, Value (TLV).",
+                        "The three mandatory TLVs not taken into account when calculating this value are: C(Chassis ID), C(Port ID), and C(TTL).",
+                        "The optional attributes that are available have a specific TLV numeric value mapped to them.",
+                        "The C(Port Description) attribute has a TLV value of C(8).",
+                        "The C(System Name) attribute has a TLV value of C(16).",
+                        "The C(System Description) attribute has a TLV value of C(32).",
+                        "The C(System Capabilities) attribute has a TLV value of C(64).",
+                        "The C(Management Address) attribute has a TLV value of C(128).",
+                        "The C(Port VLAN ID) attribute has a TLV value of C(256).",
+                        "The C(VLAN Name) attribute has a TLV value of C(512).",
+                        "The C(Port and Protocol VLAN ID) attribute has a TLV value of C(1024).",
+                        "The C(Protocol Identity) attribute has a TLV value of C(2048).",
+                        "The C(MAC/PHY Config Status) attribute has a TLV value of C(4096).",
+                        "The C(Link Aggregation) attribute has a TLV value of C(8192).",
+                        "The C(Max Frame Size) attribute has a TLV value of C(32768).",
+                        "The C(Product Model) attribute has a TLV value of C(65536).",
+                        "The C(lldp_tlvmap) is a numeric value that is a sum of all TLV values of selected attributes.",
+                        "Setting C(lldp_tlvmap) to C(0) will remove all attributes from the interface.",
+                        "Setting C(lldp_tlvmap) to C(114680) will add all attributes to the interface."
+                    ],
+                    "type": "int"
+                },
+                "media_fixed": {
+                    "choices": [
+                        "100000-FD",
+                        "100000LR4-FD",
+                        "10000LR-FD",
+                        "10000T-FD",
+                        "1000SX-FD",
+                        "100TX-FD",
+                        "10T-HD",
+                        "20000-FD",
+                        "40000LR4-FD",
+                        "100000AR4-FD",
+                        "100000SR4-FD",
+                        "10000SFPCU-FD",
+                        "1000CX-FD",
+                        "1000T-FD",
+                        "100TX-HD",
+                        "12000-FD",
+                        "21000-FD",
+                        "40000SR4-FD",
+                        "100000CR4-FD",
+                        "10000ER-FD",
+                        "10000SR-FD",
+                        "1000LX-FD",
+                        "1000T-HD",
+                        "10T-FD",
+                        "16000-FD",
+                        "40000-FD",
+                        "42000-FD",
+                        "auto",
+                        "no-phy"
+                    ],
+                    "description": [
+                        "Specifies the settings for a fixed (non-pluggable) interface.",
+                        "Use this option only with a combo port to specify the media type for the fixed interface, when it is not the preferred port."
+                    ],
+                    "type": "str"
+                },
+                "media_sfp": {
+                    "choices": [
+                        "100000-FD",
+                        "100000LR4-FD",
+                        "10000LR-FD",
+                        "10000T-FD",
+                        "1000SX-FD",
+                        "100TX-FD",
+                        "10T-HD",
+                        "20000-FD",
+                        "40000LR4-FD",
+                        "100000AR4-FD",
+                        "100000SR4-FD",
+                        "10000SFPCU-FD",
+                        "1000CX-FD",
+                        "1000T-FD",
+                        "100TX-HD",
+                        "12000-FD",
+                        "21000-FD",
+                        "40000SR4-FD",
+                        "100000CR4-FD",
+                        "10000ER-FD",
+                        "10000SR-FD",
+                        "1000LX-FD",
+                        "1000T-HD",
+                        "10T-FD",
+                        "16000-FD",
+                        "40000-FD",
+                        "42000-FD",
+                        "auto",
+                        "no-phy"
+                    ],
+                    "description": [
+                        "Specifies the settings for an SFP (pluggable) interface.",
+                        "Use this option only with a combo port to specify the media type for the SFP interface, when it is not the preferred port."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the interface to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port_fwd_mode": {
+                    "choices": [
+                        "l3",
+                        "passive",
+                        "virtual-wire"
+                    ],
+                    "description": [
+                        "Specifies the operation mode."
+                    ],
+                    "type": "str"
+                },
+                "prefer_port": {
+                    "choices": [
+                        "sfp",
+                        "fixed"
+                    ],
+                    "description": [
+                        "Indicates which side of a combo port the interface uses, if both sides have the potential for an external link.",
+                        "The default value for a combo port is sfp. Do not use this option for non-combo ports."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "sflow": {
+                    "description": [
+                        "Specifies sFlow settings for the interface."
+                    ],
+                    "suboptions": {
+                        "poll_interval": {
+                            "description": [
+                                "Specifies the maximum interval between two pollings, in seconds.",
+                                "For this setting to take effect, C(poll_interval_global) must be set to C(no).",
+                                "The valid range is 0 - 4294967295."
+                            ],
+                            "type": "int"
+                        },
+                        "poll_interval_global": {
+                            "description": [
+                                "Specifies whether the global interface C(poll_interval) setting overrides the object-level C(poll_interval) setting.",
+                                "When C(yes) the C(poll_interval) setting does not take effect."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "stp": {
+                    "description": [
+                        "Enables or disables STP."
+                    ],
+                    "type": "bool"
+                },
+                "stp_auto_edge_port": {
+                    "description": [
+                        "Sets STP automatic edge port detection for the interface.",
+                        "When C(yes), the system monitors the interface for incoming STP, RSTP, or MSTP packets. If no such packets are received for a sufficient period of time (about three seconds), the interface is automatically given edge port status.",
+                        "When C(no), the system never gives the interface edge port status automatically. Any STP setting set on a per-interface basis applies to all spanning tree instances."
+                    ],
+                    "type": "bool"
+                },
+                "stp_edge_port": {
+                    "description": [
+                        "Specifies whether the interface connects to an end station instead of another spanning tree bridge."
+                    ],
+                    "type": "bool"
+                },
+                "stp_link_type": {
+                    "choices": [
+                        "auto",
+                        "p2p",
+                        "shared"
+                    ],
+                    "description": [
+                        "Specifies the STP link type for the interface."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Module to manage BIG-IP physical interfaces.",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Update Interface Settings\n  bigip_interface:\n    name: 1.1\n    stp: yes\n    stp_auto_edge_port: no\n    stp_edge_port: yes\n    stp_link_type: shared\n    description: my description\n    flow_control: tx\n    lldp_admin: txrx\n    lldp_tlvmap: 8\n    force_gigabit_fiber: no\n    sflow:\n      - poll_interval: 10\n      - poll_interval_global: no\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Disable Interface\n  bigip_interface:\n    name: 1.1\n    enabled: no\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Change sflow interface settings\n  bigip_interface:\n    name: 1.1\n    sflow:\n      - poll_interval: 0\n      - poll_interval_global: yes\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "bundle": {
+                "description": "Enables or disables bundle capability.",
+                "returned": "changed",
+                "sample": "not-supported",
+                "type": "str"
+            },
+            "bundle_speed": {
+                "description": "The bundle speed.",
+                "returned": "changed",
+                "sample": "100G",
+                "type": "str"
+            },
+            "description": {
+                "description": "User defined description.",
+                "returned": "changed",
+                "sample": "my description",
+                "type": "str"
+            },
+            "enabled": {
+                "description": "The current status of the interface.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "flow_control": {
+                "description": "Specifies how the system controls the sending of PAUSE frames.",
+                "returned": "changed",
+                "sample": "tx",
+                "type": "str"
+            },
+            "force_gigabit_fiber": {
+                "description": "Enables or disables forcing of gigabit fiber media.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "forward_error_correction": {
+                "description": "Enables or disables Forward Error Correction.",
+                "returned": "changed",
+                "sample": "auto",
+                "type": "str"
+            },
+            "lldp_admin": {
+                "description": "The LLDP settings on an interface level.",
+                "returned": "changed",
+                "sample": "txrx",
+                "type": "str"
+            },
+            "lldp_tlvmap": {
+                "description": "The content of an LLDP message being sent or received.",
+                "returned": "changed",
+                "sample": 136,
+                "type": "int"
+            },
+            "media_fixed": {
+                "description": "The settings for a fixed interface.",
+                "returned": "changed",
+                "sample": "100000-FD",
+                "type": "str"
+            },
+            "media_sfp": {
+                "description": "The settings for a SFP interface.",
+                "returned": "changed",
+                "sample": "100000-FD",
+                "type": "str"
+            },
+            "port_fwd_mode": {
+                "description": "The operation mode.",
+                "returned": "changed",
+                "sample": "passive",
+                "type": "str"
+            },
+            "prefer_port": {
+                "description": "The side of a combo port the interface uses.",
+                "returned": "changed",
+                "sample": "fixed",
+                "type": "str"
+            },
+            "sflow": {
+                "contains": {
+                    "poll_interval": {
+                        "description": "The maximum interval in seconds between two pollings.",
+                        "returned": "changed",
+                        "sample": 128,
+                        "type": "int"
+                    },
+                    "poll_interval_global": {
+                        "description": "The global sFlow settings override.",
+                        "returned": "changed",
+                        "sample": true,
+                        "type": "bool"
+                    }
+                },
+                "description": "Specifies sFlow settings for the interface.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "stp": {
+                "description": "Enables or disables STP.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "stp_auto_edge_port": {
+                "description": "Sets STP automatic edge port detection for the interface.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "stp_edge_port": {
+                "description": "Specifies whether the interface connects to an end station instead of another spanning tree bridge.",
+                "returned": "changed",
+                "sample": false,
+                "type": "bool"
+            },
+            "stp_link_type": {
+                "description": "The STP link type for the interface.",
+                "returned": "changed",
+                "sample": "shared",
+                "type": "str"
+            }
+        }
+    }
+}

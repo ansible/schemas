@@ -1,0 +1,213 @@
+{
+    "community.grafana.grafana_team": {
+        "doc": {
+            "author": [
+                "R\u00e9mi REY (@rrey)"
+            ],
+            "collection": "community.grafana",
+            "description": [
+                "Create/update/delete Grafana Teams through the Teams API.",
+                "Also allows to add members in the team (if members exists)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/grafana/plugins/modules/grafana_team.py",
+            "has_action": false,
+            "module": "grafana_team",
+            "options": {
+                "client_cert": {
+                    "description": [
+                        "PEM formatted certificate chain file to be used for SSL client authentication.",
+                        "This file can also include the key as well, and if the key is included, I(client_key) is not required"
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "description": [
+                        "PEM formatted file that contains your private key to be used for SSL client authentication.",
+                        "If I(client_cert) contains both the certificate and key, this option is not required."
+                    ],
+                    "type": "path"
+                },
+                "email": {
+                    "description": [
+                        "The mail address associated with the Team."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enforce_members": {
+                    "default": false,
+                    "description": [
+                        "Delete the members not found in the C(members) parameters from the",
+                        "list of members found on the Team."
+                    ],
+                    "type": "bool"
+                },
+                "grafana_api_key": {
+                    "description": [
+                        "The Grafana API key.",
+                        "If set, C(url_username) and C(url_password) will be ignored."
+                    ],
+                    "type": "str"
+                },
+                "members": {
+                    "description": [
+                        "List of team members (emails).",
+                        "The list can be enforced with C(enforce_members) parameter."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "The name of the Grafana Team."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "skip_version_check": {
+                    "default": false,
+                    "description": [
+                        "Skip Grafana version check and try to reach api endpoint anyway.",
+                        "This parameter can be useful if you enabled `hide_version` in grafana.ini"
+                    ],
+                    "required": false,
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "community.grafana"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Delete the members not found in the C(members) parameters from the",
+                        "list of members found on the Team."
+                    ],
+                    "type": "str"
+                },
+                "url": {
+                    "aliases": [
+                        "grafana_url"
+                    ],
+                    "description": [
+                        "The Grafana URL."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "grafana_password"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana password for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "url_username": {
+                    "aliases": [
+                        "grafana_user"
+                    ],
+                    "default": "admin",
+                    "description": [
+                        "The Grafana user for API authentication."
+                    ],
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only set to C(no) used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "The Teams API is only available starting Grafana 5 and the module will fail if the server version is lower than version 5."
+            ],
+            "short_description": "Manage Grafana Teams",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.grafana"
+        },
+        "examples": "\n---\n- name: Create a team\n  community.grafana.grafana_team:\n      url: \"https://grafana.example.com\"\n      grafana_api_key: \"{{ some_api_token_value }}\"\n      name: \"grafana_working_group\"\n      email: \"foo.bar@example.com\"\n      state: present\n\n- name: Create a team with members\n  community.grafana.grafana_team:\n      url: \"https://grafana.example.com\"\n      grafana_api_key: \"{{ some_api_token_value }}\"\n      name: \"grafana_working_group\"\n      email: \"foo.bar@example.com\"\n      members:\n          - john.doe@example.com\n          - jane.doe@example.com\n      state: present\n\n- name: Create a team with members and enforce the list of members\n  community.grafana.grafana_team:\n      url: \"https://grafana.example.com\"\n      grafana_api_key: \"{{ some_api_token_value }}\"\n      name: \"grafana_working_group\"\n      email: \"foo.bar@example.com\"\n      members:\n          - john.doe@example.com\n          - jane.doe@example.com\n      enforce_members: yes\n      state: present\n\n- name: Delete a team\n  community.grafana.grafana_team:\n      url: \"https://grafana.example.com\"\n      grafana_api_key: \"{{ some_api_token_value }}\"\n      name: \"grafana_working_group\"\n      email: \"foo.bar@example.com\"\n      state: absent\n",
+        "metadata": null,
+        "return": {
+            "team": {
+                "contains": {
+                    "avatarUrl": {
+                        "description": "The url of the Team avatar on Grafana server",
+                        "returned": "always",
+                        "sample": [
+                            "/avatar/a7440323a684ea47406313a33156e5e9"
+                        ],
+                        "type": "str"
+                    },
+                    "email": {
+                        "description": "The Team email address",
+                        "returned": "always",
+                        "sample": [
+                            "foo.bar@example.com"
+                        ],
+                        "type": "str"
+                    },
+                    "id": {
+                        "description": "The Team email address",
+                        "returned": "always",
+                        "sample": [
+                            42
+                        ],
+                        "type": "int"
+                    },
+                    "memberCount": {
+                        "description": "The number of Team members",
+                        "returned": "always",
+                        "sample": [
+                            42
+                        ],
+                        "type": "int"
+                    },
+                    "members": {
+                        "description": "The list of Team members",
+                        "returned": "always",
+                        "sample": [
+                            [
+                                "john.doe@exemple.com"
+                            ]
+                        ],
+                        "type": "list"
+                    },
+                    "name": {
+                        "description": "The name of the team.",
+                        "returned": "always",
+                        "sample": [
+                            "grafana_working_group"
+                        ],
+                        "type": "str"
+                    },
+                    "orgId": {
+                        "description": "The organization id that the team is part of.",
+                        "returned": "always",
+                        "sample": [
+                            1
+                        ],
+                        "type": "int"
+                    }
+                },
+                "description": "Information about the Team",
+                "returned": "On success",
+                "type": "complex"
+            }
+        }
+    }
+}

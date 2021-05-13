@@ -1,0 +1,73 @@
+{
+    "async_status": {
+        "doc": {
+            "author": [
+                "Ansible Core Team",
+                "Michael DeHaan"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "This module gets the status of an asynchronous task.",
+                "This module is also supported for Windows targets."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/async_status.py",
+            "has_action": true,
+            "module": "async_status",
+            "notes": [
+                "This module is also supported for Windows targets."
+            ],
+            "options": {
+                "jid": {
+                    "description": [
+                        "Job or task identifier"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "mode": {
+                    "choices": [
+                        "cleanup",
+                        "status"
+                    ],
+                    "default": "status",
+                    "description": [
+                        "If C(status), obtain the status.",
+                        "If C(cleanup), clean up the async job cache (by default in C(~/.ansible_async/)) for the specified job I(jid)."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "description": "Detailed information on how to use asynchronous actions and polling.",
+                    "ref": "playbooks_async"
+                }
+            ],
+            "short_description": "Obtain status of asynchronous task",
+            "version_added": "0.5",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n---\n- name: Asynchronous yum task\n  yum:\n    name: docker-io\n    state: present\n  async: 1000\n  poll: 0\n  register: yum_sleeper\n\n- name: Wait for asynchronous job to end\n  async_status:\n    jid: '{{ yum_sleeper.ansible_job_id }}'\n  register: job_result\n  until: job_result.finished\n  retries: 100\n  delay: 10\n",
+        "metadata": null,
+        "return": {
+            "ansible_job_id": {
+                "description": "The asynchronous job id",
+                "returned": "success",
+                "sample": "360874038559.4169",
+                "type": "str"
+            },
+            "finished": {
+                "description": "Whether the asynchronous job has finished (C(1)) or not (C(0))",
+                "returned": "success",
+                "sample": 1,
+                "type": "int"
+            },
+            "started": {
+                "description": "Whether the asynchronous job has started (C(1)) or not (C(0))",
+                "returned": "success",
+                "sample": 1,
+                "type": "int"
+            }
+        }
+    }
+}

@@ -1,0 +1,194 @@
+{
+    "find": {
+        "doc": {
+            "author": "Brian Coca (@bcoca)",
+            "collection": "ansible.builtin",
+            "description": [
+                "Return a list of files based on specific criteria. Multiple criteria are AND'd together.",
+                "For Windows targets, use the M(ansible.windows.win_find) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/find.py",
+            "has_action": false,
+            "module": "find",
+            "options": {
+                "age": {
+                    "description": [
+                        "Select files whose age is equal to or greater than the specified time.",
+                        "Use a negative age to find files equal to or less than the specified time.",
+                        "You can choose seconds, minutes, hours, days, or weeks by specifying the first letter of any of those words (e.g., \"1w\")."
+                    ],
+                    "type": "str"
+                },
+                "age_stamp": {
+                    "choices": [
+                        "atime",
+                        "ctime",
+                        "mtime"
+                    ],
+                    "default": "mtime",
+                    "description": [
+                        "Choose the file property against which we compare age."
+                    ],
+                    "type": "str"
+                },
+                "contains": {
+                    "description": [
+                        "A regular expression or pattern which should be matched against the file content."
+                    ],
+                    "type": "str"
+                },
+                "depth": {
+                    "description": [
+                        "Set the maximum number of levels to descend into.",
+                        "Setting recurse to C(no) will override this value, which is effectively depth 1.",
+                        "Default is unlimited depth."
+                    ],
+                    "type": "int",
+                    "version_added": "2.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "excludes": {
+                    "aliases": [
+                        "exclude"
+                    ],
+                    "description": [
+                        "One or more (shell or regex) patterns, which type is controlled by C(use_regex) option.",
+                        "Items whose basenames match an C(excludes) pattern are culled from C(patterns) matches. Multiple patterns can be specified using a list."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "2.5",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "file_type": {
+                    "choices": [
+                        "any",
+                        "directory",
+                        "file",
+                        "link"
+                    ],
+                    "default": "file",
+                    "description": [
+                        "Type of file to select.",
+                        "The 'link' and 'any' choices were added in Ansible 2.3."
+                    ],
+                    "type": "str"
+                },
+                "follow": {
+                    "default": false,
+                    "description": [
+                        "Set this to C(yes) to follow symlinks in path for systems with python 2.6+."
+                    ],
+                    "type": "bool"
+                },
+                "get_checksum": {
+                    "default": false,
+                    "description": [
+                        "Set this to C(yes) to retrieve a file's SHA1 checksum."
+                    ],
+                    "type": "bool"
+                },
+                "hidden": {
+                    "default": false,
+                    "description": [
+                        "Set this to C(yes) to include hidden files, otherwise they will be ignored."
+                    ],
+                    "type": "bool"
+                },
+                "paths": {
+                    "aliases": [
+                        "name",
+                        "path"
+                    ],
+                    "description": [
+                        "List of paths of directories to search. All paths must be fully qualified."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "patterns": {
+                    "aliases": [
+                        "pattern"
+                    ],
+                    "default": [],
+                    "description": [
+                        "One or more (shell or regex) patterns, which type is controlled by C(use_regex) option.",
+                        "The patterns restrict the list of files to be returned to those whose basenames match at least one of the patterns specified. Multiple patterns can be specified using a list.",
+                        "The pattern is matched against the file base name, excluding the directory.",
+                        "When using regexen, the pattern MUST match the ENTIRE file name, not just parts of it. So if you are looking to match all files ending in .default, you'd need to use '.*\\.default' as a regexp and not just '\\.default'.",
+                        "This parameter expects a list, which can be either comma separated or YAML. If any of the patterns contain a comma, make sure to put them in a list to avoid splitting the patterns in undesirable ways.",
+                        "Defaults to '*' when C(use_regex=False), or '.*' when C(use_regex=True)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "recurse": {
+                    "default": false,
+                    "description": [
+                        "If target is a directory, recursively descend into the directory looking for files."
+                    ],
+                    "type": "bool"
+                },
+                "size": {
+                    "description": [
+                        "Select files whose size is equal to or greater than the specified size.",
+                        "Use a negative size to find files equal to or less than the specified size.",
+                        "Unqualified values are in bytes but b, k, m, g, and t can be appended to specify bytes, kilobytes, megabytes, gigabytes, and terabytes, respectively.",
+                        "Size is not evaluated for directories."
+                    ],
+                    "type": "str"
+                },
+                "use_regex": {
+                    "default": false,
+                    "description": [
+                        "If C(no), the patterns are file globs (shell).",
+                        "If C(yes), they are python regexes."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_find"
+                }
+            ],
+            "short_description": "Return a list of files based on specific criteria",
+            "version_added": "2.0",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Recursively find /tmp files older than 2 days\n  find:\n    paths: /tmp\n    age: 2d\n    recurse: yes\n\n- name: Recursively find /tmp files older than 4 weeks and equal or greater than 1 megabyte\n  find:\n    paths: /tmp\n    age: 4w\n    size: 1m\n    recurse: yes\n\n- name: Recursively find /var/tmp files with last access time greater than 3600 seconds\n  find:\n    paths: /var/tmp\n    age: 3600\n    age_stamp: atime\n    recurse: yes\n\n- name: Find /var/log files equal or greater than 10 megabytes ending with .old or .log.gz\n  find:\n    paths: /var/log\n    patterns: '*.old,*.log.gz'\n    size: 10m\n\n# Note that YAML double quotes require escaping backslashes but yaml single quotes do not.\n- name: Find /var/log files equal or greater than 10 megabytes ending with .old or .log.gz via regex\n  find:\n    paths: /var/log\n    patterns: \"^.*?\\\\.(?:old|log\\\\.gz)$\"\n    size: 10m\n    use_regex: yes\n\n- name: Find /var/log all directories, exclude nginx and mysql\n  find:\n    paths: /var/log\n    recurse: no\n    file_type: directory\n    excludes: 'nginx,mysql'\n\n# When using patterns that contain a comma, make sure they are formatted as lists to avoid splitting the pattern\n- name: Use a single pattern that contains a comma formatted as a list\n  find:\n    paths: /var/log\n    file_type: file\n    use_regex: yes\n    patterns: ['^_[0-9]{2,4}_.*.log$']\n\n- name: Use multiple patterns that contain a comma formatted as a YAML list\n  find:\n    paths: /var/log\n    file_type: file\n    use_regex: yes\n    patterns:\n      - '^_[0-9]{2,4}_.*.log$'\n      - '^[a-z]{1,5}_.*log$'\n\n",
+        "metadata": null,
+        "return": {
+            "examined": {
+                "description": "Number of filesystem objects looked at",
+                "returned": "success",
+                "sample": 34,
+                "type": "int"
+            },
+            "files": {
+                "description": "All matches found with the specified criteria (see stat module for full output of each dictionary)",
+                "returned": "success",
+                "sample": [
+                    {
+                        "...": "...",
+                        "checksum": "16fac7be61a6e4591a33ef4b729c5c3302307523",
+                        "mode": "0644",
+                        "path": "/var/tmp/test1"
+                    },
+                    {
+                        "...": "...",
+                        "path": "/var/tmp/test2"
+                    }
+                ],
+                "type": "list"
+            },
+            "matched": {
+                "description": "Number of matches",
+                "returned": "success",
+                "sample": 14,
+                "type": "int"
+            }
+        }
+    }
+}

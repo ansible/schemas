@@ -1,0 +1,304 @@
+{
+    "community.kubevirt.kubevirt_pvc": {
+        "doc": {
+            "author": "KubeVirt Team (@kubevirt)",
+            "collection": "community.kubevirt",
+            "description": [
+                "Use Openshift Python SDK to manage PVCs on Kubernetes",
+                "Support Containerized Data Importer out of the box"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/kubevirt/plugins/modules/kubevirt_pvc.py",
+            "has_action": false,
+            "module": "kubevirt_pvc",
+            "notes": [
+                "The OpenShift Python client wraps the K8s Python client, providing full access to all of the APIS and models available on both platforms. For API version details and additional information visit https://github.com/openshift/openshift-restclient-python",
+                "To avoid SSL certificate validation errors when C(validate_certs) is I(True), the full certificate chain for the API server must be provided via C(ca_cert) or in the kubeconfig file."
+            ],
+            "options": {
+                "access_modes": {
+                    "description": [
+                        "Contains the desired access modes the volume should have.",
+                        "More info: U(https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes)"
+                    ],
+                    "type": "list"
+                },
+                "annotations": {
+                    "description": [
+                        "Annotations attached to this object.",
+                        "U(https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)"
+                    ],
+                    "type": "dict"
+                },
+                "api_key": {
+                    "description": [
+                        "Token used to authenticate with the API. Can also be specified via K8S_AUTH_API_KEY environment variable."
+                    ],
+                    "type": "str"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "ssl_ca_cert"
+                    ],
+                    "description": [
+                        "Path to a CA certificate used to authenticate with the API. The full certificate chain must be provided to avoid certificate validation errors. Can also be specified via K8S_AUTH_SSL_CA_CERT environment variable."
+                    ],
+                    "type": "path"
+                },
+                "cdi_source": {
+                    "description": [
+                        "If data is to be copied onto the PVC using the Containerized Data Importer you can specify the source of the data (along with any additional configuration) as well as it's format.",
+                        "Valid source types are: blank, http, s3, registry, pvc and upload. The last one requires using the M(community.kubevirt.kubevirt_cdi_upload) module to actually perform an upload.",
+                        "Source data format is specified using the optional I(content_type). Valid options are C(kubevirt) (default; raw image) and C(archive) (tar.gz).",
+                        "This uses the DataVolume source syntax: U(https://github.com/kubevirt/containerized-data-importer/blob/master/doc/datavolumes.md#https3registry-source)"
+                    ],
+                    "type": "dict"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert_file"
+                    ],
+                    "description": [
+                        "Path to a certificate used to authenticate with the API. Can also be specified via K8S_AUTH_CERT_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key_file"
+                    ],
+                    "description": [
+                        "Path to a key file used to authenticate with the API. Can also be specified via K8S_AUTH_KEY_FILE environment variable."
+                    ],
+                    "type": "path"
+                },
+                "context": {
+                    "description": [
+                        "The name of a context found in the config file. Can also be specified via K8S_AUTH_CONTEXT environment variable."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "If set to C(True), and I(state) is C(present), an existing object will be replaced."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "description": [
+                        "Provide a URL for accessing the API. Can also be specified via K8S_AUTH_HOST environment variable."
+                    ],
+                    "type": "str"
+                },
+                "kubeconfig": {
+                    "description": [
+                        "Path to an existing Kubernetes config file. If not provided, and no other connection options are provided, the openshift client will attempt to load the default configuration file from I(~/.kube/config.json). Can also be specified via K8S_AUTH_KUBECONFIG environment variable."
+                    ],
+                    "type": "path"
+                },
+                "labels": {
+                    "description": [
+                        "Labels attached to this object.",
+                        "U(https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+                    ],
+                    "type": "dict"
+                },
+                "merge_type": {
+                    "choices": [
+                        "json",
+                        "merge",
+                        "strategic-merge"
+                    ],
+                    "description": [
+                        "Whether to override the default patch merge approach with a specific type.",
+                        "This defaults to C(['strategic-merge', 'merge']), which is ideal for using the same parameters on resource kinds that combine Custom Resources and built-in resources.",
+                        "See U(https://kubernetes.io/docs/tasks/run-application/update-api-object-kubectl-patch/#use-a-json-merge-patch-to-update-a-deployment)",
+                        "If more than one merge_type is given, the merge_types will be tried in order"
+                    ],
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Use to specify a PVC object name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "namespace": {
+                    "description": [
+                        "Use to specify a PVC object namespace."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Provide a password for authenticating with the API. Can also be specified via K8S_AUTH_PASSWORD environment variable.",
+                        "Please read the description of the C(username) option for a discussion of when this option is applicable."
+                    ],
+                    "type": "str"
+                },
+                "persist_config": {
+                    "description": [
+                        "Whether or not to save the kube config refresh tokens. Can also be specified via K8S_AUTH_PERSIST_CONFIG environment variable.",
+                        "When the k8s context is using a user credentials with refresh tokens (like oidc or gke/gcloud auth), the token is refreshed by the k8s python client library but not saved by default. So the old refresh token can expire and the next auth might fail. Setting this flag to true will tell the k8s python client to save the new refresh token to the kube config file.",
+                        "Default to false.",
+                        "Please note that the current version of the k8s python client library does not support setting this flag to True yet.",
+                        "The fix for this k8s python library is here: https://github.com/kubernetes-client/python-base/pull/169"
+                    ],
+                    "type": "bool"
+                },
+                "proxy": {
+                    "description": [
+                        "The URL of an HTTP proxy to use for the connection. Can also be specified via K8S_AUTH_PROXY environment variable.",
+                        "Please note that this module does not pick up typical proxy settings from the environment (e.g. HTTP_PROXY)."
+                    ],
+                    "type": "str"
+                },
+                "resource_definition": {
+                    "aliases": [
+                        "definition",
+                        "inline"
+                    ],
+                    "description": [
+                        "A partial YAML definition of the PVC object being created/updated. Here you can define Kubernetes PVC Resource parameters not covered by this module's parameters.",
+                        "NOTE: I(resource_definition) has lower priority than module parameters. If you try to define e.g. I(metadata.namespace) here, that value will be ignored and I(namespace) used instead."
+                    ],
+                    "type": "dict"
+                },
+                "selector": {
+                    "description": [
+                        "A label query over volumes to consider for binding.",
+                        "U(https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+                    ],
+                    "type": "dict"
+                },
+                "size": {
+                    "aliases": [
+                        "storage"
+                    ],
+                    "description": [
+                        "How much storage to allocate to the PVC."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines if an object should be created, patched, or deleted. When set to C(present), an object will be created, if it does not already exist. If set to C(absent), an existing object will be deleted. If set to C(present), an existing object will be patched, if its attributes differ from those specified using module options and I(resource_definition)."
+                    ]
+                },
+                "storage_class_name": {
+                    "description": [
+                        "Name of the StorageClass required by the claim.",
+                        "More info: U(https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1)"
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "Provide a username for authenticating with the API. Can also be specified via K8S_AUTH_USERNAME environment variable.",
+                        "Please note that this only works with clusters configured to use HTTP Basic Auth. If your cluster has a different form of authentication (e.g. OAuth2 in OpenShift), this option will not work as expected and you should look into the C(k8s_auth) module, as that might do what you need."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify_ssl"
+                    ],
+                    "description": [
+                        "Whether or not to verify the API server's SSL certificates. Can also be specified via K8S_AUTH_VERIFY_SSL environment variable."
+                    ],
+                    "type": "bool"
+                },
+                "volume_mode": {
+                    "description": [
+                        "This defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec. This is an alpha feature of kubernetes and may change in the future."
+                    ],
+                    "type": "str"
+                },
+                "volume_name": {
+                    "description": [
+                        "This is the binding reference to the PersistentVolume backing this claim."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "If set, this module will wait for the PVC to become bound and CDI (if enabled) to finish its operation before returning.",
+                        "Used only if I(state) set to C(present).",
+                        "Unless used in conjunction with I(cdi_source), this might result in a timeout, as clusters may be configured to not bind PVCs until first usage."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "Specifies how much time in seconds to wait for PVC creation to complete if I(wait) option is enabled.",
+                        "Default value is reasonably high due to an expectation that CDI might take a while to finish its operation."
+                    ],
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "openshift >= 0.8.2"
+            ],
+            "short_description": "Manage PVCs on Kubernetes"
+        },
+        "examples": "\n- name: Create a PVC and import data from an external source\n  community.kubevirt.kubevirt_pvc:\n    name: pvc1\n    namespace: default\n    size: 100Mi\n    access_modes:\n      - ReadWriteOnce\n    cdi_source:\n      http:\n        url: https://www.source.example/path/of/data/vm.img\n      # If the URL points to a tar.gz containing the disk image, uncomment the line below:\n      #content_type: archive\n\n- name: Create a PVC as a clone from a different PVC\n  community.kubevirt.kubevirt_pvc:\n    name: pvc2\n    namespace: default\n    size: 100Mi\n    access_modes:\n      - ReadWriteOnce\n    cdi_source:\n      pvc:\n        namespace: source-ns\n        name: source-pvc\n\n- name: Create a PVC ready for data upload\n  community.kubevirt.kubevirt_pvc:\n    name: pvc3\n    namespace: default\n    size: 100Mi\n    access_modes:\n      - ReadWriteOnce\n    cdi_source:\n      upload: yes\n    # You need the kubevirt_cdi_upload module to actually upload something\n\n- name: Create a PVC with a blank raw image\n  community.kubevirt.kubevirt_pvc:\n    name: pvc4\n    namespace: default\n    size: 100Mi\n    access_modes:\n      - ReadWriteOnce\n    cdi_source:\n      blank: yes\n\n- name: Create a PVC and fill it with data from a container\n  community.kubevirt.kubevirt_pvc:\n    name: pvc5\n    namespace: default\n    size: 100Mi\n    access_modes:\n      - ReadWriteOnce\n    cdi_source:\n      registry:\n        url: \"docker://kubevirt/fedora-cloud-registry-disk-demo\"\n\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "contains": {
+                    "api_version": {
+                        "description": "The versioned schema of this representation of an object.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "duration": {
+                        "description": "elapsed time of task in seconds",
+                        "returned": "when C(wait) is true",
+                        "sample": 48,
+                        "type": "int"
+                    },
+                    "items": {
+                        "description": "Returned only when multiple yaml documents are passed to src or resource_definition",
+                        "returned": "when resource_definition or src contains list of objects",
+                        "type": "list"
+                    },
+                    "kind": {
+                        "description": "Represents the REST resource this object represents.",
+                        "returned": "success",
+                        "type": "str"
+                    },
+                    "metadata": {
+                        "description": "Standard object metadata. Includes name, namespace, annotations, labels, etc.",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "spec": {
+                        "description": "Specific attributes of the object. Will vary based on the I(api_version) and I(kind).",
+                        "returned": "success",
+                        "type": "complex"
+                    },
+                    "status": {
+                        "description": "Current status details for the object.",
+                        "returned": "success",
+                        "type": "complex"
+                    }
+                },
+                "description": [
+                    "The created, patched, or otherwise present object. Will be empty in the case of a deletion."
+                ],
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,103 @@
+{
+    "junipernetworks.junos.junos_vlans": {
+        "doc": {
+            "author": "Daniel Mellado (@dmellado)",
+            "collection": "junipernetworks.junos",
+            "description": [
+                "This module creates and manages VLAN configurations on Junos OS."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/junipernetworks/junos/plugins/modules/junos_vlans.py",
+            "has_action": true,
+            "module": "junos_vlans",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed",
+                "Tested against Junos OS 18.4R1",
+                "This module works with connection C(netconf). See L(the Junos OS Platform Options,../network/user_guide/platform_junos.html)."
+            ],
+            "options": {
+                "config": {
+                    "description": "A dictionary of Vlan options",
+                    "elements": "dict",
+                    "suboptions": {
+                        "description": {
+                            "description": [
+                                "Text description of VLANs"
+                            ],
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of VLAN."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "vlan_id": {
+                            "description": [
+                                "IEEE 802.1q VLAN identifier for VLAN (1..4094)."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "running_config": {
+                    "description": [
+                        "This option is used only with state I(parsed).",
+                        "The value of this option should be the output received from the Junos device by executing the command B(show vlans).",
+                        "The state I(parsed) reads the configuration from C(running_config) option and transforms it into Ansible structured data as per the resource module's argspec and the value is then returned in the I(parsed) key within the result"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "merged",
+                        "replaced",
+                        "overridden",
+                        "deleted",
+                        "gathered",
+                        "parsed",
+                        "rendered"
+                    ],
+                    "default": "merged",
+                    "description": [
+                        "The state of the configuration after module completion."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "ncclient (>=v0.6.4)"
+            ],
+            "short_description": "VLANs resource module",
+            "version_added": "1.0.0",
+            "version_added_collection": "junipernetworks.junos"
+        },
+        "examples": "\n# Using merged\n#############\n\n# Before State\n# ------------\n#\n# admin# show vlans\n# vlan-2 {\n#     vlan-id 2;\n# }\n# vlan-3 {\n#     vlan-id 3;\n# }\n\n- name: Merge JUNOS vlan\n  junipernetworks.junos.junos_vlans:\n    config:\n    - name: vlan-1\n      vlan-id: 1\n  state: merged\n- name: Replace JUNOS vlan\n  junipernetworks.junos.junos_vlans:\n    config:\n    - name: vlan-1\n      vlan-id: 10\n    - name: vlan-3\n      vlan-id: 30\n  state: replaced\n- name: Override JUNOS vlan\n  junipernetworks.junos.junos_vlans:\n    config:\n    - name: vlan-4\n      vlan-id: 100\n    - name: vlan-2\n      vlan-id: 200\n  state: overridden\n- name: Delete JUNOS vlan\n  junipernetworks.junos.junos_vlans:\n    config:\n    - name: vlan-1\n  state: deleted\n",
+        "metadata": null,
+        "return": {
+            "after": {
+                "description": "The configuration as structured data after module completion.",
+                "returned": "when changed",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "str"
+            },
+            "before": {
+                "description": "The configuration as structured data prior to module invocation.",
+                "returned": "always",
+                "sample": "The configuration returned will always be in the same format\n of the parameters above.\n",
+                "type": "str"
+            },
+            "commands": {
+                "description": "The set of commands pushed to the remote device.",
+                "returned": "always",
+                "sample": [
+                    "xml 1",
+                    "xml 2",
+                    "xml 3"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

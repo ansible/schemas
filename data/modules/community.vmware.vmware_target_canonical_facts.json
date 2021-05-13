@@ -1,0 +1,165 @@
+{
+    "community.vmware.vmware_target_canonical_facts": {
+        "doc": {
+            "author": [
+                "Joseph Callen (@jcpowermac)",
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "deprecated": {
+                "alternative": "Use M(vmware_target_canonical_info) instead.",
+                "removed_from_collection": "community.vmware",
+                "removed_in": "2.13",
+                "why": "Deprecated in favour of C(_info) module."
+            },
+            "description": [
+                "This module can be used to gather facts about canonical (NAA) from an ESXi host based on SCSI target ID."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_target_canonical_facts.py",
+            "has_action": false,
+            "module": "vmware_target_canonical_facts",
+            "notes": null,
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster.",
+                        "Facts about all SCSI devices for all host system in the given cluster is returned.",
+                        "This parameter is required, if C(esxi_hostname) is not provided."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "Name of the ESXi host system.",
+                        "Facts about all SCSI devices for the given ESXi host system is returned.",
+                        "This parameter is required, if C(cluster_name) is not provided."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "target_id": {
+                    "description": [
+                        "The target id based on order of scsi device.",
+                        "version 2.6 onwards, this parameter is optional."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "Tested on vSphere 5.5 and 6.5",
+                "PyVmomi installed"
+            ],
+            "short_description": "Return canonical (NAA) from an ESXi host system"
+        },
+        "examples": "\n- name: Get Canonical name of particular target on particular ESXi host system\n  community.vmware.vmware_target_canonical_facts:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    target_id: 7\n    esxi_hostname: esxi_hostname\n  delegate_to: localhost\n\n- name: Get Canonical name of all target on particular ESXi host system\n  community.vmware.vmware_target_canonical_facts:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n  delegate_to: localhost\n\n- name: Get Canonical name of all ESXi hostname on particular Cluster\n  community.vmware.vmware_target_canonical_facts:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    cluster_name: '{{ cluster_name }}'\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "canonical": {
+                "description": "metadata about SCSI Target device",
+                "returned": "if host system and target id is given",
+                "sample": "mpx.vmhba0:C0:T0:L0",
+                "type": "str"
+            },
+            "scsi_tgt_facts": {
+                "description": "metadata about all SCSI Target devices",
+                "returned": "if host system or cluster is given",
+                "sample": {
+                    "DC0_C0_H0": {
+                        "scsilun_canonical": {
+                            "key-vim.host.ScsiDisk-0000000000766d686261303a303a30": "mpx.vmhba0:C0:T0:L0",
+                            "key-vim.host.ScsiLun-0005000000766d686261313a303a30": "mpx.vmhba1:C0:T0:L0"
+                        },
+                        "target_lun_uuid": {
+                            "0": "key-vim.host.ScsiDisk-0000000000766d686261303a303a30"
+                        }
+                    },
+                    "DC0_C0_H1": {
+                        "scsilun_canonical": {
+                            "key-vim.host.ScsiDisk-0000000000766d686261303a303a30": "mpx.vmhba0:C0:T0:L0",
+                            "key-vim.host.ScsiLun-0005000000766d686261313a303a30": "mpx.vmhba1:C0:T0:L0"
+                        },
+                        "target_lun_uuid": {
+                            "0": "key-vim.host.ScsiDisk-0000000000766d686261303a303a30"
+                        }
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

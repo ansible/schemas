@@ -1,0 +1,89 @@
+{
+    "infinidat.infinibox.infini_export": {
+        "doc": {
+            "author": "Gregory Shulov (@GR360RY)",
+            "collection": "infinidat.infinibox",
+            "description": [
+                "This module creates, deletes or modifies NFS exports on Infinibox."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/infinidat/infinibox/plugins/modules/infini_export.py",
+            "has_action": false,
+            "module": "infini_export",
+            "notes": [
+                "This module requires infinisdk python library",
+                "You must set INFINIBOX_USER and INFINIBOX_PASSWORD environment variables if user and password arguments are not passed to the module directly",
+                "Ansible uses the infinisdk configuration file C(~/.infinidat/infinisdk.ini) if no credentials are provided. See U(http://infinisdk.readthedocs.io/en/latest/getting_started.html)",
+                "All Infinidat modules support check mode (--check). However, a dryrun that creates resources may fail if the resource dependencies are not met for a task. For example, consider a task that creates a volume in a pool. If the pool does not exist, the volume creation task will fail. It will fail even if there was a previous task in the playbook that would have created the pool but did not because the pool creation was also part of the dry run."
+            ],
+            "options": {
+                "client_list": {
+                    "default": "All Hosts(*), RW, no_root_squash: True",
+                    "description": [
+                        "List of dictionaries with client entries. See examples. Check infini_export_client module to modify individual NFS client entries for export."
+                    ],
+                    "required": false
+                },
+                "filesystem": {
+                    "description": [
+                        "Name of exported file system."
+                    ],
+                    "required": true
+                },
+                "name": {
+                    "description": [
+                        "Export name. Must start with a forward slash, e.g. name=/data."
+                    ],
+                    "required": true
+                },
+                "password": {
+                    "description": [
+                        "Infinibox User password."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "stat",
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Creates/Modifies export when present, removes when absent, or provides export details with stat."
+                    ],
+                    "required": false
+                },
+                "system": {
+                    "description": [
+                        "Infinibox Hostname or IPv4 Address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "user": {
+                    "description": [
+                        "Infinibox User username with sufficient priveledges ( see notes )."
+                    ],
+                    "required": false
+                }
+            },
+            "requirements": [
+                "infinisdk (https://infinisdk.readthedocs.io/en/latest/)",
+                "munch",
+                "python2 >= 2.7 or python3 >= 3.6"
+            ],
+            "short_description": "Create, Delete or Modify NFS Exports on Infinibox",
+            "version_added": 2.3,
+            "version_added_collection": "infinidat.infinibox"
+        },
+        "examples": "\n- name: Export bar filesystem under foo pool as /data\n  infini_export:\n    name: /data01\n    filesystem: foo\n    state: present  # Default\n    user: admin\n    password: secret\n    system: ibox001\n\n- name: Get status of export bar filesystem under foo pool as /data\n  infini_export:\n    name: /data01\n    filesystem: foo\n    state: stat\n    user: admin\n    password: secret\n    system: ibox001\n\n- name: Remove export bar filesystem under foo pool as /data\n  infini_export:\n    name: /data01\n    filesystem: foo\n    state: absent\n    user: admin\n    password: secret\n    system: ibox001\n\n- name: Export and specify client list explicitly\n  infini_export:\n    name: /data02\n    filesystem: foo\n    client_list:\n      - client: 192.168.0.2\n        access: RW\n        no_root_squash: True\n      - client: 192.168.0.100\n        access: RO\n        no_root_squash: False\n      - client: 192.168.0.10-192.168.0.20\n        access: RO\n        no_root_squash: False\n    system: ibox001\n    user: admin\n    password: secret\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

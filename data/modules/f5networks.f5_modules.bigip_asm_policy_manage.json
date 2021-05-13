@@ -1,0 +1,234 @@
+{
+    "f5networks.f5_modules.bigip_asm_policy_manage": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage BIG-IP ASM policies, create from templates, and manage global policy settings."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_asm_policy_manage.py",
+            "has_action": false,
+            "module": "bigip_asm_policy_manage",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "active": {
+                    "description": [
+                        "If C(yes), will apply and activate the existing inactive policy. If C(no), it will deactivate the existing active policy. Generally should be C(yes) only in cases where you want to activate new or existing policy.",
+                        "In TMOS v14 and later, deactivating the policy will cause it to be detached from any other associated objects, hence the default option of C(no) has been removed in order to prevent accidental disassociation."
+                    ],
+                    "type": "bool"
+                },
+                "apply": {
+                    "description": [
+                        "If C(yes) will apply the policy if the policy has pending changes.",
+                        "Parameter supported on TMOS C(v14.x) and above."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.4.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "name": {
+                    "description": [
+                        "The ASM policy to manage or create."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state) is C(present), and the C(template) parameter is provided, a new ASM policy is created from the template with the given policy C(name).",
+                        "When C(state) is C(present) and no C(template) parameter is provided, a new blank ASM policy is created with the given policy C(name).",
+                        "When C(state) is C(absent), ensures the policy is removed, even if it is currently active."
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "choices": [
+                        "ActiveSync v1.0 v2.0 (http)",
+                        "ActiveSync v1.0 v2.0 (https)",
+                        "Comprehensive",
+                        "Drupal",
+                        "Fundamental",
+                        "Joomla",
+                        "LotusDomino 6.5 (http)",
+                        "LotusDomino 6.5 (https)",
+                        "OWA Exchange 2003 (http)",
+                        "OWA Exchange 2003 (https)",
+                        "OWA Exchange 2003 with ActiveSync (http)",
+                        "OWA Exchange 2003 with ActiveSync (https)",
+                        "OWA Exchange 2007 (http)",
+                        "OWA Exchange 2007 (https)",
+                        "OWA Exchange 2007 with ActiveSync (http)",
+                        "OWA Exchange 2007 with ActiveSync (https)",
+                        "OWA Exchange 2010 (http)",
+                        "OWA Exchange 2010 (https)",
+                        "Oracle 10g Portal (http)",
+                        "Oracle 10g Portal (https)",
+                        "Oracle Applications 11i (http)",
+                        "Oracle Applications 11i (https)",
+                        "PeopleSoft Portal 9 (http)",
+                        "PeopleSoft Portal 9 (https)",
+                        "Rapid Deployment Policy",
+                        "SAP NetWeaver 7 (http)",
+                        "SAP NetWeaver 7 (https)",
+                        "SharePoint 2003 (http)",
+                        "SharePoint 2003 (https)",
+                        "SharePoint 2007 (http)",
+                        "SharePoint 2007 (https)",
+                        "SharePoint 2010 (http)",
+                        "SharePoint 2010 (https)",
+                        "Vulnerability Assessment Baseline",
+                        "Wordpress"
+                    ],
+                    "description": [
+                        "An ASM policy built-in template. If the template does not exist, an error is raised.",
+                        "Once the policy has been created, this value cannot change.",
+                        "The C(Comprehensive), C(Drupal), C(Fundamental), C(Joomla), C(Vulnerability Assessment Baseline), and C(Wordpress) templates are only available on BIG-IP versions >= 13."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage BIG-IP ASM policies",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create ASM policy from template\n  bigip_asm_policy:\n    name: new_sharepoint_policy\n    template: SharePoint 2007 (http)\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create blank ASM policy\n  bigip_asm_policy:\n    name: new_blank_policy\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Create blank ASM policy and activate\n  bigip_asm_policy:\n    name: new_blank_policy\n    active: yes\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Activate ASM policy\n  bigip_asm_policy:\n    name: inactive_policy\n    active: yes\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n\n- name: Deactivate ASM policy\n  bigip_asm_policy_manage:\n    name: active_policy\n    state: present\n    provider:\n      server: lb.mydomain.com\n      user: admin\n      password: secret\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "active": {
+                "description": "Set when activating/deactivating an ASM policy",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "apply": {
+                "description": "Set when applying pending changes to an ASM policy",
+                "returned": "changed when target policy has changes pending",
+                "sample": true,
+                "type": "bool"
+            },
+            "name": {
+                "description": "Name of the ASM policy to be managed/created.",
+                "returned": "changed",
+                "sample": "Asm_APP1_Transparent",
+                "type": "str"
+            },
+            "state": {
+                "description": "Action performed on the target device.",
+                "returned": "changed",
+                "sample": "absent",
+                "type": "str"
+            },
+            "template": {
+                "description": "Name of the built-in ASM policy template.",
+                "returned": "changed",
+                "sample": "OWA Exchange 2007 (https)",
+                "type": "str"
+            }
+        }
+    }
+}

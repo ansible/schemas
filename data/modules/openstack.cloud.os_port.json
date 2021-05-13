@@ -1,0 +1,340 @@
+{
+    "openstack.cloud.os_port": {
+        "doc": {
+            "author": "OpenStack Ansible SIG",
+            "collection": "openstack.cloud",
+            "description": [
+                "Add, Update or Remove ports from an OpenStack cloud. A I(state) of 'present' will ensure the port is created or updated if required."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/openstack/cloud/plugins/modules/port.py",
+            "has_action": false,
+            "module": "port",
+            "notes": [
+                "The standard OpenStack environment variables, such as C(OS_USERNAME) may be used instead of providing explicit values.",
+                "Auth information is driven by openstacksdk, which means that values can come from a yaml config file in /etc/ansible/openstack.yaml, /etc/openstack/clouds.yaml or ~/.config/openstack/clouds.yaml, then from standard environment variables, then finally by explicit parameters in plays. More information can be found at U(https://docs.openstack.org/openstacksdk/)"
+            ],
+            "options": {
+                "admin_state_up": {
+                    "description": [
+                        "Sets admin state."
+                    ],
+                    "type": "bool"
+                },
+                "allowed_address_pairs": {
+                    "description": [
+                        "Allowed address pairs list.  Allowed address pairs are supported with dictionary structure. e.g.  allowed_address_pairs: - ip_address: 10.1.0.12 mac_address: ab:cd:ef:12:34:56 - ip_address: ..."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "ip_address": {
+                            "description": "The IP address.",
+                            "type": "str"
+                        },
+                        "mac_address": {
+                            "description": "The MAC address.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "api_timeout": {
+                    "description": [
+                        "How long should the socket layer wait before timing out for API calls. If this is omitted, nothing will be passed to the requests library."
+                    ],
+                    "type": "int"
+                },
+                "auth": {
+                    "description": [
+                        "Dictionary containing auth information as needed by the cloud's auth plugin strategy. For the default I(password) plugin, this would contain I(auth_url), I(username), I(password), I(project_name) and any information about domains (for example, I(user_domain_name) or I(project_domain_name)) if the cloud supports them. For other plugins, this param will need to contain whatever parameters that auth plugin requires. This parameter is not needed if a named cloud is provided or OpenStack OS_* environment variables are present."
+                    ],
+                    "type": "dict"
+                },
+                "auth_type": {
+                    "description": [
+                        "Name of the auth plugin to use. If the cloud uses something other than password authentication, the name of the plugin should be indicated here and the contents of the I(auth) parameter should be updated accordingly."
+                    ],
+                    "type": "str"
+                },
+                "availability_zone": {
+                    "description": [
+                        "Ignored. Present for backwards compatibility"
+                    ],
+                    "type": "str"
+                },
+                "binding_profile": {
+                    "description": [
+                        "Binding profile dict that the port should be created with."
+                    ],
+                    "type": "dict"
+                },
+                "ca_cert": {
+                    "aliases": [
+                        "cacert"
+                    ],
+                    "description": [
+                        "A path to a CA Cert bundle that can be used as part of verifying SSL API requests."
+                    ],
+                    "type": "str"
+                },
+                "client_cert": {
+                    "aliases": [
+                        "cert"
+                    ],
+                    "description": [
+                        "A path to a client certificate to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "client_key": {
+                    "aliases": [
+                        "key"
+                    ],
+                    "description": [
+                        "A path to a client key to use as part of the SSL transaction."
+                    ],
+                    "type": "str"
+                },
+                "cloud": {
+                    "description": [
+                        "Named cloud or cloud config to operate against. If I(cloud) is a string, it references a named cloud config as defined in an OpenStack clouds.yaml file. Provides default values for I(auth) and I(auth_type). This parameter is not needed if I(auth) is provided or if OpenStack OS_* environment variables are present. If I(cloud) is a dict, it contains a complete cloud configuration like would be in a section of clouds.yaml."
+                    ],
+                    "type": "raw"
+                },
+                "device_id": {
+                    "description": [
+                        "Device ID of device using this port."
+                    ],
+                    "type": "str"
+                },
+                "device_owner": {
+                    "description": [
+                        "The ID of the entity that uses this port."
+                    ],
+                    "type": "str"
+                },
+                "extra_dhcp_opts": {
+                    "description": [
+                        "Extra dhcp options to be assigned to this port. Extra options are supported with dictionary structure. Note that options cannot be removed only updated. e.g.  extra_dhcp_opts: - opt_name: opt name1 opt_value: value1 ip_version: 4 - opt_name: ..."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "ip_version": {
+                            "description": "The IP version this DHCP option is for.",
+                            "required": true,
+                            "type": "int"
+                        },
+                        "opt_name": {
+                            "description": "The name of the DHCP option to set.",
+                            "required": true,
+                            "type": "str"
+                        },
+                        "opt_value": {
+                            "description": "The value of the DHCP option to set.",
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "fixed_ips": {
+                    "description": [
+                        "Desired IP and/or subnet for this port.  Subnet is referenced by subnet_id and IP is referenced by ip_address."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "ip_address": {
+                            "description": "The fixed IP address to attempt to allocate.",
+                            "required": true,
+                            "type": "str"
+                        },
+                        "subnet_id": {
+                            "description": "The subnet to attach the IP address to.",
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "interface": {
+                    "aliases": [
+                        "endpoint_type"
+                    ],
+                    "choices": [
+                        "admin",
+                        "internal",
+                        "public"
+                    ],
+                    "default": "public",
+                    "description": [
+                        "Endpoint URL type to fetch from the service catalog."
+                    ],
+                    "type": "str"
+                },
+                "mac_address": {
+                    "description": [
+                        "MAC address of this port."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name that has to be given to the port."
+                    ],
+                    "type": "str"
+                },
+                "network": {
+                    "description": [
+                        "Network ID or name this port belongs to.",
+                        "Required when creating a new port."
+                    ],
+                    "type": "str"
+                },
+                "no_security_groups": {
+                    "default": "no",
+                    "description": [
+                        "Do not associate a security group with this port."
+                    ],
+                    "type": "bool"
+                },
+                "port_security_enabled": {
+                    "description": [
+                        "Whether to enable or disable the port security on the network."
+                    ],
+                    "type": "bool"
+                },
+                "region_name": {
+                    "description": [
+                        "Name of the region."
+                    ],
+                    "type": "str"
+                },
+                "security_groups": {
+                    "description": [
+                        "Security group(s) ID(s) or name(s) associated with the port (comma separated string or YAML list)"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the resource be present or absent."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "How long should ansible wait for the requested resource."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "aliases": [
+                        "verify"
+                    ],
+                    "default": false,
+                    "description": [
+                        "Whether or not SSL API requests should be verified.",
+                        "Before Ansible 2.3 this defaulted to C(yes)."
+                    ],
+                    "type": "bool"
+                },
+                "vnic_type": {
+                    "choices": [
+                        "normal",
+                        "direct",
+                        "direct-physical",
+                        "macvtap",
+                        "baremetal",
+                        "virtio-forwarder"
+                    ],
+                    "description": [
+                        "The type of the port that should be created"
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "Should ansible wait until the requested resource is complete."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "openstacksdk",
+                "openstacksdk >= 0.12.0",
+                "python >= 3.6"
+            ],
+            "short_description": "Add/Update/Delete ports from an OpenStack cloud."
+        },
+        "examples": "\n# Create a port\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    network: foo\n\n# Create a port with a static IP\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    network: foo\n    fixed_ips:\n      - ip_address: 10.1.0.21\n\n# Create a port with No security groups\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    network: foo\n    no_security_groups: True\n\n# Update the existing 'port1' port with multiple security groups (version 1)\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    security_groups: 1496e8c7-4918-482a-9172-f4f00fc4a3a5,057d4bdf-6d4d-472...\n\n# Update the existing 'port1' port with multiple security groups (version 2)\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    security_groups:\n      - 1496e8c7-4918-482a-9172-f4f00fc4a3a5\n      - 057d4bdf-6d4d-472...\n\n# Create port of type 'direct'\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    network: foo\n    vnic_type: direct\n\n# Create a port with binding profile\n- openstack.cloud.port:\n    state: present\n    auth:\n      auth_url: https://identity.example.com\n      username: admin\n      password: admin\n      project_name: admin\n    name: port1\n    network: foo\n    binding_profile:\n      \"pci_slot\": \"0000:03:11.1\"\n      \"physical_network\": \"provider\"\n",
+        "metadata": null,
+        "return": {
+            "admin_state_up": {
+                "description": "Admin state up flag for this port.",
+                "returned": "success",
+                "type": "bool"
+            },
+            "allowed_address_pairs": {
+                "description": "Allowed address pairs with this port.",
+                "returned": "success",
+                "type": "list"
+            },
+            "binding:profile": {
+                "description": "Port binded profile",
+                "returned": "success",
+                "type": "dict"
+            },
+            "fixed_ips": {
+                "description": "Fixed ip(s) associated with this port.",
+                "returned": "success",
+                "type": "list"
+            },
+            "id": {
+                "description": "Unique UUID.",
+                "returned": "success",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name given to the port.",
+                "returned": "success",
+                "type": "str"
+            },
+            "network_id": {
+                "description": "Network ID this port belongs in.",
+                "returned": "success",
+                "type": "str"
+            },
+            "port_security_enabled": {
+                "description": "Port security state on the network.",
+                "returned": "success",
+                "type": "bool"
+            },
+            "security_groups": {
+                "description": "Security group(s) associated with this port.",
+                "returned": "success",
+                "type": "list"
+            },
+            "status": {
+                "description": "Port's status.",
+                "returned": "success",
+                "type": "str"
+            },
+            "tenant_id": {
+                "description": "Tenant id associated with this port.",
+                "returned": "success",
+                "type": "str"
+            },
+            "vnic_type": {
+                "description": "Type of the created port",
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,127 @@
+{
+    "community.routeros.api": {
+        "doc": {
+            "author": "Nikolay Dachev (@NikolayDachev)",
+            "collection": "community.routeros",
+            "description": [
+                "Ansible module for RouterOS API with python librouteros.",
+                "This module can add, remove, update, query and execute arbitrary command in routeros via API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/routeros/plugins/modules/api.py",
+            "has_action": false,
+            "module": "api",
+            "notes": [
+                "I(add), I(remove), I(update), I(cmd) and I(query) are mutually exclusive.",
+                "I(check_mode) is not supported."
+            ],
+            "options": {
+                "add": {
+                    "description": [
+                        "Will add selected arguments in selected path to RouterOS config.",
+                        "Example C(address=1.1.1.1/32 interface=ether1).",
+                        "Equivalent in RouterOS CLI C(/ip address add address=1.1.1.1/32 interface=ether1)."
+                    ],
+                    "type": "str"
+                },
+                "cmd": {
+                    "description": [
+                        "Execute any/arbitrary command in selected path, after the command we can add C(.id).",
+                        "Example path C(system script) and cmd C(run .id=*03) is equivalent in RouterOS CLI C(/system script run number=0).",
+                        "Example path C(ip address) and cmd C(print) is equivalent in RouterOS CLI C(/ip address print)."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "RouterOS hostname API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "RouterOS user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Main path for all other arguments.",
+                        "If other arguments are not set, api will return all items in selected path.",
+                        "Example C(ip address). Equivalent of RouterOS CLI C(/ip address print)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "RouterOS api port. If ssl is set, port will apply to ssl connection.",
+                        "Defaults are C(8728) for the HTTP API, and C(8729) for the HTTPS API."
+                    ],
+                    "type": "int"
+                },
+                "query": {
+                    "description": [
+                        "Query given path for selected query attributes from RouterOS aip and return '.id'.",
+                        "WHERE is key word which extend query. WHERE format is key operator value - with spaces.",
+                        "WHERE valid operators are C(==), C(!=), C(>), C(<).",
+                        "Example path C(ip address) and query C(.id address) will return only C(.id) and C(address) for all items in C(ip address) path.",
+                        "Example path C(ip address) and query C(.id address WHERE address == 1.1.1.3/32). will return only C(.id) and C(address) for items in C(ip address) path, where address is eq to 1.1.1.3/32.",
+                        "Example path C(interface) and query C(mtu name WHERE mut > 1400) will return only interfaces C(mtu,name) where mtu is bigger than 1400.",
+                        "Equivalent in RouterOS CLI C(/interface print where mtu > 1400)."
+                    ],
+                    "type": "str"
+                },
+                "remove": {
+                    "description": [
+                        "Remove config/value from RouterOS by '.id'.",
+                        "Example C(*03) will remove config/value with C(id=*03) in selected path.",
+                        "Equivalent in RouterOS CLI C(/ip address remove numbers=1).",
+                        "Note C(number) in RouterOS CLI is different from C(.id)."
+                    ],
+                    "type": "str"
+                },
+                "ssl": {
+                    "default": false,
+                    "description": [
+                        "If is set TLS will be used for RouterOS API connection."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "update": {
+                    "description": [
+                        "Update config/value in RouterOS by '.id' in selected path.",
+                        "Example C(.id=*03 address=1.1.1.3/32) and path C(ip address) will replace existing ip address with C(.id=*03).",
+                        "Equivalent in RouterOS CLI C(/ip address set address=1.1.1.3/32 numbers=1).",
+                        "Note C(number) in RouterOS CLI is different from C(.id)."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "description": [
+                        "RouterOS login user."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "librouteros",
+                "Python >= 3.6 (for librouteros)"
+            ],
+            "short_description": "Ansible module for RouterOS API"
+        },
+        "examples": "\n---\n- name: Use RouterOS API\n  hosts: localhost\n  gather_facts: no\n  vars:\n    hostname: \"ros_api_hostname/ip\"\n    username: \"admin\"\n    password: \"secret_password\"\n\n    path: \"ip address\"\n\n    nic: \"ether2\"\n    ip1: \"1.1.1.1/32\"\n    ip2: \"2.2.2.2/32\"\n    ip3: \"3.3.3.3/32\"\n\n  tasks:\n    - name: Get \"{{ path }} print\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n      register: print_path\n\n    - name: Dump \"{{ path }} print\" output\n      ansible.builtin.debug:\n        msg: '{{ print_path }}'\n\n    - name: Add ip address \"{{ ip1 }}\" and \"{{ ip2 }}\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n        add: \"{{ item }}\"\n      loop:\n        - \"address={{ ip1 }} interface={{ nic }}\"\n        - \"address={{ ip2 }} interface={{ nic }}\"\n      register: addout\n\n    - name: Dump \"Add ip address\" output - \".id\" for new added items\n      ansible.builtin.debug:\n        msg: '{{ addout }}'\n\n    - name: Query for \".id\" in \"{{ path }} WHERE address == {{ ip2 }}\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n        query: \".id address WHERE address == {{ ip2 }}\"\n      register: queryout\n\n    - name: Dump \"Query for\" output and set fact with \".id\" for \"{{ ip2 }}\"\n      ansible.builtin.debug:\n        msg: '{{ queryout }}'\n\n    - name: Store query_id for later usage\n      ansible.builtin.set_fact:\n        query_id: \"{{ queryout['msg'][0]['.id'] }}\"\n\n    - name: Update \".id = {{ query_id }}\" taken with custom fact \"fquery_id\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n        update: \".id={{ query_id }} address={{ ip3 }}\"\n      register: updateout\n\n    - name: Dump \"Update\" output\n      ansible.builtin.debug:\n        msg: '{{ updateout }}'\n\n    - name: Remove ips - stage 1 - query \".id\" for \"{{ ip2 }}\" and \"{{ ip3 }}\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n        query: \".id address WHERE address == {{ item }}\"\n      register: id_to_remove\n      loop:\n        - \"{{ ip2 }}\"\n        - \"{{ ip3 }}\"\n\n    - name: Set fact for \".id\" from \"Remove ips - stage 1 - query\"\n      ansible.builtin.set_fact:\n        to_be_remove: \"{{ to_be_remove |default([]) + [item['msg'][0]['.id']] }}\"\n      loop: \"{{ id_to_remove.results }}\"\n\n    - name: Dump \"Remove ips - stage 1 - query\" output\n      ansible.builtin.debug:\n        msg: '{{ to_be_remove }}'\n\n    # Remove \"{{ rmips }}\" with \".id\" by \"to_be_remove\" from query\n    - name: Remove ips - stage 2 - remove \"{{ ip2 }}\" and \"{{ ip3 }}\" by '.id'\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"{{ path }}\"\n        remove: \"{{ item }}\"\n      register: remove\n      loop: \"{{ to_be_remove }}\"\n\n    - name: Dump \"Remove ips - stage 2 - remove\" output\n      ansible.builtin.debug:\n        msg: '{{ remove }}'\n\n    - name: Arbitrary command example \"/system identity print\"\n      community.routeros.api:\n        hostname: \"{{ hostname }}\"\n        password: \"{{ password }}\"\n        username: \"{{ username }}\"\n        path: \"system identity\"\n        cmd: \"print\"\n      register: cmdout\n\n    - name: Dump \"Arbitrary command example\" output\n      ansible.builtin.debug:\n        msg: \"{{ cmdout }}\"\n",
+        "metadata": null,
+        "return": {
+            "message": {
+                "description": "All outputs are in list with dictionary elements returned from RouterOS api.",
+                "returned": "always",
+                "sample": "C([{...},{...}])",
+                "type": "list"
+            }
+        }
+    }
+}

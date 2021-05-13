@@ -1,0 +1,181 @@
+{
+    "cisco.meraki.meraki_organization": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Allows for creation, management, and visibility into organizations within Meraki."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_organization.py",
+            "has_action": false,
+            "module": "meraki_organization",
+            "notes": [
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "clone": {
+                    "description": [
+                        "Organization to clone to a new organization."
+                    ],
+                    "type": "str"
+                },
+                "delete_confirm": {
+                    "description": [
+                        "ID of organization required for confirmation before deletion."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "org_id": {
+                    "aliases": [
+                        "id"
+                    ],
+                    "description": [
+                        "ID of organization."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "name",
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization.",
+                        "If C(clone) is specified, C(org_name) is the name of the new organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "query"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or modify an organization.",
+                        "C(org_id) must be specified if multiple organizations of the same name exist.",
+                        "C(absent) WILL DELETE YOUR ENTIRE ORGANIZATION, AND ALL ASSOCIATED OBJECTS, WITHOUT CONFIRMATION. USE WITH CAUTION."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Manage organizations in the Meraki cloud"
+        },
+        "examples": "\n- name: Create a new organization named YourOrg\n  meraki_organization:\n    auth_key: abc12345\n    org_name: YourOrg\n    state: present\n  delegate_to: localhost\n\n- name: Delete an organization named YourOrg\n  meraki_organization:\n    auth_key: abc12345\n    org_name: YourOrg\n    state: absent\n  delegate_to: localhost\n\n- name: Query information about all organizations associated to the user\n  meraki_organization:\n    auth_key: abc12345\n    state: query\n  delegate_to: localhost\n\n- name: Query information about a single organization named YourOrg\n  meraki_organization:\n    auth_key: abc12345\n    org_name: YourOrg\n    state: query\n  delegate_to: localhost\n\n- name: Rename an organization to RenamedOrg\n  meraki_organization:\n    auth_key: abc12345\n    org_id: 987654321\n    org_name: RenamedOrg\n    state: present\n  delegate_to: localhost\n\n- name: Clone an organization named Org to a new one called ClonedOrg\n  meraki_organization:\n    auth_key: abc12345\n    clone: Org\n    org_name: ClonedOrg\n    state: present\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "data": {
+                "contains": {
+                    "id": {
+                        "description": "Unique identification number of organization",
+                        "returned": "success",
+                        "sample": 2930418,
+                        "type": "int"
+                    },
+                    "name": {
+                        "description": "Name of organization",
+                        "returned": "success",
+                        "sample": "YourOrg",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the organization which was created or modified",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

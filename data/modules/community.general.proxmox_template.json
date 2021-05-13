@@ -1,0 +1,137 @@
+{
+    "community.general.proxmox_template": {
+        "doc": {
+            "author": "Sergei Antipov (@UnderGreen)",
+            "collection": "community.general",
+            "description": [
+                "allows you to upload/delete templates in Proxmox VE cluster"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/proxmox_template.py",
+            "has_action": false,
+            "module": "proxmox_template",
+            "notes": [
+                "Requires proxmoxer and requests modules on host. This modules can be installed with pip."
+            ],
+            "options": {
+                "api_host": {
+                    "description": [
+                        "Specify the target host of the Proxmox VE cluster."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_password": {
+                    "description": [
+                        "Specify the password to authenticate with.",
+                        "You can use C(PROXMOX_PASSWORD) environment variable."
+                    ],
+                    "type": "str"
+                },
+                "api_token_id": {
+                    "description": [
+                        "Specify the token ID."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_token_secret": {
+                    "description": [
+                        "Specify the token secret."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_user": {
+                    "description": [
+                        "Specify the user to authenticate with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "content_type": {
+                    "choices": [
+                        "vztmpl",
+                        "iso"
+                    ],
+                    "default": "vztmpl",
+                    "description": [
+                        "content type",
+                        "required only for C(state=present)"
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": "no",
+                    "description": [
+                        "can be used only with C(state=present), exists template will be overwritten"
+                    ],
+                    "type": "bool"
+                },
+                "node": {
+                    "description": [
+                        "Proxmox VE node on which to operate."
+                    ],
+                    "type": "str"
+                },
+                "src": {
+                    "description": [
+                        "path to uploaded file",
+                        "required only for C(state=present)"
+                    ],
+                    "type": "path"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicate desired state of the template"
+                    ],
+                    "type": "str"
+                },
+                "storage": {
+                    "default": "local",
+                    "description": [
+                        "target storage"
+                    ],
+                    "type": "str"
+                },
+                "template": {
+                    "description": [
+                        "the template name",
+                        "Required for state C(absent) to delete a template.",
+                        "Required for state C(present) to download an appliance container template (pveam)."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "timeout for operations"
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": false,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "proxmoxer",
+                "requests"
+            ],
+            "short_description": "management of OS templates in Proxmox VE cluster"
+        },
+        "examples": "\n- name: Upload new openvz template with minimal options\n  community.general.proxmox_template:\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    src: ~/ubuntu-14.04-x86_64.tar.gz\n\n- name: >\n    Upload new openvz template with minimal options use environment\n    PROXMOX_PASSWORD variable(you should export it before)\n  community.general.proxmox_template:\n    node: uk-mc02\n    api_user: root@pam\n    api_host: node1\n    src: ~/ubuntu-14.04-x86_64.tar.gz\n\n- name: Upload new openvz template with all options and force overwrite\n  community.general.proxmox_template:\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    storage: local\n    content_type: vztmpl\n    src: ~/ubuntu-14.04-x86_64.tar.gz\n    force: yes\n\n- name: Delete template with minimal options\n  community.general.proxmox_template:\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    template: ubuntu-14.04-x86_64.tar.gz\n    state: absent\n\n- name: Download proxmox appliance container template\n  community.general.proxmox_template:\n    node: uk-mc02\n    api_user: root@pam\n    api_password: 1q2w3e\n    api_host: node1\n    storage: local\n    content_type: vztmpl\n    template: ubuntu-20.04-standard_20.04-1_amd64.tar.gz\n",
+        "metadata": null,
+        "return": null
+    }
+}

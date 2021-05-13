@@ -1,0 +1,161 @@
+{
+    "community.vmware.vcenter_license": {
+        "doc": {
+            "author": [
+                "Dag Wieers (@dagwieers)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Add and delete vCenter, ESXi server license keys."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vcenter_license.py",
+            "has_action": false,
+            "module": "vcenter_license",
+            "notes": [
+                "This module will also auto-assign the current vCenter to the license key if the product matches the license key, and vCenter us currently assigned an evaluation license only.",
+                "The evaluation license (00000-00000-00000-00000-00000) is not listed when unused.",
+                "If C(esxi_hostname) is specified, then will assign the C(license) key to the ESXi host."
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster to apply vSAN license."
+                    ],
+                    "type": "str"
+                },
+                "datacenter": {
+                    "description": [
+                        "The datacenter name to use for the operation."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "The hostname of the ESXi server to which the specified license will be assigned.",
+                        "This parameter is optional."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable supported added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "labels": {
+                    "default": {
+                        "source": "ansible"
+                    },
+                    "description": [
+                        "The optional labels of the license key to manage in vSphere vCenter.",
+                        "This is dictionary with key/value pair."
+                    ],
+                    "type": "dict"
+                },
+                "license": {
+                    "description": [
+                        "The license key to manage in vSphere vCenter."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable supported added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable supported added in Ansible 2.6."
+                    ],
+                    "type": "int",
+                    "version_added": "2.5",
+                    "version_added_collection": "community.vmware"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "2.9",
+                    "version_added_collection": "community.vmware"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int",
+                    "version_added": "2.9",
+                    "version_added_collection": "community.vmware"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether to add (C(present)) or remove (C(absent)) the license key."
+                    ],
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable supported added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable supported added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "pyVmomi"
+            ],
+            "short_description": "Manage VMware vCenter license keys"
+        },
+        "examples": "\n- name: Add a new vCenter license\n  community.vmware.vcenter_license:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    license: f600d-21ae3-5592b-249e0-cc341\n    state: present\n  delegate_to: localhost\n\n- name: Remove an (unused) vCenter license\n  community.vmware.vcenter_license:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    license: f600d-21ae3-5592b-249e0-cc341\n    state: absent\n  delegate_to: localhost\n\n- name: Add ESXi license and assign to the ESXi host\n  community.vmware.vcenter_license:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n    license: f600d-21ae3-5592b-249e0-dd502\n    state: present\n  delegate_to: localhost\n\n- name: Add vSAN license and assign to the given cluster\n  community.vmware.vcenter_license:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    datacenter: '{{ datacenter_name }}'\n    cluster_name: '{{ cluster_name }}'\n    license: f600d-21ae3-5592b-249e0-dd502\n    state: present\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "licenses": {
+                "description": "list of license keys after module executed",
+                "returned": "always",
+                "sample": [
+                    "f600d-21ae3-5592b-249e0-cc341",
+                    "143cc-0e942-b2955-3ea12-d006f"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

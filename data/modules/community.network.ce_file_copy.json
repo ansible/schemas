@@ -1,0 +1,74 @@
+{
+    "community.network.ce_file_copy": {
+        "doc": {
+            "author": [
+                "Zhou Zhijin (@QijunPan)"
+            ],
+            "collection": "community.network",
+            "description": [
+                "Copy a file to a remote cloudengine device over SCP on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_file_copy.py",
+            "has_action": false,
+            "module": "ce_file_copy",
+            "notes": [
+                "The feature must be enabled with feature scp-server.",
+                "If the file is already present, no transfer will take place.",
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "file_system": {
+                    "default": "flash:",
+                    "description": [
+                        "The remote file system of the device. If omitted, devices that support a I(file_system) parameter will use their default values. File system indicates the storage medium and can be set to as follows, 1) C(flash) is root directory of the flash memory on the master MPU. 2) C(slave#flash) is root directory of the flash memory on the slave MPU. If no slave MPU exists, this drive is unavailable. 3) C(chassis ID/slot number#flash) is root directory of the flash memory on a device in a stack. For example, C(1/5#flash) indicates the flash memory whose chassis ID is 1 and slot number is 5."
+                    ]
+                },
+                "local_file": {
+                    "description": [
+                        "Path to local file. Local directory must exist. The maximum length of I(local_file) is C(4096)."
+                    ],
+                    "required": true
+                },
+                "remote_file": {
+                    "description": [
+                        "Remote file path of the copy. Remote directories must exist. If omitted, the name of the local file will be used. The maximum length of I(remote_file) is C(4096)."
+                    ]
+                }
+            },
+            "requirements": [
+                "paramiko"
+            ],
+            "short_description": "Copy a file to a remote cloudengine device over SCP on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: File copy test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: \"Copy a local file to remote device\"\n    community.network.ce_file_copy:\n      local_file: /usr/vrpcfg.cfg\n      remote_file: /vrpcfg.cfg\n      file_system: 'flash:'\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "local_file": {
+                "description": "The path of the local file.",
+                "returned": "always",
+                "sample": "/usr/work/vrpcfg.zip",
+                "type": "str"
+            },
+            "remote_file": {
+                "description": "The path of the remote file.",
+                "returned": "always",
+                "sample": "/vrpcfg.zip",
+                "type": "str"
+            },
+            "transfer_result": {
+                "description": "information about transfer result.",
+                "returned": "always",
+                "sample": "The local file has been successfully transferred to the device.",
+                "type": "str"
+            }
+        }
+    }
+}

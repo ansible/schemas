@@ -1,0 +1,233 @@
+{
+    "ngine_io.cloudstack.cs_vmsnapshot": {
+        "doc": {
+            "author": "Ren\u00e9 Moser (@resmo)",
+            "collection": "ngine_io.cloudstack",
+            "description": [
+                "Create, remove and revert VM from snapshots."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/cloudstack/plugins/modules/cs_vmsnapshot.py",
+            "has_action": false,
+            "module": "cs_vmsnapshot",
+            "notes": [
+                "A detailed guide about cloudstack modules can be found in the L(CloudStack Cloud Guide,../scenario_guides/guide_cloudstack.html).",
+                "This module supports check mode."
+            ],
+            "options": {
+                "account": {
+                    "description": [
+                        "Account the VM snapshot is related to."
+                    ],
+                    "type": "str"
+                },
+                "api_http_method": {
+                    "choices": [
+                        "get",
+                        "post"
+                    ],
+                    "default": "get",
+                    "description": [
+                        "HTTP method used to query the API endpoint.",
+                        "If not given, the C(CLOUDSTACK_METHOD) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the CloudStack API.",
+                        "If not given, the C(CLOUDSTACK_KEY) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_secret": {
+                    "description": [
+                        "Secret key of the CloudStack API.",
+                        "If not set, the C(CLOUDSTACK_SECRET) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_timeout": {
+                    "default": 10,
+                    "description": [
+                        "HTTP timeout in seconds.",
+                        "If not given, the C(CLOUDSTACK_TIMEOUT) env variable is considered."
+                    ],
+                    "type": "int"
+                },
+                "api_url": {
+                    "description": [
+                        "URL of the CloudStack API e.g. https://cloud.example.com/client/api.",
+                        "If not given, the C(CLOUDSTACK_ENDPOINT) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_verify_ssl_cert": {
+                    "description": [
+                        "Verify CA authority cert file.",
+                        "If not given, the C(CLOUDSTACK_VERIFY) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the snapshot."
+                    ],
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "Domain the VM snapshot is related to."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "aliases": [
+                        "display_name"
+                    ],
+                    "description": [
+                        "Unique Name of the snapshot. In CloudStack terms display name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "poll_async": {
+                    "default": true,
+                    "description": [
+                        "Poll async jobs until job has finished."
+                    ],
+                    "type": "bool"
+                },
+                "project": {
+                    "description": [
+                        "Name of the project the VM is assigned to."
+                    ],
+                    "type": "str"
+                },
+                "snapshot_memory": {
+                    "default": false,
+                    "description": [
+                        "Snapshot memory if set to true."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "revert"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the snapshot."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "aliases": [
+                        "tag"
+                    ],
+                    "description": [
+                        "List of tags. Tags are a list of dictionaries having keys I(key) and I(value).",
+                        "To delete all tags, set a empty list e.g. I(tags: [])."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "vm": {
+                    "description": [
+                        "Name of the virtual machine."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "Name of the zone in which the VM is in. If not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "cs >= 0.9.0"
+            ],
+            "short_description": "Manages VM snapshots on Apache CloudStack based clouds.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.cloudstack"
+        },
+        "examples": "\n- name: Create a VM snapshot of disk and memory before an upgrade\n  ngine_io.cloudstack.cs_vmsnapshot:\n    name: Snapshot before upgrade\n    vm: web-01\n    zone: zone01\n    snapshot_memory: yes\n\n- name: Revert a VM to a snapshot after a failed upgrade\n  ngine_io.cloudstack.cs_vmsnapshot:\n    name: Snapshot before upgrade\n    vm: web-01\n    zone: zone01\n    state: revert\n\n- name: Remove a VM snapshot after successful upgrade\n  ngine_io.cloudstack.cs_vmsnapshot:\n    name: Snapshot before upgrade\n    vm: web-01\n    zone: zone01\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "account": {
+                "description": "Account the vm snapshot is related to.",
+                "returned": "success",
+                "sample": "example account",
+                "type": "str"
+            },
+            "created": {
+                "description": "date of the snapshot.",
+                "returned": "success",
+                "sample": "2015-03-29T14:57:06+0200",
+                "type": "str"
+            },
+            "current": {
+                "description": "true if the snapshot is current",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "description": {
+                "description": "description of vm snapshot",
+                "returned": "success",
+                "sample": "snapshot brought to you by Ansible",
+                "type": "str"
+            },
+            "display_name": {
+                "description": "Display name of the snapshot.",
+                "returned": "success",
+                "sample": "snapshot before update",
+                "type": "str"
+            },
+            "domain": {
+                "description": "Domain the vm snapshot is related to.",
+                "returned": "success",
+                "sample": "example domain",
+                "type": "str"
+            },
+            "id": {
+                "description": "UUID of the snapshot.",
+                "returned": "success",
+                "sample": "a6f7a5fc-43f8-11e5-a151-feff819cdc9f",
+                "type": "str"
+            },
+            "name": {
+                "description": "Name of the snapshot.",
+                "returned": "success",
+                "sample": "snapshot before update",
+                "type": "str"
+            },
+            "project": {
+                "description": "Name of project the vm snapshot is related to.",
+                "returned": "success",
+                "sample": "Production",
+                "type": "str"
+            },
+            "state": {
+                "description": "state of the vm snapshot",
+                "returned": "success",
+                "sample": "Allocated",
+                "type": "str"
+            },
+            "type": {
+                "description": "type of vm snapshot",
+                "returned": "success",
+                "sample": "DiskAndMemory",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+{
+    "community.general.zfs": {
+        "doc": {
+            "author": [
+                "Johan Wiren (@johanwiren)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manages ZFS file systems, volumes, clones and snapshots"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/zfs.py",
+            "has_action": false,
+            "module": "zfs",
+            "notes": [
+                "C(check_mode) is supported, but in certain situations it may report a task as changed that will not be reported as changed when C(check_mode) is disabled. For example, this might occur when the zpool C(altroot) option is set or when a size is written using human-readable notation, such as C(1M) or C(1024K), instead of as an unqualified byte count, such as C(1048576)."
+            ],
+            "options": {
+                "extra_zfs_properties": {
+                    "description": [
+                        "A dictionary of zfs properties to be set.",
+                        "See the zfs(8) man page for more information."
+                    ],
+                    "type": "dict"
+                },
+                "name": {
+                    "description": [
+                        "File system, snapshot or volume name e.g. C(rpool/myfs)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "origin": {
+                    "description": [
+                        "Snapshot from which to create a clone."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "description": [
+                        "Whether to create (C(present)), or remove (C(absent)) a file system, snapshot or volume. All parents/children will be created/destroyed as needed to reach the desired state."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage zfs"
+        },
+        "examples": "\n- name: Create a new file system called myfs in pool rpool with the setuid property turned off\n  community.general.zfs:\n    name: rpool/myfs\n    state: present\n    extra_zfs_properties:\n      setuid: off\n\n- name: Create a new volume called myvol in pool rpool.\n  community.general.zfs:\n    name: rpool/myvol\n    state: present\n    extra_zfs_properties:\n      volsize: 10M\n\n- name: Create a snapshot of rpool/myfs file system.\n  community.general.zfs:\n    name: rpool/myfs@mysnapshot\n    state: present\n\n- name: Create a new file system called myfs2 with snapdir enabled\n  community.general.zfs:\n    name: rpool/myfs2\n    state: present\n    extra_zfs_properties:\n      snapdir: enabled\n\n- name: Create a new file system by cloning a snapshot\n  community.general.zfs:\n    name: rpool/cloned_fs\n    state: present\n    origin: rpool/myfs@mysnapshot\n\n- name: Destroy a filesystem\n  community.general.zfs:\n    name: rpool/myfs\n    state: absent\n",
+        "metadata": null,
+        "return": null
+    }
+}

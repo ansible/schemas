@@ -1,0 +1,118 @@
+{
+    "community.general.sendgrid": {
+        "doc": {
+            "author": "Matt Makai (@makaimc)",
+            "collection": "community.general",
+            "description": [
+                "Sends an email with a SendGrid account through their API, not through the SMTP service."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/sendgrid.py",
+            "has_action": false,
+            "module": "sendgrid",
+            "notes": [
+                "This module is non-idempotent because it sends an email through the external API. It is idempotent only in the case that the module fails.",
+                "Like the other notification modules, this one requires an external dependency to work. In this case, you'll need an active SendGrid account.",
+                "In order to use api_key, cc, bcc, attachments, from_name, html_body, headers you must pip install sendgrid",
+                "since 2.2 I(username) and I(password) are not required if you supply an I(api_key)"
+            ],
+            "options": {
+                "api_key": {
+                    "description": [
+                        "Sendgrid API key to use instead of username/password."
+                    ],
+                    "type": "str"
+                },
+                "attachments": {
+                    "description": [
+                        "A list of relative or explicit paths of files you want to attach (7MB limit as per SendGrid docs)."
+                    ],
+                    "elements": "path",
+                    "type": "list"
+                },
+                "bcc": {
+                    "description": [
+                        "A list of email addresses to bcc."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "body": {
+                    "description": [
+                        "The e-mail body content."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "cc": {
+                    "description": [
+                        "A list of email addresses to cc."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "from_address": {
+                    "description": [
+                        "The address in the \"from\" field for the email."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "from_name": {
+                    "description": [
+                        "The name you want to appear in the from field, i.e 'John Doe'."
+                    ],
+                    "type": "str"
+                },
+                "headers": {
+                    "description": [
+                        "A dict to pass on as headers."
+                    ],
+                    "type": "dict"
+                },
+                "html_body": {
+                    "default": "no",
+                    "description": [
+                        "Whether the body is html content that should be rendered."
+                    ],
+                    "type": "bool"
+                },
+                "password": {
+                    "description": [
+                        "Password that corresponds to the username.",
+                        "Since 2.2 it is only required if I(api_key) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "subject": {
+                    "description": [
+                        "The desired subject for the email."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "to_addresses": {
+                    "description": [
+                        "A list with one or more recipient email addresses."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "username": {
+                    "description": [
+                        "Username for logging into the SendGrid account.",
+                        "Since 2.2 it is only required if I(api_key) is not supplied."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "sendgrid Python library 1.6.22 or lower (Sendgrid API V2 supported)"
+            ],
+            "short_description": "Sends an email with the SendGrid API"
+        },
+        "examples": "\n- name: Send an email to a single recipient that the deployment was successful\n  community.general.sendgrid:\n    username: \"{{ sendgrid_username }}\"\n    password: \"{{ sendgrid_password }}\"\n    from_address: \"ansible@mycompany.com\"\n    to_addresses:\n      - \"ops@mycompany.com\"\n    subject: \"Deployment success.\"\n    body: \"The most recent Ansible deployment was successful.\"\n  delegate_to: localhost\n\n- name: Send an email to more than one recipient that the build failed\n  community.general.sendgrid:\n      username: \"{{ sendgrid_username }}\"\n      password: \"{{ sendgrid_password }}\"\n      from_address: \"build@mycompany.com\"\n      to_addresses:\n        - \"ops@mycompany.com\"\n        - \"devteam@mycompany.com\"\n      subject: \"Build failure!.\"\n      body: \"Unable to pull source repository from Git server.\"\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": null
+    }
+}

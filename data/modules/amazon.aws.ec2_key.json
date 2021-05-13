@@ -1,0 +1,197 @@
+{
+    "amazon.aws.ec2_key": {
+        "doc": {
+            "author": [
+                "Vincent Viallet (@zbal)",
+                "Prasad Katti (@prasadkatti)"
+            ],
+            "collection": "amazon.aws",
+            "description": [
+                "create or delete an ec2 key pair."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/amazon/aws/plugins/modules/ec2_key.py",
+            "has_action": false,
+            "module": "ec2_key",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": true,
+                    "description": [
+                        "Force overwrite of already existing key pair if key has changed."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "key_material": {
+                    "description": [
+                        "Public key material."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the key pair."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "create or delete keypair"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "wait": {
+                    "description": [
+                        "This option has no effect since version 2.5 and will be removed in 2.14."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "description": [
+                        "This option has no effect since version 2.5 and will be removed in 2.14."
+                    ],
+                    "required": false,
+                    "type": "int"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "create or delete an ec2 key pair"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: create a new ec2 key pair, returns generated private key\n  ec2_key:\n    name: my_keypair\n\n- name: create key pair using provided key_material\n  ec2_key:\n    name: my_keypair\n    key_material: 'ssh-rsa AAAAxyz...== me@example.com'\n\n- name: create key pair using key_material obtained using 'file' lookup plugin\n  ec2_key:\n    name: my_keypair\n    key_material: \"{{ lookup('file', '/path/to/public_key/id_rsa.pub') }}\"\n\n# try creating a key pair with the name of an already existing keypair\n# but don't overwrite it even if the key is different (force=false)\n- name: try creating a key pair with name of an already existing keypair\n  ec2_key:\n    name: my_existing_keypair\n    key_material: 'ssh-rsa AAAAxyz...== me@example.com'\n    force: false\n\n- name: remove key pair by name\n  ec2_key:\n    name: my_keypair\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "stableinterface"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "changed": {
+                "description": "whether a keypair was created/deleted",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "key": {
+                "contains": {
+                    "fingerprint": {
+                        "description": "fingerprint of the key",
+                        "returned": "when state is present",
+                        "sample": "b0:22:49:61:d9:44:9d:0c:7e:ac:8a:32:93:21:6c:e8:fb:59:62:43",
+                        "type": "str"
+                    },
+                    "name": {
+                        "description": "name of the keypair",
+                        "returned": "when state is present",
+                        "sample": "my_keypair",
+                        "type": "str"
+                    },
+                    "private_key": {
+                        "description": "private key of a newly created keypair",
+                        "returned": "when a new keypair is created by AWS (key_material is not provided)",
+                        "sample": "-----BEGIN RSA PRIVATE KEY----- MIIEowIBAAKC... -----END RSA PRIVATE KEY-----",
+                        "type": "str"
+                    }
+                },
+                "description": "details of the keypair (this is set to null when state is absent)",
+                "returned": "always",
+                "type": "complex"
+            },
+            "msg": {
+                "description": "short message describing the action taken",
+                "returned": "always",
+                "sample": "key pair created",
+                "type": "str"
+            }
+        }
+    }
+}

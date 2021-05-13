@@ -1,0 +1,422 @@
+{
+    "community.aws.rds_snapshot_info": {
+        "doc": {
+            "author": [
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Obtain information about one or more RDS snapshots. These can be for unclustered snapshots or snapshots of clustered DBs (Aurora).",
+                "Aurora snapshot information may be obtained if no identifier parameters are passed or if one of the cluster parameters are passed.",
+                "This module was called C(rds_snapshot_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/rds_snapshot_info.py",
+            "has_action": false,
+            "module": "rds_snapshot_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "db_cluster_identifier": {
+                    "description": [
+                        "RDS cluster name for which to find snapshots.",
+                        "Mutually exclusive with I(db_snapshot_identifier), I(db_instance_identifier), I(db_cluster_snapshot_identifier)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "db_cluster_snapshot_identifier": {
+                    "description": [
+                        "Name of an RDS cluster snapshot.",
+                        "Mutually exclusive with I(db_instance_identifier), I(db_snapshot_identifier), I(db_cluster_identifier)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "db_instance_identifier": {
+                    "description": [
+                        "RDS instance name for which to find snapshots.",
+                        "Mutually exclusive with I(db_snapshot_identifier), I(db_cluster_identifier), I(db_cluster_snapshot_identifier)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "db_snapshot_identifier": {
+                    "aliases": [
+                        "snapshot_name"
+                    ],
+                    "description": [
+                        "Name of an RDS (unclustered) snapshot.",
+                        "Mutually exclusive with I(db_instance_identifier), I(db_cluster_identifier), I(db_cluster_snapshot_identifier)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "snapshot_type": {
+                    "choices": [
+                        "automated",
+                        "manual",
+                        "shared",
+                        "public"
+                    ],
+                    "description": [
+                        "Type of snapshot to find.",
+                        "By default both automated and manual snapshots will be returned."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "obtain information about one or more RDS snapshots",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Get information about an snapshot\n  community.aws.rds_snapshot_info:\n    db_snapshot_identifier: snapshot_name\n  register: new_database_info\n\n- name: Get all RDS snapshots for an RDS instance\n  community.aws.rds_snapshot_info:\n    db_instance_identifier: helloworld-rds-master\n",
+        "metadata": null,
+        "return": {
+            "cluster_snapshots": {
+                "contains": {
+                    "allocated_storage": {
+                        "description": "How many gigabytes of storage are allocated",
+                        "returned": "always",
+                        "sample": 1,
+                        "type": "int"
+                    },
+                    "availability_zones": {
+                        "description": "The availability zones of the database from which the snapshot was taken",
+                        "returned": "always",
+                        "sample": [
+                            "ca-central-1a",
+                            "ca-central-1b"
+                        ],
+                        "type": "list"
+                    },
+                    "cluster_create_time": {
+                        "description": "Date and time the cluster was created",
+                        "returned": "always",
+                        "sample": "2018-05-17T00:13:40.223000+00:00",
+                        "type": "str"
+                    },
+                    "db_cluster_identifier": {
+                        "description": "Database cluster identifier",
+                        "returned": "always",
+                        "sample": "test-aurora-cluster",
+                        "type": "str"
+                    },
+                    "db_cluster_snapshot_arn": {
+                        "description": "ARN of the database snapshot",
+                        "returned": "always",
+                        "sample": "arn:aws:rds:ca-central-1:111111111111:cluster-snapshot:test-aurora-snapshot",
+                        "type": "str"
+                    },
+                    "db_cluster_snapshot_identifier": {
+                        "description": "Snapshot identifier",
+                        "returned": "always",
+                        "sample": "test-aurora-snapshot",
+                        "type": "str"
+                    },
+                    "engine": {
+                        "description": "Database engine",
+                        "returned": "always",
+                        "sample": "aurora",
+                        "type": "str"
+                    },
+                    "engine_version": {
+                        "description": "Database engine version",
+                        "returned": "always",
+                        "sample": "5.6.10a",
+                        "type": "str"
+                    },
+                    "iam_database_authentication_enabled": {
+                        "description": "Whether database authentication through IAM is enabled",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "kms_key_id": {
+                        "description": "ID of the KMS Key encrypting the snapshot",
+                        "returned": "always",
+                        "sample": "arn:aws:kms:ca-central-1:111111111111:key/abcd1234-abcd-1111-aaaa-0123456789ab",
+                        "type": "str"
+                    },
+                    "license_model": {
+                        "description": "License model",
+                        "returned": "always",
+                        "sample": "aurora",
+                        "type": "str"
+                    },
+                    "master_username": {
+                        "description": "Database master username",
+                        "returned": "always",
+                        "sample": "shertel",
+                        "type": "str"
+                    },
+                    "percent_progress": {
+                        "description": "Percent progress of snapshot",
+                        "returned": "always",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "port": {
+                        "description": "Database port",
+                        "returned": "always",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "snapshot_create_time": {
+                        "description": "Date and time when the snapshot was created",
+                        "returned": "always",
+                        "sample": "2018-05-17T00:23:23.731000+00:00",
+                        "type": "str"
+                    },
+                    "snapshot_type": {
+                        "description": "Type of snapshot",
+                        "returned": "always",
+                        "sample": "manual",
+                        "type": "str"
+                    },
+                    "status": {
+                        "description": "Status of snapshot",
+                        "returned": "always",
+                        "sample": "creating",
+                        "type": "str"
+                    },
+                    "storage_encrypted": {
+                        "description": "Whether the snapshot is encrypted",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "tags": {
+                        "contains": {},
+                        "description": "Tags of the snapshot",
+                        "returned": "when snapshot is not shared",
+                        "type": "complex"
+                    },
+                    "vpc_id": {
+                        "description": "VPC of the database",
+                        "returned": "always",
+                        "sample": "vpc-abcd1234",
+                        "type": "str"
+                    }
+                },
+                "description": "List of cluster snapshots",
+                "returned": "always",
+                "type": "complex"
+            },
+            "snapshots": {
+                "contains": {
+                    "allocated_storage": {
+                        "description": "How many gigabytes of storage are allocated",
+                        "returned": "always",
+                        "sample": 10,
+                        "type": "int"
+                    },
+                    "availability_zone": {
+                        "description": "The availability zone of the database from which the snapshot was taken",
+                        "returned": "always",
+                        "sample": "us-west-2b",
+                        "type": "str"
+                    },
+                    "db_instance_identifier": {
+                        "description": "Database instance identifier",
+                        "returned": "always",
+                        "sample": "hello-world-rds",
+                        "type": "str"
+                    },
+                    "db_snapshot_arn": {
+                        "description": "Snapshot ARN",
+                        "returned": "always",
+                        "sample": "arn:aws:rds:us-west-2:111111111111:snapshot:rds:hello-world-rds-us1-2018-05-16-04-03",
+                        "type": "str"
+                    },
+                    "db_snapshot_identifier": {
+                        "description": "Snapshot name",
+                        "returned": "always",
+                        "sample": "rds:hello-world-rds-us1-2018-05-16-04-03",
+                        "type": "str"
+                    },
+                    "encrypted": {
+                        "description": "Whether the snapshot was encrypted",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "engine": {
+                        "description": "Database engine",
+                        "returned": "always",
+                        "sample": "postgres",
+                        "type": "str"
+                    },
+                    "engine_version": {
+                        "description": "Database engine version",
+                        "returned": "always",
+                        "sample": "9.5.10",
+                        "type": "str"
+                    },
+                    "iam_database_authentication_enabled": {
+                        "description": "Whether database authentication through IAM is enabled",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "instance_create_time": {
+                        "description": "Time the Instance was created",
+                        "returned": "always",
+                        "sample": "2017-10-10T04:00:07.434000+00:00",
+                        "type": "str"
+                    },
+                    "kms_key_id": {
+                        "description": "ID of the KMS Key encrypting the snapshot",
+                        "returned": "always",
+                        "sample": "arn:aws:kms:us-west-2:111111111111:key/abcd1234-1234-aaaa-0000-1234567890ab",
+                        "type": "str"
+                    },
+                    "license_model": {
+                        "description": "License model",
+                        "returned": "always",
+                        "sample": "postgresql-license",
+                        "type": "str"
+                    },
+                    "master_username": {
+                        "description": "Database master username",
+                        "returned": "always",
+                        "sample": "dbadmin",
+                        "type": "str"
+                    },
+                    "option_group_name": {
+                        "description": "Database option group name",
+                        "returned": "always",
+                        "sample": "default:postgres-9-5",
+                        "type": "str"
+                    },
+                    "percent_progress": {
+                        "description": "Percent progress of snapshot",
+                        "returned": "always",
+                        "sample": 100,
+                        "type": "int"
+                    },
+                    "snapshot_create_time": {
+                        "description": "Time snapshot was created",
+                        "returned": "always",
+                        "sample": "2018-05-16T04:03:33.871000+00:00",
+                        "type": "str"
+                    },
+                    "snapshot_type": {
+                        "description": "Type of snapshot",
+                        "returned": "always",
+                        "sample": "automated",
+                        "type": "str"
+                    },
+                    "status": {
+                        "description": "Status of snapshot",
+                        "returned": "always",
+                        "sample": "available",
+                        "type": "str"
+                    },
+                    "storage_type": {
+                        "description": "Storage type of underlying DB",
+                        "returned": "always",
+                        "sample": "gp2",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "contains": {},
+                        "description": "Snapshot tags",
+                        "returned": "when snapshot is not shared",
+                        "type": "complex"
+                    },
+                    "vpc_id": {
+                        "description": "ID of VPC containing the DB",
+                        "returned": "always",
+                        "sample": "vpc-abcd1234",
+                        "type": "str"
+                    }
+                },
+                "description": "List of non-clustered snapshots",
+                "returned": "When cluster parameters are not passed",
+                "type": "complex"
+            }
+        }
+    }
+}

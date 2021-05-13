@@ -1,0 +1,81 @@
+{
+    "community.general.odbc": {
+        "doc": {
+            "author": "John Westcott IV (@john-westcott-iv)",
+            "collection": "community.general",
+            "description": [
+                "Read/Write info via ODBC drivers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/odbc.py",
+            "has_action": false,
+            "module": "odbc",
+            "notes": [
+                "Like the command module, this module always returns changed = yes whether or not the query would change the database.",
+                "To alter this behavior you can use C(changed_when): [yes or no].",
+                "For details about return values (description and row_count) see U(https://github.com/mkleehammer/pyodbc/wiki/Cursor)."
+            ],
+            "options": {
+                "commit": {
+                    "default": true,
+                    "description": [
+                        "Perform a commit after the execution of the SQL query.",
+                        "Some databases allow a commit after a select whereas others raise an exception.",
+                        "Default is C(true) to support legacy module behavior."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "dsn": {
+                    "description": [
+                        "The connection string passed into ODBC."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "params": {
+                    "description": [
+                        "Parameters to pass to the SQL query."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "query": {
+                    "description": [
+                        "The SQL query to perform."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "pyodbc"
+            ],
+            "short_description": "Execute SQL via ODBC",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Set some values in the test db\n  community.general.odbc:\n    dsn: \"DRIVER={ODBC Driver 13 for SQL Server};Server=db.ansible.com;Database=my_db;UID=admin;PWD=password;\"\n    query: \"Select * from table_a where column1 = ?\"\n    params:\n      - \"value1\"\n    commit: false\n  changed_when: no\n",
+        "metadata": null,
+        "return": {
+            "description": {
+                "description": "List of dicts about the columns selected from the cursors, likely empty for DDL statements. See notes.",
+                "elements": "dict",
+                "returned": "success",
+                "type": "list"
+            },
+            "results": {
+                "description": "List of lists of strings containing selected rows, likely empty for DDL statements.",
+                "elements": "list",
+                "returned": "success",
+                "type": "list"
+            },
+            "row_count": {
+                "description": "The number of rows selected or modified according to the cursor defaults to -1. See notes.",
+                "returned": "success",
+                "type": "str"
+            }
+        }
+    }
+}

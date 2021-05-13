@@ -1,0 +1,205 @@
+{
+    "theforeman.foreman.auth_source_ldap": {
+        "doc": {
+            "author": [
+                "Christoffer Reijer (@ephracis) Basalt AB"
+            ],
+            "collection": "theforeman.foreman",
+            "description": [
+                "Create, update, and delete LDAP authentication sources"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/theforeman/foreman/plugins/modules/auth_source_ldap.py",
+            "has_action": false,
+            "module": "auth_source_ldap",
+            "options": {
+                "account": {
+                    "description": "Account name to use when accessing the LDAP server.",
+                    "required": false,
+                    "type": "str"
+                },
+                "account_password": {
+                    "description": [
+                        "Account password to use when accessing the LDAP server.",
+                        "Required when using I(onthefly_register).",
+                        "When this parameter is set, the module will not be idempotent."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "attr_firstname": {
+                    "description": [
+                        "Attribute containing first name.",
+                        "Required when using I(onthefly_register)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "attr_lastname": {
+                    "description": [
+                        "Attribute containing last name.",
+                        "Required when using I(onthefly_register)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "attr_login": {
+                    "description": [
+                        "Attribute containing login ID.",
+                        "Required when using I(onthefly_register)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "attr_mail": {
+                    "description": [
+                        "Attribute containing email address.",
+                        "Required when using I(onthefly_register)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "attr_photo": {
+                    "description": "Attribute containing user photo",
+                    "required": false,
+                    "type": "str"
+                },
+                "base_dn": {
+                    "description": "The base DN to use when searching.",
+                    "required": false,
+                    "type": "str"
+                },
+                "groups_base": {
+                    "description": "Base DN where groups reside.",
+                    "required": false,
+                    "type": "str"
+                },
+                "host": {
+                    "description": "The hostname of the LDAP server",
+                    "required": true,
+                    "type": "str"
+                },
+                "ldap_filter": {
+                    "description": "Filter to apply to LDAP searches",
+                    "required": false,
+                    "type": "str"
+                },
+                "locations": {
+                    "description": "List of locations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "name": {
+                    "description": "The name of the LDAP authentication source",
+                    "required": true,
+                    "type": "str"
+                },
+                "onthefly_register": {
+                    "description": "Whether or not to register users on the fly.",
+                    "required": false,
+                    "type": "bool"
+                },
+                "organizations": {
+                    "description": "List of organizations the entity should be assigned to",
+                    "elements": "str",
+                    "type": "list"
+                },
+                "password": {
+                    "description": [
+                        "Password of the user accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_PASSWORD) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 389,
+                    "description": "The port number of the LDAP server",
+                    "required": false,
+                    "type": "int"
+                },
+                "server_type": {
+                    "choices": [
+                        "free_ipa",
+                        "active_directory",
+                        "posix"
+                    ],
+                    "description": "Type of the LDAP server",
+                    "required": false,
+                    "type": "str"
+                },
+                "server_url": {
+                    "description": [
+                        "URL of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_SERVER_URL) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the entity"
+                    ],
+                    "type": "str"
+                },
+                "tls": {
+                    "description": "Whether or not to use TLS when contacting the LDAP server.",
+                    "required": false,
+                    "type": "bool"
+                },
+                "use_netgroups": {
+                    "description": "Whether to use NIS netgroups instead of posix groups, not valid for I(server_type=active_directory)",
+                    "required": false,
+                    "type": "bool"
+                },
+                "usergroup_sync": {
+                    "description": "Whether or not to sync external user groups on login",
+                    "required": false,
+                    "type": "bool"
+                },
+                "username": {
+                    "description": [
+                        "Username accessing the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_USERNAME) will be used instead."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to verify the TLS certificates of the Foreman server.",
+                        "If the value is not specified in the task, the value of environment variable C(FOREMAN_VALIDATE_CERTS) will be used instead."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "requests"
+            ],
+            "short_description": "Manage LDAP Authentication Sources",
+            "version_added": "1.0.0",
+            "version_added_collection": "theforeman.foreman"
+        },
+        "examples": "\n- name: LDAP Authentication source\n  theforeman.foreman.auth_source_ldap:\n    name: \"Example LDAP\"\n    host: \"ldap.example.org\"\n    server_url: \"https://foreman.example.com\"\n    locations:\n      - \"Uppsala\"\n    organizations:\n      - \"Sweden\"\n    username: \"admin\"\n    password: \"changeme\"\n    state: present\n\n- name: LDAP Authentication with automatic registration\n  theforeman.foreman.auth_source_ldap:\n    name: \"Example LDAP\"\n    host: \"ldap.example.org\"\n    onthefly_register: True\n    account: uid=ansible,cn=sysaccounts,cn=etc,dc=example,dc=com\n    account_password: secret\n    base_dn: dc=example,dc=com\n    groups_base: cn=groups,cn=accounts, dc=example,dc=com\n    server_type: free_ipa\n    attr_login: uid\n    attr_firstname: givenName\n    attr_lastname: sn\n    attr_mail: mail\n    attr_photo: jpegPhoto\n    server_url: \"https://foreman.example.com\"\n    username: \"admin\"\n    password: \"changeme\"\n    state: present\n",
+        "metadata": null,
+        "return": {
+            "entity": {
+                "contains": {
+                    "auth_source_ldaps": {
+                        "description": "List of auth sources for LDAP.",
+                        "elements": "dict",
+                        "type": "list"
+                    }
+                },
+                "description": "Final state of the affected entities grouped by their type.",
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

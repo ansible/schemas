@@ -1,0 +1,169 @@
+{
+    "community.general.idrac_server_config_profile": {
+        "doc": {
+            "author": "Jagadeesh N V(@jagadeeshnv)",
+            "collection": "community.general",
+            "description": [
+                "Export the Server Configuration Profile (SCP) from the iDRAC or Import from a network share or a local file."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/idrac_server_config_profile.py",
+            "has_action": false,
+            "module": "idrac_server_config_profile",
+            "options": {
+                "command": {
+                    "choices": [
+                        "import",
+                        "export"
+                    ],
+                    "default": "export",
+                    "description": [
+                        "If C(import), will perform SCP import operations.",
+                        "If C(export), will perform SCP export operations."
+                    ]
+                },
+                "end_host_power_state": {
+                    "choices": [
+                        "On",
+                        "Off"
+                    ],
+                    "default": "On",
+                    "description": [
+                        "This option is applicable for C(import) command.",
+                        "If C(On), End host power state is on.",
+                        "If C(Off), End host power state is off."
+                    ]
+                },
+                "export_format": {
+                    "choices": [
+                        "JSON",
+                        "XML"
+                    ],
+                    "default": "XML",
+                    "description": "Specify the output file format. This option is applicable for C(export) command."
+                },
+                "export_use": {
+                    "choices": [
+                        "Default",
+                        "Clone",
+                        "Replace"
+                    ],
+                    "default": "Default",
+                    "description": "Specify the type of server configuration profile (SCP) to be exported. This option is applicable for C(export) command."
+                },
+                "idrac_ip": {
+                    "description": "iDRAC IP Address.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_password": {
+                    "aliases": [
+                        "idrac_pwd"
+                    ],
+                    "description": "iDRAC user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_port": {
+                    "default": 443,
+                    "description": "iDRAC port.",
+                    "type": "int"
+                },
+                "idrac_user": {
+                    "description": "iDRAC username.",
+                    "required": true,
+                    "type": "str"
+                },
+                "job_wait": {
+                    "description": "Whether to wait for job completion or not.",
+                    "required": true,
+                    "type": "bool"
+                },
+                "scp_components": {
+                    "choices": [
+                        "ALL",
+                        "IDRAC",
+                        "BIOS",
+                        "NIC",
+                        "RAID"
+                    ],
+                    "default": "ALL",
+                    "description": [
+                        "If C(ALL), this module will import all components configurations from SCP file.",
+                        "If C(IDRAC), this module will import iDRAC configuration from SCP file.",
+                        "If C(BIOS), this module will import BIOS configuration from SCP file.",
+                        "If C(NIC), this module will import NIC configuration from SCP file.",
+                        "If C(RAID), this module will import RAID configuration from SCP file."
+                    ]
+                },
+                "scp_file": {
+                    "description": "Server Configuration Profile file name. This option is mandatory for C(import) command.",
+                    "type": "str"
+                },
+                "share_name": {
+                    "description": "CIFS or NFS Network Share or a local path.",
+                    "required": true,
+                    "type": "str"
+                },
+                "share_password": {
+                    "aliases": [
+                        "share_pwd"
+                    ],
+                    "description": "Network share user password. This option is mandatory for CIFS Network Share.",
+                    "type": "str"
+                },
+                "share_user": {
+                    "description": "Network share user in the format 'user@domain' or 'domain\\\\user' if user is part of a domain else 'user'. This option is mandatory for CIFS Network Share.",
+                    "type": "str"
+                },
+                "shutdown_type": {
+                    "choices": [
+                        "Graceful",
+                        "Forced",
+                        "NoReboot"
+                    ],
+                    "default": "Graceful",
+                    "description": [
+                        "This option is applicable for C(import) command.",
+                        "If C(Graceful), it gracefully shuts down the server.",
+                        "If C(Forced),  it forcefully shuts down the server.",
+                        "If C(NoReboot), it does not reboot the server."
+                    ]
+                }
+            },
+            "requirements": [
+                "omsdk",
+                "python >= 2.7.5"
+            ],
+            "short_description": "Export or Import iDRAC Server Configuration Profile (SCP)."
+        },
+        "examples": "\n---\n- name: Import Server Configuration Profile from a network share\n  community.general.idrac_server_config_profile:\n    idrac_ip: \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password: \"user_password\"\n    command: \"import\"\n    share_name: \"192.168.0.2:/share\"\n    share_user: \"share_user_name\"\n    share_password: \"share_user_password\"\n    scp_file: \"scp_filename.xml\"\n    scp_components: \"ALL\"\n    job_wait: True\n\n- name: Import Server Configuration Profile from a local path\n  community.general.idrac_server_config_profile:\n    idrac_ip: \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password: \"user_password\"\n    command: \"import\"\n    share_name: \"/scp_folder\"\n    share_user: \"share_user_name\"\n    share_password: \"share_user_password\"\n    scp_file: \"scp_filename.xml\"\n    scp_components: \"ALL\"\n    job_wait: True\n\n- name: Export Server Configuration Profile to a network share\n  community.general.idrac_server_config_profile:\n    idrac_ip: \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password: \"user_password\"\n    share_name: \"192.168.0.2:/share\"\n    share_user: \"share_user_name\"\n    share_password: \"share_user_password\"\n    job_wait: False\n\n- name: Export Server Configuration Profile to a local path\n  community.general.idrac_server_config_profile:\n    idrac_ip: \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password: \"user_password\"\n    share_name: \"/scp_folder\"\n    share_user: \"share_user_name\"\n    share_password: \"share_user_password\"\n    job_wait: False\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "Status of the import or export SCP job.",
+                "returned": "always",
+                "sample": "Successfully imported the Server Configuration Profile",
+                "type": "str"
+            },
+            "scp_status": {
+                "description": "SCP operation job and progress details from the iDRAC.",
+                "returned": "success",
+                "sample": {
+                    "Id": "JID_XXXXXXXXX",
+                    "JobState": "Completed",
+                    "JobType": "ImportConfiguration",
+                    "Message": "Successfully imported and applied Server Configuration Profile.",
+                    "MessageArgs": [],
+                    "MessageId": "XXX123",
+                    "Name": "Import Configuration",
+                    "PercentComplete": 100,
+                    "StartTime": "TIME_NOW",
+                    "Status": "Success",
+                    "TargetSettingsURI": null,
+                    "retval": true
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,385 @@
+{
+    "azure.azcollection.azure_rm_webapp": {
+        "doc": {
+            "author": [
+                "Yunge Zhu (@yungezz)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update and delete instance of Web App."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_webapp.py",
+            "has_action": false,
+            "module": "azure_rm_webapp",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "app_settings": {
+                    "description": [
+                        "Configure web app application settings. Suboptions are in key value pair format."
+                    ]
+                },
+                "app_state": {
+                    "choices": [
+                        "started",
+                        "stopped",
+                        "restarted"
+                    ],
+                    "default": "started",
+                    "description": [
+                        "Start/Stop/Restart the web app."
+                    ],
+                    "type": "str"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_affinity_enabled": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to send session affinity cookies, which route client requests in the same session to the same instance."
+                    ],
+                    "type": "bool"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "container_settings": {
+                    "description": [
+                        "Web app container settings."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Name of the container, for example C(imagename:tag).",
+                                "To create a multi-container app, the name should be 'COMPOSE|' or 'KUBE|' followed by base64 encoded configuration."
+                            ]
+                        },
+                        "registry_server_password": {
+                            "description": [
+                                "The container registry server password."
+                            ]
+                        },
+                        "registry_server_url": {
+                            "description": [
+                                "Container registry server URL, for example C(mydockerregistry.io)."
+                            ]
+                        },
+                        "registry_server_user": {
+                            "description": [
+                                "The container registry server user name."
+                            ]
+                        }
+                    }
+                },
+                "deployment_source": {
+                    "description": [
+                        "Deployment source for git."
+                    ],
+                    "suboptions": {
+                        "branch": {
+                            "description": [
+                                "The branch name of the repository."
+                            ]
+                        },
+                        "url": {
+                            "description": [
+                                "Repository url of deployment source."
+                            ]
+                        }
+                    }
+                },
+                "dns_registration": {
+                    "description": [
+                        "Whether or not the web app hostname is registered with DNS on creation. Set to C(false) to register."
+                    ],
+                    "type": "bool"
+                },
+                "frameworks": {
+                    "description": [
+                        "Set of run time framework settings. Each setting is a dictionary.",
+                        "See U(https://docs.microsoft.com/en-us/azure/app-service/app-service-web-overview) for more info."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "choices": [
+                                "java",
+                                "net_framework",
+                                "php",
+                                "python",
+                                "ruby",
+                                "dotnetcore",
+                                "node"
+                            ],
+                            "description": [
+                                "Name of the framework.",
+                                "Supported framework list for Windows web app and Linux web app is different.",
+                                "Windows web apps support C(java), C(net_framework), C(php), C(python), and C(node) from June 2018.",
+                                "Windows web apps support multiple framework at the same time.",
+                                "Linux web apps support C(java), C(ruby), C(php), C(dotnetcore), and C(node) from June 2018.",
+                                "Linux web apps support only one framework.",
+                                "Java framework is mutually exclusive with others."
+                            ]
+                        },
+                        "settings": {
+                            "description": [
+                                "List of settings of the framework."
+                            ],
+                            "suboptions": {
+                                "java_container": {
+                                    "description": [
+                                        "Name of Java container.",
+                                        "Supported only when I(frameworks=java). Sample values C(Tomcat), C(Jetty)."
+                                    ]
+                                },
+                                "java_container_version": {
+                                    "description": [
+                                        "Version of Java container.",
+                                        "Supported only when I(frameworks=java).",
+                                        "Sample values for C(Tomcat), C(8.0), C(8.5), C(9.0). For C(Jetty,), C(9.1), C(9.3)."
+                                    ]
+                                }
+                            }
+                        },
+                        "version": {
+                            "description": [
+                                "Version of the framework. For Linux web app supported value, see U(https://aka.ms/linux-stacks) for more info.",
+                                "C(net_framework) supported value sample, C(v4.0) for .NET 4.6 and C(v3.0) for .NET 3.5.",
+                                "C(php) supported value sample, C(5.5), C(5.6), C(7.0).",
+                                "C(python) supported value sample, C(5.5), C(5.6), C(7.0).",
+                                "C(node) supported value sample, C(6.6), C(6.9).",
+                                "C(dotnetcore) supported value sample, C(1.0), C(1.1), C(1.2).",
+                                "C(ruby) supported value sample, C(2.3).",
+                                "C(java) supported value sample, C(1.9) for Windows web app. C(1.8) for Linux web app."
+                            ]
+                        }
+                    }
+                },
+                "https_only": {
+                    "description": [
+                        "Configures web site to accept only https requests."
+                    ],
+                    "type": "bool"
+                },
+                "location": {
+                    "description": [
+                        "Resource location. If not set, location from the resource group will be used as default."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Unique name of the app to create or update. To create or update a deployment slot, use the {slot} parameter."
+                    ],
+                    "required": true
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "plan": {
+                    "description": [
+                        "App service plan. Required for creation.",
+                        "Can be name of existing app service plan in same resource group as web app.",
+                        "Can be the resource ID of an existing app service plan. For example /subscriptions/<subs_id>/resourceGroups/<resource_group>/providers/Microsoft.Web/serverFarms/<plan_name>.",
+                        "Can be a dict containing five parameters, defined below.",
+                        "C(name), name of app service plan.",
+                        "C(resource_group), resource group of the app service plan.",
+                        "C(sku), SKU of app service plan, allowed values listed on U(https://azure.microsoft.com/en-us/pricing/details/app-service/linux/).",
+                        "C(is_linux), whether or not the app service plan is Linux. defaults to C(False).",
+                        "C(number_of_workers), number of workers for app service plan."
+                    ]
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "purge_app_settings": {
+                    "default": false,
+                    "description": [
+                        "Purge any existing application settings. Replace web app application settings with app_settings."
+                    ],
+                    "type": "bool"
+                },
+                "resource_group": {
+                    "description": [
+                        "Name of the resource group to which the resource belongs."
+                    ],
+                    "required": true
+                },
+                "scm_type": {
+                    "description": [
+                        "Repository type of deployment source, for example C(LocalGit), C(GitHub).",
+                        "List of supported values maintained at U(https://docs.microsoft.com/en-us/rest/api/appservice/webapps/createorupdate#scmtype)."
+                    ]
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "skip_custom_domain_verification": {
+                    "description": [
+                        "Whether or not to skip verification of custom (non *.azurewebsites.net) domains associated with web app. Set to C(true) to skip."
+                    ],
+                    "type": "bool"
+                },
+                "startup_file": {
+                    "description": [
+                        "The web's startup file.",
+                        "Used only for Linux web apps."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the Web App.",
+                        "Use C(present) to create or update a Web App and C(absent) to delete it."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "ttl_in_seconds": {
+                    "description": [
+                        "Time to live in seconds for web app default domain name."
+                    ]
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Web App instances",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n    - name: Create a windows web app with non-exist app service plan\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myWinWebapp\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n          is_linux: false\n          sku: S1\n\n    - name: Create a docker web app with some app settings, with docker image\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myDockerWebapp\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n          is_linux: true\n          sku: S1\n          number_of_workers: 2\n        app_settings:\n          testkey: testvalue\n          testkey2: testvalue2\n        container_settings:\n          name: ansible/ansible:ubuntu1404\n\n    - name: Create a docker web app with private acr registry\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myDockerWebapp\n        plan: myAppServicePlan\n        app_settings:\n          testkey: testvalue\n        container_settings:\n          name: ansible/ubuntu1404\n          registry_server_url: myregistry.io\n          registry_server_user: user\n          registry_server_password: pass\n\n    - name: Create a multi-container web app\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myMultiContainerWebapp\n        plan: myAppServicePlan\n        app_settings:\n          testkey: testvalue\n        container_settings:\n          name: \"COMPOSE|{{ lookup('file', 'docker-compose.yml') | b64encode }}\"\n\n    - name: Create a linux web app with Node 6.6 framework\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myLinuxWebapp\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n        app_settings:\n          testkey: testvalue\n        frameworks:\n          - name: \"node\"\n            version: \"6.6\"\n\n    - name: Create a windows web app with node, php\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myWinWebapp\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n        app_settings:\n          testkey: testvalue\n        frameworks:\n          - name: \"node\"\n            version: 6.6\n          - name: \"php\"\n            version: \"7.0\"\n\n    - name: Create a stage deployment slot for an existing web app\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myWebapp/slots/stage\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n        app_settings:\n          testkey:testvalue\n\n    - name: Create a linux web app with java framework\n      azure_rm_webapp:\n        resource_group: myResourceGroup\n        name: myLinuxWebapp\n        plan:\n          resource_group: myAppServicePlan_rg\n          name: myAppServicePlan\n        app_settings:\n          testkey: testvalue\n        frameworks:\n          - name: \"java\"\n            version: \"8\"\n            settings:\n              java_container: \"Tomcat\"\n              java_container_version: \"8.5\"\n",
+        "metadata": null,
+        "return": {
+            "azure_webapp": {
+                "description": [
+                    "ID of current web app."
+                ],
+                "returned": "always",
+                "sample": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Web/sites/myWebApp",
+                "type": "str"
+            }
+        }
+    }
+}

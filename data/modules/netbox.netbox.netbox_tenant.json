@@ -1,0 +1,148 @@
+{
+    "netbox.netbox.netbox_tenant": {
+        "doc": {
+            "author": [
+                "Amy Liebowitz (@amylieb)"
+            ],
+            "collection": "netbox.netbox",
+            "description": [
+                "Creates or removes tenants from Netbox"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netbox/netbox/plugins/modules/netbox_tenant.py",
+            "has_action": false,
+            "module": "netbox_tenant",
+            "notes": [
+                "Tags should be defined as a YAML list",
+                "This should be ran with connection C(local) and hosts C(localhost)"
+            ],
+            "options": {
+                "data": {
+                    "description": [
+                        "Defines the tenant configuration"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "comments": {
+                            "description": [
+                                "Comments for the tenant. This can be markdown syntax"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "custom_fields": {
+                            "description": [
+                                "must exist in Netbox"
+                            ],
+                            "required": false,
+                            "type": "dict"
+                        },
+                        "description": {
+                            "description": [
+                                "The description of the tenant"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the tenant to be created"
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "slug": {
+                            "description": [
+                                "URL-friendly unique shorthand"
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "tags": {
+                            "description": [
+                                "Any tags that the tenant may need to be associated with"
+                            ],
+                            "required": false,
+                            "type": "list"
+                        },
+                        "tenant_group": {
+                            "description": [
+                                "Tenant group this tenant should be in"
+                            ],
+                            "required": false,
+                            "type": "raw"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "netbox_token": {
+                    "description": [
+                        "The token created within Netbox to authorize API access"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netbox_url": {
+                    "description": [
+                        "URL of the Netbox instance resolvable by Ansible control host"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "query_params": {
+                    "description": [
+                        "This can be used to override the specified values in ALLOWED_QUERY_PARAMS that is defined",
+                        "in plugins/module_utils/netbox_utils.py and provides control to users on what may make",
+                        "an object unique in their environment."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Use C(present) or C(absent) for adding or removing."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.\nThis should only be used on personally controlled sites using self-signed certificates.\n"
+                    ],
+                    "type": "raw"
+                }
+            },
+            "requirements": [
+                "pynetbox"
+            ],
+            "short_description": "Creates or removes tenants from Netbox",
+            "version_added": "0.1.0",
+            "version_added_collection": "netbox.netbox"
+        },
+        "examples": "\n- name: \"Test Netbox module\"\n  connection: local\n  hosts: localhost\n  gather_facts: False\n  tasks:\n    - name: Create tenant within Netbox with only required information\n      netbox_tenant:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Tenant ABC\n        state: present\n\n    - name: Delete tenant within netbox\n      netbox_tenant:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Tenant ABC\n        state: absent\n\n    - name: Create tenant with all parameters\n      netbox_tenant:\n        netbox_url: http://netbox.local\n        netbox_token: thisIsMyToken\n        data:\n          name: Tenant ABC\n          group: Very Special Tenants\n          description: ABC Incorporated\n          comments: '### This tenant is super cool'\n          slug: tenant_abc\n          tags:\n            - tagA\n            - tagB\n            - tagC\n        state: present\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Message indicating failure or info about what has been achieved",
+                "returned": "always",
+                "type": "str"
+            },
+            "tenant": {
+                "description": "Serialized object as created or already existent within Netbox",
+                "returned": "on creation",
+                "type": "dict"
+            }
+        }
+    }
+}

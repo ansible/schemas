@@ -1,0 +1,637 @@
+{
+    "azure.azcollection.azure_rm_loadbalancer": {
+        "doc": {
+            "author": [
+                "Thomas Stringer (@trstringer)",
+                "Yuwei Zhou (@yuwzho)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update and delete Azure load balancers."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_loadbalancer.py",
+            "has_action": false,
+            "module": "azure_rm_loadbalancer",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "backend_address_pools": {
+                    "description": [
+                        "List of backend address pools."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Name of the backend address pool."
+                            ],
+                            "required": true
+                        }
+                    }
+                },
+                "backend_port": {
+                    "description": [
+                        "(deprecated) Backend port that will be exposed for the load balancer.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(load_balancing_rules) instead."
+                    ]
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "frontend_ip_configurations": {
+                    "description": [
+                        "List of frontend IPs to be used."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Name of the frontend ip configuration."
+                            ],
+                            "required": true
+                        },
+                        "private_ip_address": {
+                            "description": [
+                                "The reference of the Public IP resource."
+                            ]
+                        },
+                        "private_ip_allocation_method": {
+                            "choices": [
+                                "Static",
+                                "Dynamic"
+                            ],
+                            "description": [
+                                "The Private IP allocation method."
+                            ]
+                        },
+                        "public_ip_address": {
+                            "description": [
+                                "Name of an existing public IP address object in the current resource group to associate with the security group."
+                            ]
+                        },
+                        "subnet": {
+                            "description": [
+                                "The reference of the subnet resource.",
+                                "Should be an existing subnet's resource id."
+                            ]
+                        }
+                    }
+                },
+                "frontend_port": {
+                    "description": [
+                        "(deprecated) Frontend port that will be exposed for the load balancer.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(load_balancing_rules) instead."
+                    ]
+                },
+                "idle_timeout": {
+                    "default": 4,
+                    "description": [
+                        "(deprecated) Timeout for TCP idle connection in minutes.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(load_balancing_rules) instead."
+                    ]
+                },
+                "inbound_nat_pools": {
+                    "description": [
+                        "Defines an external port range for inbound NAT to a single backend port on NICs associated with a load balancer.",
+                        "Inbound NAT rules are created automatically for each NIC associated with the Load Balancer using an external port from this range.",
+                        "Defining an Inbound NAT pool on your Load Balancer is mutually exclusive with defining inbound Nat rules.",
+                        "Inbound NAT pools are referenced from virtual machine scale sets.",
+                        "NICs that are associated with individual virtual machines cannot reference an inbound NAT pool.",
+                        "They have to reference individual inbound NAT rules."
+                    ],
+                    "suboptions": {
+                        "backend_port": {
+                            "description": [
+                                "The port used for internal connections on the endpoint.",
+                                "Acceptable values are between 1 and 65535."
+                            ]
+                        },
+                        "frontend_ip_configuration_name": {
+                            "description": [
+                                "A reference to frontend IP addresses."
+                            ],
+                            "required": true
+                        },
+                        "frontend_port_range_end": {
+                            "description": [
+                                "The last port in the range of external ports that will be used to provide inbound NAT to NICs associated with the load balancer.",
+                                "Acceptable values range between 1 and 65535."
+                            ],
+                            "required": true
+                        },
+                        "frontend_port_range_start": {
+                            "description": [
+                                "The first port in the range of external ports that will be used to provide inbound NAT to NICs associated with the load balancer.",
+                                "Acceptable values range between 1 and 65534."
+                            ],
+                            "required": true
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the inbound NAT pool."
+                            ],
+                            "required": true
+                        },
+                        "protocol": {
+                            "choices": [
+                                "Tcp",
+                                "Udp",
+                                "All"
+                            ],
+                            "description": [
+                                "IP protocol for the NAT pool."
+                            ]
+                        }
+                    }
+                },
+                "inbound_nat_rules": {
+                    "description": [
+                        "Collection of inbound NAT Rules used by a load balancer.",
+                        "Defining inbound NAT rules on your load balancer is mutually exclusive with defining an inbound NAT pool.",
+                        "Inbound NAT pools are referenced from virtual machine scale sets.",
+                        "NICs that are associated with individual virtual machines cannot reference an Inbound NAT pool.",
+                        "They have to reference individual inbound NAT rules."
+                    ],
+                    "suboptions": {
+                        "backend_port": {
+                            "description": [
+                                "The port used for internal connections on the endpoint.",
+                                "Acceptable values are between 0 and 65535.",
+                                "Note that value 0 enables \"Any Port\"."
+                            ]
+                        },
+                        "enable_floating_ip": {
+                            "description": [
+                                "Configures a virtual machine's endpoint for the floating IP capability required to configure a SQL AlwaysOn Availability Group.",
+                                "This setting is required when using the SQL AlwaysOn Availability Groups in SQL server.",
+                                "This setting can't be changed after you create the endpoint."
+                            ]
+                        },
+                        "enable_tcp_reset": {
+                            "description": [
+                                "Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination.",
+                                "This element is only used when I(protocol=Tcp)."
+                            ]
+                        },
+                        "frontend_ip_configuration": {
+                            "description": [
+                                "A reference to frontend IP addresses."
+                            ],
+                            "required": true
+                        },
+                        "frontend_port": {
+                            "description": [
+                                "The port for the external endpoint.",
+                                "Frontend port numbers must be unique across all rules within the load balancer.",
+                                "Acceptable values are between 0 and 65534.",
+                                "Note that value 0 enables \"Any Port\"."
+                            ]
+                        },
+                        "idle_timeout": {
+                            "description": [
+                                "The timeout for the TCP idle connection.",
+                                "The value can be set between 4 and 30 minutes.",
+                                "The default value is C(4) minutes.",
+                                "This element is only used when I(protocol=Tcp)."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "name of the inbound nat rule."
+                            ],
+                            "required": true
+                        },
+                        "protocol": {
+                            "choices": [
+                                "Tcp",
+                                "Udp",
+                                "All"
+                            ],
+                            "description": [
+                                "IP protocol for the inbound nat rule."
+                            ]
+                        }
+                    }
+                },
+                "load_balancing_rules": {
+                    "description": [
+                        "Object collection representing the load balancing rules Gets the provisioning."
+                    ],
+                    "suboptions": {
+                        "backend_address_pool": {
+                            "description": [
+                                "A reference to a pool of DIPs. Inbound traffic is randomly load balanced across IPs in the backend IPs."
+                            ],
+                            "required": true
+                        },
+                        "backend_port": {
+                            "description": [
+                                "The port used for internal connections on the endpoint.",
+                                "Acceptable values are between 0 and 65535.",
+                                "Note that value 0 enables \"Any Port\"."
+                            ]
+                        },
+                        "enable_floating_ip": {
+                            "description": [
+                                "Configures SNAT for the VMs in the backend pool to use the publicIP address specified in the frontend of the load balancing rule."
+                            ]
+                        },
+                        "frontend_ip_configuration": {
+                            "description": [
+                                "A reference to frontend IP addresses."
+                            ],
+                            "required": true
+                        },
+                        "frontend_port": {
+                            "description": [
+                                "The port for the external endpoint.",
+                                "Frontend port numbers must be unique across all rules within the load balancer.",
+                                "Acceptable values are between 0 and 65534.",
+                                "Note that value 0 enables \"Any Port\"."
+                            ]
+                        },
+                        "idle_timeout": {
+                            "description": [
+                                "The timeout for the TCP idle connection.",
+                                "The value can be set between 4 and 30 minutes.",
+                                "The default value is C(4) minutes.",
+                                "This element is only used when the protocol is set to TCP."
+                            ]
+                        },
+                        "load_distribution": {
+                            "choices": [
+                                "Default",
+                                "SourceIP",
+                                "SourceIPProtocol"
+                            ],
+                            "default": "Default",
+                            "description": [
+                                "The session persistence policy for this rule; C(Default) is no persistence."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the load balancing rule."
+                            ],
+                            "required": true
+                        },
+                        "probe": {
+                            "description": [
+                                "The name of the load balancer probe this rule should use for health checks."
+                            ],
+                            "required": true
+                        },
+                        "protocol": {
+                            "choices": [
+                                "Tcp",
+                                "Udp",
+                                "All"
+                            ],
+                            "description": [
+                                "IP protocol for the load balancing rule."
+                            ]
+                        }
+                    }
+                },
+                "load_distribution": {
+                    "choices": [
+                        "Default",
+                        "SourceIP",
+                        "SourceIPProtocol"
+                    ],
+                    "description": [
+                        "(deprecated) The type of load distribution that the load balancer will employ.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(load_balancing_rules) instead."
+                    ]
+                },
+                "location": {
+                    "description": [
+                        "Valid Azure location. Defaults to location of the resource group."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of the load balancer."
+                    ],
+                    "required": true
+                },
+                "natpool_backend_port": {
+                    "description": [
+                        "(deprecated) Backend port used by the NAT pool.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(inbound_nat_pools) instead."
+                    ]
+                },
+                "natpool_frontend_port_end": {
+                    "description": [
+                        "(deprecated) End of the port range for a NAT pool.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(inbound_nat_pools) instead."
+                    ]
+                },
+                "natpool_frontend_port_start": {
+                    "description": [
+                        "(deprecated) Start of the port range for a NAT pool.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(inbound_nat_pools) instead."
+                    ]
+                },
+                "natpool_protocol": {
+                    "description": [
+                        "(deprecated) The protocol for the NAT pool.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(inbound_nat_pools) instead."
+                    ]
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "probe_fail_count": {
+                    "default": 3,
+                    "description": [
+                        "(deprecated) The amount of probe failures for the load balancer to make a health determination.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(probes) instead."
+                    ]
+                },
+                "probe_interval": {
+                    "default": 15,
+                    "description": [
+                        "(deprecated) Time (in seconds) between endpoint health probes.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(probes) instead."
+                    ]
+                },
+                "probe_port": {
+                    "description": [
+                        "(deprecated) The port that the health probe will use.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(probes) instead."
+                    ]
+                },
+                "probe_protocol": {
+                    "choices": [
+                        "Tcp",
+                        "Http",
+                        "Https"
+                    ],
+                    "description": [
+                        "(deprecated) The protocol to use for the health probe.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(probes) instead."
+                    ]
+                },
+                "probe_request_path": {
+                    "description": [
+                        "(deprecated) The URL that an HTTP probe or HTTPS probe will use (only relevant if I(probe_protocol=Http) or I(probe_protocol=Https)).",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(probes) instead."
+                    ]
+                },
+                "probes": {
+                    "description": [
+                        "List of probe definitions used to check endpoint health."
+                    ],
+                    "suboptions": {
+                        "fail_count": {
+                            "aliases": [
+                                "number_of_probes"
+                            ],
+                            "default": 3,
+                            "description": [
+                                "The number of probes where if no response, will result in stopping further traffic from being delivered to the endpoint.",
+                                "This values allows endpoints to be taken out of rotation faster or slower than the typical times used in Azure."
+                            ]
+                        },
+                        "interval": {
+                            "default": 15,
+                            "description": [
+                                "The interval, in seconds, for how frequently to probe the endpoint for health status.",
+                                "Slightly less than half the allocated timeout period, which allows two full probes before taking the instance out of rotation.",
+                                "The default value is C(15), the minimum value is C(5)."
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the probe."
+                            ],
+                            "required": true
+                        },
+                        "port": {
+                            "description": [
+                                "Probe port for communicating the probe. Possible values range from 1 to 65535, inclusive."
+                            ],
+                            "required": true
+                        },
+                        "protocol": {
+                            "choices": [
+                                "Tcp",
+                                "Http",
+                                "Https"
+                            ],
+                            "description": [
+                                "The protocol of the end point to be probed.",
+                                "If C(Tcp) is specified, a received ACK is required for the probe to be successful.",
+                                "If C(Http) or C(Https) is specified, a 200 OK response from the specified URL is required for the probe to be successful."
+                            ]
+                        },
+                        "request_path": {
+                            "description": [
+                                "The URI used for requesting health status from the VM.",
+                                "Path is required if I(protocol=Http) or I(protocol=Https). Otherwise, it is not allowed."
+                            ]
+                        }
+                    }
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "protocol": {
+                    "choices": [
+                        "Tcp",
+                        "Udp"
+                    ],
+                    "description": [
+                        "(deprecated) The protocol (TCP or UDP) that the load balancer will use.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(load_balancing_rules) instead."
+                    ]
+                },
+                "public_ip_address_name": {
+                    "aliases": [
+                        "public_ip_address",
+                        "public_ip_name",
+                        "public_ip"
+                    ],
+                    "description": [
+                        "(deprecated) Name of an existing public IP address object to associate with the security group.",
+                        "This option has been deprecated, and will be removed in 2.9. Use I(frontend_ip_configurations) instead."
+                    ]
+                },
+                "resource_group": {
+                    "description": [
+                        "Name of a resource group where the load balancer exists or will be created."
+                    ],
+                    "required": true
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "sku": {
+                    "choices": [
+                        "Basic",
+                        "Standard"
+                    ],
+                    "description": [
+                        "The load balancer SKU."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the load balancer. Use C(present) to create/update a load balancer, or C(absent) to delete one."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Azure load balancers",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n- name: create load balancer\n  azure_rm_loadbalancer:\n    resource_group: myResourceGroup\n    name: testloadbalancer1\n    frontend_ip_configurations:\n      - name: frontendipconf0\n        public_ip_address: testpip\n    backend_address_pools:\n      - name: backendaddrpool0\n    probes:\n      - name: prob0\n        port: 80\n    inbound_nat_pools:\n      - name: inboundnatpool0\n        frontend_ip_configuration_name: frontendipconf0\n        protocol: Tcp\n        frontend_port_range_start: 80\n        frontend_port_range_end: 81\n        backend_port: 8080\n    load_balancing_rules:\n      - name: lbrbalancingrule0\n        frontend_ip_configuration: frontendipconf0\n        backend_address_pool: backendaddrpool0\n        frontend_port: 80\n        backend_port: 80\n        probe: prob0\n    inbound_nat_rules:\n      - name: inboundnatrule0\n        backend_port: 8080\n        protocol: Tcp\n        frontend_port: 8080\n        frontend_ip_configuration: frontendipconf0\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": [
+                    "Whether or not the resource has changed."
+                ],
+                "returned": "always",
+                "type": "bool"
+            },
+            "state": {
+                "description": [
+                    "Current state of the load balancer."
+                ],
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,375 @@
+{
+    "community.aws.aws_acm_facts": {
+        "doc": {
+            "author": [
+                "Will Thames (@willthames)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Retrieve information for ACM certificates",
+                "This module was called C(aws_acm_facts) before Ansible 2.9. The usage did not change.",
+                "Note that this will not return information about uploaded keys of size 4096 bits, due to a limitation of the ACM API."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/aws_acm_facts.py",
+            "has_action": false,
+            "module": "aws_acm_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "certificate_arn": {
+                    "aliases": [
+                        "arn"
+                    ],
+                    "description": [
+                        "If provided, the results will be filtered to show only the certificate with this ARN.",
+                        "If no certificate with this ARN exists, this task will fail.",
+                        "If a certificate with this ARN exists in a different region, this task will fail"
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "domain_name": {
+                    "aliases": [
+                        "name"
+                    ],
+                    "description": [
+                        "The domain name of an ACM certificate to limit the search to"
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "statuses": {
+                    "choices": [
+                        "PENDING_VALIDATION",
+                        "ISSUED",
+                        "INACTIVE",
+                        "EXPIRED",
+                        "VALIDATION_TIMED_OUT",
+                        "REVOKED",
+                        "FAILED"
+                    ],
+                    "description": [
+                        "Status to filter the certificate results"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "tags": {
+                    "description": [
+                        "Filter results to show only certificates with tags that match all the tags specified here."
+                    ],
+                    "type": "dict"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Retrieve certificate information from AWS Certificate Manager service",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: obtain all ACM certificates\n  community.aws.aws_acm_info:\n\n- name: obtain all information for a single ACM certificate\n  community.aws.aws_acm_info:\n    domain_name: \"*.example_com\"\n\n- name: obtain all certificates pending validation\n  community.aws.aws_acm_info:\n    statuses:\n    - PENDING_VALIDATION\n\n- name: obtain all certificates with tag Name=foo and myTag=bar\n  community.aws.aws_acm_info:\n    tags:\n      Name: foo\n      myTag: bar\n\n\n# The output is still a list of certificates, just one item long.\n- name: obtain information about a certificate with a particular ARN\n  community.aws.aws_acm_info:\n    certificate_arn:  \"arn:aws:acm:ap-southeast-2:123456789876:certificate/abcdeabc-abcd-1234-4321-abcdeabcde12\"\n\n",
+        "metadata": null,
+        "return": {
+            "certificates": {
+                "contains": {
+                    "certificate": {
+                        "description": "The ACM Certificate body",
+                        "returned": "when certificate creation is complete",
+                        "sample": "-----BEGIN CERTIFICATE-----\\\\nMII.....-----END CERTIFICATE-----\\\\n",
+                        "type": "str"
+                    },
+                    "certificate_arn": {
+                        "description": "Certificate ARN",
+                        "returned": "always",
+                        "sample": "arn:aws:acm:ap-southeast-2:123456789012:certificate/abcd1234-abcd-1234-abcd-123456789abc",
+                        "type": "str"
+                    },
+                    "certificate_chain": {
+                        "description": "Full certificate chain for the certificate",
+                        "returned": "when certificate creation is complete",
+                        "sample": "-----BEGIN CERTIFICATE-----\\\\nMII...\\\\n-----END CERTIFICATE-----\\\\n-----BEGIN CERTIFICATE-----\\\\n...",
+                        "type": "str"
+                    },
+                    "created_at": {
+                        "description": "Date certificate was created",
+                        "returned": "always",
+                        "sample": "2017-08-15T10:31:19+10:00",
+                        "type": "str"
+                    },
+                    "domain_name": {
+                        "description": "Domain name for the certificate",
+                        "returned": "always",
+                        "sample": "*.example.com",
+                        "type": "str"
+                    },
+                    "domain_validation_options": {
+                        "contains": {
+                            "domain_name": {
+                                "description": "Fully qualified domain name of the certificate",
+                                "returned": "always",
+                                "sample": "example.com",
+                                "type": "str"
+                            },
+                            "validation_domain": {
+                                "description": "The domain name ACM used to send validation emails",
+                                "returned": "always",
+                                "sample": "example.com",
+                                "type": "str"
+                            },
+                            "validation_emails": {
+                                "description": "A list of email addresses that ACM used to send domain validation emails",
+                                "elements": "str",
+                                "returned": "always",
+                                "sample": [
+                                    "admin@example.com",
+                                    "postmaster@example.com"
+                                ],
+                                "type": "list"
+                            },
+                            "validation_status": {
+                                "description": "Validation status of the domain",
+                                "returned": "always",
+                                "sample": "SUCCESS",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Options used by ACM to validate the certificate",
+                        "returned": "when certificate type is AMAZON_ISSUED",
+                        "type": "complex"
+                    },
+                    "failure_reason": {
+                        "description": "Reason certificate request failed",
+                        "returned": "only when certificate issuing failed",
+                        "sample": "NO_AVAILABLE_CONTACTS",
+                        "type": "str"
+                    },
+                    "in_use_by": {
+                        "description": "A list of ARNs for the AWS resources that are using the certificate.",
+                        "elements": "str",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "issued_at": {
+                        "description": "Date certificate was issued",
+                        "returned": "always",
+                        "sample": "2017-01-01T00:00:00+10:00",
+                        "type": "str"
+                    },
+                    "issuer": {
+                        "description": "Issuer of the certificate",
+                        "returned": "always",
+                        "sample": "Amazon",
+                        "type": "str"
+                    },
+                    "key_algorithm": {
+                        "description": "Algorithm used to generate the certificate",
+                        "returned": "always",
+                        "sample": "RSA-2048",
+                        "type": "str"
+                    },
+                    "not_after": {
+                        "description": "Date after which the certificate is not valid",
+                        "returned": "always",
+                        "sample": "2019-01-01T00:00:00+10:00",
+                        "type": "str"
+                    },
+                    "not_before": {
+                        "description": "Date before which the certificate is not valid",
+                        "returned": "always",
+                        "sample": "2017-01-01T00:00:00+10:00",
+                        "type": "str"
+                    },
+                    "renewal_summary": {
+                        "contains": {
+                            "domain_validation_options": {
+                                "contains": {
+                                    "domain_name": {
+                                        "description": "Fully qualified domain name of the certificate",
+                                        "returned": "always",
+                                        "sample": "example.com",
+                                        "type": "str"
+                                    },
+                                    "validation_domain": {
+                                        "description": "The domain name ACM used to send validation emails",
+                                        "returned": "always",
+                                        "sample": "example.com",
+                                        "type": "str"
+                                    },
+                                    "validation_emails": {
+                                        "description": "A list of email addresses that ACM used to send domain validation emails",
+                                        "elements": "str",
+                                        "returned": "always",
+                                        "sample": [
+                                            "admin@example.com",
+                                            "postmaster@example.com"
+                                        ],
+                                        "type": "list"
+                                    },
+                                    "validation_status": {
+                                        "description": "Validation status of the domain",
+                                        "returned": "always",
+                                        "sample": "SUCCESS",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "Options used by ACM to validate the certificate",
+                                "returned": "when certificate type is AMAZON_ISSUED",
+                                "type": "complex"
+                            },
+                            "renewal_status": {
+                                "description": "Status of the domain renewal",
+                                "returned": "always",
+                                "sample": "PENDING_AUTO_RENEWAL",
+                                "type": "str"
+                            }
+                        },
+                        "description": "Information about managed renewal process",
+                        "returned": "when certificate is issued by Amazon and a renewal has been started",
+                        "type": "complex"
+                    },
+                    "revocation_reason": {
+                        "description": "Reason for certificate revocation",
+                        "returned": "when the certificate has been revoked",
+                        "sample": "SUPERCEDED",
+                        "type": "str"
+                    },
+                    "revoked_at": {
+                        "description": "Date certificate was revoked",
+                        "returned": "when the certificate has been revoked",
+                        "sample": "2017-09-01T10:00:00+10:00",
+                        "type": "str"
+                    },
+                    "serial": {
+                        "description": "The serial number of the certificate",
+                        "returned": "always",
+                        "sample": "00:01:02:03:04:05:06:07:08:09:0a:0b:0c:0d:0e:0f",
+                        "type": "str"
+                    },
+                    "signature_algorithm": {
+                        "description": "Algorithm used to sign the certificate",
+                        "returned": "always",
+                        "sample": "SHA256WITHRSA",
+                        "type": "str"
+                    },
+                    "status": {
+                        "description": "Status of the certificate in ACM",
+                        "returned": "always",
+                        "sample": "ISSUED",
+                        "type": "str"
+                    },
+                    "subject": {
+                        "description": "The name of the entity that is associated with the public key contained in the certificate",
+                        "returned": "always",
+                        "sample": "CN=*.example.com",
+                        "type": "str"
+                    },
+                    "subject_alternative_names": {
+                        "description": "Subject Alternative Names for the certificate",
+                        "elements": "str",
+                        "returned": "always",
+                        "sample": [
+                            "*.example.com"
+                        ],
+                        "type": "list"
+                    },
+                    "tags": {
+                        "description": "Tags associated with the certificate",
+                        "returned": "always",
+                        "sample": {
+                            "Application": "helloworld",
+                            "Environment": "test"
+                        },
+                        "type": "dict"
+                    },
+                    "type": {
+                        "description": "The source of the certificate",
+                        "returned": "always",
+                        "sample": "AMAZON_ISSUED",
+                        "type": "str"
+                    }
+                },
+                "description": "A list of certificates",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

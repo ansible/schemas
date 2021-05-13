@@ -1,0 +1,531 @@
+{
+    "azure.azcollection.azure_rm_aks": {
+        "doc": {
+            "author": [
+                "Sertac Ozercan (@sozercan)",
+                "Yuwei Zhou (@yuwzho)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update and delete a managed Azure Container Service (AKS) instance."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_aks.py",
+            "has_action": false,
+            "module": "azure_rm_aks",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "aad_profile": {
+                    "description": [
+                        "Profile of Azure Active Directory configuration."
+                    ],
+                    "suboptions": {
+                        "client_app_id": {
+                            "description": "The client AAD application ID."
+                        },
+                        "server_app_id": {
+                            "description": "The server AAD application ID."
+                        },
+                        "server_app_secret": {
+                            "description": "The server AAD application secret."
+                        },
+                        "tenant_id": {
+                            "description": [
+                                "The AAD tenant ID to use for authentication.",
+                                "If not specified, will use the tenant of the deployment subscription."
+                            ]
+                        }
+                    }
+                },
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "addon": {
+                    "description": [
+                        "Profile of managed cluster add-on.",
+                        "Key can be C(http_application_routing), C(monitoring), C(virtual_node).",
+                        "Value must be a dict contains a bool variable C(enabled)."
+                    ],
+                    "suboptions": {
+                        "http_application_routing": {
+                            "description": [
+                                "The HTTP application routing solution makes it easy to access applications that are deployed to your cluster."
+                            ],
+                            "suboptions": {
+                                "enabled": {
+                                    "description": [
+                                        "Whether the solution enabled."
+                                    ],
+                                    "type": "bool"
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "monitoring": {
+                            "description": [
+                                "It gives you performance visibility by collecting memory and processor metrics from controllers, nodes, and containers that are available in Kubernetes through the Metrics API."
+                            ],
+                            "suboptions": {
+                                "enabled": {
+                                    "description": [
+                                        "Whether the solution enabled."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "log_analytics_workspace_resource_id": {
+                                    "description": [
+                                        "Where to store the container metrics."
+                                    ],
+                                    "required": true
+                                }
+                            },
+                            "type": "dict"
+                        },
+                        "virtual_node": {
+                            "description": [
+                                "With virtual nodes, you have quick provisioning of pods, and only pay per second for their execution time.",
+                                "You don't need to wait for Kubernetes cluster autoscaler to deploy VM compute nodes to run the additional pods."
+                            ],
+                            "suboptions": {
+                                "enabled": {
+                                    "description": [
+                                        "Whether the solution enabled."
+                                    ],
+                                    "type": "bool"
+                                },
+                                "subnet_resource_id": {
+                                    "description": [
+                                        "Subnet associated to the cluster."
+                                    ],
+                                    "required": true
+                                }
+                            },
+                            "type": "dict"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "agent_pool_profiles": {
+                    "description": [
+                        "The agent pool profile suboptions."
+                    ],
+                    "suboptions": {
+                        "availability_zones": {
+                            "choices": [
+                                1,
+                                2,
+                                3
+                            ],
+                            "description": [
+                                "Availability zones for nodes. Must use VirtualMachineScaleSets AgentPoolType."
+                            ],
+                            "type": "list"
+                        },
+                        "count": {
+                            "description": [
+                                "Number of agents (VMs) to host docker containers.",
+                                "Allowed values must be in the range of C(1) to C(100) (inclusive)."
+                            ],
+                            "required": true
+                        },
+                        "enable_auto_scaling": {
+                            "description": [
+                                "To enable auto-scaling."
+                            ],
+                            "type": "bool"
+                        },
+                        "max_count": {
+                            "description": [
+                                "Maximum number of nodes for auto-scaling.",
+                                "Required if I(enable_auto_scaling=True)."
+                            ],
+                            "type": "int"
+                        },
+                        "max_pods": {
+                            "description": [
+                                "Maximum number of pods schedulable on nodes."
+                            ],
+                            "type": "int"
+                        },
+                        "min_count": {
+                            "description": [
+                                "Minmum number of nodes for auto-scaling.",
+                                "Required if I(enable_auto_scaling=True)."
+                            ],
+                            "type": "int"
+                        },
+                        "name": {
+                            "description": [
+                                "Unique name of the agent pool profile in the context of the subscription and resource group."
+                            ],
+                            "required": true
+                        },
+                        "os_disk_size_gb": {
+                            "description": [
+                                "Size of the OS disk."
+                            ]
+                        },
+                        "type": {
+                            "choices": [
+                                "VirtualMachineScaleSets",
+                                "AvailabilitySet"
+                            ],
+                            "description": [
+                                "AgentPoolType represents types of an agent pool.",
+                                "Possible values include C(VirtualMachineScaleSets) and C(AvailabilitySet)."
+                            ],
+                            "type": "str"
+                        },
+                        "vm_size": {
+                            "description": [
+                                "The VM Size of each of the Agent Pool VM's (e.g. C(Standard_F1) / C(Standard_D2v2))."
+                            ],
+                            "required": true
+                        },
+                        "vnet_subnet_id": {
+                            "description": [
+                                "Specifies the VNet's subnet identifier."
+                            ],
+                            "type": "str"
+                        }
+                    }
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "dns_prefix": {
+                    "description": [
+                        "DNS prefix specified when creating the managed cluster."
+                    ]
+                },
+                "enable_rbac": {
+                    "default": false,
+                    "description": [
+                        "Enable RBAC.",
+                        "Existing non-RBAC enabled AKS clusters cannot currently be updated for RBAC use."
+                    ],
+                    "type": "bool"
+                },
+                "kubernetes_version": {
+                    "description": [
+                        "Version of Kubernetes specified when creating the managed cluster."
+                    ]
+                },
+                "linux_profile": {
+                    "description": [
+                        "The Linux profile suboptions."
+                    ],
+                    "suboptions": {
+                        "admin_username": {
+                            "description": [
+                                "The Admin Username for the cluster."
+                            ],
+                            "required": true
+                        },
+                        "ssh_key": {
+                            "description": [
+                                "The Public SSH Key used to access the cluster."
+                            ],
+                            "required": true
+                        }
+                    }
+                },
+                "location": {
+                    "description": [
+                        "Valid azure location. Defaults to location of the resource group."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of the managed Azure Container Services (AKS) instance."
+                    ],
+                    "required": true
+                },
+                "network_profile": {
+                    "description": [
+                        "Profile of network configuration."
+                    ],
+                    "suboptions": {
+                        "dns_service_ip": {
+                            "default": "10.0.0.10",
+                            "description": [
+                                "An IP address assigned to the Kubernetes DNS service.",
+                                "It must be within the Kubernetes service address range specified in serviceCidr."
+                            ]
+                        },
+                        "docker_bridge_cidr": {
+                            "default": "172.17.0.1/16",
+                            "description": [
+                                "A CIDR notation IP range assigned to the Docker bridge network.",
+                                "It must not overlap with any Subnet IP ranges or the Kubernetes service address range."
+                            ]
+                        },
+                        "load_balancer_sku": {
+                            "choices": [
+                                "standard",
+                                "basic"
+                            ],
+                            "description": [
+                                "The load balancer sku for the managed cluster."
+                            ]
+                        },
+                        "network_plugin": {
+                            "choices": [
+                                "azure",
+                                "kubenet"
+                            ],
+                            "default": "kubenet",
+                            "description": [
+                                "Network plugin used for building Kubernetes network.",
+                                "This property cannot been changed.",
+                                "With C(kubenet), nodes get an IP address from the Azure virtual network subnet.",
+                                "AKS features such as Virtual Nodes or network policies aren't supported with C(kubenet).",
+                                "C(azure) enables Azure Container Networking Interface(CNI), every pod gets an IP address from the subnet and can be accessed directly."
+                            ]
+                        },
+                        "network_policy": {
+                            "choices": [
+                                "azure",
+                                "calico"
+                            ],
+                            "description": "Network policy used for building Kubernetes network."
+                        },
+                        "pod_cidr": {
+                            "default": "10.244.0.0/16",
+                            "description": [
+                                "A CIDR notation IP range from which to assign pod IPs when I(network_plugin=kubenet) is used.",
+                                "It should be a large address space that isn't in use elsewhere in your network environment.",
+                                "This address range must be large enough to accommodate the number of nodes that you expect to scale up to."
+                            ]
+                        },
+                        "service_cidr": {
+                            "default": "10.0.0.0/16",
+                            "description": [
+                                "A CIDR notation IP range from which to assign service cluster IPs.",
+                                "It must not overlap with any Subnet IP ranges.",
+                                "It should be the *.10 address of your service IP address range."
+                            ]
+                        }
+                    }
+                },
+                "node_resource_group": {
+                    "description": [
+                        "Name of the resource group containing agent pool nodes.",
+                        "Unable to update."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "resource_group": {
+                    "description": [
+                        "Name of a resource group where the managed Azure Container Services (AKS) exists or will be created."
+                    ],
+                    "required": true
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "service_principal": {
+                    "description": [
+                        "The service principal suboptions."
+                    ],
+                    "suboptions": {
+                        "client_id": {
+                            "description": [
+                                "The ID for the Service Principal."
+                            ],
+                            "required": true
+                        },
+                        "client_secret": {
+                            "description": [
+                                "The secret password associated with the service principal."
+                            ]
+                        }
+                    }
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the AKS. Use C(present) to create or update an AKS and C(absent) to delete it."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage a managed Azure Container Service (AKS) instance",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n    - name: Create an AKS instance\n      azure_rm_aks:\n        name: myAKS\n        resource_group: myResourceGroup\n        location: eastus\n        dns_prefix: akstest\n        kubernetes_version: 1.14.6\n        linux_profile:\n          admin_username: azureuser\n          ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...\n        service_principal:\n          client_id: \"cf72ca99-f6b9-4004-b0e0-bee10c521948\"\n          client_secret: \"Password1234!\"\n        agent_pool_profiles:\n          - name: default\n            count: 1\n            vm_size: Standard_DS1_v2\n            enable_auto_scaling: True\n            type: VirtualMachineScaleSets\n            max_count: 3\n            min_count: 1\n            enable_rbac: yes\n\n    - name: Create a managed Azure Container Services (AKS) instance\n      azure_rm_aks:\n        name: myAKS\n        location: eastus\n        resource_group: myResourceGroup\n        dns_prefix: akstest\n        kubernetes_version: 1.14.6\n        linux_profile:\n          admin_username: azureuser\n          ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...\n        service_principal:\n          client_id: \"cf72ca99-f6b9-4004-b0e0-bee10c521948\"\n          client_secret: \"Password123!\"\n        agent_pool_profiles:\n          - name: default\n            count: 5\n            vm_size: Standard_D2_v2\n        tags:\n          Environment: Production\n\n    - name: Remove a managed Azure Container Services (AKS) instance\n      azure_rm_aks:\n        name: myAKS\n        resource_group: myResourceGroup\n        state: absent\n",
+        "metadata": null,
+        "return": {
+            "state": {
+                "description": "Current state of the Azure Container Service (AKS).",
+                "example": {
+                    "agent_pool_profiles": [
+                        {
+                            "count": 1,
+                            "dns_prefix": null,
+                            "name": "default",
+                            "os_disk_size_gb": null,
+                            "os_type": "Linux",
+                            "ports": null,
+                            "storage_profile": "ManagedDisks",
+                            "vm_size": "Standard_DS1_v2",
+                            "vnet_subnet_id": null
+                        }
+                    ],
+                    "changed": false,
+                    "dns_prefix": "aks9860bdcd89",
+                    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourcegroups/myResourceGroup/providers/Microsoft.ContainerService/managedClusters/aks9860bdc",
+                    "kube_config": "......",
+                    "kubernetes_version": "1.14.6",
+                    "linux_profile": {
+                        "admin_username": "azureuser",
+                        "ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADA....."
+                    },
+                    "location": "eastus",
+                    "name": "aks9860bdc",
+                    "provisioning_state": "Succeeded",
+                    "service_principal_profile": {
+                        "client_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    },
+                    "tags": {},
+                    "type": "Microsoft.ContainerService/ManagedClusters"
+                },
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

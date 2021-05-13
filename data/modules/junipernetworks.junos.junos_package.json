@@ -1,0 +1,164 @@
+{
+    "junipernetworks.junos.junos_package": {
+        "doc": {
+            "author": "Peter Sprygada (@privateip)",
+            "collection": "junipernetworks.junos",
+            "description": [
+                "This module can install new and updated packages on remote devices running Junos.  The module will compare the specified package with the one running on the remote device and install the specified version if there is a mismatch"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/junipernetworks/junos/plugins/modules/junos_package.py",
+            "has_action": true,
+            "module": "junos_package",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Tested against vSRX JUNOS version 15.1X49-D15.4, vqfx-10000 JUNOS Version 15.1X53-D60.4.",
+                "Works with C(local) connections only.",
+                "Since this module uses junos-eznc to establish connection with junos device the netconf configuration parameters needs to be passed using module options for example C(ssh_config) unlike other junos modules that uses C(netconf) connection type.",
+                "For information on using CLI and netconf see the :ref:`Junos OS Platform Options guide <junos_platform_options>`",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "For more information on using Ansible to manage Juniper network devices see U(https://www.ansible.com/ansible-juniper)."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "The I(force) argument instructs the module to bypass the package version check and install the packaged identified in I(src) on the remote device."
+                    ],
+                    "type": "bool"
+                },
+                "force_host": {
+                    "default": false,
+                    "description": [
+                        "The I(force_host) argument controls the way software package or bundle is added on remote JUNOS host and is applicable for JUNOS QFX5100 device. If the value is set to C(True) it will ignore any warnings while adding the host software package or bundle."
+                    ],
+                    "type": "bool"
+                },
+                "issu": {
+                    "default": false,
+                    "description": [
+                        "The I(issu) argument is a boolean flag when set to C(True) allows unified in-service software upgrade (ISSU) feature which enables you to upgrade between two different Junos OS releases with no disruption on the control plane and with minimal disruption of traffic."
+                    ],
+                    "type": "bool"
+                },
+                "no_copy": {
+                    "default": false,
+                    "description": [
+                        "The I(no_copy) argument is responsible for instructing the remote device on where to install the package from.  When enabled, the package is transferred to the remote device prior to installing."
+                    ],
+                    "type": "bool"
+                },
+                "provider": {
+                    "description": [
+                        "B(Deprecated)",
+                        "Starting with Ansible 2.5 we recommend using C(connection: network_cli) or C(connection: netconf).",
+                        "For more information please see the L(Junos OS Platform Options guide, ../network/user_guide/platform_junos.html).",
+                        "HORIZONTALLINE",
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                            ],
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Specifies the port to use when building the connection to the remote device.  The port value will default to the well known SSH port of 22 (for C(transport=cli)) or port 830 (for C(transport=netconf)) device."
+                            ],
+                            "type": "int"
+                        },
+                        "ssh_keyfile": {
+                            "description": [
+                                "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                            ],
+                            "type": "path"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "cli",
+                                "netconf"
+                            ],
+                            "default": "netconf",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "reboot": {
+                    "default": true,
+                    "description": [
+                        "In order for a package to take effect, the remote device must be restarted.  When enabled, this argument will instruct the module to reboot the device once the updated package has been installed. If disabled or the remote package does not need to be changed, the device will not be started."
+                    ],
+                    "type": "bool"
+                },
+                "src": {
+                    "aliases": [
+                        "package"
+                    ],
+                    "description": [
+                        "The I(src) argument specifies the path to the source package to be installed on the remote device in the advent of a version mismatch. The I(src) argument can be either a localized path or a full path to the package file to install."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "ssh_config": {
+                    "description": [
+                        "The C(ssh_config) argument is path to the SSH configuration file. This can be used to load SSH information from a configuration file. If this option is not given by default ~/.ssh/config is queried."
+                    ],
+                    "type": "path"
+                },
+                "ssh_private_key_file": {
+                    "description": [
+                        "The C(ssh_private_key_file) argument is path to the SSH private key file. This can be used if you need to provide a private key rather than loading the key into the ssh-key-ring/environment"
+                    ],
+                    "type": "path"
+                },
+                "validate": {
+                    "default": true,
+                    "description": [
+                        "The I(validate) argument is responsible for instructing the remote device to skip checking the current device configuration compatibility with the package being installed. When set to false validation is not performed."
+                    ],
+                    "type": "bool"
+                },
+                "version": {
+                    "description": [
+                        "The I(version) argument can be used to explicitly specify the version of the package that should be installed on the remote device.  If the I(version) argument is not specified, then the version is extracts from the I(src) filename."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "junos-eznc",
+                "ncclient (>=v0.5.2)"
+            ],
+            "short_description": "Installs packages on remote devices running Junos",
+            "version_added": "1.0.0",
+            "version_added_collection": "junipernetworks.junos"
+        },
+        "examples": "\n# the required set of connection arguments have been purposely left off\n# the examples for brevity\n\n- name: install local package on remote device\n  junipernetworks.junos.junos_package:\n    src: junos-vsrx-12.1X46-D10.2-domestic.tgz\n\n- name: install local package on remote device without rebooting\n  junipernetworks.junos.junos_package:\n    src: junos-vsrx-12.1X46-D10.2-domestic.tgz\n    reboot: no\n\n- name: install local package on remote device with jumpost\n  junipernetworks.junos.junos_package:\n    src: junos-vsrx-12.1X46-D10.2-domestic.tgz\n    ssh_config: /home/user/customsshconfig\n",
+        "metadata": null,
+        "return": null
+    }
+}

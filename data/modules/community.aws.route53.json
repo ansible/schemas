@@ -1,0 +1,364 @@
+{
+    "community.aws.route53": {
+        "doc": {
+            "author": [
+                "Bruce Pennypacker (@bpennypacker)",
+                "Mike Buzzetti (@jimbydamonk)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Creates and deletes DNS records in Amazons Route 53 service."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/route53.py",
+            "has_action": false,
+            "module": "route53",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "alias": {
+                    "description": [
+                        "Indicates if this is an alias record.",
+                        "Mutually exclusive with I(ttl).",
+                        "Defaults to C(false)."
+                    ],
+                    "type": "bool"
+                },
+                "alias_evaluate_target_health": {
+                    "default": false,
+                    "description": [
+                        "Whether or not to evaluate an alias target health. Useful for aliases to Elastic Load Balancers."
+                    ],
+                    "type": "bool"
+                },
+                "alias_hosted_zone_id": {
+                    "description": [
+                        "The hosted zone identifier."
+                    ],
+                    "type": "str"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "failover": {
+                    "choices": [
+                        "SECONDARY",
+                        "PRIMARY"
+                    ],
+                    "description": [
+                        "Failover resource record sets only. Whether this is the primary or secondary resource record set. Allowed values are PRIMARY and SECONDARY",
+                        "Mutually exclusive with I(weight) and I(region)."
+                    ],
+                    "type": "str"
+                },
+                "health_check": {
+                    "description": [
+                        "Health check to associate with this record"
+                    ],
+                    "type": "str"
+                },
+                "hosted_zone_id": {
+                    "description": [
+                        "The Hosted Zone ID of the DNS zone to modify.",
+                        "This is a required parameter, if parameter I(zone) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "identifier": {
+                    "description": [
+                        "Have to be specified for Weighted, latency-based and failover resource record sets only. An identifier that differentiates among multiple resource record sets that have the same combination of DNS name and type."
+                    ],
+                    "type": "str"
+                },
+                "overwrite": {
+                    "description": [
+                        "Whether an existing record should be overwritten on create if values do not match."
+                    ],
+                    "type": "bool"
+                },
+                "private_zone": {
+                    "default": false,
+                    "description": [
+                        "If set to C(true), the private zone matching the requested name within the domain will be used if there are both public and private zones.",
+                        "The default is to use the public zone."
+                    ],
+                    "type": "bool"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "record": {
+                    "description": [
+                        "The full DNS record to create or delete."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "region": {
+                    "description": [
+                        "Latency-based resource record sets only Among resource record sets that have the same combination of DNS name and type, a value that determines which region this should be associated with for the latency-based routing",
+                        "Mutually exclusive with I(weight) and I(failover)."
+                    ],
+                    "type": "str"
+                },
+                "retry_interval": {
+                    "default": 500,
+                    "description": [
+                        "In the case that Route 53 is still servicing a prior request, this module will wait and try again after this many seconds. If you have many domain names, the default of C(500) seconds may be too long."
+                    ],
+                    "type": "int"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "aliases": [
+                        "command"
+                    ],
+                    "choices": [
+                        "present",
+                        "absent",
+                        "get",
+                        "create",
+                        "delete"
+                    ],
+                    "description": [
+                        "Specifies the state of the resource record. As of Ansible 2.4, the I(command) option has been changed to I(state) as default and the choices C(present) and C(absent) have been added, but I(command) still works as well."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "ttl": {
+                    "default": 3600,
+                    "description": [
+                        "The TTL, in second, to give the new record.",
+                        "Mutually exclusive with I(alias)."
+                    ],
+                    "type": "int"
+                },
+                "type": {
+                    "choices": [
+                        "A",
+                        "CNAME",
+                        "MX",
+                        "AAAA",
+                        "TXT",
+                        "PTR",
+                        "SRV",
+                        "SPF",
+                        "CAA",
+                        "NS",
+                        "SOA"
+                    ],
+                    "description": [
+                        "The type of DNS record to create."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "value": {
+                    "description": [
+                        "The new value when creating a DNS record.  YAML lists or multiple comma-spaced values are allowed for non-alias records.",
+                        "When deleting a record all values for the record must be specified or Route 53 will not delete it."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "vpc_id": {
+                    "description": [
+                        "When used in conjunction with private_zone: true, this will only modify records in the private hosted zone attached to this VPC.",
+                        "This allows you to have multiple private hosted zones, all with the same name, attached to different VPCs."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": false,
+                    "description": [
+                        "Wait until the changes have been replicated to all Amazon Route 53 DNS servers."
+                    ],
+                    "type": "bool"
+                },
+                "wait_timeout": {
+                    "default": 300,
+                    "description": [
+                        "How long to wait for the changes to be replicated, in seconds."
+                    ],
+                    "type": "int"
+                },
+                "weight": {
+                    "description": [
+                        "Weighted resource record sets only. Among resource record sets that have the same combination of DNS name and type, a value that determines what portion of traffic for the current resource record set is routed to the associated location.",
+                        "Mutually exclusive with I(region) and I(failover)."
+                    ],
+                    "type": "int"
+                },
+                "zone": {
+                    "description": [
+                        "The DNS zone to modify.",
+                        "This is a required parameter, if parameter I(hosted_zone_id) is not supplied."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "add or delete entries in Amazons Route 53 DNS service",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: Add new.foo.com as an A record with 3 IPs and wait until the changes have been replicated\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: new.foo.com\n    type: A\n    ttl: 7200\n    value: 1.1.1.1,2.2.2.2,3.3.3.3\n    wait: yes\n- name: Update new.foo.com as an A record with a list of 3 IPs and wait until the changes have been replicated\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: new.foo.com\n    type: A\n    ttl: 7200\n    value:\n      - 1.1.1.1\n      - 2.2.2.2\n      - 3.3.3.3\n    wait: yes\n- name: Retrieve the details for new.foo.com\n  community.aws.route53:\n    state: get\n    zone: foo.com\n    record: new.foo.com\n    type: A\n  register: rec\n- name: Delete new.foo.com A record using the results from the get command\n  community.aws.route53:\n    state: absent\n    zone: foo.com\n    record: \"{{ rec.set.record }}\"\n    ttl: \"{{ rec.set.ttl }}\"\n    type: \"{{ rec.set.type }}\"\n    value: \"{{ rec.set.value }}\"\n# Add an AAAA record.  Note that because there are colons in the value\n# that the IPv6 address must be quoted. Also shows using the old form command=create.\n- name: Add an AAAA record\n  community.aws.route53:\n    command: create\n    zone: foo.com\n    record: localhost.foo.com\n    type: AAAA\n    ttl: 7200\n    value: \"::1\"\n# For more information on SRV records see:\n# https://en.wikipedia.org/wiki/SRV_record\n- name: Add a SRV record with multiple fields for a service on port 22222\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: \"_example-service._tcp.foo.com\"\n    type: SRV\n    value: \"0 0 22222 host1.foo.com,0 0 22222 host2.foo.com\"\n# Note that TXT and SPF records must be surrounded\n# by quotes when sent to Route 53:\n- name: Add a TXT record.\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: localhost.foo.com\n    type: TXT\n    ttl: 7200\n    value: '\"bar\"'\n- name: Add an alias record that points to an Amazon ELB\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: elb.foo.com\n    type: A\n    value: \"{{ elb_dns_name }}\"\n    alias: True\n    alias_hosted_zone_id: \"{{ elb_zone_id }}\"\n- name: Retrieve the details for elb.foo.com\n  community.aws.route53:\n    state: get\n    zone: foo.com\n    record: elb.foo.com\n    type: A\n  register: rec\n- name: Delete an alias record using the results from the get command\n  community.aws.route53:\n    state: absent\n    zone: foo.com\n    record: \"{{ rec.set.record }}\"\n    ttl: \"{{ rec.set.ttl }}\"\n    type: \"{{ rec.set.type }}\"\n    value: \"{{ rec.set.value }}\"\n    alias: True\n    alias_hosted_zone_id: \"{{ rec.set.alias_hosted_zone_id }}\"\n- name: Add an alias record that points to an Amazon ELB and evaluates it health\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: elb.foo.com\n    type: A\n    value: \"{{ elb_dns_name }}\"\n    alias: True\n    alias_hosted_zone_id: \"{{ elb_zone_id }}\"\n    alias_evaluate_target_health: True\n- name: Add an AAAA record with Hosted Zone ID\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    hosted_zone_id: Z2AABBCCDDEEFF\n    record: localhost.foo.com\n    type: AAAA\n    ttl: 7200\n    value: \"::1\"\n- name: Use a routing policy to distribute traffic\n  community.aws.route53:\n    state: present\n    zone: foo.com\n    record: www.foo.com\n    type: CNAME\n    value: host1.foo.com\n    ttl: 30\n    # Routing policy\n    identifier: \"host1@www\"\n    weight: 100\n    health_check: \"d994b780-3150-49fd-9205-356abdd42e75\"\n- name: Add a CAA record (RFC 6844)\n  community.aws.route53:\n    state: present\n    zone: example.com\n    record: example.com\n    type: CAA\n    value:\n      - 0 issue \"ca.example.net\"\n      - 0 issuewild \";\"\n      - 0 iodef \"mailto:security@example.com\"\n",
+        "metadata": null,
+        "return": {
+            "nameservers": {
+                "description": "Nameservers associated with the zone.",
+                "returned": "when state is 'get'",
+                "sample": [
+                    "ns-1036.awsdns-00.org.",
+                    "ns-516.awsdns-00.net.",
+                    "ns-1504.awsdns-00.co.uk.",
+                    "ns-1.awsdns-00.com."
+                ],
+                "type": "list"
+            },
+            "set": {
+                "contains": {
+                    "alias": {
+                        "description": "Whether this is an alias.",
+                        "returned": "always",
+                        "sample": false,
+                        "type": "bool"
+                    },
+                    "failover": {
+                        "description": "Whether this is the primary or secondary resource record set.",
+                        "returned": "always",
+                        "sample": "PRIMARY",
+                        "type": "str"
+                    },
+                    "health_check": {
+                        "description": "health_check associated with this record.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "identifier": {
+                        "description": "An identifier that differentiates among multiple resource record sets that have the same combination of DNS name and type.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "record": {
+                        "description": "Domain name for the record set.",
+                        "returned": "always",
+                        "sample": "new.foo.com.",
+                        "type": "str"
+                    },
+                    "region": {
+                        "description": "Which region this should be associated with for latency-based routing.",
+                        "returned": "always",
+                        "sample": "us-west-2",
+                        "type": "str"
+                    },
+                    "ttl": {
+                        "description": "Resource record cache TTL.",
+                        "returned": "always",
+                        "sample": "3600",
+                        "type": "str"
+                    },
+                    "type": {
+                        "description": "Resource record set type.",
+                        "returned": "always",
+                        "sample": "A",
+                        "type": "str"
+                    },
+                    "value": {
+                        "description": "Record value.",
+                        "returned": "always",
+                        "sample": "52.43.18.27",
+                        "type": "str"
+                    },
+                    "values": {
+                        "description": "Record Values.",
+                        "returned": "always",
+                        "sample": [
+                            "52.43.18.27"
+                        ],
+                        "type": "list"
+                    },
+                    "weight": {
+                        "description": "Weight of the record.",
+                        "returned": "always",
+                        "sample": "3",
+                        "type": "str"
+                    },
+                    "zone": {
+                        "description": "Zone this record set belongs to.",
+                        "returned": "always",
+                        "sample": "foo.bar.com.",
+                        "type": "str"
+                    }
+                },
+                "description": "Info specific to the resource record.",
+                "returned": "when state is 'get'",
+                "type": "complex"
+            }
+        }
+    }
+}

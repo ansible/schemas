@@ -1,0 +1,273 @@
+{
+    "ovirt.ovirt.ovirt_datacenter": {
+        "doc": {
+            "author": [
+                "Ondra Machacek (@machacekondra)",
+                "Martin Necas (@mnecas)"
+            ],
+            "collection": "ovirt.ovirt",
+            "description": [
+                "Module to manage data centers in oVirt/RHV"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ovirt/ovirt/plugins/modules/ovirt_datacenter.py",
+            "has_action": false,
+            "module": "ovirt_datacenter",
+            "notes": [
+                "In order to use this module you have to install oVirt Python SDK. To ensure it's installed with correct version you can create the following task: I(pip: name=ovirt-engine-sdk-python version=4.4.0)"
+            ],
+            "options": {
+                "auth": {
+                    "description": [
+                        "Dictionary with values needed to create HTTP/HTTPS connection to oVirt:"
+                    ],
+                    "required": true,
+                    "suboptions": {
+                        "ca_file": {
+                            "description": [
+                                "A PEM file containing the trusted CA certificates.",
+                                "The certificate presented by the server will be verified using these CA certificates.",
+                                "If C(ca_file) parameter is not set, system wide CA certificate store is used.",
+                                "Default value is set by C(OVIRT_CAFILE) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "compress": {
+                            "default": true,
+                            "description": "Flag indicating if compression is used for connection.",
+                            "type": "bool"
+                        },
+                        "headers": {
+                            "description": [
+                                "Dictionary of HTTP headers to be added to each API call."
+                            ],
+                            "type": "dict"
+                        },
+                        "hostname": {
+                            "description": [
+                                "A string containing the hostname of the server, usually something like `I(server.example.com)`.",
+                                "Default value is set by C(OVIRT_HOSTNAME) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "insecure": {
+                            "description": [
+                                "A boolean flag that indicates if the server TLS certificate and host name should be checked."
+                            ],
+                            "type": "bool"
+                        },
+                        "kerberos": {
+                            "description": [
+                                "A boolean flag indicating if Kerberos authentication should be used instead of the default basic authentication."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "description": [
+                                "The password of the user.",
+                                "Default value is set by C(OVIRT_PASSWORD) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "timeout": {
+                            "description": "Number of seconds to wait for response.",
+                            "type": "int"
+                        },
+                        "token": {
+                            "description": [
+                                "Token to be used instead of login with username/password.",
+                                "Default value is set by C(OVIRT_TOKEN) environment variable."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "A string containing the API URL of the server, usually something like `I(https://server.example.com/ovirt-engine/api)`.",
+                                "Default value is set by C(OVIRT_URL) environment variable.",
+                                "Either C(url) or C(hostname) is required."
+                            ],
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "The name of the user, something like I(admin@internal).",
+                                "Default value is set by C(OVIRT_USERNAME) environment variable."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "comment": {
+                    "description": [
+                        "Comment of the data center."
+                    ],
+                    "type": "str"
+                },
+                "compatibility_version": {
+                    "description": [
+                        "Compatibility version of the data center."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Description of the data center."
+                    ],
+                    "type": "str"
+                },
+                "fetch_nested": {
+                    "description": [
+                        "If I(True) the module will fetch additional data from the API.",
+                        "It will fetch IDs of the VMs disks, snapshots, etc. User can configure to fetch other attributes of the nested entities by specifying C(nested_attributes)."
+                    ],
+                    "type": "bool"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "This parameter can be used only when removing a data center. If I(True) data center will be forcibly removed, even though it contains some clusters. Default value is I(False), which means that only empty data center can be removed."
+                    ],
+                    "type": "bool"
+                },
+                "id": {
+                    "description": [
+                        "ID of the datacenter to manage."
+                    ],
+                    "type": "str"
+                },
+                "iscsi_bonds": {
+                    "description": [
+                        "List of iscsi bonds, which should be created in datacenter."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "name": {
+                            "description": [
+                                "Name of the iscsi bond."
+                            ],
+                            "type": "str"
+                        },
+                        "networks": {
+                            "description": [
+                                "List of network names in bond."
+                            ],
+                            "type": "list"
+                        },
+                        "storage_connections": {
+                            "default": [],
+                            "description": [
+                                "List of storage_connection IDs. Used when you want to use specific storage connection instead of all in storage domain."
+                            ],
+                            "type": "list"
+                        },
+                        "storage_domains": {
+                            "default": [],
+                            "description": [
+                                "List of storage domain names and it will automatically get all storage_connections in the domain."
+                            ],
+                            "type": "list"
+                        }
+                    },
+                    "type": "list"
+                },
+                "local": {
+                    "description": [
+                        "I(True) if the data center should be local, I(False) if should be shared.",
+                        "Default value is set by engine."
+                    ],
+                    "type": "bool"
+                },
+                "mac_pool": {
+                    "description": [
+                        "MAC pool to be used by this datacenter.",
+                        "IMPORTANT: This option is deprecated in oVirt/RHV 4.1. You should use C(mac_pool) in C(ovirt_clusters) module, as MAC pools are set per cluster since 4.1."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the data center to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "nested_attributes": {
+                    "description": [
+                        "Specifies list of the attributes which should be fetched from the API.",
+                        "This parameter apply only when C(fetch_nested) is I(true)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "poll_interval": {
+                    "default": 3,
+                    "description": [
+                        "Number of the seconds the module waits until another poll request on entity status is sent."
+                    ],
+                    "type": "int"
+                },
+                "quota_mode": {
+                    "choices": [
+                        "disabled",
+                        "audit",
+                        "enabled"
+                    ],
+                    "description": [
+                        "Quota mode of the data center. One of I(disabled), I(audit) or I(enabled)"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Should the data center be present or absent."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 180,
+                    "description": [
+                        "The amount of time in seconds the module should wait for the instance to get into desired state."
+                    ],
+                    "type": "int"
+                },
+                "wait": {
+                    "default": true,
+                    "description": [
+                        "C(yes) if the module should wait for the entity to get into desired state."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "ovirt-engine-sdk-python >= 4.4.0"
+            ],
+            "short_description": "Module to manage data centers in oVirt/RHV",
+            "version_added": "1.0.0",
+            "version_added_collection": "ovirt.ovirt"
+        },
+        "examples": "\n# Examples don't contain auth parameter for simplicity,\n# look at ovirt_auth module to see how to reuse authentication:\n\n# Create datacenter\n- ovirt.ovirt.ovirt_datacenter:\n    name: mydatacenter\n    local: True\n    compatibility_version: 4.0\n    quota_mode: enabled\n\n# Remove datacenter\n- ovirt.ovirt.ovirt_datacenter:\n    state: absent\n    name: mydatacenter\n\n# Change Datacenter Name\n- ovirt.ovirt.ovirt_datacenter:\n    id: 00000000-0000-0000-0000-000000000000\n    name: \"new_datacenter_name\"\n\n# Create datacenter with iscsi bond\n- ovirt.ovirt.ovirt_datacenter:\n    name: mydatacenter\n    iscsi_bonds:\n      - name: bond1\n        networks:\n            - network1\n            - network2\n        storage_domains:\n            - storage1\n      - name: bond2\n        networks:\n            - network3\n        storage_connections:\n            - cf780201-6a4f-43c1-a019-e65c4220ab73\n\n# Remove all iscsi bonds\n- ovirt.ovirt.ovirt_datacenter:\n    name: mydatacenter\n    iscsi_bonds: []\n",
+        "metadata": null,
+        "return": {
+            "data_center": {
+                "description": "Dictionary of all the datacenter attributes. Datacenter attributes can be found on your oVirt/RHV instance at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/datacenter.",
+                "returned": "On success if datacenter is found.",
+                "type": "dict"
+            },
+            "id": {
+                "description": "ID of the managed datacenter",
+                "returned": "On success if datacenter is found.",
+                "sample": "7de90f31-222c-436c-a1ca-7e655bd5b60c",
+                "type": "str"
+            }
+        }
+    }
+}

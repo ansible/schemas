@@ -1,0 +1,132 @@
+{
+    "community.vmware.vsphere_copy": {
+        "doc": {
+            "author": [
+                "Dag Wieers (@dagwieers)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "Upload files to a VMware datastore through a vCenter REST API."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vsphere_copy.py",
+            "has_action": false,
+            "module": "vsphere_copy",
+            "notes": [
+                "This module ought to be run from a system that can access the vCenter or the ESXi directly and has the file to transfer. It can be the normal remote target or you can change it either by using C(transport: local) or using C(delegate_to).",
+                "Tested on vSphere 5.5 and ESXi 6.7"
+            ],
+            "options": {
+                "datacenter": {
+                    "description": [
+                        "The datacenter on the vCenter server that holds the datastore."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "datastore": {
+                    "description": [
+                        "The datastore to push files to."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostname": {
+                    "aliases": [
+                        "host"
+                    ],
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The file to push to the datastore."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "src": {
+                    "description": [
+                        "The file to push to vCenter."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "The timeout in seconds for the upload to the datastore."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "login"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "Copy a file to a VMware datastore"
+        },
+        "examples": "\n- name: Copy file to datastore using delegate_to\n  community.vmware.vsphere_copy:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    src: /some/local/file\n    datacenter: DC1 Someplace\n    datastore: datastore1\n    path: some/remote/file\n  delegate_to: localhost\n\n- name: Copy file to datastore when datacenter is inside folder called devel\n  community.vmware.vsphere_copy:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    src: /some/local/file\n    datacenter: devel/DC1\n    datastore: datastore1\n    path: some/remote/file\n  delegate_to: localhost\n\n- name: Copy file to datastore using other_system\n  community.vmware.vsphere_copy:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    src: /other/local/file\n    datacenter: DC2 Someplace\n    datastore: datastore2\n    path: other/remote/file\n  delegate_to: other_system\n",
+        "metadata": null,
+        "return": null
+    }
+}

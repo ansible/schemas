@@ -1,0 +1,295 @@
+{
+    "community.aws.ecs_task": {
+        "doc": {
+            "author": "Mark Chance (@Java1Guy)",
+            "collection": "community.aws",
+            "description": [
+                "Creates or deletes instances of task definitions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/ecs_task.py",
+            "has_action": false,
+            "module": "ecs_task",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "cluster": {
+                    "description": [
+                        "The name of the cluster to run the task on."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "container_instances": {
+                    "description": [
+                        "The list of container instances on which to deploy the task."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "count": {
+                    "description": [
+                        "How many new instances to start."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "launch_type": {
+                    "choices": [
+                        "EC2",
+                        "FARGATE"
+                    ],
+                    "description": [
+                        "The launch type on which to run your service."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "network_configuration": {
+                    "description": [
+                        "Network configuration of the service. Only applicable for task definitions created with I(network_mode=awsvpc).",
+                        "I(assign_public_ip) requires botocore >= 1.8.4"
+                    ],
+                    "suboptions": {
+                        "assign_public_ip": {
+                            "description": "Whether the task's elastic network interface receives a public IP address.",
+                            "type": "bool",
+                            "version_added": "1.5.0",
+                            "version_added_collection": "community.aws"
+                        },
+                        "security_groups": {
+                            "description": "A list of group names or group IDs for the task.",
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "subnets": {
+                            "description": "A list of subnet IDs to which the task is attached.",
+                            "elements": "str",
+                            "type": "list"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "operation": {
+                    "choices": [
+                        "run",
+                        "start",
+                        "stop"
+                    ],
+                    "description": [
+                        "Which task operation to execute.",
+                        "When I(operation=run) I(task_definition) must be set.",
+                        "When I(operation=start) both I(task_definition) and I(container_instances) must be set.",
+                        "When I(operation=stop) both I(task_definition) and I(task) must be set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "overrides": {
+                    "description": [
+                        "A dictionary of values to pass to the new instances."
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "started_by": {
+                    "description": [
+                        "A value showing who or what started the task (for informational purposes)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tags that will be added to ecs tasks on start and run"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "task": {
+                    "description": [
+                        "The ARN of the task to stop."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "task_definition": {
+                    "description": [
+                        "The task definition to start, run or stop."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "json",
+                "python >= 2.6"
+            ],
+            "short_description": "Run, start or stop a task in ecs",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Simple example of run task\n- name: Run task\n  community.aws.ecs_task:\n    operation: run\n    cluster: console-sample-app-static-cluster\n    task_definition: console-sample-app-static-taskdef\n    count: 1\n    started_by: ansible_user\n  register: task_output\n\n# Simple example of start task\n\n- name: Start a task\n  community.aws.ecs_task:\n      operation: start\n      cluster: console-sample-app-static-cluster\n      task_definition: console-sample-app-static-taskdef\n      task: \"arn:aws:ecs:us-west-2:172139249013:task/3f8353d1-29a8-4689-bbf6-ad79937ffe8a\"\n      tags:\n        resourceName: a_task_for_ansible_to_run\n        type: long_running_task\n        network: internal\n        version: 1.4\n      container_instances:\n      - arn:aws:ecs:us-west-2:172139249013:container-instance/79c23f22-876c-438a-bddf-55c98a3538a8\n      started_by: ansible_user\n      network_configuration:\n        subnets:\n        - subnet-abcd1234\n        security_groups:\n        - sg-aaaa1111\n        - my_security_group\n  register: task_output\n\n- name: RUN a task on Fargate\n  community.aws.ecs_task:\n      operation: run\n      cluster: console-sample-app-static-cluster\n      task_definition: console-sample-app-static-taskdef\n      task: \"arn:aws:ecs:us-west-2:172139249013:task/3f8353d1-29a8-4689-bbf6-ad79937ffe8a\"\n      started_by: ansible_user\n      launch_type: FARGATE\n      network_configuration:\n        subnets:\n        - subnet-abcd1234\n        security_groups:\n        - sg-aaaa1111\n        - my_security_group\n  register: task_output\n\n- name: RUN a task on Fargate with public ip assigned\n  community.aws.ecs_task:\n      operation: run\n      count: 2\n      cluster: console-sample-app-static-cluster\n      task_definition: console-sample-app-static-taskdef\n      task: \"arn:aws:ecs:us-west-2:172139249013:task/3f8353d1-29a8-4689-bbf6-ad79937ffe8a\"\n      started_by: ansible_user\n      launch_type: FARGATE\n      network_configuration:\n        assign_public_ip: yes\n        subnets:\n        - subnet-abcd1234\n  register: task_output\n\n- name: Stop a task\n  community.aws.ecs_task:\n      operation: stop\n      cluster: console-sample-app-static-cluster\n      task_definition: console-sample-app-static-taskdef\n      task: \"arn:aws:ecs:us-west-2:172139249013:task/3f8353d1-29a8-4689-bbf6-ad79937ffe8a\"\n",
+        "metadata": null,
+        "return": {
+            "task": {
+                "contains": {
+                    "clusterArn": {
+                        "description": "The Amazon Resource Name (ARN) of the of the cluster that hosts the task.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "containerInstanceArn": {
+                        "description": "The Amazon Resource Name (ARN) of the container running the task.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "containers": {
+                        "description": "The container details.",
+                        "elements": "dict",
+                        "returned": "only when details is true",
+                        "type": "list"
+                    },
+                    "createdAt": {
+                        "description": "The timestamp of when the task was created.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "desiredStatus": {
+                        "description": "The desired status of the task.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "lastStatus": {
+                        "description": "The last recorded status of the task.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "launchType": {
+                        "description": "The launch type on which to run your task.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "overrides": {
+                        "description": "The container overrides set for this task.",
+                        "elements": "dict",
+                        "returned": "only when details is true",
+                        "type": "list"
+                    },
+                    "startedAt": {
+                        "description": "The timestamp of when the task was started.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "startedBy": {
+                        "description": "The used who started the task.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "stoppedAt": {
+                        "description": "The timestamp of when the task was stopped.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "stoppedReason": {
+                        "description": "The reason why the task was stopped.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    },
+                    "taskArn": {
+                        "description": "The Amazon Resource Name (ARN) that identifies the task.",
+                        "returned": "always",
+                        "type": "str"
+                    },
+                    "taskDefinitionArn": {
+                        "description": "The Amazon Resource Name (ARN) of the task definition.",
+                        "returned": "only when details is true",
+                        "type": "str"
+                    }
+                },
+                "description": "details about the task that was started",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

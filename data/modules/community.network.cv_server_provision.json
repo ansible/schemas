@@ -1,0 +1,211 @@
+{
+    "community.network.cv_server_provision": {
+        "doc": {
+            "author": "EOS+ CS (ansible-dev@arista.com) (@mharista)",
+            "collection": "community.network",
+            "description": [
+                "This module allows a server team to provision server network ports for new servers without having to access Arista CVP or asking the network team to do it for them. Provide the information for connecting to CVP, switch rack, port the new server is connected to, optional vlan, and an action and the module will apply the configuration to the switch port via CVP. Actions are add (applies template config to port), remove (defaults the interface config) and show (returns the current port config)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/cv_server_provision.py",
+            "has_action": false,
+            "module": "cv_server_provision",
+            "options": {
+                "action": {
+                    "choices": [
+                        "show",
+                        "add",
+                        "remove"
+                    ],
+                    "default": "show",
+                    "description": [
+                        "The action for the module to take. The actions are add, which applies the specified template config to port, remove, which defaults the specified interface configuration, and show, which will return the current port configuration with no changes."
+                    ]
+                },
+                "auto_run": {
+                    "default": "no",
+                    "description": [
+                        "Flag that determines whether or not the module will execute the CVP task spawned as a result of changes to a switch configlet. When an add or remove action is taken which results in a change to a switch configlet, CVP will spawn a task that needs to be executed for the configuration to be applied to the switch. If this option is True then the module will determined the task number created by the configuration change, execute it and wait for the task to complete. If the option is False then the task will remain in the Pending state in CVP for a network administrator to review and execute."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "description": [
+                        "The hostname or IP address of the CVP node being connected to."
+                    ],
+                    "required": true
+                },
+                "password": {
+                    "description": [
+                        "The password of the user that will be used to connect to CVP for API calls."
+                    ],
+                    "required": true
+                },
+                "port": {
+                    "description": [
+                        "The port number to use when making API calls to the CVP node. This will default to the default port for the specified protocol. Port 80 for http and port 443 for https."
+                    ]
+                },
+                "port_vlan": {
+                    "description": [
+                        "The vlan that should be applied to the port for this server. This parameter is dependent on a proper template that supports single vlan provisioning with it. If a port vlan is specified by the template specified does not support this the module will exit out with no changes. If a template is specified that requires a port vlan but no port vlan is specified the module will exit out with no changes."
+                    ]
+                },
+                "protocol": {
+                    "choices": [
+                        "https",
+                        "http"
+                    ],
+                    "default": "https",
+                    "description": [
+                        "The protocol to use when making API calls to CVP. CVP defaults to https and newer versions of CVP no longer support http."
+                    ]
+                },
+                "server_name": {
+                    "description": [
+                        "The hostname or identifier for the server that is having it's switch port provisioned."
+                    ],
+                    "required": true
+                },
+                "switch_name": {
+                    "description": [
+                        "The hostname of the switch is being configured for the server being provisioned."
+                    ],
+                    "required": true
+                },
+                "switch_port": {
+                    "description": [
+                        "The physical port number on the switch that the new server is connected to."
+                    ],
+                    "required": true
+                },
+                "template": {
+                    "description": [
+                        "A path to a Jinja formatted template file that contains the configuration block that will be applied to the specified switch port. This template will have variable fields replaced by the module before being applied to the switch configuration."
+                    ],
+                    "required": true
+                },
+                "username": {
+                    "description": [
+                        "The user that will be used to connect to CVP for making API calls."
+                    ],
+                    "required": true
+                }
+            },
+            "requirements": [
+                "Jinja2",
+                "cvprac >= 0.7.0"
+            ],
+            "short_description": "Provision server port by applying or removing template configuration to an Arista CloudVision Portal configlet that is applied to a switch."
+        },
+        "examples": "\n- name: Get current configuration for interface Ethernet2\n  community.network.cv_server_provision:\n    host: cvp_node\n    username: cvp_user\n    password: cvp_pass\n    protocol: https\n    server_name: new_server\n    switch_name: eos_switch_1\n    switch_port: 2\n    template: template_file.j2\n    action: show\n\n- name: Remove existing configuration from interface Ethernet2. Run task.\n  community.network.cv_server_provision:\n    host: cvp_node\n    username: cvp_user\n    password: cvp_pass\n    protocol: https\n    server_name: new_server\n    switch_name: eos_switch_1\n    switch_port: 2\n    template: template_file.j2\n    action: remove\n    auto_run: True\n\n- name: Add template configuration to interface Ethernet2. No VLAN. Run task.\n  community.network.cv_server_provision:\n    host: cvp_node\n    username: cvp_user\n    password: cvp_pass\n    protocol: https\n    server_name: new_server\n    switch_name: eos_switch_1\n    switch_port: 2\n    template: single_attached_trunk.j2\n    action: add\n    auto_run: True\n\n- name: Add template with VLAN configuration to interface Ethernet2. Run task.\n  community.network.cv_server_provision:\n    host: cvp_node\n    username: cvp_user\n    password: cvp_pass\n    protocol: https\n    server_name: new_server\n    switch_name: eos_switch_1\n    switch_port: 2\n    port_vlan: 22\n    template: single_attached_vlan.j2\n    action: add\n    auto_run: True\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "Signifies if a change was made to the configlet",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "currentConfigBlock": {
+                "description": "The current config block for the user specified interface",
+                "returned": "when action = show",
+                "sample": "interface Ethernet4\n!\n",
+                "type": "str"
+            },
+            "fullConfig": {
+                "description": "The full config of the configlet after being updated",
+                "returned": "when action = add or remove",
+                "sample": "!\ninterface Ethernet3\n!\ninterface Ethernet4\n!\n",
+                "type": "str"
+            },
+            "newConfigBlock": {
+                "description": "The new config block for the user specified interface",
+                "returned": "when action = add or remove",
+                "sample": "interface Ethernet3\n    description example\n    no switchport\n!\n",
+                "type": "str"
+            },
+            "oldConfigBlock": {
+                "description": "The current config block for the user specified interface before any changes are made",
+                "returned": "when action = add or remove",
+                "sample": "interface Ethernet3\n!\n",
+                "type": "str"
+            },
+            "portConfigurable": {
+                "description": "Signifies if the user specified port has an entry in the configlet that Ansible has access to",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "switchConfigurable": {
+                "description": "Signifies if the user specified switch has a configlet applied to it that CVP is allowed to edit",
+                "returned": "success",
+                "sample": true,
+                "type": "bool"
+            },
+            "switchInfo": {
+                "description": "Information from CVP describing the switch being configured",
+                "returned": "success",
+                "sample": {
+                    "architecture": "i386",
+                    "bootupTimeStamp": 1491264298.21,
+                    "complianceCode": "0000",
+                    "complianceIndication": "NONE",
+                    "deviceInfo": "Registered",
+                    "deviceStatus": "Registered",
+                    "fqdn": "veos1",
+                    "hardwareRevision": "",
+                    "internalBuildId": "12-12",
+                    "internalVersion": "4.17.1F-11111.4171F",
+                    "ipAddress": "192.168.1.20",
+                    "isDANZEnabled": "no",
+                    "isMLAGEnabled": "no",
+                    "key": "00:50:56:5d:e5:e0",
+                    "lastSyncUp": 1496432895799,
+                    "memFree": 472976,
+                    "memTotal": 1893460,
+                    "modelName": "vEOS",
+                    "parentContainerId": "container_13_5776759195930",
+                    "serialNumber": "",
+                    "systemMacAddress": "00:50:56:5d:e5:e0",
+                    "taskIdList": [],
+                    "tempAction": null,
+                    "type": "netelement",
+                    "unAuthorized": false,
+                    "version": "4.17.1F",
+                    "ztpMode": "false"
+                },
+                "type": "dict"
+            },
+            "taskCompleted": {
+                "description": "Signifies if the task created and executed has completed successfully",
+                "returned": "when action = add or remove, and auto_run = true, and configuration changes",
+                "sample": true,
+                "type": "bool"
+            },
+            "taskCreated": {
+                "description": "Signifies if a task was created due to configlet changes",
+                "returned": "when action = add or remove, and auto_run = true or false, and configuration changes",
+                "sample": true,
+                "type": "bool"
+            },
+            "taskExecuted": {
+                "description": "Signifies if the automation executed the spawned task",
+                "returned": "when action = add or remove, and auto_run = true, and configuration changes",
+                "sample": true,
+                "type": "bool"
+            },
+            "taskId": {
+                "description": "The task ID created by CVP because of changes to configlet",
+                "returned": "when action = add or remove, and auto_run = true or false, and configuration changes",
+                "sample": "500",
+                "type": "str"
+            },
+            "updateConfigletResponse": {
+                "description": "Response returned from CVP when configlet update is triggered",
+                "returned": "when action = add or remove and configuration changes",
+                "sample": "Configlet veos1-server successfully updated and task initiated.",
+                "type": "str"
+            }
+        }
+    }
+}

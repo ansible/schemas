@@ -1,0 +1,91 @@
+{
+    "ansible.netcommon.netconf_rpc": {
+        "doc": {
+            "author": [
+                "Ganesh Nalawade (@ganeshrn)",
+                "Sven Wisotzky (@wisotzky)"
+            ],
+            "collection": "ansible.netcommon",
+            "description": [
+                "NETCONF is a network management protocol developed and standardized by the IETF. It is documented in RFC 6241.",
+                "This module allows the user to execute NETCONF RPC requests as defined by IETF RFC standards as well as proprietary requests."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/netcommon/plugins/modules/netconf_rpc.py",
+            "has_action": false,
+            "module": "netconf_rpc",
+            "notes": [
+                "This module requires the NETCONF system service be enabled on the remote device being managed.",
+                "This module supports the use of connection=netconf",
+                "To execute C(get-config), C(get) or C(edit-config) requests it is recommended to use the Ansible I(netconf_get) and I(netconf_config) modules.",
+                "This module is supported on C(ansible_network_os) network platforms. See the :ref:`Network Platform Options <platform_options>` for details."
+            ],
+            "options": {
+                "content": {
+                    "description": [
+                        "This argument specifies the optional request content (all RPC attributes). The I(content) value can either be provided as XML formatted string or as dictionary."
+                    ]
+                },
+                "display": {
+                    "choices": [
+                        "json",
+                        "pretty",
+                        "xml"
+                    ],
+                    "description": [
+                        "Encoding scheme to use when serializing output from the device. The option I(json) will serialize the output as JSON data. If the option value is I(json) it requires jxmlease to be installed on control node. The option I(pretty) is similar to received XML response but is using human readable format (spaces, new lines). The option value I(xml) is similar to received XML response but removes all XML namespaces."
+                    ]
+                },
+                "rpc": {
+                    "description": [
+                        "This argument specifies the request (name of the operation) to be executed on the remote NETCONF enabled device."
+                    ]
+                },
+                "xmlns": {
+                    "description": [
+                        "NETCONF operations not defined in rfc6241 typically require the appropriate XML namespace to be set. In the case the I(request) option is not already provided in XML format, the namespace can be defined by the I(xmlns) option."
+                    ]
+                }
+            },
+            "requirements": [
+                "ncclient (>=v0.5.2)",
+                "jxmlease"
+            ],
+            "short_description": "Execute operations on NETCONF enabled network devices."
+        },
+        "examples": "\n- name: lock candidate\n  netconf_rpc:\n    rpc: lock\n    content:\n      target:\n        candidate:\n\n- name: unlock candidate\n  netconf_rpc:\n    rpc: unlock\n    xmlns: \"urn:ietf:params:xml:ns:netconf:base:1.0\"\n    content: \"{'target': {'candidate': None}}\"\n\n- name: discard changes\n  netconf_rpc:\n    rpc: discard-changes\n\n- name: get-schema\n  netconf_rpc:\n    rpc: get-schema\n    xmlns: urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring\n    content:\n      identifier: ietf-netconf\n      version: \"2011-06-01\"\n\n- name: copy running to startup\n  netconf_rpc:\n    rpc: copy-config\n    content:\n      source:\n        running:\n      target:\n        startup:\n\n- name: get schema list with JSON output\n  netconf_rpc:\n    rpc: get\n    content: |\n      <filter>\n        <netconf-state xmlns=\"urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring\">\n          <schemas/>\n        </netconf-state>\n      </filter>\n    display: json\n\n- name: get schema using XML request\n  netconf_rpc:\n    rpc: \"get-schema\"\n    xmlns: \"urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring\"\n    content: |\n      <identifier>ietf-netconf-monitoring</identifier>\n      <version>2010-10-04</version>\n    display: json\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "network"
+        },
+        "return": {
+            "output": {
+                "contains": {
+                    "formatted_output": [
+                        "Contains formatted response received from remote host as per the value in display format."
+                    ]
+                },
+                "description": "Based on the value of display option will return either the set of transformed XML to JSON format from the RPC response with type dict or pretty XML string response (human-readable) or response with namespace removed from XML string.",
+                "returned": "when the display format is selected as JSON it is returned as dict type, if the display format is xml or pretty pretty it is returned as a string apart from low-level errors (such as action plugin).",
+                "type": "complex"
+            },
+            "stdout": {
+                "description": "The raw XML string containing configuration or state data received from the underlying ncclient library.",
+                "returned": "always apart from low-level errors (such as action plugin)",
+                "sample": "...",
+                "type": "str"
+            },
+            "stdout_lines": {
+                "description": "The value of stdout split into a list",
+                "returned": "always apart from low-level errors (such as action plugin)",
+                "sample": [
+                    "...",
+                    "..."
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

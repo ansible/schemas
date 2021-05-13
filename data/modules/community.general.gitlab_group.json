@@ -1,0 +1,133 @@
+{
+    "community.general.gitlab_group": {
+        "doc": {
+            "author": [
+                "Werner Dijkerman (@dj-wasabi)",
+                "Guillaume Martinez (@Lunik)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "When the group does not exist in GitLab, it will be created.",
+                "When the group does exist and state=absent, the group will be deleted."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/gitlab_group.py",
+            "has_action": false,
+            "module": "gitlab_group",
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to use for authentication against the API"
+                    ],
+                    "type": "str"
+                },
+                "api_token": {
+                    "description": [
+                        "GitLab token for logging in."
+                    ],
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The resolvable endpoint for the API"
+                    ],
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to use for authentication against the API"
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "A description for the group."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the group you want to create."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "parent": {
+                    "description": [
+                        "Allow to create subgroups",
+                        "Id or Full path of parent group in the form of group/name"
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "The path of the group you want to create, this will be api_url/group_path",
+                        "If not supplied, the group_name will be used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "create or delete group.",
+                        "Possible values are present and absent."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether or not to validate SSL certs when supplying a https endpoint."
+                    ],
+                    "type": "bool"
+                },
+                "visibility": {
+                    "choices": [
+                        "private",
+                        "internal",
+                        "public"
+                    ],
+                    "default": "private",
+                    "description": [
+                        "Default visibility of the group"
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "python-gitlab python module"
+            ],
+            "short_description": "Creates/updates/deletes GitLab Groups"
+        },
+        "examples": "\n- name: \"Delete GitLab Group\"\n  community.general.gitlab_group:\n    api_url: https://gitlab.example.com/\n    api_token: \"{{ access_token }}\"\n    validate_certs: False\n    name: my_first_group\n    state: absent\n\n- name: \"Create GitLab Group\"\n  community.general.gitlab_group:\n    api_url: https://gitlab.example.com/\n    validate_certs: True\n    api_username: dj-wasabi\n    api_password: \"MySecretPassword\"\n    name: my_first_group\n    path: my_first_group\n    state: present\n\n# The group will by created at https://gitlab.dj-wasabi.local/super_parent/parent/my_first_group\n- name: \"Create GitLab SubGroup\"\n  community.general.gitlab_group:\n    api_url: https://gitlab.example.com/\n    validate_certs: True\n    api_username: dj-wasabi\n    api_password: \"MySecretPassword\"\n    name: my_first_group\n    path: my_first_group\n    state: present\n    parent: \"super_parent/parent\"\n",
+        "metadata": null,
+        "return": {
+            "error": {
+                "description": "the error message returned by the GitLab API",
+                "returned": "failed",
+                "sample": "400: path is already in use",
+                "type": "str"
+            },
+            "group": {
+                "description": "API object",
+                "returned": "always",
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Success or failure message",
+                "returned": "always",
+                "sample": "Success",
+                "type": "str"
+            },
+            "result": {
+                "description": "json parsed response from the server",
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

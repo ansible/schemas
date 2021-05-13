@@ -1,0 +1,215 @@
+{
+    "community.crypto.openssh_keypair": {
+        "doc": {
+            "author": "David Kainz (@lolcube)",
+            "collection": "community.crypto",
+            "description": [
+                "This module allows one to (re)generate OpenSSH private and public keys. It uses ssh-keygen to generate keys. One can generate C(rsa), C(dsa), C(rsa1), C(ed25519) or C(ecdsa) private keys."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/crypto/plugins/modules/openssh_keypair.py",
+            "has_action": false,
+            "module": "openssh_keypair",
+            "notes": [
+                "In case the ssh key is broken or password protected, the module will fail. Set the I(force) option to C(yes) if you want to regenerate the keypair.",
+                "Supports C(check_mode)."
+            ],
+            "options": {
+                "attributes": {
+                    "aliases": [
+                        "attr"
+                    ],
+                    "description": [
+                        "The attributes the resulting file or directory should have.",
+                        "To get supported flags look at the man page for I(chattr) on the target system.",
+                        "This string should contain the attributes in the same order as the one displayed by I(lsattr).",
+                        "The C(=) operator is assumed as default, otherwise C(+) or C(-) operators need to be included in the string."
+                    ],
+                    "type": "str",
+                    "version_added": "2.3",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "comment": {
+                    "description": [
+                        "Provides a new comment to the public key."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Should the key be regenerated even if it already exists"
+                    ],
+                    "type": "bool"
+                },
+                "group": {
+                    "description": [
+                        "Name of the group that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "mode": {
+                    "description": [
+                        "The permissions the resulting file or directory should have.",
+                        "For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number.",
+                        "Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results.",
+                        "As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r))."
+                    ],
+                    "type": "raw"
+                },
+                "owner": {
+                    "description": [
+                        "Name of the user that should own the file/directory, as would be fed to I(chown)."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "description": [
+                        "Name of the files containing the public and private key. The file containing the public key will have the extension C(.pub)."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "regenerate": {
+                    "choices": [
+                        "never",
+                        "fail",
+                        "partial_idempotence",
+                        "full_idempotence",
+                        "always"
+                    ],
+                    "default": "partial_idempotence",
+                    "description": [
+                        "Allows to configure in which situations the module is allowed to regenerate private keys. The module will always generate a new key if the destination file does not exist.",
+                        "By default, the key will be regenerated when it does not match the module's options, except when the key cannot be read or the passphrase does not match. Please note that this B(changed) for Ansible 2.10. For Ansible 2.9, the behavior was as if C(full_idempotence) is specified.",
+                        "If set to C(never), the module will fail if the key cannot be read or the passphrase isn't matching, and will never regenerate an existing key.",
+                        "If set to C(fail), the module will fail if the key does not correspond to the module's options.",
+                        "If set to C(partial_idempotence), the key will be regenerated if it does not conform to the module's options. The key is B(not) regenerated if it cannot be read (broken file), the key is protected by an unknown passphrase, or when they key is not protected by a passphrase, but a passphrase is specified.",
+                        "If set to C(full_idempotence), the key will be regenerated if it does not conform to the module's options. This is also the case if the key cannot be read (broken file), the key is protected by an unknown passphrase, or when they key is not protected by a passphrase, but a passphrase is specified. Make sure you have a B(backup) when using this option!",
+                        "If set to C(always), the module will always regenerate the key. This is equivalent to setting I(force) to C(yes).",
+                        "Note that adjusting the comment and the permissions can be changed without regeneration. Therefore, even for C(never), the task can result in changed."
+                    ],
+                    "type": "str",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.crypto"
+                },
+                "selevel": {
+                    "description": [
+                        "The level part of the SELinux file context.",
+                        "This is the MLS/MCS attribute, sometimes known as the C(range).",
+                        "When set to C(_default), it will use the C(level) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "serole": {
+                    "description": [
+                        "The role part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(role) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "setype": {
+                    "description": [
+                        "The type part of the SELinux file context.",
+                        "When set to C(_default), it will use the C(type) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "seuser": {
+                    "description": [
+                        "The user part of the SELinux file context.",
+                        "By default it uses the C(system) policy, where applicable.",
+                        "When set to C(_default), it will use the C(user) portion of the policy if available."
+                    ],
+                    "type": "str"
+                },
+                "size": {
+                    "description": [
+                        "Specifies the number of bits in the private key to create. For RSA keys, the minimum size is 1024 bits and the default is 4096 bits. Generally, 2048 bits is considered sufficient.  DSA keys must be exactly 1024 bits as specified by FIPS 186-2. For ECDSA keys, size determines the key length by selecting from one of three elliptic curve sizes: 256, 384 or 521 bits. Attempting to use bit lengths other than these three values for ECDSA keys will cause this module to fail. Ed25519 keys have a fixed length and the size will be ignored."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Whether the private and public keys should exist or not, taking action if the state is different from what is stated."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "rsa",
+                        "dsa",
+                        "rsa1",
+                        "ecdsa",
+                        "ed25519"
+                    ],
+                    "default": "rsa",
+                    "description": [
+                        "The algorithm used to generate the SSH private key. C(rsa1) is for protocol version 1. C(rsa1) is deprecated and may not be supported by every version of ssh-keygen."
+                    ],
+                    "type": "str"
+                },
+                "unsafe_writes": {
+                    "default": false,
+                    "description": [
+                        "Influence when to use atomic operation to prevent data corruption or inconsistent reads from the target file.",
+                        "By default this module uses atomic operations to prevent data corruption or inconsistent reads from the target files, but sometimes systems are configured or just broken in ways that prevent this. One example is docker mounted files, which cannot be updated atomically from inside the container and can only be written in an unsafe manner.",
+                        "This option allows Ansible to fall back to unsafe methods of updating files when atomic operations fail (however, it doesn't force Ansible to perform unsafe writes).",
+                        "IMPORTANT! Unsafe writes are subject to race conditions and can lead to data corruption."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.2",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "requirements": [
+                "ssh-keygen"
+            ],
+            "short_description": "Generate OpenSSH private and public keys"
+        },
+        "examples": "\n- name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)\n  community.crypto.openssh_keypair:\n    path: /tmp/id_ssh_rsa\n\n- name: Generate an OpenSSH rsa keypair with a different size (2048 bits)\n  community.crypto.openssh_keypair:\n    path: /tmp/id_ssh_rsa\n    size: 2048\n\n- name: Force regenerate an OpenSSH keypair if it already exists\n  community.crypto.openssh_keypair:\n    path: /tmp/id_ssh_rsa\n    force: True\n\n- name: Generate an OpenSSH keypair with a different algorithm (dsa)\n  community.crypto.openssh_keypair:\n    path: /tmp/id_ssh_dsa\n    type: dsa\n",
+        "metadata": null,
+        "return": {
+            "comment": {
+                "description": "The comment of the generated key.",
+                "returned": "changed or success",
+                "sample": "test@comment",
+                "type": "str"
+            },
+            "filename": {
+                "description": "Path to the generated SSH private key file.",
+                "returned": "changed or success",
+                "sample": "/tmp/id_ssh_rsa",
+                "type": "str"
+            },
+            "fingerprint": {
+                "description": "The fingerprint of the key.",
+                "returned": "changed or success",
+                "sample": "SHA256:r4YCZxihVjedH2OlfjVGI6Y5xAYtdCwk8VxKyzVyYfM",
+                "type": "str"
+            },
+            "public_key": {
+                "description": "The public key of the generated SSH private key.",
+                "returned": "changed or success",
+                "sample": "ssh-rsa AAAAB3Nza(...omitted...)veL4E3Xcw== test_key",
+                "type": "str"
+            },
+            "size": {
+                "description": "Size (in bits) of the SSH private key.",
+                "returned": "changed or success",
+                "sample": 4096,
+                "type": "int"
+            },
+            "type": {
+                "description": "Algorithm used to generate the SSH private key.",
+                "returned": "changed or success",
+                "sample": "rsa",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,458 @@
+{
+    "ngine_io.cloudstack.cs_network": {
+        "doc": {
+            "author": "Ren\u00e9 Moser (@resmo)",
+            "collection": "ngine_io.cloudstack",
+            "description": [
+                "Create, update, restart and delete networks."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ngine_io/cloudstack/plugins/modules/cs_network.py",
+            "has_action": false,
+            "module": "cs_network",
+            "notes": [
+                "A detailed guide about cloudstack modules can be found in the L(CloudStack Cloud Guide,../scenario_guides/guide_cloudstack.html).",
+                "This module supports check mode."
+            ],
+            "options": {
+                "account": {
+                    "description": [
+                        "Account the network is related to."
+                    ],
+                    "type": "str"
+                },
+                "acl": {
+                    "description": [
+                        "The name of the access control list for the VPC network tier."
+                    ],
+                    "type": "str"
+                },
+                "acl_type": {
+                    "choices": [
+                        "account",
+                        "domain"
+                    ],
+                    "description": [
+                        "Access control type for the network.",
+                        "If not specified, Cloudstack will default to C(account) for isolated networks",
+                        "and C(domain) for shared networks.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "api_http_method": {
+                    "choices": [
+                        "get",
+                        "post"
+                    ],
+                    "default": "get",
+                    "description": [
+                        "HTTP method used to query the API endpoint.",
+                        "If not given, the C(CLOUDSTACK_METHOD) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "api_key": {
+                    "description": [
+                        "API key of the CloudStack API.",
+                        "If not given, the C(CLOUDSTACK_KEY) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_secret": {
+                    "description": [
+                        "Secret key of the CloudStack API.",
+                        "If not set, the C(CLOUDSTACK_SECRET) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_timeout": {
+                    "default": 10,
+                    "description": [
+                        "HTTP timeout in seconds.",
+                        "If not given, the C(CLOUDSTACK_TIMEOUT) env variable is considered."
+                    ],
+                    "type": "int"
+                },
+                "api_url": {
+                    "description": [
+                        "URL of the CloudStack API e.g. https://cloud.example.com/client/api.",
+                        "If not given, the C(CLOUDSTACK_ENDPOINT) env variable is considered."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_verify_ssl_cert": {
+                    "description": [
+                        "Verify CA authority cert file.",
+                        "If not given, the C(CLOUDSTACK_VERIFY) env variable is considered."
+                    ],
+                    "type": "str"
+                },
+                "cidr_ipv6": {
+                    "description": [
+                        "CIDR of IPv6 network, must be at least /64.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "clean_up": {
+                    "default": false,
+                    "description": [
+                        "Cleanup old network elements.",
+                        "Only considered on I(state=restarted)."
+                    ],
+                    "type": "bool"
+                },
+                "display_text": {
+                    "description": [
+                        "Display text of the network.",
+                        "If not specified, I(name) will be used as I(display_text)."
+                    ],
+                    "type": "str"
+                },
+                "domain": {
+                    "description": [
+                        "Domain the network is related to."
+                    ],
+                    "type": "str"
+                },
+                "end_ip": {
+                    "description": [
+                        "The ending IPv4 address of the network belongs to.",
+                        "If not specified, value of I(start_ip) is used.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "end_ipv6": {
+                    "description": [
+                        "The ending IPv6 address of the network belongs to.",
+                        "If not specified, value of I(start_ipv6) is used.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "gateway": {
+                    "description": [
+                        "The gateway of the network.",
+                        "Required for shared networks and isolated networks when it belongs to a VPC.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "gateway_ipv6": {
+                    "description": [
+                        "The gateway of the IPv6 network.",
+                        "Required for shared networks.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "isolated_pvlan": {
+                    "description": [
+                        "The isolated private VLAN for this network."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name (case sensitive) of the network."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "netmask": {
+                    "description": [
+                        "The netmask of the network.",
+                        "Required for shared networks and isolated networks when it belongs to a VPC.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "network_domain": {
+                    "description": [
+                        "The network domain."
+                    ],
+                    "type": "str"
+                },
+                "network_offering": {
+                    "description": [
+                        "Name of the offering for the network.",
+                        "Required if I(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "poll_async": {
+                    "default": true,
+                    "description": [
+                        "Poll async jobs until job has finished."
+                    ],
+                    "type": "bool"
+                },
+                "project": {
+                    "description": [
+                        "Name of the project the network to be deployed in."
+                    ],
+                    "type": "str"
+                },
+                "start_ip": {
+                    "description": [
+                        "The beginning IPv4 address of the network belongs to.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "start_ipv6": {
+                    "description": [
+                        "The beginning IPv6 address of the network belongs to.",
+                        "Only considered on create."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "restarted"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the network."
+                    ],
+                    "type": "str"
+                },
+                "subdomain_access": {
+                    "description": [
+                        "Defines whether to allow subdomains to use networks dedicated to their parent domain(s).",
+                        "Should be used with I(acl_type=domain).",
+                        "Only considered on create."
+                    ],
+                    "type": "bool"
+                },
+                "tags": {
+                    "aliases": [
+                        "tag"
+                    ],
+                    "description": [
+                        "List of tags. Tags are a list of dictionaries having keys I(key) and I(value).",
+                        "To delete all tags, set a empty list e.g. I(tags: [])."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "vlan": {
+                    "description": [
+                        "The ID or VID of the network."
+                    ],
+                    "type": "str"
+                },
+                "vpc": {
+                    "description": [
+                        "Name of the VPC of the network."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "Name of the zone in which the network should be deployed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "cs >= 0.9.0"
+            ],
+            "short_description": "Manages networks on Apache CloudStack based clouds.",
+            "version_added": "0.1.0",
+            "version_added_collection": "ngine_io.cloudstack"
+        },
+        "examples": "\n- name: Create a network\n  ngine_io.cloudstack.cs_network:\n    name: my network\n    zone: gva-01\n    network_offering: DefaultIsolatedNetworkOfferingWithSourceNatService\n    network_domain: example.com\n\n- name: Create a network with start and end IP\n  ngine_io.cloudstack.cs_network:\n    name: Private Network\n    network_offering: PrivNet\n    start_ip: 10.12.9.10\n    end_ip: 10.12.9.100\n    netmask: 255.255.255.0\n    zone: gva-01\n\n- name: Create a VPC tier\n  ngine_io.cloudstack.cs_network:\n    name: my VPC tier 1\n    zone: gva-01\n    vpc: my VPC\n    network_offering: DefaultIsolatedNetworkOfferingForVpcNetworks\n    gateway: 10.43.0.1\n    netmask: 255.255.255.0\n    acl: my web acl\n\n- name: Update a network\n  ngine_io.cloudstack.cs_network:\n    name: my network\n    zone: zone01\n    display_text: network of domain example.local\n    network_domain: example.local\n\n- name: Restart a network with clean up\n  ngine_io.cloudstack.cs_network:\n    name: my network\n    zone: zone01\n    clean_up: yes\n    state: restarted\n\n- name: Remove a network\n  ngine_io.cloudstack.cs_network:\n    name: my network\n    zone: zone01\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "account": {
+                "description": "Account the network is related to.",
+                "returned": "success",
+                "sample": "example account",
+                "type": "str"
+            },
+            "acl": {
+                "description": "Name of the access control list for the VPC network tier.",
+                "returned": "success",
+                "sample": "My ACL",
+                "type": "str"
+            },
+            "acl_id": {
+                "description": "ID of the access control list for the VPC network tier.",
+                "returned": "success",
+                "sample": "dfafcd55-0510-4b8c-b6c5-b8cedb4cfd88",
+                "type": "str"
+            },
+            "acl_type": {
+                "description": "Access type of the network (Domain, Account).",
+                "returned": "success",
+                "sample": "Account",
+                "type": "str"
+            },
+            "broadcast_domain_type": {
+                "description": "Broadcast domain type of the network.",
+                "returned": "success",
+                "sample": "Vlan",
+                "type": "str"
+            },
+            "cidr": {
+                "description": "IPv4 network CIDR.",
+                "returned": "success",
+                "sample": "10.101.64.0/24",
+                "type": "str"
+            },
+            "cidr_ipv6": {
+                "description": "IPv6 network CIDR.",
+                "returned": "if available",
+                "sample": "2001:db8::/64",
+                "type": "str"
+            },
+            "display_text": {
+                "description": "Display text of the network.",
+                "returned": "success",
+                "sample": "web project",
+                "type": "str"
+            },
+            "dns1": {
+                "description": "IP address of the 1st nameserver.",
+                "returned": "success",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "dns2": {
+                "description": "IP address of the 2nd nameserver.",
+                "returned": "success",
+                "sample": "1.2.3.4",
+                "type": "str"
+            },
+            "domain": {
+                "description": "Domain the network is related to.",
+                "returned": "success",
+                "sample": "ROOT",
+                "type": "str"
+            },
+            "gateway": {
+                "description": "IPv4 gateway.",
+                "returned": "success",
+                "sample": "10.101.64.1",
+                "type": "str"
+            },
+            "gateway_ipv6": {
+                "description": "IPv6 gateway.",
+                "returned": "if available",
+                "sample": "2001:db8::1",
+                "type": "str"
+            },
+            "id": {
+                "description": "UUID of the network.",
+                "returned": "success",
+                "sample": "04589590-ac63-4ffc-93f5-b698b8ac38b6",
+                "type": "str"
+            },
+            "is_persistent": {
+                "description": "Whether the network is persistent or not.",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "is_system": {
+                "description": "Whether the network is system related or not.",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "name": {
+                "description": "Name of the network.",
+                "returned": "success",
+                "sample": "web project",
+                "type": "str"
+            },
+            "netmask": {
+                "description": "IPv4 netmask.",
+                "returned": "success",
+                "sample": "255.255.255.0",
+                "type": "str"
+            },
+            "network_domain": {
+                "description": "The network domain",
+                "returned": "success",
+                "sample": "example.local",
+                "type": "str"
+            },
+            "network_offering": {
+                "description": "The network offering name.",
+                "returned": "success",
+                "sample": "DefaultIsolatedNetworkOfferingWithSourceNatService",
+                "type": "str"
+            },
+            "network_offering_availability": {
+                "description": "The availability of the network offering the network is created from",
+                "returned": "success",
+                "sample": "Optional",
+                "type": "str"
+            },
+            "network_offering_conserve_mode": {
+                "description": "Whether the network offering has IP conserve mode enabled or not.",
+                "returned": "success",
+                "sample": false,
+                "type": "bool"
+            },
+            "network_offering_display_text": {
+                "description": "The network offering display text.",
+                "returned": "success",
+                "sample": "Offering for Isolated Vpc networks with Source Nat service enabled",
+                "type": "str"
+            },
+            "project": {
+                "description": "Name of project.",
+                "returned": "success",
+                "sample": "Production",
+                "type": "str"
+            },
+            "state": {
+                "description": "State of the network (Allocated, Implemented, Setup).",
+                "returned": "success",
+                "sample": "Allocated",
+                "type": "str"
+            },
+            "tags": {
+                "description": "List of resource tags associated with the network.",
+                "returned": "success",
+                "sample": "[ { \"key\": \"foo\", \"value\": \"bar\" } ]",
+                "type": "list"
+            },
+            "traffic_type": {
+                "description": "Traffic type of the network.",
+                "returned": "success",
+                "sample": "Guest",
+                "type": "str"
+            },
+            "type": {
+                "description": "Type of the network.",
+                "returned": "success",
+                "sample": "Isolated",
+                "type": "str"
+            },
+            "vpc": {
+                "description": "Name of the VPC.",
+                "returned": "if available",
+                "sample": "My VPC",
+                "type": "str"
+            },
+            "zone": {
+                "description": "Name of zone.",
+                "returned": "success",
+                "sample": "ch-gva-2",
+                "type": "str"
+            }
+        }
+    }
+}

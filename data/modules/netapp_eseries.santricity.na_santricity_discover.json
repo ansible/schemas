@@ -1,0 +1,92 @@
+{
+    "netapp_eseries.santricity.na_santricity_discover": {
+        "doc": {
+            "author": "Nathan Swartz (@ndswartz)",
+            "collection": "netapp_eseries.santricity",
+            "description": "Module searches a subnet range and returns any available E-Series storage systems.",
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/na_santricity_discover.py",
+            "has_action": false,
+            "module": "na_santricity_discover",
+            "notes": [
+                "Only available for platforms E2800 or later (SANtricity Web Services Embedded REST API must be available).",
+                "All E-Series storage systems with SANtricity version 11.62 or later will be discovered.",
+                "Only E-Series storage systems without a set admin password running SANtricity versions prior to 11.62 will be discovered.",
+                "Use SANtricity Web Services Proxy to discover all systems regardless of SANricity version or password."
+            ],
+            "options": {
+                "ports": {
+                    "default": [
+                        8443
+                    ],
+                    "description": [
+                        "This option specifies which ports to be tested during the discovery process.",
+                        "The first usable port will be used in the returned API url."
+                    ],
+                    "required": false,
+                    "type": "list"
+                },
+                "prefer_embedded": {
+                    "default": false,
+                    "description": [
+                        "Give preference to Web Services Embedded when an option exists for both Web Services Proxy and Embedded.",
+                        "Web Services Proxy will be utilized when available by default."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "proxy_password": {
+                    "description": [
+                        "Web Service Proxy user password"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_url": {
+                    "description": [
+                        "Web Services Proxy REST API URL. Example https://192.168.1.100:8443/devmgr/v2/"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_username": {
+                    "description": [
+                        "Web Service Proxy username"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate Web Service Proxy SSL certificate"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "subnet_mask": {
+                    "description": [
+                        "This is the IPv4 search range for discovering E-Series storage arrays.",
+                        "IPv4 subnet mask specified in CIDR form. Example 192.168.1.0/24 would search the range 192.168.1.0 to 192.168.1.255.",
+                        "Be sure to include all management paths in the search range."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "ipaddress"
+            ],
+            "short_description": "NetApp E-Series discover E-Series storage systems"
+        },
+        "examples": "\n- name: Discover all E-Series storage systems on the network.\n  na_santricity_discover:\n    subnet_mask: 192.168.1.0/24\n",
+        "metadata": null,
+        "return": {
+            "systems_found": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": "{\"012341234123\": { \"addresses\": [\"192.168.1.184\", \"192.168.1.185\"], \"api_urls\": [\"https://192.168.1.184:8443/devmgr/v2/\", \"https://192.168.1.185:8443/devmgr/v2/\"], \"label\": \"ExampleArray01\", \"proxy_ssid: \"\", \"proxy_required\": false}, \"012341234567\": { \"addresses\": [\"192.168.1.23\", \"192.168.1.24\"], \"api_urls\": [\"https://192.168.1.100:8443/devmgr/v2/\"], \"label\": \"ExampleArray02\", \"proxy_ssid\": \"array_ssid\", \"proxy_required\": true}}",
+                "type": "dict"
+            }
+        }
+    }
+}

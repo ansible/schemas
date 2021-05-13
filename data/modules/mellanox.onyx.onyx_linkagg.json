@@ -1,0 +1,77 @@
+{
+    "mellanox.onyx.onyx_linkagg": {
+        "doc": {
+            "author": "Samer Deeb (@samerd)",
+            "collection": "mellanox.onyx",
+            "description": [
+                "This module provides declarative management of link aggregation groups on Mellanox ONYX network devices."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/mellanox/onyx/plugins/modules/onyx_linkagg.py",
+            "has_action": false,
+            "module": "onyx_linkagg",
+            "options": {
+                "aggregate": {
+                    "description": "List of link aggregation definitions."
+                },
+                "members": {
+                    "description": [
+                        "List of members interfaces of the link aggregation group. The value can be single interface or list of interfaces."
+                    ],
+                    "required": true
+                },
+                "mode": {
+                    "choices": [
+                        "on",
+                        "active",
+                        "passive"
+                    ],
+                    "default": true,
+                    "description": [
+                        "Mode of the link aggregation group. A value of C(on) will enable LACP. C(active) configures the link to actively information about the state of the link, or it can be configured in C(passive) mode ie. send link state information only when received them from another link."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Name of the link aggregation group."
+                    ],
+                    "required": true
+                },
+                "purge": {
+                    "default": false,
+                    "description": [
+                        "Purge link aggregation groups not defined in the I(aggregate) parameter."
+                    ],
+                    "type": "bool"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "up",
+                        "down"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the link aggregation group."
+                    ]
+                }
+            },
+            "short_description": "Manage link aggregation groups on Mellanox ONYX network devices"
+        },
+        "examples": "\n- name: Configure link aggregation group\n  onyx_linkagg:\n    name: Po1\n    members:\n      - Eth1/1\n      - Eth1/2\n\n- name: Remove configuration\n  onyx_linkagg:\n    name: Po1\n    state: absent\n\n- name: Create aggregate of linkagg definitions\n  onyx_linkagg:\n    aggregate:\n        - { name: Po1, members: [Eth1/1] }\n        - { name: Po2, members: [Eth1/2] }\n\n- name: Remove aggregate of linkagg definitions\n  onyx_linkagg:\n    aggregate:\n      - name: Po1\n      - name: Po2\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "commands": {
+                "description": "The list of configuration mode commands to send to the device",
+                "returned": "always.",
+                "sample": [
+                    "interface port-channel 1",
+                    "exit",
+                    "interface ethernet 1/1 channel-group 1 mode on",
+                    "interface ethernet 1/2 channel-group 1 mode on"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

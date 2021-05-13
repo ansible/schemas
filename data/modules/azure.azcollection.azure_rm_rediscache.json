@@ -1,0 +1,366 @@
+{
+    "azure.azcollection.azure_rm_rediscache": {
+        "doc": {
+            "author": [
+                "Yunge Zhu(@yungezz)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update and delete instance of Azure Cache for Redis."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_rediscache.py",
+            "has_action": false,
+            "module": "azure_rm_rediscache",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "enable_non_ssl_port": {
+                    "default": false,
+                    "description": [
+                        "When set I(enable_non_ssl_port=true), the non-ssl Redis server port 6379 will be enabled."
+                    ],
+                    "type": "bool"
+                },
+                "location": {
+                    "description": [
+                        "Resource location. If not set, location from the resource group will be used as default."
+                    ]
+                },
+                "maxfragmentationmemory_reserved": {
+                    "description": [
+                        "Configures the amount of memory in MB that is reserved to accommodate for memory fragmentation.",
+                        "Please see U(https://docs.microsoft.com/en-us/azure/redis-cache/cache-configure#advanced-settings) for more detail."
+                    ]
+                },
+                "maxmemory_policy": {
+                    "choices": [
+                        "volatile_lru",
+                        "allkeys_lru",
+                        "volatile_random",
+                        "allkeys_random",
+                        "volatile_ttl",
+                        "noeviction"
+                    ],
+                    "description": [
+                        "Configures the eviction policy of the cache.",
+                        "Please see U(https://docs.microsoft.com/en-us/azure/redis-cache/cache-configure#advanced-settings) for more detail."
+                    ]
+                },
+                "maxmemory_reserved": {
+                    "description": [
+                        "Configures the amount of memory in MB that is reserved for non-cache operations.",
+                        "Please see U(https://docs.microsoft.com/en-us/azure/redis-cache/cache-configure#advanced-settings) for more detail."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "Unique name of the Azure Cache for Redis to create or update."
+                    ],
+                    "required": true
+                },
+                "notify_keyspace_events": {
+                    "description": [
+                        "Allows clients to receive notifications when certain events occur.",
+                        "Please see U(https://docs.microsoft.com/en-us/azure/redis-cache/cache-configure#advanced-settings) for more detail."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "reboot": {
+                    "description": [
+                        "Reboot specified Redis node(s). There can be potential data loss."
+                    ],
+                    "suboptions": {
+                        "reboot_type": {
+                            "choices": [
+                                "primary",
+                                "secondary",
+                                "all"
+                            ],
+                            "default": "all",
+                            "description": [
+                                "Which Redis node(s) to reboot."
+                            ]
+                        },
+                        "shard_id": {
+                            "description": [
+                                "If clustering is enabled, the id of the shard to be rebooted."
+                            ],
+                            "type": "int"
+                        }
+                    }
+                },
+                "regenerate_key": {
+                    "description": [
+                        "Regenerate Redis cache's access keys."
+                    ],
+                    "suboptions": {
+                        "key_type": {
+                            "choices": [
+                                "primary",
+                                "secondary"
+                            ],
+                            "description": [
+                                "The Redis key to regenerate."
+                            ]
+                        }
+                    }
+                },
+                "resource_group": {
+                    "description": [
+                        "Name of the resource group to which the resource belongs."
+                    ],
+                    "required": true
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "shard_count": {
+                    "description": [
+                        "The number of shards to be created when I(sku=premium)."
+                    ],
+                    "type": "int"
+                },
+                "sku": {
+                    "description": [
+                        "SKU info of Azure Cache for Redis."
+                    ],
+                    "suboptions": {
+                        "name": {
+                            "choices": [
+                                "basic",
+                                "standard",
+                                "premium"
+                            ],
+                            "description": [
+                                "Type of Azure Cache for Redis to deploy."
+                            ],
+                            "required": true
+                        },
+                        "size": {
+                            "choices": [
+                                "C0",
+                                "C1",
+                                "C2",
+                                "C3",
+                                "C4",
+                                "C5",
+                                "C6",
+                                "P1",
+                                "P2",
+                                "P3",
+                                "P4"
+                            ],
+                            "description": [
+                                "Size of Azure Cache for Redis to deploy.",
+                                "When I(sku=basic) or I(sku=standard), allowed values are C(C0), C(C1), C(C2), C(C3), C(C4), C(C5), C(C6).",
+                                "When I(sku=premium), allowed values are C(P1), C(P2), C(P3), C(P4).",
+                                "Please see U(https://docs.microsoft.com/en-us/rest/api/redis/redis/create#sku) for allowed values."
+                            ],
+                            "required": true
+                        }
+                    }
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the Azure Cache for Redis.",
+                        "Use C(present) to create or update an Azure Cache for Redis and C(absent) to delete it."
+                    ]
+                },
+                "static_ip": {
+                    "description": [
+                        "Static IP address. Required when deploying an Azure Cache for Redis inside an existing Azure virtual network."
+                    ]
+                },
+                "subnet": {
+                    "description": [
+                        "Subnet in a virtual network to deploy the Azure Cache for Redis in.",
+                        "It can be resource id of subnet, for example /subscriptions/{subid}/resourceGroups/{resourceGroupName}/Microsoft.{Network|ClassicNetwork}/VirtualNetworks/vnet1/subnets/subnet1.",
+                        "It can be a dictionary where contains I(name), I(virtual_network_name) and I(resource_group).",
+                        "I(name). Name of the subnet.",
+                        "I(resource_group). Resource group name of the subnet.",
+                        "I(virtual_network_name). Name of virtual network to which this subnet belongs."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "tenant_settings": {
+                    "description": [
+                        "Dict of tenant settings."
+                    ],
+                    "type": "dict"
+                },
+                "wait_for_provisioning": {
+                    "default": true,
+                    "description": [
+                        "Wait till the Azure Cache for Redis instance provisioning_state is Succeeded.",
+                        "It takes several minutes for Azure Cache for Redis to be provisioned ready for use after creating/updating/rebooting.",
+                        "Set this option to C(true) to wait for provisioning_state. Set to C(false) if you don't care about provisioning_state.",
+                        "Poll wait timeout is 60 minutes."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage Azure Cache for Redis instance",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n  - name: Create an Azure Cache for Redis\n    azure_rm_rediscache:\n        resource_group: myResourceGroup\n        name: myRedis\n        sku:\n          name: basic\n          size: C1\n\n  - name: Scale up the Azure Cache for Redis\n    azure_rm_rediscache:\n        resource_group: myResourceGroup\n        name: myRedis\n        sku:\n          name: standard\n          size: C1\n        tags:\n          testing: foo\n\n  - name: Force reboot the redis cache\n    azure_rm_rediscache:\n        resource_group: myResourceGroup\n        name: myRedisCache\n        reboot:\n          reboot_type: all\n\n  - name: Create Azure Cache for Redis with subnet\n    azure_rm_rediscache:\n        resource_group: myResourceGroup\n        name: myRedis\n        sku:\n          name: premium\n          size: P1\n        subnet: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVirt\n                 ualNetwork/subnets/mySubnet\"\n\n",
+        "metadata": null,
+        "return": {
+            "host_name": {
+                "description": [
+                    "Host name of the Azure Cache for Redis."
+                ],
+                "returned": "when I(state=present)",
+                "sample": "myredis.redis.cache.windows.net",
+                "type": "str"
+            },
+            "id": {
+                "description": [
+                    "Id of the Azure Cache for Redis."
+                ],
+                "returned": "always",
+                "sample": "/subscriptions/xxxxxxxx-xxxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Cache/Redis/myRedis",
+                "type": "str"
+            }
+        }
+    }
+}

@@ -1,0 +1,148 @@
+{
+    "cisco.ucs.ucs_vsans": {
+        "doc": {
+            "author": [
+                "David Soper (@dsoper2)",
+                "John McDonough (@movinalot)",
+                "CiscoUcs (@CiscoUcs)"
+            ],
+            "collection": "cisco.ucs",
+            "description": [
+                "Configures VSANs on Cisco UCS Manager."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/ucs/plugins/modules/ucs_vsans.py",
+            "has_action": false,
+            "module": "ucs_vsans",
+            "options": {
+                "fabric": {
+                    "choices": [
+                        "common",
+                        "A",
+                        "B"
+                    ],
+                    "default": "common",
+                    "description": [
+                        "The fabric configuration of the VSAN.  This can be one of the following:",
+                        "common - The VSAN maps to the same VSAN ID in all available fabrics.",
+                        "A - The VSAN maps to the a VSAN ID that exists only in fabric A.",
+                        "B - The VSAN maps to the a VSAN ID that exists only in fabric B."
+                    ]
+                },
+                "fc_zoning": {
+                    "choices": [
+                        "disabled",
+                        "enabled"
+                    ],
+                    "default": "disabled",
+                    "description": [
+                        "Fibre Channel zoning configuration for the Cisco UCS domain.",
+                        "Fibre Channel zoning can be set to one of the following values:",
+                        "disabled \u2014 The upstream switch handles Fibre Channel zoning, or Fibre Channel zoning is not implemented for the Cisco UCS domain.",
+                        "enabled \u2014 Cisco UCS Manager configures and controls Fibre Channel zoning for the Cisco UCS domain.",
+                        "If you enable Fibre Channel zoning, do not configure the upstream switch with any VSANs that are being used for Fibre Channel zoning."
+                    ]
+                },
+                "hostname": {
+                    "description": [
+                        "IP address or hostname of Cisco UCS Manager.",
+                        "Modules can be used with the UCS Platform Emulator U(https://cs.co/ucspe)"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "The name assigned to the VSAN.",
+                        "This name can be between 1 and 32 alphanumeric characters.",
+                        "You cannot use spaces or any special characters other than - (hyphen), \"_\" (underscore), : (colon), and . (period).",
+                        "You cannot change this name after the VSAN is created."
+                    ],
+                    "required": true
+                },
+                "password": {
+                    "description": [
+                        "Password for Cisco UCS Manager authentication."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "Port number to be used during connection (by default uses 443 for https and 80 for http connection)."
+                    ],
+                    "type": "int"
+                },
+                "proxy": {
+                    "description": [
+                        "If use_proxy is no, specfies proxy to be used for connection. e.g. 'http://proxy.xy.z:8080'"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If C(present), will verify VSANs are present and will create if needed.",
+                        "If C(absent), will verify VSANs are absent and will delete if needed."
+                    ]
+                },
+                "use_proxy": {
+                    "default": true,
+                    "description": [
+                        "If C(no), will not use the proxy as defined by system environment variable."
+                    ],
+                    "type": "bool"
+                },
+                "use_ssl": {
+                    "default": true,
+                    "description": [
+                        "If C(no), an HTTP connection will be used instead of the default HTTPS connection."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "default": "admin",
+                    "description": [
+                        "Username for Cisco UCS Manager authentication."
+                    ],
+                    "type": "str"
+                },
+                "vlan_id": {
+                    "description": [
+                        "The unique string identifier assigned to the VLAN used for Fibre Channel connections.",
+                        "Note that Cisco UCS Manager uses VLAN '4048'.  See the UCS Manager configuration guide if you want to assign '4048' to a VLAN.",
+                        "Optional if state is absent."
+                    ],
+                    "required": true
+                },
+                "vsan_id": {
+                    "description": [
+                        "The unique identifier assigned to the VSAN.",
+                        "The ID can be a string between '1' and '4078', or between '4080' and '4093'. '4079' is a reserved VSAN ID.",
+                        "In addition, if you plan to use FC end-host mode, the range between '3840' to '4079' is also a reserved VSAN ID range.",
+                        "Optional if state is absent."
+                    ],
+                    "required": true
+                }
+            },
+            "requirements": [
+                "ucsmsdk"
+            ],
+            "short_description": "Configures VSANs on Cisco UCS Manager",
+            "version_added": "2.5",
+            "version_added_collection": "cisco.ucs"
+        },
+        "examples": "\n- name: Configure VSAN\n  cisco.ucs.ucs_vsans:\n    hostname: 172.16.143.150\n    username: admin\n    password: password\n    name: vsan110\n    fabric: common\n    vsan_id: '110'\n    vlan_id: '110'\n\n- name: Remove VSAN\n  cisco.ucs.ucs_vsans:\n    hostname: 172.16.143.150\n    username: admin\n    password: password\n    name: vsan110\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "certified"
+        },
+        "return": null
+    }
+}

@@ -1,0 +1,373 @@
+{
+    "azure.azcollection.azure_rm_sqldatabase": {
+        "doc": {
+            "author": [
+                "Zim Kalinowski (@zikalino)"
+            ],
+            "collection": "azure.azcollection",
+            "description": [
+                "Create, update and delete instance of SQL Database."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/azure/azcollection/plugins/modules/azure_rm_sqldatabase.py",
+            "has_action": false,
+            "module": "azure_rm_sqldatabase",
+            "notes": [
+                "For authentication with Azure you can pass parameters, set environment variables, use a profile stored in ~/.azure/credentials, or log in before you run your tasks or playbook with C(az login).",
+                "Authentication is also possible using a service principal or Active Directory user.",
+                "To authenticate via service principal, pass subscription_id, client_id, secret and tenant or set environment variables AZURE_SUBSCRIPTION_ID, AZURE_CLIENT_ID, AZURE_SECRET and AZURE_TENANT.",
+                "To authenticate via Active Directory user, pass ad_user and password, or set AZURE_AD_USER and AZURE_PASSWORD in the environment.",
+                "Alternatively, credentials can be stored in ~/.azure/credentials. This is an ini file containing a [default] section and the following keys: subscription_id, client_id, secret and tenant or subscription_id, ad_user and password. It is also possible to add additional profiles. Specify the profile by passing profile or setting AZURE_PROFILE in the environment."
+            ],
+            "options": {
+                "ad_user": {
+                    "description": [
+                        "Active Directory username. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "adfs_authority_url": {
+                    "description": [
+                        "Azure AD authority url. Use when authenticating with Username/password, and has your own ADFS authority."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "api_profile": {
+                    "default": "latest",
+                    "description": [
+                        "Selects an API profile to use when communicating with Azure services. Default value of C(latest) is appropriate for public clouds; future values will allow use with Azure Stack."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "append_tags": {
+                    "default": true,
+                    "description": [
+                        "Use to control if tags field is canonical or just appends to existing tags.",
+                        "When canonical, any tags not found in the tags parameter will be removed from the object's metadata."
+                    ],
+                    "type": "bool"
+                },
+                "auth_source": {
+                    "choices": [
+                        "auto",
+                        "cli",
+                        "credential_file",
+                        "env",
+                        "msi"
+                    ],
+                    "default": "auto",
+                    "description": [
+                        "Controls the source of the credentials to use for authentication.",
+                        "Can also be set via the C(ANSIBLE_AZURE_AUTH_SOURCE) environment variable.",
+                        "When set to C(auto) (the default) the precedence is module parameters -> C(env) -> C(credential_file) -> C(cli).",
+                        "When set to C(env), the credentials will be read from the environment variables",
+                        "When set to C(credential_file), it will read the profile from C(~/.azure/credentials).",
+                        "When set to C(cli), the credentials will be sources from the Azure CLI profile. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if more than one is present otherwise the default az cli subscription is used.",
+                        "When set to C(msi), the host machine must be an azure resource with an enabled MSI extension. C(subscription_id) or the environment variable C(AZURE_SUBSCRIPTION_ID) can be used to identify the subscription ID if the resource is granted access to more than one subscription, otherwise the first subscription is chosen.",
+                        "The C(msi) was added in Ansible 2.6."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "cert_validation_mode": {
+                    "choices": [
+                        "ignore",
+                        "validate"
+                    ],
+                    "description": [
+                        "Controls the certificate validation behavior for Azure endpoints. By default, all modules will validate the server certificate, but when an HTTPS proxy is in use, or against Azure Stack, it may be necessary to disable this behavior by passing C(ignore). Can also be set via credential file profile or the C(AZURE_CERT_VALIDATION) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "client_id": {
+                    "description": [
+                        "Azure client ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "cloud_environment": {
+                    "default": "AzureCloud",
+                    "description": [
+                        "For cloud environments other than the US public cloud, the environment name (as defined by Azure Python SDK, eg, C(AzureChinaCloud), C(AzureUSGovernment)), or a metadata discovery endpoint URL (required for Azure Stack). Can also be set via credential file profile or the C(AZURE_CLOUD_ENVIRONMENT) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "0.0.1",
+                    "version_added_collection": "azure.azcollection"
+                },
+                "collation": {
+                    "description": [
+                        "The collation of the database. If not I(create_mode=default), this value is ignored."
+                    ]
+                },
+                "create_mode": {
+                    "choices": [
+                        "copy",
+                        "default",
+                        "non_readable_secondary",
+                        "online_secondary",
+                        "point_in_time_restore",
+                        "recovery",
+                        "restore",
+                        "restore_long_term_retention_backup"
+                    ],
+                    "description": [
+                        "Specifies the mode of database creation.",
+                        "C(default), regular database creation.",
+                        "C(copy), creates a database as a copy of an existing database.",
+                        "C(online_secondary)/C(non_readable_secondary), creates a database as a (readable or nonreadable) secondary replica of an existing database.",
+                        "C(point_in_time_restore), Creates a database by restoring a point in time backup of an existing database.",
+                        "C(recovery), Creates a database by restoring a geo-replicated backup.",
+                        "C(restore), Creates a database by restoring a backup of a deleted database.",
+                        "C(restore_long_term_retention_backup), Creates a database by restoring from a long term retention vault.",
+                        "C(copy), C(non_readable_secondary), C(online_secondary) and C(restore_long_term_retention_backup) are not supported for C(data_warehouse) edition."
+                    ]
+                },
+                "edition": {
+                    "choices": [
+                        "web",
+                        "business",
+                        "basic",
+                        "standard",
+                        "premium",
+                        "free",
+                        "stretch",
+                        "data_warehouse",
+                        "system",
+                        "system2"
+                    ],
+                    "description": [
+                        "(Deprecate)The edition of the database. The DatabaseEditions enumeration contains all the valid editions.",
+                        "This option will be deprecated in 2.11, use I(sku) instead.",
+                        "Cannot set C(sku) when this field set."
+                    ]
+                },
+                "elastic_pool_name": {
+                    "description": [
+                        "The name of the elastic pool the database is in. Not supported for I(edition=data_warehouse)."
+                    ]
+                },
+                "force_update": {
+                    "description": [
+                        "SQL Database will be updated if given parameters differ from existing resource state.",
+                        "To force SQL Database update in any circumstances set this parameter to True."
+                    ],
+                    "type": "bool"
+                },
+                "location": {
+                    "description": [
+                        "Resource location. If not set, location from the resource group will be used as default."
+                    ]
+                },
+                "max_size_bytes": {
+                    "description": [
+                        "The max size of the database expressed in bytes.",
+                        "If not I(create_mode=default), this value is ignored.",
+                        "To see possible values, query the capabilities API (/subscriptions/{subscriptionId}/providers/Microsoft.Sql/locations/{locationID}/capabilities). referred to by operationId:'Capabilities_ListByLocation'."
+                    ]
+                },
+                "name": {
+                    "description": [
+                        "The name of the database to be operated on (updated or created)."
+                    ],
+                    "required": true
+                },
+                "password": {
+                    "description": [
+                        "Active Directory user password. Use when authenticating with an Active Directory user rather than service principal."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Security profile found in ~/.azure/credentials file."
+                    ],
+                    "type": "str"
+                },
+                "read_scale": {
+                    "default": false,
+                    "description": [
+                        "If the database is a geo-secondary, indicates whether read-only connections are allowed to this database or not.",
+                        "Not supported for I(edition=data_warehouse)."
+                    ],
+                    "type": "bool"
+                },
+                "recovery_services_recovery_point_resource_id": {
+                    "description": [
+                        "Required if I(create_mode=restore_long_term_retention_backup), then this value is required.",
+                        "Specifies the resource ID of the recovery point to restore from."
+                    ]
+                },
+                "resource_group": {
+                    "description": [
+                        "The name of the resource group that contains the resource. You can obtain this value from the Azure Resource Manager API or the portal."
+                    ],
+                    "required": true
+                },
+                "restore_point_in_time": {
+                    "description": [
+                        "Required if I(create_mode=point_in_time_restore), this value is required. If I(create_mode=restore), this value is optional.",
+                        "Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database.",
+                        "Must be greater than or equal to the source database's earliestRestoreDate value."
+                    ]
+                },
+                "sample_name": {
+                    "choices": [
+                        "adventure_works_lt"
+                    ],
+                    "description": [
+                        "Indicates the name of the sample schema to apply when creating this database.",
+                        "If not I(create_mode=default), this value is ignored.",
+                        "Not supported for I(edition=data_warehouse)."
+                    ]
+                },
+                "secret": {
+                    "description": [
+                        "Azure client secret. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "server_name": {
+                    "description": [
+                        "The name of the server."
+                    ],
+                    "required": true
+                },
+                "sku": {
+                    "description": [
+                        "The sku of the database. The DatabaseEditions enumeration contains all the valid sku.",
+                        "If I(create_mode=non_readable_secondary) or I(create_mode=online_secondary), this value is ignored.",
+                        "To see possible values, query the capabilities API (/subscriptions/{subscriptionId}/providers/Microsoft.Sql/locations/{locationID}/capabilities) referred to by operationId:'Capabilities_ListByLocation'.",
+                        "Cannot set C(edition) when this field set."
+                    ],
+                    "suboptions": {
+                        "capacity": {
+                            "description": [
+                                "Capacity of the particular SKU."
+                            ]
+                        },
+                        "family": {
+                            "description": [
+                                "If the service has different generations of hardware, for the same SKU, then that can be used here"
+                            ]
+                        },
+                        "name": {
+                            "description": [
+                                "Name of the database SKU, typically, a letter + Number code, e.g. P3"
+                            ],
+                            "required": true
+                        },
+                        "size": {
+                            "description": [
+                                "Size of the particular SKU"
+                            ]
+                        },
+                        "tier": {
+                            "description": [
+                                "The tier or edition of the particular SKU, e.g. Basic, Premium"
+                            ]
+                        }
+                    }
+                },
+                "source_database_deletion_date": {
+                    "description": [
+                        "Required if I(create_mode=restore) and I(source_database_id) is the deleted database's original resource id when it existed (as opposed to its current restorable dropped database ID), then this value is required. Specifies the time that the database was deleted."
+                    ]
+                },
+                "source_database_id": {
+                    "description": [
+                        "Required unless I(create_mode=default) or I(create_mode=restore_long_term_retention_backup).",
+                        "Specifies the resource ID of the source database."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Assert the state of the SQL Database. Use C(present) to create or update an SQL Database and C(absent) to delete it."
+                    ]
+                },
+                "subscription_id": {
+                    "description": [
+                        "Your Azure subscription Id."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Dictionary of string:string pairs to assign as metadata to the object.",
+                        "Metadata tags on the object will be updated with any provided values.",
+                        "To remove tags set append_tags option to false.",
+                        "Currently, Azure DNS zones and Traffic Manager services also don't allow the use of spaces in the tag.",
+                        "Azure Front Door doesn't support the use of",
+                        "Azure Automation and Azure CDN only support 15 tags on resources."
+                    ],
+                    "type": "dict"
+                },
+                "tenant": {
+                    "description": [
+                        "Azure tenant ID. Use when authenticating with a Service Principal."
+                    ],
+                    "type": "str"
+                },
+                "zone_redundant": {
+                    "default": false,
+                    "description": [
+                        "Is this database is zone redundant? It means the replicas of this database will be spread across multiple availability zones."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "azure >= 2.0.0"
+            ],
+            "seealso": [
+                {
+                    "description": "How to authenticate using the C(az login) command.",
+                    "link": "https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli?view=azure-cli-latest",
+                    "name": "Sign in with Azure CLI"
+                }
+            ],
+            "short_description": "Manage SQL Database instance",
+            "version_added": "0.1.2",
+            "version_added_collection": "azure.azcollection"
+        },
+        "examples": "\n  - name: Create (or update) SQL Database\n    azure_rm_sqldatabase:\n      resource_group: myResourceGroup\n      server_name: sqlcrudtest-5961\n      name: testdb\n      location: eastus\n\n  - name: Restore SQL Database\n    azure_rm_sqldatabase:\n      resource_group: myResourceGroup\n      server_name: sqlcrudtest-5961\n      name: restoreddb\n      location: eastus\n      create_mode: restore\n      restorable_dropped_database_id: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Sql/s\n                                       ervers/testsvr/restorableDroppedDatabases/testdb2,131444841315030000\"\n\n  - name: Create SQL Database in Copy Mode\n    azure_rm_sqldatabase:\n      resource_group: myResourceGroup\n      server_name: sqlcrudtest-5961\n      name: copydb\n      location: eastus\n      create_mode: copy\n      source_database_id: \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Sql/servers/tests\n                           vr/databases/testdb\"\n\n  - name: Create (or update) SQL Database with SKU\n    azure_rm_sqldatabase:\n      resource_group: myResourceGroup\n      server_name: sqlcrudtest-5961\n      name: testdb\n      location: eastus\n      sku:\n        name: S0\n\n",
+        "metadata": null,
+        "return": {
+            "database_id": {
+                "description": [
+                    "The ID of the database."
+                ],
+                "returned": "always",
+                "sample": "database_id",
+                "type": "str"
+            },
+            "id": {
+                "description": [
+                    "Resource ID."
+                ],
+                "returned": "always",
+                "sample": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Sql/servers/sqlcrudtest-5961/databases/t estdb",
+                "type": "str"
+            },
+            "status": {
+                "description": [
+                    "The status of the database."
+                ],
+                "returned": "always",
+                "sample": "Online",
+                "type": "str"
+            }
+        }
+    }
+}

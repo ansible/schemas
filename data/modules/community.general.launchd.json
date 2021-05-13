@@ -1,0 +1,82 @@
+{
+    "community.general.launchd": {
+        "doc": {
+            "author": [
+                "Martin Migasiewicz (@martinm82)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "Manage launchd services on target macOS hosts."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/launchd.py",
+            "has_action": false,
+            "module": "launchd",
+            "notes": [
+                "A user must privileged to manage services using this module."
+            ],
+            "options": {
+                "enabled": {
+                    "description": [
+                        "Whether the service should start on boot.",
+                        "B(At least one of state and enabled are required.)"
+                    ],
+                    "type": "bool"
+                },
+                "force_stop": {
+                    "default": false,
+                    "description": [
+                        "Whether the service should not be restarted automatically by launchd.",
+                        "Services might have the 'KeepAlive' attribute set to true in a launchd configuration. In case this is set to true, stopping a service will cause that launchd starts the service again.",
+                        "Set this option to C(yes) to let this module change the 'KeepAlive' attribute to false."
+                    ],
+                    "type": "bool"
+                },
+                "name": {
+                    "description": [
+                        "Name of the service."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "reloaded",
+                        "restarted",
+                        "started",
+                        "stopped",
+                        "unloaded"
+                    ],
+                    "description": [
+                        "C(started)/C(stopped) are idempotent actions that will not run commands unless necessary.",
+                        "Launchd does not support C(restarted) nor C(reloaded) natively. These will trigger a stop/start (restarted) or an unload/load (reloaded).",
+                        "C(restarted) unloads and loads the service before start to ensure that the latest job definition (plist) is used.",
+                        "C(reloaded) unloads and loads the service to ensure that the latest job definition (plist) is used. Whether a service is started or stopped depends on the content of the definition file."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "A system managed by launchd",
+                "The plistlib python library"
+            ],
+            "short_description": "Manage macOS services",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.general"
+        },
+        "examples": "\n- name: Make sure spotify webhelper is started\n  community.general.launchd:\n    name: com.spotify.webhelper\n    state: started\n\n- name: Deploy custom memcached job definition\n  template:\n    src: org.memcached.plist.j2\n    dest: /Library/LaunchDaemons/org.memcached.plist\n\n- name: Run memcached\n  community.general.launchd:\n    name: org.memcached\n    state: started\n\n- name: Stop memcached\n  community.general.launchd:\n    name: org.memcached\n    state: stopped\n\n- name: Stop memcached\n  community.general.launchd:\n    name: org.memcached\n    state: stopped\n    force_stop: yes\n\n- name: Restart memcached\n  community.general.launchd:\n    name: org.memcached\n    state: restarted\n\n- name: Unload memcached\n  community.general.launchd:\n    name: org.memcached\n    state: unloaded\n",
+        "metadata": null,
+        "return": {
+            "status": {
+                "description": "Metadata about service status",
+                "returned": "always",
+                "sample": {
+                    "current_pid": "-",
+                    "current_state": "stopped",
+                    "previous_pid": "82636",
+                    "previous_state": "running"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

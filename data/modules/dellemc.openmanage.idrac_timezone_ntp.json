@@ -1,0 +1,153 @@
+{
+    "dellemc.openmanage.idrac_timezone_ntp": {
+        "doc": {
+            "author": [
+                "Felix Stephen (@felixs88)",
+                "Anooja Vardhineni (@anooja-vardhineni)"
+            ],
+            "collection": "dellemc.openmanage",
+            "description": [
+                "This module allows to configure time zone and NTP on iDRAC."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/idrac_timezone_ntp.py",
+            "has_action": false,
+            "module": "idrac_timezone_ntp",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC iDRAC.",
+                "This module supports C(check_mode)."
+            ],
+            "options": {
+                "enable_ntp": {
+                    "choices": [
+                        "Enabled",
+                        "Disabled"
+                    ],
+                    "description": "Allows to enable or disable NTP on iDRAC.",
+                    "type": "str"
+                },
+                "idrac_ip": {
+                    "description": "iDRAC IP Address.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_password": {
+                    "aliases": [
+                        "idrac_pwd"
+                    ],
+                    "description": "iDRAC user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_port": {
+                    "default": 443,
+                    "description": "iDRAC port.",
+                    "type": "int"
+                },
+                "idrac_user": {
+                    "description": "iDRAC username.",
+                    "required": true,
+                    "type": "str"
+                },
+                "ntp_server_1": {
+                    "description": "The IP address of the NTP server 1.",
+                    "type": "str"
+                },
+                "ntp_server_2": {
+                    "description": "The IP address of the NTP server 2.",
+                    "type": "str"
+                },
+                "ntp_server_3": {
+                    "description": "The IP address of the NTP server 3.",
+                    "type": "str"
+                },
+                "setup_idrac_timezone": {
+                    "description": "Allows to configure time zone on iDRAC.",
+                    "type": "str"
+                },
+                "share_mnt": {
+                    "description": "Local mount path of the network share with read-write permission for ansible user. This option is mandatory for network shares.",
+                    "type": "str"
+                },
+                "share_name": {
+                    "description": "Network share or a local path.",
+                    "required": true,
+                    "type": "str"
+                },
+                "share_password": {
+                    "aliases": [
+                        "share_pwd"
+                    ],
+                    "description": "Network share user password. This option is mandatory for CIFS share.",
+                    "type": "str"
+                },
+                "share_user": {
+                    "description": "Network share user name. Use the format 'user@domain' or 'domain\\\\user' if user is part of a domain. This option is mandatory for CIFS share.",
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "omsdk",
+                "python >= 2.7.5"
+            ],
+            "short_description": "Configures time zone and NTP on iDRAC",
+            "version_added": "2.1.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Configure time zone and NTP on iDRAC\n  dellemc.openmanage.idrac_timezone_ntp:\n       idrac_ip:   \"190.168.0.1\"\n       idrac_user: \"user_name\"\n       idrac_password:  \"user_password\"\n       share_name: \"user_name:/share\"\n       share_password:  \"share_password\"\n       share_user: \"user_name\"\n       share_mnt: \"/mnt/share\"\n       setup_idrac_timezone: \"UTC\"\n       enable_ntp: Enabled\n       ntp_server_1: \"190.168.0.1\"\n       ntp_server_2: \"190.168.0.2\"\n       ntp_server_3: \"190.168.0.3\"\n",
+        "metadata": null,
+        "return": {
+            "error_info": {
+                "description": "Details of the HTTP Error.",
+                "returned": "on HTTP error",
+                "sample": {
+                    "error": {
+                        "@Message.ExtendedInfo": [
+                            {
+                                "Message": "Unable to process the request because an error occurred.",
+                                "MessageArgs": [],
+                                "MessageId": "GEN1234",
+                                "RelatedProperties": [],
+                                "Resolution": "Retry the operation. If the issue persists, contact your system administrator.",
+                                "Severity": "Critical"
+                            }
+                        ],
+                        "code": "Base.1.0.GeneralError",
+                        "message": "A general error has occurred. See ExtendedInfo for more information."
+                    }
+                },
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Overall status of the timezone and ntp configuration.",
+                "returned": "always",
+                "sample": "Successfully configured the iDRAC time settings.",
+                "type": "str"
+            },
+            "timezone_ntp_status": {
+                "description": "Job details of the time zone setting operation.",
+                "returned": "success",
+                "sample": {
+                    "@odata.context": "/redfish/v1/$metadata#DellJob.DellJob",
+                    "@odata.id": "/redfish/v1/Managers/iDRAC.Embedded.1/Jobs/JID_861801613971",
+                    "@odata.type": "#DellJob.v1_0_0.DellJob",
+                    "CompletionTime": "2020-04-06T19:06:01",
+                    "Description": "Job Instance",
+                    "EndTime": null,
+                    "Id": "JID_861801613971",
+                    "JobState": "Completed",
+                    "JobType": "ImportConfiguration",
+                    "Message": "Successfully imported and applied Server Configuration Profile.",
+                    "MessageArgs": [],
+                    "MessageId": "SYS053",
+                    "Name": "Import Configuration",
+                    "PercentComplete": 100,
+                    "StartTime": "TIME_NOW",
+                    "Status": "Success",
+                    "TargetSettingsURI": null,
+                    "retval": true
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

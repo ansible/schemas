@@ -1,0 +1,545 @@
+{
+    "cisco.meraki.meraki_mr_ssid": {
+        "doc": {
+            "author": [
+                "Kevin Breit (@kbreit)"
+            ],
+            "collection": "cisco.meraki",
+            "description": [
+                "Allows for management of SSIDs in a Meraki wireless environment."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cisco/meraki/plugins/modules/meraki_mr_ssid.py",
+            "has_action": false,
+            "module": "meraki_mr_ssid",
+            "notes": [
+                "Deleting an SSID does not delete RADIUS servers.",
+                "More information about the Meraki API can be found at U(https://dashboard.meraki.com/api_docs).",
+                "Some of the options are likely only used for developers within Meraki.",
+                "As of Ansible 2.9, Meraki modules output keys as snake case. To use camel case, set the C(ANSIBLE_MERAKI_FORMAT) environment variable to C(camelcase).",
+                "Ansible's Meraki modules will stop supporting camel case output in Ansible 2.13. Please update your playbooks.",
+                "Check Mode downloads the current configuration from the dashboard, then compares changes against this download. Check Mode will report changed if there are differences in the configurations, but does not submit changes to the API for validation of change."
+            ],
+            "options": {
+                "ap_tags_vlan_ids": {
+                    "description": [
+                        "List of VLAN tags.",
+                        "Requires C(ip_assignment_mode) to be C(Bridge mode) or C(Layer 3 roaming).",
+                        "Requires C(use_vlan_tagging) to be C(True)."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "tags": {
+                            "description": [
+                                "List of AP tags."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "vlan_id": {
+                            "description": [
+                                "Numerical identifier that is assigned to the VLAN."
+                            ],
+                            "type": "int"
+                        }
+                    },
+                    "type": "list"
+                },
+                "auth_key": {
+                    "description": [
+                        "Authentication key provided by the dashboard. Required if environmental variable C(MERAKI_KEY) is not set."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "auth_mode": {
+                    "choices": [
+                        "open",
+                        "psk",
+                        "open-with-radius",
+                        "8021x-meraki",
+                        "8021x-radius"
+                    ],
+                    "description": [
+                        "Set authentication mode of network."
+                    ],
+                    "type": "str"
+                },
+                "band_selection": {
+                    "choices": [
+                        "Dual band operation",
+                        "5 GHz band only",
+                        "Dual band operation with Band Steering"
+                    ],
+                    "description": [
+                        "Set band selection mode."
+                    ],
+                    "type": "str"
+                },
+                "concentrator_network_id": {
+                    "description": [
+                        "The concentrator to use for 'Layer 3 roaming with a concentrator' or 'VPN'."
+                    ],
+                    "type": "str"
+                },
+                "default_vlan_id": {
+                    "description": [
+                        "Default VLAN ID.",
+                        "Requires C(ip_assignment_mode) to be C(Bridge mode) or C(Layer 3 roaming)."
+                    ],
+                    "type": "int"
+                },
+                "enabled": {
+                    "description": [
+                        "Enable or disable SSID network."
+                    ],
+                    "type": "bool"
+                },
+                "encryption_mode": {
+                    "choices": [
+                        "wpa",
+                        "eap",
+                        "wpa-eap"
+                    ],
+                    "description": [
+                        "Set encryption mode of network."
+                    ],
+                    "type": "str"
+                },
+                "host": {
+                    "default": "api.meraki.com",
+                    "description": [
+                        "Hostname for Meraki dashboard.",
+                        "Can be used to access regional Meraki environments, such as China."
+                    ],
+                    "type": "str"
+                },
+                "internal_error_retry_time": {
+                    "default": 60,
+                    "description": [
+                        "Number of seconds to retry if server returns an internal server error."
+                    ],
+                    "type": "int"
+                },
+                "ip_assignment_mode": {
+                    "choices": [
+                        "NAT mode",
+                        "Bridge mode",
+                        "Layer 3 roaming",
+                        "Layer 3 roaming with a concentrator",
+                        "VPN"
+                    ],
+                    "description": [
+                        "Method of which SSID uses to assign IP addresses."
+                    ],
+                    "type": "str"
+                },
+                "min_bitrate": {
+                    "choices": [
+                        1,
+                        2,
+                        5.5,
+                        6,
+                        9,
+                        11,
+                        12,
+                        18,
+                        24,
+                        36,
+                        48,
+                        54
+                    ],
+                    "description": [
+                        "Minimum bitrate (Mbps) allowed on SSID."
+                    ],
+                    "type": "float"
+                },
+                "name": {
+                    "description": [
+                        "Name of SSID."
+                    ],
+                    "type": "str"
+                },
+                "net_id": {
+                    "description": [
+                        "ID of network."
+                    ],
+                    "type": "str"
+                },
+                "net_name": {
+                    "description": [
+                        "Name of network."
+                    ],
+                    "type": "str"
+                },
+                "number": {
+                    "aliases": [
+                        "ssid_number"
+                    ],
+                    "description": [
+                        "SSID number within network."
+                    ],
+                    "type": "int"
+                },
+                "org_id": {
+                    "description": [
+                        "ID of organization."
+                    ],
+                    "type": "str"
+                },
+                "org_name": {
+                    "aliases": [
+                        "organization"
+                    ],
+                    "description": [
+                        "Name of organization."
+                    ],
+                    "type": "str"
+                },
+                "output_format": {
+                    "choices": [
+                        "snakecase",
+                        "camelcase"
+                    ],
+                    "default": "snakecase",
+                    "description": [
+                        "Instructs module whether response keys should be snake case (ex. C(net_id)) or camel case (ex. C(netId))."
+                    ],
+                    "type": "str"
+                },
+                "output_level": {
+                    "choices": [
+                        "debug",
+                        "normal"
+                    ],
+                    "default": "normal",
+                    "description": [
+                        "Set amount of debug output during module execution."
+                    ],
+                    "type": "str"
+                },
+                "per_client_bandwidth_limit_down": {
+                    "description": [
+                        "Maximum bandwidth in Mbps devices on SSID can download."
+                    ],
+                    "type": "int"
+                },
+                "per_client_bandwidth_limit_up": {
+                    "description": [
+                        "Maximum bandwidth in Mbps devices on SSID can upload."
+                    ],
+                    "type": "int"
+                },
+                "psk": {
+                    "description": [
+                        "Password for wireless network.",
+                        "Requires auth_mode to be set to psk."
+                    ],
+                    "type": "str"
+                },
+                "radius_accounting_enabled": {
+                    "description": [
+                        "Enable or disable RADIUS accounting."
+                    ],
+                    "type": "bool"
+                },
+                "radius_accounting_servers": {
+                    "description": [
+                        "List of RADIUS servers for RADIUS accounting."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "IP address or hostname of RADIUS server."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Port number RADIUS server is listening to."
+                            ],
+                            "type": "int"
+                        },
+                        "secret": {
+                            "description": [
+                                "RADIUS password.",
+                                "Setting password is not idempotent."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "radius_coa_enabled": {
+                    "description": [
+                        "Enable or disable RADIUS CoA (Change of Authorization) on SSID."
+                    ],
+                    "type": "bool"
+                },
+                "radius_failover_policy": {
+                    "choices": [
+                        "Deny access",
+                        "Allow access"
+                    ],
+                    "description": [
+                        "Set client access policy in case RADIUS servers aren't available."
+                    ],
+                    "type": "str"
+                },
+                "radius_load_balancing_policy": {
+                    "choices": [
+                        "Strict priority order",
+                        "Round robin"
+                    ],
+                    "description": [
+                        "Set load balancing policy when multiple RADIUS servers are specified."
+                    ],
+                    "type": "str"
+                },
+                "radius_servers": {
+                    "description": [
+                        "List of RADIUS servers."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "host": {
+                            "description": [
+                                "IP address or hostname of RADIUS server."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "port": {
+                            "description": [
+                                "Port number RADIUS server is listening to."
+                            ],
+                            "type": "int"
+                        },
+                        "secret": {
+                            "description": [
+                                "RADIUS password.",
+                                "Setting password is not idempotent."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "rate_limit_retry_time": {
+                    "default": 165,
+                    "description": [
+                        "Number of seconds to retry if rate limiter is triggered."
+                    ],
+                    "type": "int"
+                },
+                "splash_page": {
+                    "choices": [
+                        "None",
+                        "Click-through splash page",
+                        "Billing",
+                        "Password-protected with Meraki RADIUS",
+                        "Password-protected with custom RADIUS",
+                        "Password-protected with Active Directory",
+                        "Password-protected with LDAP",
+                        "SMS authentication",
+                        "Systems Manager Sentry",
+                        "Facebook Wi-Fi",
+                        "Google OAuth",
+                        "Sponsored guest",
+                        "Cisco ISE"
+                    ],
+                    "description": [
+                        "Set to enable splash page and specify type of splash."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "query",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specifies whether SNMP information should be queried or modified."
+                    ],
+                    "type": "str"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Time to timeout for HTTP requests."
+                    ],
+                    "type": "int"
+                },
+                "use_https": {
+                    "default": true,
+                    "description": [
+                        "If C(no), it will use HTTP. Otherwise it will use HTTPS.",
+                        "Only useful for internal Meraki developers."
+                    ],
+                    "type": "bool"
+                },
+                "use_proxy": {
+                    "default": false,
+                    "description": [
+                        "If C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "type": "bool"
+                },
+                "use_vlan_tagging": {
+                    "description": [
+                        "Set whether to use VLAN tagging.",
+                        "Requires C(default_vlan_id) to be set."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Whether to validate HTTP certificates."
+                    ],
+                    "type": "bool"
+                },
+                "vlan_id": {
+                    "description": [
+                        "ID number of VLAN on SSID.",
+                        "Requires C(ip_assignment_mode) to be C(ayer 3 roaming with a concentrator) or C(VPN)."
+                    ],
+                    "type": "int"
+                },
+                "walled_garden_enabled": {
+                    "description": [
+                        "Enable or disable walled garden functionality."
+                    ],
+                    "type": "bool"
+                },
+                "walled_garden_ranges": {
+                    "description": [
+                        "List of walled garden ranges."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "wpa_encryption_mode": {
+                    "choices": [
+                        "WPA1 and WPA2",
+                        "WPA2 only",
+                        "WPA3 Transition Mode",
+                        "WPA3 only"
+                    ],
+                    "description": [
+                        "Encryption mode within WPA specification."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage wireless SSIDs in the Meraki cloud"
+        },
+        "examples": "\n- name: Enable and name SSID\n  meraki_ssid:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: WiFi\n    name: GuestSSID\n    enabled: true\n  delegate_to: localhost\n\n- name: Set PSK with invalid encryption mode\n  meraki_ssid:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: WiFi\n    name: GuestSSID\n    auth_mode: psk\n    psk: abc1234\n    encryption_mode: eap\n  ignore_errors: yes\n  delegate_to: localhost\n\n- name: Configure RADIUS servers\n  meraki_ssid:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: WiFi\n    name: GuestSSID\n    auth_mode: open-with-radius\n    radius_servers:\n      - host: 192.0.1.200\n        port: 1234\n        secret: abc98765\n  delegate_to: localhost\n\n- name: Enable click-through splash page\n  meraki_ssid:\n    auth_key: abc123\n    state: present\n    org_name: YourOrg\n    net_name: WiFi\n    name: GuestSSID\n    splash_page: Click-through splash page\n  delegate_to: localhost\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "data": {
+                "contains": {
+                    "auth_mode": {
+                        "description": "Authentication method.",
+                        "returned": "success",
+                        "sample": "psk",
+                        "type": "str"
+                    },
+                    "band_selection": {
+                        "description": "Wireless RF frequency wireless network will be broadcast on.",
+                        "returned": "success",
+                        "sample": "5 GHz band only",
+                        "type": "str"
+                    },
+                    "enabled": {
+                        "description": "Enabled state of wireless network.",
+                        "returned": "success",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "encryption_mode": {
+                        "description": "Wireless traffic encryption method.",
+                        "returned": "success",
+                        "sample": "wpa",
+                        "type": "str"
+                    },
+                    "ip_assignment_mode": {
+                        "description": "Wireless client IP assignment method.",
+                        "returned": "success",
+                        "sample": "NAT mode",
+                        "type": "str"
+                    },
+                    "min_bitrate": {
+                        "description": "Minimum bitrate a wireless client can connect at.",
+                        "returned": "success",
+                        "sample": 11,
+                        "type": "int"
+                    },
+                    "name": {
+                        "description": [
+                            "Name of wireless SSID.",
+                            "This value is what is broadcasted."
+                        ],
+                        "returned": "success",
+                        "sample": "CorpWireless",
+                        "type": "str"
+                    },
+                    "number": {
+                        "description": "Zero-based index number for SSIDs.",
+                        "returned": "success",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "per_client_bandwidth_limit_down": {
+                        "description": "Maximum download bandwidth a client can use.",
+                        "returned": "success",
+                        "sample": 0,
+                        "type": "int"
+                    },
+                    "per_client_bandwidth_limit_up": {
+                        "description": "Maximum upload bandwidth a client can use.",
+                        "returned": "success",
+                        "sample": 1000,
+                        "type": "int"
+                    },
+                    "psk": {
+                        "description": "Secret wireless password.",
+                        "returned": "success",
+                        "sample": "SecretWiFiPass",
+                        "type": "str"
+                    },
+                    "splash_page": {
+                        "description": "Splash page to show when user authenticates.",
+                        "returned": "success",
+                        "sample": "Click-through splash page",
+                        "type": "str"
+                    },
+                    "ssid_admin_accessible": {
+                        "description": "Whether SSID is administratively accessible.",
+                        "returned": "success",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "wpa_encryption_mode": {
+                        "description": "Enabled WPA versions.",
+                        "returned": "success",
+                        "sample": "WPA2 only",
+                        "type": "str"
+                    }
+                },
+                "description": "List of wireless SSIDs.",
+                "returned": "success",
+                "type": "complex"
+            }
+        }
+    }
+}

@@ -1,0 +1,331 @@
+{
+    "community.aws.s3_sync": {
+        "doc": {
+            "author": "Ted Timmons (@tedder)",
+            "collection": "community.aws",
+            "description": [
+                "The S3 module is great, but it is very slow for a large volume of files- even a dozen will be noticeable. In addition to speed, it handles globbing, inclusions/exclusions, mime types, expiration mapping, recursion, cache control and smart directory mapping."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/s3_sync.py",
+            "has_action": false,
+            "module": "s3_sync",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "bucket": {
+                    "description": [
+                        "Bucket name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "cache_control": {
+                    "description": [
+                        "Cache-Control header set on uploaded objects.",
+                        "Directives are separated by commas."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "delete": {
+                    "default": false,
+                    "description": [
+                        "Remove remote files that exist in bucket but are not present in the file root."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "exclude": {
+                    "default": ".*",
+                    "description": [
+                        "Shell pattern-style file matching.",
+                        "Used after include to remove files (for instance, skip \"*.txt\")",
+                        "For multiple patterns, comma-separate them."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "file_change_strategy": {
+                    "choices": [
+                        "force",
+                        "checksum",
+                        "date_size"
+                    ],
+                    "default": "date_size",
+                    "description": [
+                        "Difference determination method to allow changes-only syncing. Unlike rsync, files are not patched- they are fully skipped or fully uploaded.",
+                        "date_size will upload if file sizes don't match or if local file modified date is newer than s3's version",
+                        "checksum will compare etag values based on s3's implementation of chunked md5s.",
+                        "force will always upload all files."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "file_root": {
+                    "description": [
+                        "File/directory path for synchronization. This is a local path.",
+                        "This root path is scrubbed from the key name, so subdirectories will remain as keys."
+                    ],
+                    "required": true,
+                    "type": "path"
+                },
+                "include": {
+                    "default": "*",
+                    "description": [
+                        "Shell pattern-style file matching.",
+                        "Used before exclude to determine eligible files (for instance, only \"*.gif\")",
+                        "For multiple patterns, comma-separate them."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "key_prefix": {
+                    "description": [
+                        "In addition to file path, prepend s3 path with this prefix. Module will add slash at end of prefix if necessary."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "mime_map": {
+                    "description": [
+                        "Dict entry from extension to MIME type. This will override any default/sniffed MIME type. For example C({\".txt\": \"application/text\", \".yml\": \"application/text\"})\n"
+                    ],
+                    "required": false,
+                    "type": "dict"
+                },
+                "mode": {
+                    "choices": [
+                        "push"
+                    ],
+                    "default": "push",
+                    "description": [
+                        "sync direction."
+                    ],
+                    "type": "str"
+                },
+                "permission": {
+                    "choices": [
+                        "private",
+                        "public-read",
+                        "public-read-write",
+                        "authenticated-read",
+                        "aws-exec-read",
+                        "bucket-owner-read",
+                        "bucket-owner-full-control"
+                    ],
+                    "description": [
+                        "Canned ACL to apply to synced files.",
+                        "Changing this ACL only changes newly synced files, it does not trigger a full reupload."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "retries": {
+                    "description": [
+                        "The I(retries) option does nothing and will be removed after 2022-06-01"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "storage_class": {
+                    "choices": [
+                        "STANDARD",
+                        "REDUCED_REDUNDANCY",
+                        "STANDARD_IA",
+                        "ONEZONE_IA",
+                        "INTELLIGENT_TIERING",
+                        "GLACIER",
+                        "DEEP_ARCHIVE",
+                        "OUTPOSTS"
+                    ],
+                    "default": "STANDARD",
+                    "description": [
+                        "Storage class to be associated to each object added to the S3 bucket."
+                    ],
+                    "required": false,
+                    "type": "str",
+                    "version_added": "1.5.0",
+                    "version_added_collection": "community.aws"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3 >= 1.4.4",
+                "botocore",
+                "python >= 2.6",
+                "python-dateutil"
+            ],
+            "short_description": "Efficiently upload multiple files to S3",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n- name: basic upload\n  community.aws.s3_sync:\n    bucket: tedder\n    file_root: roles/s3/files/\n\n- name: basic upload using the glacier storage class\n  community.aws.s3_sync:\n    bucket: tedder\n    file_root: roles/s3/files/\n    storage_class: GLACIER\n\n- name: all the options\n  community.aws.s3_sync:\n    bucket: tedder\n    file_root: roles/s3/files\n    mime_map:\n      .yml: application/text\n      .json: application/text\n    key_prefix: config_files/web\n    file_change_strategy: force\n    permission: public-read\n    cache_control: \"public, max-age=31536000\"\n    storage_class: \"GLACIER\"\n    include: \"*\"\n    exclude: \"*.txt,.*\"\n",
+        "metadata": null,
+        "return": {
+            "filelist_actionable": {
+                "description": "file listing (dicts) of files that will be uploaded after the strategy decision",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "mime_type": "application/json",
+                        "modified_epoch": 1477931256,
+                        "s3_path": "s3sync/policy.json",
+                        "whysize": "151 / 151",
+                        "whytime": "1477931256 / 1477929260"
+                    }
+                ],
+                "type": "list"
+            },
+            "filelist_initial": {
+                "description": "file listing (dicts) from initial globbing",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "modified_epoch": 1477416706
+                    }
+                ],
+                "type": "list"
+            },
+            "filelist_local_etag": {
+                "description": "file listing (dicts) including calculated local etag",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "mime_type": "application/json",
+                        "modified_epoch": 1477416706,
+                        "s3_path": "s3sync/policy.json"
+                    }
+                ],
+                "type": "list"
+            },
+            "filelist_s3": {
+                "description": "file listing (dicts) including information about previously-uploaded versions",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "mime_type": "application/json",
+                        "modified_epoch": 1477416706,
+                        "s3_path": "s3sync/policy.json"
+                    }
+                ],
+                "type": "list"
+            },
+            "filelist_typed": {
+                "description": "file listing (dicts) with calculated or overridden mime types",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "mime_type": "application/json",
+                        "modified_epoch": 1477416706
+                    }
+                ],
+                "type": "list"
+            },
+            "uploaded": {
+                "description": "file listing (dicts) of files that were actually uploaded",
+                "returned": "always",
+                "sample": [
+                    {
+                        "bytes": 151,
+                        "chopped_path": "policy.json",
+                        "fullpath": "roles/cf/files/policy.json",
+                        "s3_path": "s3sync/policy.json",
+                        "whysize": "151 / 151",
+                        "whytime": "1477931637 / 1477931489"
+                    }
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,80 @@
+{
+    "community.general.pkgutil": {
+        "doc": {
+            "author": [
+                "Alexander Winkler (@dermute)",
+                "David Ponessa (@scathatheworm)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module installs, updates and removes packages from the OpenCSW project for Solaris.",
+                "Unlike the M(community.general.svr4pkg) module, it will resolve and download dependencies.",
+                "See U(https://www.opencsw.org/) for more information about the project."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/pkgutil.py",
+            "has_action": false,
+            "module": "pkgutil",
+            "notes": [
+                "In order to check the availability of packages, the catalog cache under C(/var/opt/csw/pkgutil) may be refreshed even in check mode."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "To allow the update process to downgrade packages to match what is present in the repository, set this to C(yes).",
+                        "This is useful for rolling back to stable from testing, or similar operations."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "name": {
+                    "aliases": [
+                        "pkg"
+                    ],
+                    "description": [
+                        "The name of the package.",
+                        "When using C(state=latest), this can be C('*'), which updates all installed packages managed by pkgutil."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "site": {
+                    "description": [
+                        "The repository path to install the package from.",
+                        "Its global definition is in C(/etc/opt/csw/pkgutil.conf)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "installed",
+                        "latest",
+                        "present",
+                        "removed"
+                    ],
+                    "description": [
+                        "Whether to install (C(present)/C(installed)), or remove (C(absent)/C(removed)) packages.",
+                        "The upgrade (C(latest)) operation will update/install the packages to the latest version available."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "update_catalog": {
+                    "default": false,
+                    "description": [
+                        "If you always want to refresh your catalog from the mirror, even when it's not stale, set this to C(yes)."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "short_description": "OpenCSW package management on Solaris"
+        },
+        "examples": "\n- name: Install a package\n  community.general.pkgutil:\n    name: CSWcommon\n    state: present\n\n- name: Install a package from a specific repository\n  community.general.pkgutil:\n    name: CSWnrpe\n    site: ftp://myinternal.repo/opencsw/kiel\n    state: latest\n\n- name: Remove a package\n  community.general.pkgutil:\n    name: CSWtop\n    state: absent\n\n- name: Install several packages\n  community.general.pkgutil:\n    name:\n    - CSWsudo\n    - CSWtop\n    state: present\n\n- name: Update all packages\n  community.general.pkgutil:\n    name: '*'\n    state: latest\n\n- name: Update all packages and force versions to match latest in catalog\n  community.general.pkgutil:\n    name: '*'\n    state: latest\n    force: yes\n",
+        "metadata": null,
+        "return": null
+    }
+}

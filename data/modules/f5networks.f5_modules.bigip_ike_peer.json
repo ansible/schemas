@@ -1,0 +1,408 @@
+{
+    "f5networks.f5_modules.bigip_ike_peer": {
+        "doc": {
+            "author": [
+                "Tim Rupp (@caphrim007)",
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage IPSec IKE Peer configuration on a BIG-IP device."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_ike_peer.py",
+            "has_action": false,
+            "module": "bigip_ike_peer",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "description": {
+                    "description": [
+                        "Description of the IKE peer."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the IKE peer."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "phase1_auth_method": {
+                    "choices": [
+                        "pre-shared-key",
+                        "rsa-signature"
+                    ],
+                    "description": [
+                        "Specifies the authentication method for phase 1 negotiation.",
+                        "When creating a new IKE peer, if this value is not specified, the default is C(rsa-signature)."
+                    ],
+                    "type": "str"
+                },
+                "phase1_cert": {
+                    "description": [
+                        "Specifies the digital certificate to use for the RSA signature.",
+                        "When creating a new IKE peer, if this value is not specified, and C(phase1_auth_method) is C(rsa-signature), the default is C(default.crt).",
+                        "This parameter is invalid when C(phase1_auth_method) is C(pre-shared-key)."
+                    ],
+                    "type": "str"
+                },
+                "phase1_encryption_algorithm": {
+                    "choices": [
+                        "3des",
+                        "des",
+                        "blowfish",
+                        "cast128",
+                        "aes128",
+                        "aes192",
+                        "aes256",
+                        "camellia"
+                    ],
+                    "description": [
+                        "Specifies the algorithm to use for IKE encryption.",
+                        "IKE C(version) C(v2) does not support C(blowfish), C(camellia), or C(cast128)."
+                    ],
+                    "type": "str"
+                },
+                "phase1_hash_algorithm": {
+                    "choices": [
+                        "sha1",
+                        "md5",
+                        "sha256",
+                        "sha384",
+                        "sha512"
+                    ],
+                    "description": [
+                        "Specifies the algorithm to use for IKE authentication."
+                    ],
+                    "type": "str"
+                },
+                "phase1_key": {
+                    "description": [
+                        "Specifies the public key the digital certificate contains.",
+                        "When creating a new IKE peer, if this value is not specified, and C(phase1_auth_method) is C(rsa-signature), the default is C(default.key).",
+                        "This parameter is invalid when C(phase1_auth_method) is C(pre-shared-key)."
+                    ],
+                    "type": "str"
+                },
+                "phase1_lifetime": {
+                    "description": [
+                        "Defines the lifetime in minutes of an IKE SA which will be proposed in the phase 1 negotiations.",
+                        "The accepted value range is C(1 - 4294967295) minutes.",
+                        "When creating a new IKE peer, if this value is not specified, the default value set by the system is C(1440) minutes."
+                    ],
+                    "type": "int",
+                    "version_added": "1.1.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "phase1_perfect_forward_secrecy": {
+                    "choices": [
+                        "ecp256",
+                        "ecp384",
+                        "ecp521",
+                        "modp768",
+                        "modp1024",
+                        "modp1536",
+                        "modp2048",
+                        "modp3072",
+                        "modp4096",
+                        "modp6144",
+                        "modp8192"
+                    ],
+                    "description": [
+                        "Specifies the Diffie-Hellman group to use for IKE Phase 1 and Phase 2 negotiations."
+                    ],
+                    "type": "str"
+                },
+                "phase1_verify_peer_cert": {
+                    "description": [
+                        "In IKEv2, specifies whether the certificate sent by the IKE peer is verified using the Trusted Certificate Authorities, a CRL, and/or a peer certificate.",
+                        "In IKEv1, specifies whether the identifier sent by the peer is verified with the credentials in the certificate, in the following manner - ASN1DN; specifies that the entire certificate subject name is compared with the identifier. Address, FQDN, or User FQDN; specifies that the certificate's subjectAltName is compared with the identifier. If the two do not match, the negotiation fails.",
+                        "When creating a new IKE peer, if this value is not specified, and C(phase1_auth_method) is C(rsa-signature), the default is C(no).",
+                        "This parameter is invalid when C(phase1_auth_method) is C(pre-shared-key)."
+                    ],
+                    "type": "bool"
+                },
+                "presented_id_type": {
+                    "choices": [
+                        "address",
+                        "asn1dn",
+                        "fqdn",
+                        "keyid-tag",
+                        "user-fqdn",
+                        "override"
+                    ],
+                    "description": [
+                        "Specifies the identifier type the local system uses to identify itself to the peer during IKE Phase 1 negotiations."
+                    ],
+                    "type": "str"
+                },
+                "presented_id_value": {
+                    "description": [
+                        "Specifies a value for the identity when using a C(presented_id_type) of C(override).",
+                        "This is a required value when C(version) includes (Cv2)."
+                    ],
+                    "type": "str"
+                },
+                "preshared_key": {
+                    "description": [
+                        "Specifies a string the IKE peers share for authenticating each other.",
+                        "This parameter is only relevant when C(phase1_auth_method) is C(pre-shared-key).",
+                        "This parameter is invalid when C(phase1_auth_method) is C(rsa-signature)."
+                    ],
+                    "type": "str"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "remote_address": {
+                    "description": [
+                        "Displays the IP address of the BIG-IP system that is remote to the system you are configuring."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(present), ensures the resource exists.",
+                        "When C(absent), ensures the resource is removed."
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "always",
+                        "on_create"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "C(always) will allow updating passwords if the user chooses to do so. C(on_create) will only set the password for newly created IKE peers."
+                    ],
+                    "type": "str"
+                },
+                "verified_id_type": {
+                    "choices": [
+                        "address",
+                        "asn1dn",
+                        "fqdn",
+                        "keyid-tag",
+                        "user-fqdn",
+                        "override"
+                    ],
+                    "description": [
+                        "Specifies the identifier type that the local system uses to identify the peer during IKE Phase 1 negotiation.",
+                        "This is a required value when C(version) includes (Cv2).",
+                        "When C(user-fqdn), value of C(verified_id_value) must be in the form of User @ DNS domain string."
+                    ],
+                    "type": "str"
+                },
+                "verified_id_value": {
+                    "description": [
+                        "Specifies a value for the identity when using a C(verified_id_type) of C(override).",
+                        "This is a required value when C(version) includes (Cv2)."
+                    ],
+                    "type": "str"
+                },
+                "version": {
+                    "choices": [
+                        "v1",
+                        "v2"
+                    ],
+                    "description": [
+                        "Specifies which version of IKE is used.",
+                        "If the system you are configuring is the IPsec initiator, and you select both versions, the system tries using IKEv2 for negotiation. If the remote peer does not support IKEv2, the IPsec tunnel fails. To use IKEv1 in this case, you must deselect Version 2 and try again.",
+                        "If the system you are configuring is the IPsec responder, and you select both versions, the IPsec initiator system determines which IKE version to use.",
+                        "When creating a new IKE peer, this value is required."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "short_description": "Manage IPSec IKE Peer configuration on BIG-IP",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create new IKE peer\n  bigip_ike_peer:\n    name: ike1\n    remote_address: 1.2.3.4\n    version:\n      - v1\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Change presented id type - keyid-tag\n  bigip_ike_peer:\n    name: ike1\n    presented_id_type: keyid-tag\n    presented_id_value: key1\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove IKE peer\n  bigip_ike_peer:\n    name: ike1\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "phase1_auth_method": {
+                "description": "The new IKE Phase 1 Credentials Authentication Method value of the resource.",
+                "returned": "changed",
+                "sample": "rsa-signature",
+                "type": "str"
+            },
+            "phase1_cert": {
+                "description": "The new IKE Phase 1 Certificate Credentials.",
+                "returned": "changed",
+                "sample": "/Common/cert1.crt",
+                "type": "str"
+            },
+            "phase1_encryption_algorithm": {
+                "description": "The new IKE Phase 1 Encryption Algorithm.",
+                "returned": "changed",
+                "sample": "3des",
+                "type": "str"
+            },
+            "phase1_hash_algorithm": {
+                "description": "The new IKE Phase 1 Authentication Algorithm.",
+                "returned": "changed",
+                "sample": "sha256",
+                "type": "str"
+            },
+            "phase1_key": {
+                "description": "The new IKE Phase 1 Key Credentials.",
+                "returned": "changed",
+                "sample": "/Common/cert1.key",
+                "type": "str"
+            },
+            "phase1_perfect_forward_secrecy": {
+                "description": "The new IKE Phase 1 Perfect Forward Secrecy.",
+                "returned": "changed",
+                "sample": "modp1024",
+                "type": "str"
+            },
+            "phase1_verify_peer_cert": {
+                "description": "The new IKE Phase 1 Key Verify Peer Certificate setting.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "presented_id_type": {
+                "description": "The new Presented ID Type value of the resource.",
+                "returned": "changed",
+                "sample": "address",
+                "type": "str"
+            },
+            "presented_id_value": {
+                "description": "The new Presented ID Value setting for the Presented ID Type.",
+                "returned": "changed",
+                "sample": "1.2.3.1",
+                "type": "str"
+            },
+            "remote_address": {
+                "description": "The new Remote Address value of the resource.",
+                "returned": "changed",
+                "sample": "1.2.2.1",
+                "type": "str"
+            },
+            "verified_id_type": {
+                "description": "The new Verified ID Type value of the resource.",
+                "returned": "changed",
+                "sample": "address",
+                "type": "str"
+            },
+            "verified_id_value": {
+                "description": "The new Verified ID Value setting for the Verified ID Type.",
+                "returned": "changed",
+                "sample": "1.2.3.1",
+                "type": "str"
+            },
+            "version": {
+                "description": "The new list of IKE versions.",
+                "returned": "changed",
+                "sample": [
+                    "v1",
+                    "v2"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

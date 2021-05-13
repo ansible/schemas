@@ -1,0 +1,151 @@
+{
+    "dellemc.openmanage.ome_device_info": {
+        "doc": {
+            "author": "Sajna Shetty(@Sajna-Shetty)",
+            "collection": "dellemc.openmanage",
+            "description": [
+                "This module retrieves the list of devices in the inventory of OpenManage Enterprise along with the details of each device."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/ome_device_info.py",
+            "has_action": false,
+            "module": "ome_device_info",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC OpenManage Enterprise.",
+                "This module supports C(check_mode)."
+            ],
+            "options": {
+                "fact_subset": {
+                    "choices": [
+                        "basic_inventory",
+                        "detailed_inventory",
+                        "subsystem_health"
+                    ],
+                    "default": "basic_inventory",
+                    "description": [
+                        "C(basic_inventory) returns the list of the devices.",
+                        "C(detailed_inventory) returns the inventory details of specified devices.",
+                        "C(subsystem_health) returns the health status of specified devices."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": "Target IP address or hostname.",
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "description": "Target user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": "Target HTTPS port.",
+                    "type": "int"
+                },
+                "system_query_options": {
+                    "description": [
+                        "I(system_query_options) applicable for the choices of the fact_subset. Either I(device_id) or I(device_service_tag) is mandatory for C(detailed_inventory) and C(subsystem_health) or both can be applicable."
+                    ],
+                    "suboptions": {
+                        "device_id": {
+                            "description": [
+                                "A list of unique identifier is applicable for C(detailed_inventory) and C(subsystem_health)."
+                            ],
+                            "elements": "int",
+                            "type": "list"
+                        },
+                        "device_service_tag": {
+                            "description": [
+                                "A list of service tags are applicable for C(detailed_inventory) and C(subsystem_health)."
+                            ],
+                            "elements": "str",
+                            "type": "list"
+                        },
+                        "filter": {
+                            "description": [
+                                "For C(basic_inventory), it filters the collection of devices. I(filter) query format should be aligned with OData standards."
+                            ],
+                            "type": "str"
+                        },
+                        "inventory_type": {
+                            "description": [
+                                "For C(detailed_inventory), it returns details of the specified inventory type."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "username": {
+                    "description": "Target username.",
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7.5"
+            ],
+            "short_description": "Retrieves the information of devices inventoried by OpenManage Enterprise",
+            "version_added": "2.0.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Retrieve basic inventory of all devices\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n\n- name: Retrieve basic inventory for devices identified by IDs 33333 or 11111 using filtering\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    fact_subset: \"basic_inventory\"\n    system_query_options:\n      filter: \"Id eq 33333 or Id eq 11111\"\n\n- name: Retrieve inventory details of specified devices identified by IDs 11111 and 22222\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    fact_subset: \"detailed_inventory\"\n    system_query_options:\n      device_id:\n        - 11111\n        - 22222\n\n- name: Retrieve inventory details of specified devices identified by service tags MXL1234 and MXL4567\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    fact_subset: \"detailed_inventory\"\n    system_query_options:\n      device_service_tag:\n        - MXL1234\n        - MXL4567\n\n- name: Retrieve details of specified inventory type of specified devices identified by ID and service tags\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    fact_subset: \"detailed_inventory\"\n    system_query_options:\n      device_id:\n        - 11111\n      device_service_tag:\n        - MXL1234\n        - MXL4567\n      inventory_type: \"serverDeviceCards\"\n\n- name: Retrieve subsystem health of specified devices identified by service tags\n  dellemc.openmanage.ome_device_info:\n    hostname: \"192.168.0.1\"\n    username: \"username\"\n    password: \"password\"\n    fact_subset: \"subsystem_health\"\n    system_query_options:\n      device_service_tag:\n        - MXL1234\n        - MXL4567\n\n",
+        "metadata": null,
+        "return": {
+            "device_info": {
+                "description": "Returns the information collected from the Device.",
+                "returned": "success",
+                "sample": {
+                    "value": [
+                        {
+                            "Actions": null,
+                            "AssetTag": null,
+                            "ChassisServiceTag": null,
+                            "ConnectionState": true,
+                            "DeviceManagement": [
+                                {
+                                    "DnsName": "dnsname.host.com",
+                                    "InstrumentationName": "MX-12345",
+                                    "MacAddress": "11:10:11:10:11:10",
+                                    "ManagementId": 12345,
+                                    "ManagementProfile": [
+                                        {
+                                            "HasCreds": 0,
+                                            "ManagementId": 12345,
+                                            "ManagementProfileId": 12345,
+                                            "ManagementURL": "https://192.168.0.1:443",
+                                            "Status": 1000,
+                                            "StatusDateTime": "2019-01-21 06:30:08.501"
+                                        }
+                                    ],
+                                    "ManagementType": 2,
+                                    "NetworkAddress": "192.168.0.1"
+                                }
+                            ],
+                            "DeviceName": "MX-0003I",
+                            "DeviceServiceTag": "MXL1234",
+                            "DeviceSubscription": null,
+                            "LastInventoryTime": "2019-01-21 06:30:08.501",
+                            "LastStatusTime": "2019-01-21 06:30:02.492",
+                            "ManagedState": 3000,
+                            "Model": "PowerEdge MX7000",
+                            "PowerState": 17,
+                            "SlotConfiguration": {},
+                            "Status": 4000,
+                            "SystemId": 2031,
+                            "Type": 2000
+                        }
+                    ]
+                },
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Over all device information status.",
+                "returned": "on error",
+                "sample": "Failed to fetch the device information",
+                "type": "str"
+            }
+        }
+    }
+}

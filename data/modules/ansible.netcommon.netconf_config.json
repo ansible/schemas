@@ -1,0 +1,262 @@
+{
+    "ansible.netcommon.netconf_config": {
+        "doc": {
+            "author": "Leandro Lisboa Penz (@lpenz)",
+            "collection": "ansible.netcommon",
+            "description": [
+                "Netconf is a network management protocol developed and standardized by the IETF. It is documented in RFC 6241.",
+                "This module allows the user to send a configuration XML file to a netconf device, and detects if there was a configuration change."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/ansible/netcommon/plugins/modules/netconf_config.py",
+            "has_action": false,
+            "module": "netconf_config",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "This module supports devices with and without the candidate and confirmed-commit capabilities. It will always use the safer feature.",
+                "This module supports the use of connection=netconf",
+                "For information on using netconf see the :ref:`Platform Options guide using Netconf<netconf_enabled_platform_options>`",
+                "For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`",
+                "This module is supported on C(ansible_network_os) network platforms. See the :ref:`Network Platform Options <platform_options>` for details."
+            ],
+            "options": {
+                "backup": {
+                    "default": "no",
+                    "description": [
+                        "This argument will cause the module to create a full backup of the current C(running-config) from the remote device before any changes are made. If the C(backup_options) value is not given, the backup file is written to the C(backup) folder in the playbook root directory or role root directory, if playbook is part of an ansible role. If the directory does not exist, it is created."
+                    ],
+                    "type": "bool"
+                },
+                "backup_options": {
+                    "description": [
+                        "This is a dict object containing configurable options related to backup file path. The value of this option is read only when C(backup) is set to I(yes), if C(backup) is set to I(no) this option will be silently ignored."
+                    ],
+                    "suboptions": {
+                        "dir_path": {
+                            "description": [
+                                "This option provides the path ending with directory name in which the backup configuration file will be stored. If the directory does not exist it will be first created and the filename is either the value of C(filename) or default filename as described in C(filename) options description. If the path value is not given in that case a I(backup) directory will be created in the current working directory and backup configuration will be copied in C(filename) within I(backup) directory."
+                            ],
+                            "type": "path"
+                        },
+                        "filename": {
+                            "description": [
+                                "The filename to be used to store the backup configuration. If the filename is not given it will be generated based on the hostname, current time and date in format defined by <hostname>_config.<current-date>@<current-time>"
+                            ]
+                        }
+                    },
+                    "type": "dict"
+                },
+                "commit": {
+                    "default": true,
+                    "description": [
+                        "This boolean flag controls if the configuration changes should be committed or not after editing the candidate datastore. This option is supported only if remote Netconf server supports :candidate capability. If the value is set to I(False) commit won't be issued after edit-config operation and user needs to handle commit or discard-changes explicitly."
+                    ],
+                    "type": "bool"
+                },
+                "confirm": {
+                    "default": 0,
+                    "description": [
+                        "This argument will configure a timeout value for the commit to be confirmed before it is automatically rolled back. If the C(confirm_commit) argument is set to False, this argument is silently ignored. If the value of this argument is set to 0, the commit is confirmed immediately. The remote host MUST support :candidate and :confirmed-commit capability for this option to ."
+                    ]
+                },
+                "confirm_commit": {
+                    "default": "no",
+                    "description": [
+                        "This argument will execute commit operation on remote device. It can be used to confirm a previous commit."
+                    ],
+                    "type": "bool"
+                },
+                "content": {
+                    "aliases": [
+                        "xml"
+                    ],
+                    "description": [
+                        "The configuration data as defined by the device's data models, the value can be either in xml string format or text format. The format of the configuration should be supported by remote Netconf server"
+                    ]
+                },
+                "default_operation": {
+                    "choices": [
+                        "merge",
+                        "replace",
+                        "none"
+                    ],
+                    "description": [
+                        "The default operation for <edit-config> rpc, valid values are I(merge), I(replace) and I(none). If the default value is merge, the configuration data in the C(content) option is merged at the corresponding level in the C(target) datastore. If the value is replace the data in the C(content) option completely replaces the configuration in the C(target) datastore. If the value is none the C(target) datastore is unaffected by the configuration in the config option, unless and until the incoming configuration data uses the C(operation) operation to request a different operation."
+                    ]
+                },
+                "delete": {
+                    "default": "no",
+                    "description": [
+                        "It instructs the module to delete the configuration from value mentioned in C(target) datastore."
+                    ],
+                    "type": "bool"
+                },
+                "error_option": {
+                    "choices": [
+                        "stop-on-error",
+                        "continue-on-error",
+                        "rollback-on-error"
+                    ],
+                    "default": "stop-on-error",
+                    "description": [
+                        "This option controls the netconf server action after an error occurs while editing the configuration.",
+                        "If I(error_option=stop-on-error), abort the config edit on first error.",
+                        "If I(error_option=continue-on-error), continue to process configuration data on error. The error is recorded and negative response is generated if any errors occur.",
+                        "If I(error_option=rollback-on-error), rollback to the original configuration if any error occurs. This requires the remote Netconf server to support the I(error_option=rollback-on-error) capability."
+                    ]
+                },
+                "format": {
+                    "choices": [
+                        "xml",
+                        "text"
+                    ],
+                    "default": "xml",
+                    "description": [
+                        "The format of the configuration provided as value of C(content). Accepted values are I(xml) and I(text) and the given configuration format should be supported by remote Netconf server."
+                    ]
+                },
+                "get_filter": {
+                    "description": [
+                        "This argument specifies the XML string which acts as a filter to restrict the portions of the data retrieved from the remote device when comparing the before and after state of the device following calls to edit_config. When not specified, the entire configuration or state data is returned for comparison depending on the value of C(source) option. The C(get_filter) value can be either XML string or XPath, if the filter is in XPath format the NETCONF server running on remote host should support xpath capability else it will result in an error."
+                    ]
+                },
+                "host": {
+                    "description": [
+                        "Specifies the DNS host name or address for connecting to the remote device over the specified transport.  The value of host is used as the destination address for the transport."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "hostkey_verify": {
+                    "default": true,
+                    "description": [
+                        "If set to C(yes), the ssh host key of the device must match a ssh key present on the host if set to C(no), the ssh host key of the device is not checked."
+                    ],
+                    "type": "bool"
+                },
+                "lock": {
+                    "choices": [
+                        "never",
+                        "always",
+                        "if-supported"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "Instructs the module to explicitly lock the datastore specified as C(target). By setting the option value I(always) is will explicitly lock the datastore mentioned in C(target) option. It the value is I(never) it will not lock the C(target) datastore. The value I(if-supported) lock the C(target) datastore only if it is supported by the remote Netconf server."
+                    ]
+                },
+                "look_for_keys": {
+                    "default": true,
+                    "description": [
+                        "Enables looking in the usual locations for the ssh keys (e.g. :file:`~/.ssh/id_*`)"
+                    ],
+                    "type": "bool"
+                },
+                "password": {
+                    "description": [
+                        "Specifies the password to use to authenticate the connection to the remote device.   This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_PASSWORD) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 830,
+                    "description": [
+                        "Specifies the port to use when building the connection to the remote device.  The port value will default to port 830."
+                    ],
+                    "type": "int"
+                },
+                "save": {
+                    "default": false,
+                    "description": [
+                        "The C(save) argument instructs the module to save the configuration in C(target) datastore to the startup-config if changed and if :startup capability is supported by Netconf server."
+                    ],
+                    "type": "bool"
+                },
+                "source_datastore": {
+                    "aliases": [
+                        "source"
+                    ],
+                    "description": [
+                        "Name of the configuration datastore to use as the source to copy the configuration to the datastore mentioned by C(target) option. The values can be either I(running), I(candidate), I(startup) or a remote URL"
+                    ]
+                },
+                "src": {
+                    "description": [
+                        "Specifies the source path to the xml file that contains the configuration or configuration template to load. The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with I(xml)."
+                    ]
+                },
+                "ssh_keyfile": {
+                    "description": [
+                        "Specifies the SSH key to use to authenticate the connection to the remote device.   This value is the path to the key used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_SSH_KEYFILE) will be used instead."
+                    ],
+                    "type": "path"
+                },
+                "target": {
+                    "aliases": [
+                        "datastore"
+                    ],
+                    "default": "auto",
+                    "description": "Name of the configuration datastore to be edited. - auto, uses candidate and fallback to running - candidate, edit <candidate/> datastore and then commit - running, edit <running/> datastore directly"
+                },
+                "timeout": {
+                    "default": 10,
+                    "description": [
+                        "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                    ],
+                    "type": "int"
+                },
+                "username": {
+                    "description": [
+                        "Configures the username to use to authenticate the connection to the remote device.  This value is used to authenticate the SSH session. If the value is not specified in the task, the value of environment variable C(ANSIBLE_NET_USERNAME) will be used instead."
+                    ],
+                    "type": "str"
+                },
+                "validate": {
+                    "default": false,
+                    "description": [
+                        "This boolean flag if set validates the content of datastore given in C(target) option. For this option to work remote Netconf server should support :validate capability."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "ncclient"
+            ],
+            "short_description": "netconf device configuration"
+        },
+        "examples": "\n- name: use lookup filter to provide xml configuration\n  netconf_config:\n    content: \"{{ lookup('file', './config.xml') }}\"\n\n- name: set ntp server in the device\n  netconf_config:\n    content: |\n        <config xmlns:xc=\"urn:ietf:params:xml:ns:netconf:base:1.0\">\n            <system xmlns=\"urn:ietf:params:xml:ns:yang:ietf-system\">\n                <ntp>\n                    <enabled>true</enabled>\n                    <server>\n                        <name>ntp1</name>\n                        <udp><address>127.0.0.1</address></udp>\n                    </server>\n                </ntp>\n            </system>\n        </config>\n\n- name: wipe ntp configuration\n  netconf_config:\n    content: |\n        <config xmlns:xc=\"urn:ietf:params:xml:ns:netconf:base:1.0\">\n            <system xmlns=\"urn:ietf:params:xml:ns:yang:ietf-system\">\n                <ntp>\n                    <enabled>false</enabled>\n                    <server operation=\"remove\">\n                        <name>ntp1</name>\n                    </server>\n                </ntp>\n            </system>\n        </config>\n\n- name: configure interface while providing different private key file path (for connection=netconf)\n  netconf_config:\n    backup: yes\n  register: backup_junos_location\n  vars:\n    ansible_private_key_file: /home/admin/.ssh/newprivatekeyfile\n\n- name: configurable backup path\n  netconf_config:\n    backup: yes\n    backup_options:\n      filename: backup.cfg\n      dir_path: /home/user\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "network"
+        },
+        "return": {
+            "backup_path": {
+                "description": "The full path to the backup file",
+                "returned": "when backup is yes",
+                "sample": "/playbooks/ansible/backup/config.2016-07-16@22:28:34",
+                "type": "str"
+            },
+            "diff": {
+                "description": "If --diff option in enabled while running, the before and after configuration change are returned as part of before and after key.",
+                "returned": "when diff is enabled",
+                "sample": {
+                    "after": "<rpc-reply> <data> <configuration> <version>17.3R1.10</version>...<--snip-->",
+                    "before": "<rpc-reply> <data> <configuration> <version>17.3R1.10</version>...<--snip-->"
+                },
+                "type": "dict"
+            },
+            "server_capabilities": {
+                "description": "list of capabilities of the server",
+                "returned": "success",
+                "sample": [
+                    "urn:ietf:params:netconf:base:1.1",
+                    "urn:ietf:params:netconf:capability:confirmed-commit:1.0",
+                    "urn:ietf:params:netconf:capability:candidate:1.0"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

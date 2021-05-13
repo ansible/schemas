@@ -1,0 +1,130 @@
+{
+    "community.general.spectrum_device": {
+        "doc": {
+            "author": "Renato Orgito (@orgito)",
+            "collection": "community.general",
+            "description": [
+                "This module allows you to create and delete devices in CA Spectrum U(https://www.ca.com/us/products/ca-spectrum.html).",
+                "Tested on CA Spectrum 9.4.2, 10.1.1 and 10.2.1"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/spectrum_device.py",
+            "has_action": false,
+            "module": "spectrum_device",
+            "notes": [
+                "The devices will be created inside the I(Universe) container of the specified landscape.",
+                "All the operations will be performed only on the specified landscape."
+            ],
+            "options": {
+                "agentport": {
+                    "default": 161,
+                    "description": [
+                        "UDP port used for SNMP discovery."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "community": {
+                    "description": [
+                        "SNMP community used for device discovery.",
+                        "Required when C(state=present)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "device": {
+                    "aliases": [
+                        "host",
+                        "name"
+                    ],
+                    "description": [
+                        "IP address of the device.",
+                        "If a hostname is given, it will be resolved to the IP address."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "landscape": {
+                    "description": [
+                        "Landscape handle of the SpectroServer to which add or remove the device."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "On C(present) creates the device when it does not exist.",
+                        "On C(absent) removes the device when it exists."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "url": {
+                    "aliases": [
+                        "oneclick_url"
+                    ],
+                    "description": [
+                        "HTTP, HTTPS URL of the Oneclick server in the form (http|https)://host.domain[:port]"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_password": {
+                    "aliases": [
+                        "oneclick_password"
+                    ],
+                    "description": [
+                        "Oneclick user password."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "url_username": {
+                    "aliases": [
+                        "oneclick_user"
+                    ],
+                    "description": [
+                        "Oneclick user name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "use_proxy": {
+                    "default": "yes",
+                    "description": [
+                        "if C(no), it will not use a proxy, even if one is defined in an environment variable on the target hosts."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": "yes",
+                    "description": [
+                        "If C(no), SSL certificates will not be validated. This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "Creates/deletes devices in CA Spectrum."
+        },
+        "examples": "\n- name: Add device to CA Spectrum\n  local_action:\n    module: spectrum_device\n    device: '{{ ansible_host }}'\n    community: secret\n    landscape: '0x100000'\n    oneclick_url: http://oneclick.example.com:8080\n    oneclick_user: username\n    oneclick_password: password\n    state: present\n\n\n- name: Remove device from CA Spectrum\n  local_action:\n    module: spectrum_device\n    device: '{{ ansible_host }}'\n    landscape: '{{ landscape_handle }}'\n    oneclick_url: http://oneclick.example.com:8080\n    oneclick_user: username\n    oneclick_password: password\n    use_proxy: no\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "device": {
+                "description": "device data when state = present",
+                "returned": "success",
+                "sample": {
+                    "address": "10.10.5.1",
+                    "landscape": "0x100000",
+                    "model_handle": "0x1007ab"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

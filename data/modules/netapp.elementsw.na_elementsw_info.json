@@ -1,0 +1,130 @@
+{
+    "netapp.elementsw.na_elementsw_info": {
+        "doc": {
+            "author": "NetApp Ansible Team (@carchi8py) <ng-ansibleteam@netapp.com>",
+            "collection": "netapp.elementsw",
+            "description": [
+                "Collect cluster and node information.",
+                "Use a MVIP as hostname for cluster and node scope.",
+                "Use a MIP as hostname for node scope.",
+                "When using MIPs, cluster APIs are expected to fail with 'xUnknownAPIMethod  method=ListAccounts'"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp/elementsw/plugins/modules/na_elementsw_info.py",
+            "has_action": false,
+            "module": "na_elementsw_info",
+            "notes": [
+                "The modules prefixed with na\\\\_elementsw are built to support the SolidFire storage platform."
+            ],
+            "options": {
+                "fail_on_error": {
+                    "default": false,
+                    "description": [
+                        "by default, errors are not fatal when collecting a subset.  The subset will show on error in the info output.",
+                        "if set to True, the module fails on the first error."
+                    ],
+                    "type": "bool"
+                },
+                "fail_on_key_not_found": {
+                    "default": true,
+                    "description": [
+                        "force an error when filter is used and a key is not present in records."
+                    ],
+                    "type": "bool"
+                },
+                "fail_on_record_not_found": {
+                    "default": false,
+                    "description": [
+                        "force an error when filter is used and no record is matched."
+                    ],
+                    "type": "bool"
+                },
+                "filter": {
+                    "description": [
+                        "When a list of records is returned, this can be used to limit the records to be returned.",
+                        "If more than one key is used, all keys must match."
+                    ],
+                    "type": "dict"
+                },
+                "gather_subsets": {
+                    "aliases": [
+                        "gather_subset"
+                    ],
+                    "default": [
+                        "all"
+                    ],
+                    "description": [
+                        "list of subsets to gather from target cluster or node",
+                        "supported values",
+                        "node_config, cluster_accounts",
+                        "additional values",
+                        "all - for all subsets,",
+                        "all_clusters - all subsets at cluster scope,",
+                        "all_nodes - all subsets at node scope"
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the SolidFire cluster.",
+                        "For na_elementsw_cluster, the Management IP (MIP) or hostname of the node to initiate the cluster creation from."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass"
+                    ],
+                    "description": [
+                        "Password for the specified user."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "user"
+                    ],
+                    "description": [
+                        "Please ensure that the user has the adequate permissions. For more information, please read the official documentation U(https://mysupport.netapp.com/documentation/docweb/index.html?productID=62636&language=en-US)."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "The modules were developed with SolidFire 10.1",
+                "solidfire-sdk-python (1.1.0.92) or greater. Install using 'pip install solidfire-sdk-python'"
+            ],
+            "short_description": "NetApp Element Software Info",
+            "version_added": "20.10.0",
+            "version_added_collection": "netapp.elementsw"
+        },
+        "examples": "\n\n  - name: get all available subsets\n    na_elementsw_info:\n      hostname: \"{{ elementsw_mvip }}\"\n      username: \"{{ elementsw_username }}\"\n      password: \"{{ elementsw_password }}\"\n      gather_subsets: all\n    register: result\n\n  - name: collect data for elementsw accounts using a filter\n    na_elementsw_info:\n      hostname: \"{{ elementsw_mvip }}\"\n      username: \"{{ elementsw_username }}\"\n      password: \"{{ elementsw_password }}\"\n      gather_subsets: 'cluster_accounts'\n      filter:\n        username: \"{{ username_to_find }}\"\n    register: result\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "certified"
+        },
+        "return": {
+            "debug": {
+                "description": [
+                    "a list of detailed error messages if some subsets cannot be collected"
+                ],
+                "returned": "success",
+                "type": "list"
+            },
+            "info": {
+                "description": [
+                    "a dictionary of collected subsets",
+                    "each subset if in JSON format"
+                ],
+                "returned": "success",
+                "type": "dict"
+            }
+        }
+    }
+}

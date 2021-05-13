@@ -1,0 +1,139 @@
+{
+    "community.vmware.vmware_vmkernel_info": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to gather VMKernel information about an ESXi host from given ESXi hostname or cluster name."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_vmkernel_info.py",
+            "has_action": false,
+            "module": "vmware_vmkernel_info",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "cluster_name": {
+                    "description": [
+                        "Name of the cluster.",
+                        "VMKernel information about each ESXi server will be returned for the given cluster.",
+                        "If C(esxi_hostname) is not given, this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "esxi_hostname": {
+                    "description": [
+                        "ESXi hostname.",
+                        "VMKernel information about this ESXi server will be returned.",
+                        "If C(cluster_name) is not given, this parameter is required."
+                    ],
+                    "type": "str"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Gathers VMKernel info about an ESXi host"
+        },
+        "examples": "\n- name: Gather VMKernel info about all ESXi Host in given Cluster\n  community.vmware.vmware_vmkernel_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    cluster_name: cluster_name\n  delegate_to: localhost\n  register: cluster_host_vmks\n\n- name: Gather VMKernel info about ESXi Host\n  community.vmware.vmware_vmkernel_info:\n    hostname: '{{ vcenter_hostname }}'\n    username: '{{ vcenter_username }}'\n    password: '{{ vcenter_password }}'\n    esxi_hostname: '{{ esxi_hostname }}'\n  delegate_to: localhost\n  register: host_vmks\n",
+        "metadata": null,
+        "return": {
+            "host_vmk_info": {
+                "description": "metadata about VMKernel present on given host system",
+                "returned": "success",
+                "sample": {
+                    "10.76.33.208": [
+                        {
+                            "device": "vmk0",
+                            "dhcp": true,
+                            "enable_ft": false,
+                            "enable_management": true,
+                            "enable_vmotion": false,
+                            "enable_vsan": false,
+                            "ipv4_address": "10.76.33.28",
+                            "ipv4_subnet_mask": "255.255.255.0",
+                            "key": "key-vim.host.VirtualNic-vmk0",
+                            "mac": "52:54:00:12:50:ce",
+                            "mtu": 1500,
+                            "portgroup": "Management Network",
+                            "stack": "defaultTcpipStack"
+                        }
+                    ]
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

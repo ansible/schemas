@@ -1,0 +1,424 @@
+{
+    "f5networks.f5_modules.bigip_apm_acl": {
+        "doc": {
+            "author": [
+                "Wojciech Wypior (@wojtek0806)"
+            ],
+            "collection": "f5networks.f5_modules",
+            "description": [
+                "Manage user-defined APM ACLs."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/f5networks/f5_modules/plugins/modules/bigip_apm_acl.py",
+            "has_action": false,
+            "module": "bigip_apm_acl",
+            "notes": [
+                "For more information on using Ansible to manage F5 Networks devices see U(https://www.ansible.com/integrations/networks/f5).",
+                "Requires BIG-IP software version >= 12.",
+                "The F5 modules only manipulate the running configuration of the F5 product. To ensure that BIG-IP specific configuration persists to disk, be sure to include at least one task that uses the M(f5networks.f5_modules.bigip_config) module to save the running configuration. Refer to the module's documentation for the correct usage of the module to save your running configuration."
+            ],
+            "options": {
+                "acl_order": {
+                    "description": [
+                        "Specifies a number that indicates the order of this ACL relative to other ACLs.",
+                        "When not set, the device will always place the ACL after the last one created.",
+                        "The lower the number, the higher the ACL will be in the general order, with the lowest number C(0) being the topmost one.",
+                        "Valid range of values is between C(0) and C(65535) inclusive."
+                    ],
+                    "type": "int"
+                },
+                "description": {
+                    "description": [
+                        "User created ACL description."
+                    ],
+                    "type": "str"
+                },
+                "entries": {
+                    "description": [
+                        "Access control entries that define the ACL matching and its respective behavior.",
+                        "The order in which the rules are placed as arguments to this parameter determines their order in the ACL, in other words changing the order of the same elements will cause a change on the unit."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "action": {
+                            "choices": [
+                                "allow",
+                                "reject",
+                                "discard",
+                                "continue"
+                            ],
+                            "description": [
+                                "Specifies the action that the access control entry takes when a match for this access control entry is encountered."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "dst_addr": {
+                            "description": [
+                                "Specifies the destination IP address for the access control entry.",
+                                "When set to C(any) the ACL will match any destination address, C(dst_mask) is ignored in this case."
+                            ],
+                            "type": "str"
+                        },
+                        "dst_mask": {
+                            "description": [
+                                "Optional parameter that specifies the destination network mask for the access control entry.",
+                                "If not specified and C(dst_addr) is not C(any), the C(dst_addr) is deemed to be host address."
+                            ],
+                            "type": "str"
+                        },
+                        "dst_port": {
+                            "description": [
+                                "Specifies the destination port for the access control entry.",
+                                "Can be set to C(*) to indicate all ports.",
+                                "Parameter is mutually exclusive with C(dst_port_range)."
+                            ],
+                            "type": "str"
+                        },
+                        "dst_port_range": {
+                            "description": [
+                                "Specifies the destination port range for the access control entry.",
+                                "Parameter is mutually exclusive with C(dst_port_range).",
+                                "To indicate all ports the C(dst_port) parameter must be used and set to C(*)."
+                            ],
+                            "type": "str"
+                        },
+                        "host_name": {
+                            "description": [
+                                "This parameter applies to Layer 7 access control entries only.",
+                                "Specifies a host to which the access control entry applies."
+                            ],
+                            "type": "str"
+                        },
+                        "log": {
+                            "choices": [
+                                "none",
+                                "packet"
+                            ],
+                            "description": [
+                                "Specifies the log level that is logged when actions of this type occur.",
+                                "When C(none) it will log nothing, which is a default action.",
+                                "When C(packet) it will log the matched packet."
+                            ],
+                            "type": "str"
+                        },
+                        "paths": {
+                            "description": [
+                                "This parameter applies to Layer 7 access control entries only.",
+                                "Specifies the path or paths to which the access control entry applies."
+                            ],
+                            "type": "str"
+                        },
+                        "protocol": {
+                            "choices": [
+                                "tcp",
+                                "icmp",
+                                "udp",
+                                "all"
+                            ],
+                            "description": [
+                                "This parameter applies to Layer 4 access control entries only.",
+                                "Specifies the protocol: C(tcp), C(udp), C(icmp) or C(all) protocols, to which the access control entry applies."
+                            ],
+                            "type": "str"
+                        },
+                        "scheme": {
+                            "choices": [
+                                "http",
+                                "https",
+                                "any"
+                            ],
+                            "description": [
+                                "This parameter applies to Layer 7 access control entries only.",
+                                "Specifies the URI scheme: C(http), C(https) or C(any) on which the access control entry operates."
+                            ],
+                            "type": "str"
+                        },
+                        "src_addr": {
+                            "description": [
+                                "Specifies the source IP address for the access control entry.",
+                                "When set to C(any) the ACL will match any source address, C(src_mask) is ignored in this case."
+                            ],
+                            "type": "str"
+                        },
+                        "src_mask": {
+                            "description": [
+                                "Optional parameter that specifies the source network mask for the access control entry.",
+                                "If not specified and C(src_addr) is not C(any), the C(src_addr) is deemed to be host address."
+                            ],
+                            "type": "str"
+                        },
+                        "src_port": {
+                            "description": [
+                                "Specifies the source port for the access control entry.",
+                                "Can be set to C(*) to indicate all ports.",
+                                "Parameter is mutually exclusive with C(src_port_range)."
+                            ],
+                            "type": "str"
+                        },
+                        "src_port_range": {
+                            "description": [
+                                "Specifies the source port range for the access control entry.",
+                                "Parameter is mutually exclusive with C(src_port_range).",
+                                "To indicate all ports the C(src_port) parameter must be used and set to C(*)."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the ACL to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "partition": {
+                    "default": "Common",
+                    "description": [
+                        "Device partition to manage resources on."
+                    ],
+                    "type": "str"
+                },
+                "path_match_case": {
+                    "description": [
+                        "Specifies whether alphabetic case is considered when matching paths in an access control entry."
+                    ],
+                    "type": "bool"
+                },
+                "provider": {
+                    "description": [
+                        "A dict object containing connection details."
+                    ],
+                    "suboptions": {
+                        "auth_provider": {
+                            "description": [
+                                "Configures the auth provider for to obtain authentication tokens from the remote device.",
+                                "This option is really used when working with BIG-IQ devices."
+                            ],
+                            "type": "str"
+                        },
+                        "no_f5_teem": {
+                            "default": false,
+                            "description": [
+                                "If C(yes), TEEM telemetry data is not sent to F5.",
+                                "You may omit this option by setting the environment variable C(F5_TELEMETRY_OFF).",
+                                "Previously used variable C(F5_TEEM) is deprecated as its name was confusing."
+                            ],
+                            "type": "bool"
+                        },
+                        "password": {
+                            "aliases": [
+                                "pass",
+                                "pwd"
+                            ],
+                            "description": [
+                                "The password for the user account used to connect to the BIG-IP.",
+                                "You may omit this option by setting the environment variable C(F5_PASSWORD)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server": {
+                            "description": [
+                                "The BIG-IP host.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "server_port": {
+                            "default": 443,
+                            "description": [
+                                "The BIG-IP server port.",
+                                "You may omit this option by setting the environment variable C(F5_SERVER_PORT)."
+                            ],
+                            "type": "int"
+                        },
+                        "timeout": {
+                            "description": [
+                                "Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error."
+                            ],
+                            "type": "int"
+                        },
+                        "transport": {
+                            "choices": [
+                                "rest"
+                            ],
+                            "default": "rest",
+                            "description": [
+                                "Configures the transport connection to use when connecting to the remote device."
+                            ],
+                            "type": "str"
+                        },
+                        "user": {
+                            "description": [
+                                "The username to connect to the BIG-IP with. This user must have administrative privileges on the device.",
+                                "You may omit this option by setting the environment variable C(F5_USER)."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "default": true,
+                            "description": [
+                                "If C(no), SSL certificates are not validated. Use this only on personally controlled sites using self-signed certificates.",
+                                "You may omit this option by setting the environment variable C(F5_VALIDATE_CERTS)."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "f5networks.f5_modules"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "When C(state) is C(present), ensures that the ACL exists.",
+                        "When C(state) is C(absent), ensures that the ACL is removed."
+                    ],
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "static",
+                        "dynamic"
+                    ],
+                    "description": [
+                        "Specifies the type of ACL to create.",
+                        "Once the type is set it cannot be changed."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manage user-defined APM ACLs",
+            "version_added": "1.0.0",
+            "version_added_collection": "f5networks.f5_modules"
+        },
+        "examples": "\n- name: Create a static ACL with L4 entries\n  bigip_apm_acl:\n    name: L4foo\n    acl_order: 0\n    type: static\n    entries:\n      - action: allow\n        dst_port: '80'\n        dst_addr: '192.168.1.1'\n        src_port: '443'\n        src_addr: '10.10.10.0'\n        src_mask: '255.255.255.128'\n        protocol: tcp\n      - action: reject\n        dst_port: '*'\n        dst_addr: '192.168.1.1'\n        src_port: '*'\n        src_addr: '10.10.10.0'\n        src_mask: '255.255.255.128'\n        protocol: tcp\n        log: packet\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create a static ACL with L7 entries\n  bigip_apm_acl:\n    name: L7foo\n    acl_order: 1\n    type: static\n    path_match_case: no\n    entries:\n      - action: allow\n        host_name: 'foobar.com'\n        paths: '/shopfront'\n        scheme: https\n      - action: reject\n        host_name: 'internal_foobar.com'\n        paths: '/admin'\n        scheme: any\n        log: packet\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Create a static ACL with L7/L4 entries\n  bigip_apm_acl:\n    name: L7L4foo\n    acl_order: 2\n    type: static\n    path_match_case: no\n    entries:\n      - action: allow\n        host_name: 'foobar.com'\n        paths: '/shopfront'\n        scheme: https\n        dst_port: '8181'\n        dst_addr: '192.168.1.1'\n        protocol: tcp\n      - action: reject\n        dst_addr: '192.168.1.1'\n        host_name: 'internal_foobar.com'\n        paths: '/admin'\n        scheme: any\n        protocol: all\n        log: packet\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Modify a static ACL entries\n  bigip_apm_acl:\n    name: L4foo\n    entries:\n      - action: allow\n        dst_port: '80'\n        dst_addr: '192.168.1.1'\n        src_port: '443'\n        src_addr: '10.10.10.0'\n        src_mask: '255.255.255.128'\n        protocol: tcp\n      - action: discard\n        dst_port: '*'\n        dst_addr: 192.168.1.1\n        src_port: '*'\n        src_addr: '10.10.10.0'\n        src_mask: '255.2155.255.128'\n        protocol: all\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n\n- name: Remove static ACL\n  bigip_apm_acl:\n    name: L4foo\n    state: absent\n    provider:\n      password: secret\n      server: lb.mydomain.com\n      user: admin\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "acl_order": {
+                "description": "The order of this ACL relative to other ACLs.",
+                "returned": "changed",
+                "sample": 10,
+                "type": "int"
+            },
+            "description": {
+                "description": "The new description of the ACL.",
+                "returned": "changed",
+                "sample": "My ACL",
+                "type": "str"
+            },
+            "entries": {
+                "contains": {
+                    "action": {
+                        "description": "Action the access control entry takes when a match for this access control entry is encountered.",
+                        "returned": "changed",
+                        "sample": "allow",
+                        "type": "str"
+                    },
+                    "dst_addr": {
+                        "description": "The destination IP address for the access control entry.",
+                        "returned": "changed",
+                        "sample": "192.168.0.1",
+                        "type": "str"
+                    },
+                    "dst_mask": {
+                        "description": "The destination network mask for the access control entry.",
+                        "returned": "changed",
+                        "sample": "255.255.255.128",
+                        "type": "str"
+                    },
+                    "dst_port": {
+                        "description": "The destination port for the access control entry.",
+                        "returned": "changed",
+                        "sample": "80",
+                        "type": "str"
+                    },
+                    "dst_port_range": {
+                        "description": "The destination port range for the access control entry.",
+                        "returned": "changed",
+                        "sample": "80-81",
+                        "type": "str"
+                    },
+                    "host_name": {
+                        "description": "The host to which the access control entry applies.",
+                        "returned": "changed",
+                        "sample": "foobar.com",
+                        "type": "str"
+                    },
+                    "log": {
+                        "description": "The log level that is logged when actions of this type occur.",
+                        "returned": "changed",
+                        "sample": "packet",
+                        "type": "str"
+                    },
+                    "paths": {
+                        "description": "The path or paths to which the access control entry applies.",
+                        "returned": "changed",
+                        "sample": "/fooshop",
+                        "type": "str"
+                    },
+                    "protocol": {
+                        "description": "The protocol to which the access control entry applies.",
+                        "returned": "changed",
+                        "sample": "tcp",
+                        "type": "str"
+                    },
+                    "scheme": {
+                        "description": "The URI scheme on which the access control entry operates.",
+                        "returned": "changed",
+                        "sample": "https",
+                        "type": "str"
+                    },
+                    "src_addr": {
+                        "description": "The source IP address for the access control entry.",
+                        "returned": "changed",
+                        "sample": "192.168.0.1",
+                        "type": "str"
+                    },
+                    "src_mask": {
+                        "description": "The source network mask for the access control entry.",
+                        "returned": "changed",
+                        "sample": "255.255.255.128",
+                        "type": "str"
+                    },
+                    "src_port": {
+                        "description": "The source port for the access control entry.",
+                        "returned": "changed",
+                        "sample": "80",
+                        "type": "str"
+                    },
+                    "src_port_range": {
+                        "description": "The source port range for the access control entry.",
+                        "returned": "changed",
+                        "sample": "80-81",
+                        "type": "str"
+                    }
+                },
+                "description": "Access control entries that define the ACL matching and its respective behavior.",
+                "returned": "changed",
+                "sample": "hash/dictionary of values",
+                "type": "complex"
+            },
+            "path_match_case": {
+                "description": "Specifies whether alphabetic case is considered when matching paths in an access control entry.",
+                "returned": "changed",
+                "sample": true,
+                "type": "bool"
+            },
+            "type": {
+                "description": "The type of ACL to create.",
+                "returned": "changed",
+                "sample": "static",
+                "type": "str"
+            }
+        }
+    }
+}

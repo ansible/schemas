@@ -1,0 +1,102 @@
+{
+    "tripleo.collect_logs.sova": {
+        "doc": {
+            "author": "Sagi Shnaidman (@sshnaidm)",
+            "collection": "tripleo.collect_logs",
+            "description": [
+                "Parse CI job files and find there known patterns of failures"
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/tripleo/collect_logs/plugins/modules/sova.py",
+            "has_action": false,
+            "module": "sova",
+            "notes": [],
+            "options": {
+                "config": {
+                    "description": "config",
+                    "type": "dict"
+                },
+                "files": {
+                    "description": [
+                        "Dictionary of patterns file name and file location. Patterns are divided by sections in config file, match each section to the file path on the host, It will search these patterns from this section in the given file."
+                    ],
+                    "required": true,
+                    "type": "dict"
+                },
+                "result": {
+                    "description": [
+                        "Path to file where to write result message."
+                    ],
+                    "type": "path"
+                },
+                "result_file_dir": {
+                    "description": [
+                        "Directory where to create a file with result message and name of file. For example for pattern 'Overcloud failed on host' will be created file Overcloud_failed_on_host.log in this directory. It helps to know what is the reason without opening actually the file."
+                    ],
+                    "type": "path"
+                }
+            },
+            "requirements": [
+                "Better to use with 'regex' module installed"
+            ],
+            "short_description": "Parse CI jobs files for known failures",
+            "version_added": "2.7.0",
+            "version_added_collection": "tripleo.collect_logs"
+        },
+        "examples": "\n- name: Run sova task\n  sova:\n    files:\n      console: /var/log/job-output.txt.gz\n      errors: /var/log/errors.txt.txt.gz\n      \"ironic-conductor\": /var/log/ironic-conductor.log.txt.gz\n      syslog: /var/log/journal.txt.gz\n      logstash: /var/log/logstash.txt.gz\n      bmc: /var/log/bmc-console.log\n    result: /home/zuul/result_file\n    result_file_dir: /home/zuul/workspace/logs/\n",
+        "metadata": {
+            "metadata_version": "0.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "file_name_written": {
+                "description": [
+                    "Path of file which written with message as filename"
+                ],
+                "returned": "if changed",
+                "sample": "/var/log/_Overcloud_stack__FAILED.log",
+                "type": "str"
+            },
+            "file_written": {
+                "description": [
+                    "Path of file where written result message and reason."
+                ],
+                "returned": "if changed",
+                "sample": "/var/log/result_file",
+                "type": "str"
+            },
+            "message": {
+                "description": [
+                    "Text with all messages about failures"
+                ],
+                "returned": "if changed",
+                "sample": "Overcloud stack: FAILED.",
+                "type": "list"
+            },
+            "processed_files": {
+                "description": [
+                    "Files which have been processed by module"
+                ],
+                "returned": "if changed",
+                "sample": [
+                    "/tmp/var/log/job-output.txt.gz",
+                    "/tmp/var/log/errors.txt.txt.gz",
+                    "/tmp/var/log/ironic-conductor.log.txt.gz"
+                ],
+                "type": "list"
+            },
+            "tags": {
+                "description": [
+                    "Tags of patterns which were found in files"
+                ],
+                "returned": "if changed",
+                "sample": [
+                    "info"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

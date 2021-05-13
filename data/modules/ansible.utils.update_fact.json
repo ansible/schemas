@@ -1,0 +1,54 @@
+{
+    "ansible.utils.update_fact": {
+        "doc": {
+            "author": [
+                "Bradley Thornton (@cidrblock)"
+            ],
+            "collection": "ansible.utils",
+            "description": [
+                "This module allows updating existing variables.",
+                "Variables are updated on a host-by-host basis.",
+                "Variables are not modified in place, instead they are returned by the module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/ansible/utils/plugins/modules/update_fact.py",
+            "has_action": true,
+            "module": "update_fact",
+            "notes": null,
+            "options": {
+                "updates": {
+                    "description": [
+                        "A list of dictionaries, each a desired update to make."
+                    ],
+                    "elements": "dict",
+                    "required": true,
+                    "suboptions": {
+                        "path": {
+                            "description": [
+                                "The path in a currently set variable to update.",
+                                "The path can be in dot or bracket notation.",
+                                "It should be a valid jinja reference."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "value": {
+                            "description": [
+                                "The value to be set at the path.",
+                                "Can be a simple or complex data structure."
+                            ],
+                            "required": true,
+                            "type": "raw"
+                        }
+                    },
+                    "type": "list"
+                }
+            },
+            "short_description": "Update currently set facts",
+            "version_added": "1.0.0",
+            "version_added_collection": "ansible.utils"
+        },
+        "examples": "\n\n# Update an exisitng fact, dot or bracket notation\n- name: Set a fact\n  ansible.builtin.set_fact:\n    a:\n      b:\n        c:\n        - 1\n        - 2\n\n- name: Update the fact\n  ansible.utils.update_fact:\n    updates:\n    - path: a.b.c.0\n      value: 10\n    - path: \"a['b']['c'][1]\"\n      value: 20\n  register: updated\n\n- debug:\n    var: updated.a\n\n# updated:\n#   a:\n#     b:\n#       c:\n#       - 10\n#       - 20\n#   changed: true\n\n\n# Lists can be appended, new keys added to dictionaries\n\n- name: Set a fact\n  ansible.builtin.set_fact:\n    a:\n      b:\n        b1:\n        - 1\n        - 2\n\n- name: Update, add to list, add new key\n  ansible.utils.update_fact:\n    updates:\n    - path: a.b.b1.2\n      value: 3\n    - path: a.b.b2\n      value:\n      - 10\n      - 20\n      - 30\n  register: updated\n\n- debug:\n    var: updated.a\n\n# updated:\n#   a:\n#     b:\n#       b1:\n#       - 1\n#       - 2\n#       - 3\n#       b2:\n#       - 10\n#       - 20\n#       - 30\n#   changed: true\n\n#####################################################################\n# Update every item in a list of dictionaries\n# build the update list ahead of time using a loop\n# and then apply the changes to the fact\n#####################################################################\n\n- name: Set fact\n  ansible.builtin.set_fact:\n    addresses:\n    - raw: 10.1.1.0/255.255.255.0\n      name: servers\n    - raw: 192.168.1.0/255.255.255.0\n      name: printers\n    - raw: 8.8.8.8\n      name: dns\n\n- name: Build a list of updates\n  ansible.builtin.set_fact:\n    update_list: \"{{ update_list + update }}\"\n  loop: \"{{ addresses }}\"\n  loop_control:\n    index_var: idx\n  vars:\n    update_list: []\n    update:\n    - path: addresses[{{ idx }}].network\n      value: \"{{ item['raw'] | ansible.netcommon.ipaddr('network') }}\"\n    - path: addresses[{{ idx }}].prefix\n      value: \"{{ item['raw'] | ansible.netcommon.ipaddr('prefix') }}\"\n\n- debug:\n    var: update_list\n\n# TASK [debug] *******************\n# ok: [localhost] =>\n#   update_list:\n#   - path: addresses[0].network\n#     value: 10.1.1.0\n#   - path: addresses[0].prefix\n#     value: '24'\n#   - path: addresses[1].network\n#     value: 192.168.1.0\n#   - path: addresses[1].prefix\n#     value: '24'\n#   - path: addresses[2].network\n#     value: 8.8.8.8\n#   - path: addresses[2].prefix\n#     value: '32'\n\n- name: Make the updates\n  ansible.utils.update_fact:\n    updates: \"{{ update_list }}\"\n  register: updated\n\n- debug:\n    var: updated\n\n# TASK [debug] ***********************\n# ok: [localhost] =>\n#   updated:\n#     addresses:\n#     - name: servers\n#       network: 10.1.1.0\n#       prefix: '24'\n#       raw: 10.1.1.0/255.255.255.0\n#     - name: printers\n#       network: 192.168.1.0\n#       prefix: '24'\n#       raw: 192.168.1.0/255.255.255.0\n#     - name: dns\n#       network: 8.8.8.8\n#       prefix: '32'\n#       raw: 8.8.8.8\n#     changed: true\n#     failed: false\n\n\n#####################################################################\n# Retrieve, update, and apply interface description change\n# use index_of to locate Etherent1/1\n#####################################################################\n\n- name: Get the current interface config\n  cisco.nxos.nxos_interfaces:\n    state: gathered\n  register: interfaces\n\n- name: Update the description of Ethernet1/1\n  ansible.utils.update_fact:\n    updates:\n    - path: \"interfaces.gathered[{{ index }}].description\"\n      value: \"Configured by ansible\"\n  vars:\n    index: \"{{ interfaces.gathered|ansible.utils.index_of('eq', 'Ethernet1/1', 'name') }}\"\n  register: updated\n\n- name: Update the configuration\n  cisco.nxos.nxos_interfaces:\n    config: \"{{ updated.interfaces.gathered }}\"\n    state: overridden\n  register: result\n\n- name: Show the commands issued\n  debug:\n    msg: \"{{ result['commands'] }}\"\n\n# TASK [Show the commands issued] *************************************\n# ok: [nxos101] => {\n#     \"msg\": [\n#         \"interface Ethernet1/1\",\n#         \"description Configured by ansible\"\n#     ]\n# }\n\n\n#####################################################################\n# Retrieve, update, and apply an ipv4 ACL change\n# finding the index of AFI ipv4 acls\n# finding the index of the ACL named 'test1'\n# finding the index of sequence 10\n#####################################################################\n\n- name: Retrieve the current acls\n  arista.eos.eos_acls:\n    state: gathered\n  register: current\n\n- name: Update the source of sequence 10 in the IPv4 ACL named test1\n  ansible.utils.update_fact:\n    updates:\n    - path: current.gathered[{{ afi }}].acls[{{ acl }}].aces[{{ ace }}].source\n      value:\n        subnet_address: \"192.168.2.0/24\"\n  vars:\n    afi: \"{{ current.gathered|ansible.utils.index_of('eq', 'ipv4', 'afi') }}\"\n    acl: \"{{ current.gathered[afi|int].acls|ansible.utils.index_of('eq', 'test1', 'name') }}\"\n    ace: \"{{ current.gathered[afi|int].acls[acl|int].aces|ansible.utils.index_of('eq', 10, 'sequence') }}\"\n  register: updated\n\n- name: Apply the changes\n  arista.eos.eos_acls:\n    config: \"{{ updated.current.gathered }}\"\n    state: overridden\n  register: changes\n\n- name: Show the commands issued\n  debug:\n    msg: \"{{ changes['commands'] }}\"\n\n# TASK [Show the commands issued] *************************************\n# ok: [eos101] => {\n#     \"msg\": [\n#         \"ip access-list test1\",\n#         \"no 10\",\n#         \"10 permit ip 192.168.2.0/24 host 10.1.1.2\"\n#     ]\n# }\n\n\n#####################################################################\n# Disable ip redirects on any layer3 interface\n# find the layer 3 interfaces\n# use each name to find their index in l3 interface\n# build an 'update' list and apply the updates\n#####################################################################\n\n- name: Get the current interface and L3 interface configuration\n  cisco.nxos.nxos_facts:\n    gather_subset: min\n    gather_network_resources:\n    - interfaces\n    - l3_interfaces\n\n- name: Build the list of updates to make\n  ansible.builtin.set_fact:\n    updates: \"{{ updates + [entry] }}\"\n  vars:\n    updates: []\n    entry:\n      path: \"ansible_network_resources.l3_interfaces[{{ item }}].redirects\"\n      value: False\n    w_mode: \"{{ ansible_network_resources.interfaces|selectattr('mode', 'defined') }}\"\n    m_l3: \"{{ w_mode|selectattr('mode', 'eq', 'layer3') }}\"\n    names: \"{{ m_l3|map(attribute='name')|list }}\"\n    l3_indicies: \"{{ ansible_network_resources.l3_interfaces|ansible.utils.index_of('in', names, 'name', wantlist=True) }}\"\n  loop: \"{{ l3_indicies }}\"\n\n# TASK [Build the list of updates to make] ****************************\n# ok: [nxos101] => (item=99) => changed=false\n#   ansible_facts:\n#     updates:\n#     - path: ansible_network_resources.l3_interfaces[99].redirects\n#       value: false\n#   ansible_loop_var: item\n#   item: 99\n\n- name: Update the l3 interfaces\n  ansible.utils.update_fact:\n    updates: \"{{ updates }}\"\n  register: updated\n\n# TASK [Update the l3 interfaces] *************************************\n# changed: [nxos101] => changed=true\n#   ansible_network_resources:\n#     l3_interfaces:\n#     <...>\n#     - ipv4:\n#       - address: 10.1.1.1/24\n#       name: Ethernet1/100\n#       redirects: false\n\n- name: Apply the configuration changes\n  cisco.nxos.l3_interfaces:\n    config: \"{{ updated.ansible_network_resources.l3_interfaces }}\"\n    state: overridden\n  register: changes\n\n# TASK [Apply the configuration changes] ******************************\n# changed: [nxos101] => changed=true\n#   commands:\n#   - interface Ethernet1/100\n#   - no ip redirects\n\n",
+        "metadata": null,
+        "return": null
+    }
+}

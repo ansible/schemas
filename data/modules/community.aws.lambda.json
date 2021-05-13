@@ -1,0 +1,286 @@
+{
+    "community.aws.lambda": {
+        "doc": {
+            "author": [
+                "Steyn Huizinga (@steynovich)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Allows for the management of Lambda functions."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/lambda.py",
+            "has_action": false,
+            "module": "lambda",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "dead_letter_arn": {
+                    "description": [
+                        "The parent object that contains the target Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "description": {
+                    "description": [
+                        "A short, user-defined function description. Lambda does not use this value. Assign a meaningful description as you see fit."
+                    ],
+                    "type": "str"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "environment_variables": {
+                    "description": [
+                        "A dictionary of environment variables the Lambda function is given."
+                    ],
+                    "type": "dict"
+                },
+                "handler": {
+                    "description": [
+                        "The function within your code that Lambda calls to begin execution."
+                    ],
+                    "type": "str"
+                },
+                "memory_size": {
+                    "default": 128,
+                    "description": [
+                        "The amount of memory, in MB, your Lambda function is given."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "The name you want to assign to the function you are uploading. Cannot be changed."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "role": {
+                    "description": [
+                        "The Amazon Resource Name (ARN) of the IAM role that Lambda assumes when it executes your function to access any other Amazon Web Services (AWS) resources. You may use the bare ARN if the role belongs to the same AWS account.",
+                        "Required when I(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "runtime": {
+                    "description": [
+                        "The runtime environment for the Lambda function you are uploading.",
+                        "Required when creating a function. Uses parameters as described in boto3 docs.",
+                        "Required when I(state=present).",
+                        "For supported list of runtimes, see U(https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)."
+                    ],
+                    "type": "str"
+                },
+                "s3_bucket": {
+                    "description": [
+                        "Amazon S3 bucket name where the .zip file containing your deployment package is stored.",
+                        "If I(state=present) then either I(zip_file) or I(s3_bucket) must be present.",
+                        "I(s3_bucket) and I(s3_key) are required together."
+                    ],
+                    "type": "str"
+                },
+                "s3_key": {
+                    "description": [
+                        "The Amazon S3 object (the deployment package) key name you want to upload.",
+                        "I(s3_bucket) and I(s3_key) are required together."
+                    ],
+                    "type": "str"
+                },
+                "s3_object_version": {
+                    "description": [
+                        "The Amazon S3 object (the deployment package) version you want to upload."
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Create or delete Lambda function."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "tag dict to apply to the function (requires botocore 1.5.40 or above)."
+                    ],
+                    "type": "dict"
+                },
+                "timeout": {
+                    "default": 3,
+                    "description": [
+                        "The function maximum execution time in seconds after which Lambda should terminate the function."
+                    ],
+                    "type": "int"
+                },
+                "tracing_mode": {
+                    "choices": [
+                        "Active",
+                        "PassThrough"
+                    ],
+                    "description": [
+                        "Set mode to 'Active' to sample and trace incoming requests with AWS X-Ray. Turned off (set to 'PassThrough') by default."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                },
+                "vpc_security_group_ids": {
+                    "description": [
+                        "List of VPC security group IDs to associate with the Lambda function.",
+                        "Required when I(vpc_subnet_ids) is used."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "vpc_subnet_ids": {
+                    "description": [
+                        "List of subnet IDs to run Lambda function in.",
+                        "Use this option if you need to access resources in your VPC. Leave empty if you don't want to run the function in a VPC.",
+                        "If set, I(vpc_security_group_ids) must also be set."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "zip_file": {
+                    "aliases": [
+                        "src"
+                    ],
+                    "description": [
+                        "A .zip file containing your deployment package",
+                        "If I(state=present) then either I(zip_file) or I(s3_bucket) must be present."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Manage AWS Lambda functions",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Create Lambda functions\n- name: looped creation\n  community.aws.lambda:\n    name: '{{ item.name }}'\n    state: present\n    zip_file: '{{ item.zip_file }}'\n    runtime: 'python2.7'\n    role: 'arn:aws:iam::987654321012:role/lambda_basic_execution'\n    handler: 'hello_python.my_handler'\n    vpc_subnet_ids:\n    - subnet-123abcde\n    - subnet-edcba321\n    vpc_security_group_ids:\n    - sg-123abcde\n    - sg-edcba321\n    environment_variables: '{{ item.env_vars }}'\n    tags:\n      key1: 'value1'\n  loop:\n    - name: HelloWorld\n      zip_file: hello-code.zip\n      env_vars:\n        key1: \"first\"\n        key2: \"second\"\n    - name: ByeBye\n      zip_file: bye-code.zip\n      env_vars:\n        key1: \"1\"\n        key2: \"2\"\n\n# To remove previously added tags pass an empty dict\n- name: remove tags\n  community.aws.lambda:\n    name: 'Lambda function'\n    state: present\n    zip_file: 'code.zip'\n    runtime: 'python2.7'\n    role: 'arn:aws:iam::987654321012:role/lambda_basic_execution'\n    handler: 'hello_python.my_handler'\n    tags: {}\n\n# Basic Lambda function deletion\n- name: Delete Lambda functions HelloWorld and ByeBye\n  community.aws.lambda:\n    name: '{{ item }}'\n    state: absent\n  loop:\n    - HelloWorld\n    - ByeBye\n",
+        "metadata": null,
+        "return": {
+            "code": {
+                "description": "the lambda function location returned by get_function in boto3",
+                "returned": "success",
+                "sample": {
+                    "location": "a presigned S3 URL",
+                    "repository_type": "S3"
+                },
+                "type": "dict"
+            },
+            "configuration": {
+                "description": "the lambda function metadata returned by get_function in boto3",
+                "returned": "success",
+                "sample": {
+                    "code_sha256": "zOAGfF5JLFuzZoSNirUtOrQp+S341IOA3BcoXXoaIaU=",
+                    "code_size": 123,
+                    "description": "My function",
+                    "environment": {
+                        "variables": {
+                            "key": "value"
+                        }
+                    },
+                    "function_arn": "arn:aws:lambda:us-east-1:123456789012:function:myFunction:1",
+                    "function_name": "myFunction",
+                    "handler": "index.handler",
+                    "last_modified": "2017-08-01T00:00:00.000+0000",
+                    "memory_size": 128,
+                    "revision_id": "a2x9886d-d48a-4a0c-ab64-82abc005x80c",
+                    "role": "arn:aws:iam::123456789012:role/lambda_basic_execution",
+                    "runtime": "nodejs6.10",
+                    "timeout": 3,
+                    "tracing_config": {
+                        "mode": "Active"
+                    },
+                    "version": "1",
+                    "vpc_config": {
+                        "security_group_ids": [],
+                        "subnet_ids": [],
+                        "vpc_id": "123"
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

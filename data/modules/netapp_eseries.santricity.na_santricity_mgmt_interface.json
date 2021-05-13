@@ -1,0 +1,219 @@
+{
+    "netapp_eseries.santricity.na_santricity_mgmt_interface": {
+        "doc": {
+            "author": [
+                "Michael Price (@lmprice)",
+                "Nathan Swartz (@ndswartz)"
+            ],
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "Configure the E-Series management interfaces"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/na_santricity_mgmt_interface.py",
+            "has_action": false,
+            "module": "na_santricity_mgmt_interface",
+            "notes": [
+                "Check mode is supported.",
+                "It is highly recommended to have a minimum of one up management port on each controller.",
+                "When using SANtricity Web Services Proxy, use M(na_santricity_storage_system) to update management paths. This is required because of a known issue and will be addressed in the proxy version 4.1. After the resolution the management ports should automatically be updated.",
+                "The interface settings are applied synchronously, but changes to the interface itself (receiving a new IP address via dhcp, etc), can take seconds or minutes longer to take effect.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "address": {
+                    "description": [
+                        "The IPv4 address to assign to the interface.",
+                        "Should be specified in xx.xx.xx.xx form.",
+                        "Mutually exclusive with I(config_method=dhcp)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API.",
+                        "Example https://prod-1.wahoo.acme.com:8443/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "config_method": {
+                    "choices": [
+                        "dhcp",
+                        "static"
+                    ],
+                    "description": [
+                        "The configuration method type to use for network interface ports.",
+                        "dhcp is mutually exclusive with I(address), I(subnet_mask), and I(gateway)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "controller": {
+                    "choices": [
+                        "A",
+                        "B"
+                    ],
+                    "description": [
+                        "The controller that owns the port you want to configure.",
+                        "Controller names are represented alphabetically, with the first controller as A, the second as B, and so on.",
+                        "Current hardware models have either 1 or 2 available controllers, but that is not a guaranteed hard limitation and could change in the future."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "dns_address": {
+                    "description": [
+                        "Primary IPv4 or IPv6 DNS server address"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "dns_address_backup": {
+                    "description": [
+                        "Secondary IPv4 or IPv6 DNS server address"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "dns_config_method": {
+                    "choices": [
+                        "dhcp",
+                        "static"
+                    ],
+                    "description": [
+                        "The configuration method type to use for DNS services.",
+                        "dhcp is mutually exclusive with I(dns_address), and I(dns_address_backup)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "gateway": {
+                    "description": [
+                        "The IPv4 gateway address to utilize for the interface.",
+                        "Should be specified in xx.xx.xx.xx form.",
+                        "Mutually exclusive with I(config_method=dhcp)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ntp_address": {
+                    "description": [
+                        "Primary IPv4, IPv6, or FQDN NTP server address"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ntp_address_backup": {
+                    "description": [
+                        "Secondary IPv4, IPv6, or FQDN NTP server address"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ntp_config_method": {
+                    "choices": [
+                        "disabled",
+                        "dhcp",
+                        "static"
+                    ],
+                    "description": [
+                        "The configuration method type to use for NTP services.",
+                        "disable is mutually exclusive with I(ntp_address) and I(ntp_address_backup).",
+                        "dhcp is mutually exclusive with I(ntp_address) and I(ntp_address_backup)."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "port": {
+                    "description": [
+                        "The ethernet port configuration to modify.",
+                        "The channel represents the port number left to right on the controller, beginning with 1."
+                    ],
+                    "required": true,
+                    "type": "int"
+                },
+                "ssh": {
+                    "description": [
+                        "Enable ssh access to the controller for debug purposes.",
+                        "This is a controller-level setting.",
+                        "rlogin/telnet will be enabled for ancient equipment where ssh is not available."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "enabled",
+                        "disabled"
+                    ],
+                    "default": "enabled",
+                    "description": [
+                        "Enable or disable IPv4 network interface configuration.",
+                        "Either IPv4 or IPv6 must be enabled otherwise error will occur."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "subnet_mask": {
+                    "description": [
+                        "The subnet mask to utilize for the interface.",
+                        "Should be specified in xx.xx.xx.xx form.",
+                        "Mutually exclusive with I(config_method=dhcp)"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage management interface configuration"
+        },
+        "examples": "\n    - name: Configure the first port on the A controller with a static IPv4 address\n      na_santricity_mgmt_interface:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        port: \"1\"\n        controller: \"A\"\n        config_method: static\n        address: \"192.168.1.100\"\n        subnet_mask: \"255.255.255.0\"\n        gateway: \"192.168.1.1\"\n\n    - name: Disable ipv4 connectivity for the second port on the B controller\n      na_santricity_mgmt_interface:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        port: \"2\"\n        controller: \"B\"\n        enable_interface: no\n\n    - name: Enable ssh access for ports one and two on controller A\n      na_santricity_mgmt_interface:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        port: \"1\"\n        controller: \"A\"\n        ssh: yes\n\n    - name: Configure static DNS settings for the first port on controller A\n      na_santricity_mgmt_interface:\n        ssid: \"1\"\n        api_url: \"https://192.168.1.100:8443/devmgr/v2\"\n        api_username: \"admin\"\n        api_password: \"adminpass\"\n        validate_certs: true\n        port: \"1\"\n        controller: \"A\"\n        dns_config_method: static\n        dns_address: \"192.168.1.100\"\n        dns_address_backup: \"192.168.1.1\"\n\n",
+        "metadata": null,
+        "return": {
+            "available_embedded_api_urls": {
+                "description": "List containing available web services embedded REST API urls",
+                "returned": "on success",
+                "sample": null,
+                "type": "list"
+            },
+            "msg": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": "The interface settings have been updated.",
+                "type": "str"
+            }
+        }
+    }
+}

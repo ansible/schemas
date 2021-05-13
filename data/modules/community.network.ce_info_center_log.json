@@ -1,0 +1,144 @@
+{
+    "community.network.ce_info_center_log": {
+        "doc": {
+            "author": "QijunPan (@QijunPan)",
+            "collection": "community.network",
+            "description": [
+                "Setting the Timestamp Format of Logs. Configuring the Device to Output Logs to the Log Buffer."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_info_center_log.py",
+            "has_action": false,
+            "module": "ce_info_center_log",
+            "notes": [
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "channel_id": {
+                    "description": [
+                        "Specifies a channel ID. The value is an integer ranging from 0 to 9."
+                    ]
+                },
+                "log_buff_enable": {
+                    "choices": [
+                        "no_use",
+                        "true",
+                        "false"
+                    ],
+                    "default": "no_use",
+                    "description": [
+                        "Enables the Switch to send logs to the log buffer."
+                    ]
+                },
+                "log_buff_size": {
+                    "description": [
+                        "Specifies the maximum number of logs in the log buffer. The value is an integer that ranges from 0 to 10240. If logbuffer-size is 0, logs are not displayed."
+                    ]
+                },
+                "log_enable": {
+                    "choices": [
+                        "no_use",
+                        "true",
+                        "false"
+                    ],
+                    "default": "no_use",
+                    "description": [
+                        "Indicates whether log filtering is enabled."
+                    ]
+                },
+                "log_level": {
+                    "choices": [
+                        "emergencies",
+                        "alert",
+                        "critical",
+                        "error",
+                        "warning",
+                        "notification",
+                        "informational",
+                        "debugging"
+                    ],
+                    "description": [
+                        "Specifies a log severity."
+                    ]
+                },
+                "log_time_stamp": {
+                    "choices": [
+                        "date_boot",
+                        "date_second",
+                        "date_tenthsecond",
+                        "date_millisecond",
+                        "shortdate_second",
+                        "shortdate_tenthsecond",
+                        "shortdate_millisecond",
+                        "formatdate_second",
+                        "formatdate_tenthsecond",
+                        "formatdate_millisecond"
+                    ],
+                    "description": [
+                        "Sets the timestamp format of logs."
+                    ]
+                },
+                "module_name": {
+                    "description": [
+                        "Specifies the name of a module. The value is a module name in registration logs."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determines whether the config should be present or not on the device."
+                    ]
+                }
+            },
+            "short_description": "Manages information center log configuration on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n\n- name: CloudEngine info center log test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: \"Setting the timestamp format of logs\"\n    community.network.ce_info_center_log:\n      log_time_stamp: date_tenthsecond\n      provider: \"{{ cli }}\"\n\n  - name: \"Enabled to output information to the log buffer\"\n    community.network.ce_info_center_log:\n      log_buff_enable: true\n      provider: \"{{ cli }}\"\n\n  - name: \"Set the maximum number of logs in the log buffer\"\n    community.network.ce_info_center_log:\n      log_buff_size: 100\n      provider: \"{{ cli }}\"\n\n  - name: \"Set a rule for outputting logs to a channel\"\n    community.network.ce_info_center_log:\n      module_name: aaa\n      channel_id: 1\n      log_enable: true\n      log_level: critical\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of configuration after module execution",
+                "returned": "verbose mode",
+                "sample": {
+                    "log_time_stamp": "date_tenthsecond"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing configuration",
+                "returned": "verbose mode",
+                "sample": {
+                    "log_time_stamp": "date_second"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "verbose mode",
+                "sample": {
+                    "log_time_stamp": "date_tenthsecond",
+                    "state": "present"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "commands sent to the device",
+                "returned": "always",
+                "sample": [
+                    "info-center timestamp log date precision-time tenth-second"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,93 @@
+{
+    "script": {
+        "doc": {
+            "author": [
+                "Ansible Core Team",
+                "Michael DeHaan"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "The C(script) module takes the script name followed by a list of space-delimited arguments.",
+                "Either a free form command or C(cmd) parameter is required, see the examples.",
+                "The local script at path will be transferred to the remote node and then executed.",
+                "The given script will be processed through the shell environment on the remote node.",
+                "This module does not require python on the remote system, much like the M(ansible.builtin.raw) module.",
+                "This module is also supported for Windows targets."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/script.py",
+            "has_action": true,
+            "module": "script",
+            "notes": [
+                "It is usually preferable to write Ansible modules rather than pushing scripts. Convert your script to an Ansible module for bonus points!",
+                "The C(ssh) connection plugin will force pseudo-tty allocation via C(-tt) when scripts are executed. Pseudo-ttys do not have a stderr channel and all stderr is sent to stdout. If you depend on separated stdout and stderr result keys, please switch to a copy+command set of tasks instead of using script.",
+                "If the path to the local script contains spaces, it needs to be quoted.",
+                "This module is also supported for Windows targets.",
+                "Does not support C(check_mode)."
+            ],
+            "options": {
+                "chdir": {
+                    "description": [
+                        "Change into this directory on the remote node before running the script."
+                    ],
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "cmd": {
+                    "description": [
+                        "Path to the local script to run followed by optional arguments."
+                    ],
+                    "type": "str"
+                },
+                "creates": {
+                    "description": [
+                        "A filename on the remote node, when it already exists, this step will B(not) be run."
+                    ],
+                    "version_added": "1.5",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "decrypt": {
+                    "default": true,
+                    "description": [
+                        "This option controls the autodecryption of source files using vault."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "executable": {
+                    "description": [
+                        "Name or path of a executable to invoke the script with."
+                    ],
+                    "version_added": "2.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "free_form": {
+                    "description": [
+                        "Path to the local script file followed by optional arguments."
+                    ]
+                },
+                "removes": {
+                    "description": [
+                        "A filename on the remote node, when it does not exist, this step will B(not) be run."
+                    ],
+                    "version_added": "1.5",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.shell"
+                },
+                {
+                    "module": "ansible.windows.win_shell"
+                }
+            ],
+            "short_description": "Runs a local script on a remote node after transferring it",
+            "version_added": "0.9",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Run a script with arguments (free form)\n  ansible.builtin.script: /some/local/script.sh --some-argument 1234\n\n- name: Run a script with arguments (using 'cmd' parameter)\n  ansible.builtin.script:\n    cmd: /some/local/script.sh --some-argument 1234\n\n- name: Run a script only if file.txt does not exist on the remote node\n  ansible.builtin.script: /some/local/create_file.sh --some-argument 1234\n  args:\n    creates: /the/created/file.txt\n\n- name: Run a script only if file.txt exists on the remote node\n  ansible.builtin.script: /some/local/remove_file.sh --some-argument 1234\n  args:\n    removes: /the/removed/file.txt\n\n- name: Run a script using an executable in a non-system path\n  ansible.builtin.script: /some/local/script\n  args:\n    executable: /some/remote/executable\n\n- name: Run a script using an executable in a system path\n  ansible.builtin.script: /some/local/script.py\n  args:\n    executable: python3\n",
+        "metadata": null,
+        "return": null
+    }
+}

@@ -1,0 +1,101 @@
+{
+    "community.general.aix_lvol": {
+        "doc": {
+            "author": [
+                "Alain Dejoux (@adejoux)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module creates, removes or resizes AIX logical volumes. Inspired by lvol module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/aix_lvol.py",
+            "has_action": false,
+            "module": "aix_lvol",
+            "options": {
+                "copies": {
+                    "default": 1,
+                    "description": [
+                        "The number of copies of the logical volume.",
+                        "Maximum copies are 3."
+                    ],
+                    "type": "int"
+                },
+                "lv": {
+                    "description": [
+                        "The name of the logical volume."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "lv_type": {
+                    "default": "jfs2",
+                    "description": [
+                        "The type of the logical volume."
+                    ],
+                    "type": "str"
+                },
+                "opts": {
+                    "description": [
+                        "Free-form options to be passed to the mklv command."
+                    ],
+                    "type": "str"
+                },
+                "policy": {
+                    "choices": [
+                        "maximum",
+                        "minimum"
+                    ],
+                    "default": "maximum",
+                    "description": [
+                        "Sets the interphysical volume allocation policy.",
+                        "C(maximum) allocates logical partitions across the maximum number of physical volumes.",
+                        "C(minimum) allocates logical partitions across the minimum number of physical volumes."
+                    ],
+                    "type": "str"
+                },
+                "pvs": {
+                    "description": [
+                        "A list of physical volumes e.g. C(hdisk1,hdisk2)."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "size": {
+                    "description": [
+                        "The size of the logical volume with one of the [MGT] units."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Control if the logical volume exists. If C(present) and the volume does not already exist then the C(size) option is required."
+                    ],
+                    "type": "str"
+                },
+                "vg": {
+                    "description": [
+                        "The volume group this logical volume is part of."
+                    ],
+                    "required": true,
+                    "type": "str"
+                }
+            },
+            "short_description": "Configure AIX LVM logical volumes"
+        },
+        "examples": "\n- name: Create a logical volume of 512M\n  community.general.aix_lvol:\n    vg: testvg\n    lv: testlv\n    size: 512M\n\n- name: Create a logical volume of 512M with disks hdisk1 and hdisk2\n  community.general.aix_lvol:\n    vg: testvg\n    lv: test2lv\n    size: 512M\n    pvs: [ hdisk1, hdisk2 ]\n\n- name: Create a logical volume of 512M mirrored\n  community.general.aix_lvol:\n    vg: testvg\n    lv: test3lv\n    size: 512M\n    copies: 2\n\n- name: Create a logical volume of 1G with a minimum placement policy\n  community.general.aix_lvol:\n    vg: rootvg\n    lv: test4lv\n    size: 1G\n    policy: minimum\n\n- name: Create a logical volume with special options like mirror pool\n  community.general.aix_lvol:\n    vg: testvg\n    lv: testlv\n    size: 512M\n    opts: -p copy1=poolA -p copy2=poolB\n\n- name: Extend the logical volume to 1200M\n  community.general.aix_lvol:\n    vg: testvg\n    lv: test4lv\n    size: 1200M\n\n- name: Remove the logical volume\n  community.general.aix_lvol:\n    vg: testvg\n    lv: testlv\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "A friendly message describing the task result.",
+                "returned": "always",
+                "sample": "Logical volume testlv created.",
+                "type": "str"
+            }
+        }
+    }
+}

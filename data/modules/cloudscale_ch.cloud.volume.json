@@ -1,0 +1,194 @@
+{
+    "cloudscale_ch.cloud.volume": {
+        "doc": {
+            "author": [
+                "Gaudenz Steinlin (@gaudenz)",
+                "Ren\u00e9 Moser (@resmo)",
+                "Denis Krienb\u00fchl (@href)"
+            ],
+            "collection": "cloudscale_ch.cloud",
+            "description": [
+                "Create, attach/detach, update and delete volumes on the cloudscale.ch IaaS service."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cloudscale_ch/cloud/plugins/modules/volume.py",
+            "has_action": false,
+            "module": "volume",
+            "notes": [
+                "To create a new volume at least the I(name) and I(size_gb) options are required.",
+                "A volume can be created and attached to a server in the same task.",
+                "All operations are performed using the cloudscale.ch public API v1.",
+                "For details consult the full API documentation: U(https://www.cloudscale.ch/en/api/v1).",
+                "A valid API token is required for all operations. You can create as many tokens as you like using the cloudscale.ch control panel at U(https://control.cloudscale.ch)."
+            ],
+            "options": {
+                "api_timeout": {
+                    "default": 30,
+                    "description": [
+                        "Timeout in seconds for calls to the cloudscale.ch API."
+                    ],
+                    "type": "int"
+                },
+                "api_token": {
+                    "description": [
+                        "cloudscale.ch API token.",
+                        "This can also be passed in the C(CLOUDSCALE_API_TOKEN) environment variable."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "default": "https://api.cloudscale.ch/v1",
+                    "description": [
+                        "cloudscale.ch API URL.",
+                        "This can also be passed in the C(CLOUDSCALE_API_URL) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "cloudscale_ch.cloud"
+                },
+                "name": {
+                    "description": [
+                        "Name of the volume. Either name or UUID must be present to change an existing volume."
+                    ],
+                    "type": "str"
+                },
+                "servers": {
+                    "aliases": [
+                        "server_uuids",
+                        "server_uuid"
+                    ],
+                    "description": [
+                        "UUIDs of the servers this volume is attached to. Set this to C([]) to detach the volume. Currently a volume can only be attached to a single server.",
+                        "The aliases C(server_uuids) and C(server_uuid) are deprecated and will be removed in version 3.0.0 of this collection."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "size_gb": {
+                    "description": [
+                        "Size of the volume in GB."
+                    ],
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "State of the volume."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tags associated with the volume. Set this to C({}) to clear any tags."
+                    ],
+                    "type": "dict"
+                },
+                "type": {
+                    "choices": [
+                        "ssd",
+                        "bulk"
+                    ],
+                    "description": [
+                        "Type of the volume. Cannot be changed after creating the volume. Defaults to C(ssd) on volume creation."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the volume. Either name or UUID must be present to change an existing volume."
+                    ],
+                    "type": "str"
+                },
+                "zone": {
+                    "description": [
+                        "Zone in which the volume resides (e.g. C(lgp1) or C(rma1)). Cannot be changed after creating the volume. Defaults to the project default zone."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages volumes on the cloudscale.ch IaaS service.",
+            "version_added": "1.0.0",
+            "version_added_collection": "cloudscale_ch.cloud"
+        },
+        "examples": "\n# Create a new SSD volume\n- name: Create an SSD volume\n  cloudscale_ch.cloud.volume:\n    name: my_ssd_volume\n    zone: 'lpg1'\n    size_gb: 50\n    api_token: xxxxxx\n  register: my_ssd_volume\n\n# Attach an existing volume to a server\n- name: Attach volume to server\n  cloudscale_ch.cloud.volume:\n    uuid: \"{{ my_ssd_volume.uuid }}\"\n    servers:\n      - ea3b39a3-77a8-4d0b-881d-0bb00a1e7f48\n    api_token: xxxxxx\n\n# Create and attach a volume to a server\n- name: Create and attach volume to server\n  cloudscale_ch.cloud.volume:\n    name: my_ssd_volume\n    zone: 'lpg1'\n    size_gb: 50\n    servers:\n      - ea3b39a3-77a8-4d0b-881d-0bb00a1e7f48\n    api_token: xxxxxx\n\n# Detach volume from server\n- name: Detach volume from server\n  cloudscale_ch.cloud.volume:\n    uuid: \"{{ my_ssd_volume.uuid }}\"\n    servers: []\n    api_token: xxxxxx\n\n# Delete a volume\n- name: Delete volume\n  cloudscale_ch.cloud.volume:\n    name: my_ssd_volume\n    state: absent\n    api_token: xxxxxx\n",
+        "metadata": null,
+        "return": {
+            "href": {
+                "description": "The API URL to get details about this volume.",
+                "returned": "state == present",
+                "sample": "https://api.cloudscale.ch/v1/volumes/2db69ba3-1864-4608-853a-0771b6885a3a",
+                "type": "str"
+            },
+            "name": {
+                "description": "The display name of the volume.",
+                "returned": "state == present",
+                "sample": "my_ssd_volume",
+                "type": "str"
+            },
+            "server_uuids": {
+                "description": "The UUIDs of the servers this volume is attached to. This return value is deprecated and will disappear in the future when the field is removed from the API.",
+                "returned": "state == present",
+                "sample": [
+                    "47cec963-fcd2-482f-bdb6-24461b2d47b1"
+                ],
+                "type": "list"
+            },
+            "servers": {
+                "description": "The list of servers this volume is attached to.",
+                "returned": "state == present",
+                "sample": [
+                    {
+                        "href": "https://api.cloudscale.ch/v1/servers/47cec963-fcd2-482f-bdb6-24461b2d47b1",
+                        "name": "my_server",
+                        "uuid": "47cec963-fcd2-482f-bdb6-24461b2d47b1"
+                    }
+                ],
+                "type": "list"
+            },
+            "size_gb": {
+                "description": "The size of the volume in GB.",
+                "returned": "state == present",
+                "sample": 50,
+                "type": "str"
+            },
+            "state": {
+                "description": "The current status of the volume.",
+                "returned": "success",
+                "sample": "present",
+                "type": "str"
+            },
+            "tags": {
+                "description": "Tags associated with the volume.",
+                "returned": "state == present",
+                "sample": {
+                    "project": "my project"
+                },
+                "type": "dict"
+            },
+            "type": {
+                "description": "The type of the volume.",
+                "returned": "state == present",
+                "sample": "bulk",
+                "type": "str"
+            },
+            "uuid": {
+                "description": "The unique identifier for this volume.",
+                "returned": "state == present",
+                "sample": "2db69ba3-1864-4608-853a-0771b6885a3a",
+                "type": "str"
+            },
+            "zone": {
+                "description": "The zone of the volume.",
+                "returned": "state == present",
+                "sample": {
+                    "slug": "lpg1"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

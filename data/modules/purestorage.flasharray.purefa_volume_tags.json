@@ -1,0 +1,98 @@
+{
+    "purestorage.flasharray.purefa_volume_tags": {
+        "doc": {
+            "author": [
+                "Pure Storage Ansible Team (@sdodsley) <pure-ansible-team@purestorage.com>"
+            ],
+            "collection": "purestorage.flasharray",
+            "description": [
+                "Manage volume tags for volumes on Pure Storage FlashArray.",
+                "Requires a minimum of Purity 6.0.0"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/purestorage/flasharray/plugins/modules/purefa_volume_tags.py",
+            "has_action": false,
+            "module": "purefa_volume_tags",
+            "notes": [
+                "This module requires the C(purestorage) Python library",
+                "You must set C(PUREFA_URL) and C(PUREFA_API) environment variables if I(fa_url) and I(api_token) arguments are not passed to the module directly"
+            ],
+            "options": {
+                "api_token": {
+                    "description": [
+                        "FlashArray API token for admin privileged user."
+                    ],
+                    "type": "str"
+                },
+                "copyable": {
+                    "default": true,
+                    "description": [
+                        "Define whether the volume tags are inherited on volume copies."
+                    ],
+                    "type": "bool"
+                },
+                "fa_url": {
+                    "description": [
+                        "FlashArray management IPv4 address or Hostname."
+                    ],
+                    "type": "str"
+                },
+                "kvp": {
+                    "description": [
+                        "List of key value pairs to assign to the volume.",
+                        "Seperate the key from the value using a colon (:) only.",
+                        "All items in list will use I(namespace) and I(copyable) settings.",
+                        "Maximum of 5 tags per volume",
+                        "See examples for exact formatting requirements"
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "name": {
+                    "description": [
+                        "The name of the volume."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "namespace": {
+                    "default": "default",
+                    "description": [
+                        "The name of tag namespace"
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Define whether the volume tag(s) should exist or not."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "purestorage >= 1.19",
+                "py-pure-client >= 1.6.0",
+                "netaddr",
+                "requests"
+            ],
+            "short_description": "Manage volume tags on Pure Storage FlashArrays",
+            "version_added": "1.0.0",
+            "version_added_collection": "purestorage.flasharray"
+        },
+        "examples": "\n- name: Create new tags in namespace test for volume foo\n  purefa_volume_tags:\n    name: foo\n    namespace: test\n    copyable: false\n    kvp:\n    - 'key1:value1'\n    - 'key2:value2'\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: present\n\n- name: Remove an existing tag in namespace test for volume foo\n  purefa_volume_tags:\n    name: foo\n    namespace: test\n    kvp:\n    - 'key1:value1'\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: present\n\n- name: Update an existing tag in namespace test for volume foo\n  purefa_volume_tags:\n    name: foo\n    namespace: test\n    kvp:\n    - 'key1:value2'\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: present\n\n- name: Delete a tag in namespace test for volume foo\n  purefa_volume_tags:\n    name: foo\n    namespace: test\n    kvp:\n    - 'key1:value2'\n    fa_url: 10.10.10.2\n    api_token: e31060a7-21fc-e277-6240-25983c6c4592\n    state: absent\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "preview"
+            ],
+            "supported_by": "community"
+        },
+        "return": null
+    }
+}

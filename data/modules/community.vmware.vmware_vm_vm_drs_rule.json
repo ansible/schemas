@@ -1,0 +1,175 @@
+{
+    "community.vmware.vmware_vm_vm_drs_rule": {
+        "doc": {
+            "author": [
+                "Abhijeet Kasurde (@Akasurde)"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to configure VMware DRS Affinity rule for virtual machine in given cluster."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_vm_vm_drs_rule.py",
+            "has_action": false,
+            "module": "vmware_vm_vm_drs_rule",
+            "notes": [
+                "Tested on vSphere 6.5"
+            ],
+            "options": {
+                "affinity_rule": {
+                    "default": true,
+                    "description": [
+                        "If set to C(True), the DRS rule will be an Affinity rule.",
+                        "If set to C(False), the DRS rule will be an Anti-Affinity rule.",
+                        "Effective only if C(state) is set to C(present)."
+                    ],
+                    "type": "bool"
+                },
+                "cluster_name": {
+                    "description": [
+                        "Desired cluster name where virtual machines are present for the DRS rule."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "drs_rule_name": {
+                    "description": [
+                        "The name of the DRS rule to manage."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "enabled": {
+                    "default": false,
+                    "description": [
+                        "If set to C(True), the DRS rule will be enabled.",
+                        "Effective only if C(state) is set to C(present)."
+                    ],
+                    "type": "bool"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "mandatory": {
+                    "default": false,
+                    "description": [
+                        "If set to C(True), the DRS rule will be mandatory.",
+                        "Effective only if C(state) is set to C(present)."
+                    ],
+                    "type": "bool"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "If set to C(present), then the DRS rule is created if not present.",
+                        "If set to C(present), then the DRS rule is already present, it updates to the given configurations.",
+                        "If set to C(absent), then the DRS rule is deleted if present."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                },
+                "vms": {
+                    "description": [
+                        "List of virtual machines name for which DRS rule needs to be applied.",
+                        "Required if C(state) is set to C(present)."
+                    ],
+                    "type": "list"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "PyVmomi"
+            ],
+            "short_description": "Configure VMware DRS Affinity rule for virtual machine in given cluster"
+        },
+        "examples": "\n- name: Create DRS Affinity Rule for VM-VM\n  community.vmware.vmware_vm_vm_drs_rule:\n    hostname: \"{{ esxi_server }}\"\n    username: \"{{ esxi_username }}\"\n    password: \"{{ esxi_password }}\"\n    cluster_name: \"{{ cluster_name }}\"\n    validate_certs: no\n    vms:\n        - vm1\n        - vm2\n    drs_rule_name: vm1-vm2-affinity-rule-001\n    enabled: True\n    mandatory: True\n    affinity_rule: True\n  delegate_to: localhost\n\n- name: Create DRS Anti-Affinity Rule for VM-VM\n  community.vmware.vmware_vm_vm_drs_rule:\n    hostname: \"{{ esxi_server }}\"\n    username: \"{{ esxi_username }}\"\n    password: \"{{ esxi_password }}\"\n    cluster_name: \"{{ cluster_name }}\"\n    validate_certs: no\n    enabled: True\n    vms:\n        - vm1\n        - vm2\n    drs_rule_name: vm1-vm2-affinity-rule-001\n    mandatory: True\n    affinity_rule: False\n  delegate_to: localhost\n\n- name: Delete DRS Affinity Rule for VM-VM\n  community.vmware.vmware_vm_vm_drs_rule:\n    hostname: \"{{ esxi_server }}\"\n    username: \"{{ esxi_username }}\"\n    password: \"{{ esxi_password }}\"\n    cluster_name: \"{{ cluster_name }}\"\n    validate_certs: no\n    drs_rule_name: vm1-vm2-affinity-rule-001\n    state: absent\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": {
+            "result": {
+                "description": "metadata about DRS VM and VM rule",
+                "returned": "when state is present",
+                "sample": {
+                    "rule_enabled": false,
+                    "rule_key": 20,
+                    "rule_mandatory": true,
+                    "rule_name": "drs_rule_0014",
+                    "rule_uuid": "525f3bc0-253f-825a-418e-2ec93bffc9ae",
+                    "rule_vms": [
+                        "VM_65",
+                        "VM_146"
+                    ]
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

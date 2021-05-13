@@ -1,0 +1,201 @@
+{
+    "community.aws.elb_classic_lb_info": {
+        "doc": {
+            "author": [
+                "Michael Schultz (@mjschultz)",
+                "Fernando Jose Pando (@nand0p)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Gather information about EC2 Elastic Load Balancers in AWS",
+                "This module was called C(elb_classic_lb_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/elb_classic_lb_info.py",
+            "has_action": false,
+            "module": "elb_classic_lb_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "names": {
+                    "description": [
+                        "List of ELB names to gather information about. Pass this option to gather information about a set of ELBs, otherwise, all ELBs are returned."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "botocore",
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about EC2 Elastic Load Balancers in AWS",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n# Output format tries to match amazon.aws.ec2_elb_lb module input parameters\n\n# Gather information about all ELBs\n- community.aws.elb_classic_lb_info:\n  register: elb_info\n\n- ansible.builtin.debug:\n    msg: \"{{ item.dns_name }}\"\n  loop: \"{{ elb_info.elbs }}\"\n\n# Gather information about a particular ELB\n- community.aws.elb_classic_lb_info:\n    names: frontend-prod-elb\n  register: elb_info\n\n- ansible.builtin.debug:\n    msg: \"{{ elb_info.elbs.0.dns_name }}\"\n\n# Gather information about a set of ELBs\n- community.aws.elb_classic_lb_info:\n    names:\n    - frontend-prod-elb\n    - backend-prod-elb\n  register: elb_info\n\n- ansible.builtin.debug:\n    msg: \"{{ item.dns_name }}\"\n  loop: \"{{ elb_info.elbs }}\"\n\n",
+        "metadata": null,
+        "return": {
+            "elbs": {
+                "description": "a list of load balancers",
+                "returned": "always",
+                "sample": {
+                    "elbs": [
+                        {
+                            "attributes": {
+                                "access_log": {
+                                    "enabled": false
+                                },
+                                "connection_draining": {
+                                    "enabled": true,
+                                    "timeout": 300
+                                },
+                                "connection_settings": {
+                                    "idle_timeout": 60
+                                },
+                                "cross_zone_load_balancing": {
+                                    "enabled": true
+                                }
+                            },
+                            "availability_zones": [
+                                "us-east-1a",
+                                "us-east-1b",
+                                "us-east-1c",
+                                "us-east-1d",
+                                "us-east-1e"
+                            ],
+                            "backend_server_description": [],
+                            "canonical_hosted_zone_name": "test-lb-XXXXXXXXXXXX.us-east-1.elb.amazonaws.com",
+                            "canonical_hosted_zone_name_id": "XXXXXXXXXXXXXX",
+                            "created_time": "2017-08-23T18:25:03.280000+00:00",
+                            "dns_name": "test-lb-XXXXXXXXXXXX.us-east-1.elb.amazonaws.com",
+                            "health_check": {
+                                "healthy_threshold": 10,
+                                "interval": 30,
+                                "target": "HTTP:80/index.html",
+                                "timeout": 5,
+                                "unhealthy_threshold": 2
+                            },
+                            "instances": [],
+                            "instances_inservice": [],
+                            "instances_inservice_count": 0,
+                            "instances_outofservice": [],
+                            "instances_outofservice_count": 0,
+                            "instances_unknownservice": [],
+                            "instances_unknownservice_count": 0,
+                            "listener_descriptions": [
+                                {
+                                    "listener": {
+                                        "instance_port": 80,
+                                        "instance_protocol": "HTTP",
+                                        "load_balancer_port": 80,
+                                        "protocol": "HTTP"
+                                    },
+                                    "policy_names": []
+                                }
+                            ],
+                            "load_balancer_name": "test-lb",
+                            "policies": {
+                                "app_cookie_stickiness_policies": [],
+                                "lb_cookie_stickiness_policies": [],
+                                "other_policies": []
+                            },
+                            "scheme": "internet-facing",
+                            "security_groups": [
+                                "sg-29d13055"
+                            ],
+                            "source_security_group": {
+                                "group_name": "default",
+                                "owner_alias": "XXXXXXXXXXXX"
+                            },
+                            "subnets": [
+                                "subnet-XXXXXXXX",
+                                "subnet-XXXXXXXX"
+                            ],
+                            "tags": {},
+                            "vpc_id": "vpc-c248fda4"
+                        }
+                    ]
+                },
+                "type": "list"
+            }
+        }
+    }
+}

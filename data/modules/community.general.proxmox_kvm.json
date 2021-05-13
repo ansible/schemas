@@ -1,0 +1,781 @@
+{
+    "community.general.proxmox_kvm": {
+        "doc": {
+            "author": "Abdoul Bah (@helldorado) <bahabdoul at gmail.com>",
+            "collection": "community.general",
+            "description": [
+                "Allows you to create/delete/stop Qemu(KVM) Virtual Machines in Proxmox VE cluster.",
+                "From community.general 4.0.0 on, there will be no default values, see I(proxmox_default_behavior)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/proxmox_kvm.py",
+            "has_action": false,
+            "module": "proxmox_kvm",
+            "options": {
+                "acpi": {
+                    "description": [
+                        "Specify if ACPI should be enabled/disabled.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(yes). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "agent": {
+                    "description": [
+                        "Specify if the QEMU Guest Agent should be enabled/disabled."
+                    ],
+                    "type": "bool"
+                },
+                "api_host": {
+                    "description": [
+                        "Specify the target host of the Proxmox VE cluster."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_password": {
+                    "description": [
+                        "Specify the password to authenticate with.",
+                        "You can use C(PROXMOX_PASSWORD) environment variable."
+                    ],
+                    "type": "str"
+                },
+                "api_token_id": {
+                    "description": [
+                        "Specify the token ID."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_token_secret": {
+                    "description": [
+                        "Specify the token secret."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "api_user": {
+                    "description": [
+                        "Specify the user to authenticate with."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "args": {
+                    "description": [
+                        "Pass arbitrary arguments to kvm.",
+                        "This option is for experts only!",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(-serial unix:/var/run/qemu-server/<vmid>.serial,server,nowait). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "autostart": {
+                    "description": [
+                        "Specify if the VM should be automatically restarted after crash (currently ignored in PVE API).",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(no). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "balloon": {
+                    "description": [
+                        "Specify the amount of RAM for the VM in MB.",
+                        "Using zero disables the balloon driver.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(0). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "bios": {
+                    "choices": [
+                        "seabios",
+                        "ovmf"
+                    ],
+                    "description": [
+                        "Specify the BIOS implementation."
+                    ],
+                    "type": "str"
+                },
+                "boot": {
+                    "description": [
+                        "Specify the boot order -> boot on floppy C(a), hard disk C(c), CD-ROM C(d), or network C(n).",
+                        "You can combine to set order.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(cnd). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "bootdisk": {
+                    "description": [
+                        "Enable booting from specified disk. C((ide|sata|scsi|virtio)\\d+)"
+                    ],
+                    "type": "str"
+                },
+                "cicustom": {
+                    "description": [
+                        "cloud-init: Specify custom files to replace the automatically generated ones at start."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "cipassword": {
+                    "description": [
+                        "cloud-init: password of default user to create."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "citype": {
+                    "choices": [
+                        "nocloud",
+                        "configdrive2"
+                    ],
+                    "description": [
+                        "cloud-init: Specifies the cloud-init configuration format.",
+                        "The default depends on the configured operating system type (C(ostype)).",
+                        "We use the C(nocloud) format for Linux, and C(configdrive2) for Windows."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "ciuser": {
+                    "description": [
+                        "cloud-init: username of default user to create."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "clone": {
+                    "description": [
+                        "Name of VM to be cloned. If C(vmid) is setted, C(clone) can take arbitrary value but required for initiating the clone."
+                    ],
+                    "type": "str"
+                },
+                "cores": {
+                    "description": [
+                        "Specify number of cores per socket.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "cpu": {
+                    "description": [
+                        "Specify emulated CPU type.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(kvm64). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "cpulimit": {
+                    "description": [
+                        "Specify if CPU usage will be limited. Value 0 indicates no CPU limit.",
+                        "If the computer has 2 CPUs, it has total of '2' CPU time"
+                    ],
+                    "type": "int"
+                },
+                "cpuunits": {
+                    "description": [
+                        "Specify CPU weight for a VM.",
+                        "You can disable fair-scheduler configuration by setting this to 0",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1000). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "delete": {
+                    "description": [
+                        "Specify a list of settings you want to delete."
+                    ],
+                    "type": "str"
+                },
+                "description": {
+                    "description": [
+                        "Specify the description for the VM. Only used on the configuration web interface.",
+                        "This is saved as comment inside the configuration file."
+                    ],
+                    "type": "str"
+                },
+                "digest": {
+                    "description": [
+                        "Specify if to prevent changes if current configuration file has different SHA1 digest.",
+                        "This can be used to prevent concurrent modifications."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "description": [
+                        "Allow to force stop VM.",
+                        "Can be used with states C(stopped), C(restarted) and C(absent).",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(no). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "format": {
+                    "choices": [
+                        "cloop",
+                        "cow",
+                        "qcow",
+                        "qcow2",
+                        "qed",
+                        "raw",
+                        "vmdk",
+                        "unspecified"
+                    ],
+                    "description": [
+                        "Target drive's backing file's data format.",
+                        "Used only with clone",
+                        "Use I(format=unspecified) and I(full=false) for a linked clone.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(qcow2). If I(proxmox_default_behavior) is set to C(no_defaults), not specifying this option is equivalent to setting it to C(unspecified). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "freeze": {
+                    "description": [
+                        "Specify if PVE should freeze CPU at startup (use 'c' monitor command to start execution)."
+                    ],
+                    "type": "bool"
+                },
+                "full": {
+                    "default": "yes",
+                    "description": [
+                        "Create a full copy of all disk. This is always done when you clone a normal VM.",
+                        "For VM templates, we try to create a linked clone by default.",
+                        "Used only with clone"
+                    ],
+                    "type": "bool"
+                },
+                "hostpci": {
+                    "description": [
+                        "Specify a hash/dictionary of map host pci devices into guest. C(hostpci='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(hostpci[n]) where 0 \u2264 n \u2264 N.",
+                        "Values allowed are -  C(\"host=\"HOSTPCIID[;HOSTPCIID2...]\",pcie=\"1|0\",rombar=\"1|0\",x-vga=\"1|0\"\").",
+                        "The C(host) parameter is Host PCI device pass through. HOSTPCIID syntax is C(bus:dev.func) (hexadecimal numbers).",
+                        "C(pcie=boolean) I(default=0) Choose the PCI-express bus (needs the q35 machine model).",
+                        "C(rombar=boolean) I(default=1) Specify whether or not the device's ROM will be visible in the guest's memory map.",
+                        "C(x-vga=boolean) I(default=0) Enable vfio-vga device support.",
+                        "/!\\ This option allows direct access to host hardware. So it is no longer possible to migrate such machines - use with special care."
+                    ],
+                    "type": "dict"
+                },
+                "hotplug": {
+                    "description": [
+                        "Selectively enable hotplug features.",
+                        "This is a comma separated list of hotplug features C('network', 'disk', 'cpu', 'memory' and 'usb').",
+                        "Value 0 disables hotplug completely and value 1 is an alias for the default C('network,disk,usb')."
+                    ],
+                    "type": "str"
+                },
+                "hugepages": {
+                    "choices": [
+                        "any",
+                        "2",
+                        "1024"
+                    ],
+                    "description": [
+                        "Enable/disable hugepages memory."
+                    ],
+                    "type": "str"
+                },
+                "ide": {
+                    "description": [
+                        "A hash/dictionary of volume used as IDE hard disk or CD-ROM. C(ide='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(ide[n]) where 0 \u2264 n \u2264 3.",
+                        "Values allowed are - C(\"storage:size,format=value\").",
+                        "C(storage) is the storage identifier where to create the disk.",
+                        "C(size) is the size of the disk in GB.",
+                        "C(format) is the drive's backing file's data format. C(qcow2|raw|subvol)."
+                    ],
+                    "type": "dict"
+                },
+                "ipconfig": {
+                    "description": [
+                        "cloud-init: Set the IP configuration.",
+                        "A hash/dictionary of network ip configurations. C(ipconfig='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(ipconfig[n]) where 0 \u2264 n \u2264 network interfaces.",
+                        "Values allowed are -  C(\"[gw=<GatewayIPv4>] [,gw6=<GatewayIPv6>] [,ip=<IPv4Format/CIDR>] [,ip6=<IPv6Format/CIDR>]\").",
+                        "cloud-init: Specify IP addresses and gateways for the corresponding interface.",
+                        "IP addresses use CIDR notation, gateways are optional but they should be in the same subnet of specified IP address.",
+                        "The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided.",
+                        "For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.",
+                        "If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4."
+                    ],
+                    "type": "dict",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "keyboard": {
+                    "description": [
+                        "Sets the keyboard layout for VNC server."
+                    ],
+                    "type": "str"
+                },
+                "kvm": {
+                    "description": [
+                        "Enable/disable KVM hardware virtualization.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(yes). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "localtime": {
+                    "description": [
+                        "Sets the real time clock to local time.",
+                        "This is enabled by default if ostype indicates a Microsoft OS."
+                    ],
+                    "type": "bool"
+                },
+                "lock": {
+                    "choices": [
+                        "migrate",
+                        "backup",
+                        "snapshot",
+                        "rollback"
+                    ],
+                    "description": [
+                        "Lock/unlock the VM."
+                    ],
+                    "type": "str"
+                },
+                "machine": {
+                    "description": [
+                        "Specifies the Qemu machine type.",
+                        "type => C((pc|pc(-i440fx)?-\\d+\\.\\d+(\\.pxe)?|q35|pc-q35-\\d+\\.\\d+(\\.pxe)?))"
+                    ],
+                    "type": "str"
+                },
+                "memory": {
+                    "description": [
+                        "Memory size in MB for instance.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(512). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "migrate_downtime": {
+                    "description": [
+                        "Sets maximum tolerated downtime (in seconds) for migrations."
+                    ],
+                    "type": "int"
+                },
+                "migrate_speed": {
+                    "description": [
+                        "Sets maximum speed (in MB/s) for migrations.",
+                        "A value of 0 is no limit."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the VM name. Only used on the configuration web interface.",
+                        "Required only for C(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "nameservers": {
+                    "description": [
+                        "cloud-init: DNS server IP address(es).",
+                        "If unset, PVE host settings are used."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "net": {
+                    "description": [
+                        "A hash/dictionary of network interfaces for the VM. C(net='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(net[n]) where 0 \u2264 n \u2264 N.",
+                        "Values allowed are - C(\"model=\"XX:XX:XX:XX:XX:XX\",bridge=\"value\",rate=\"value\",tag=\"value\",firewall=\"1|0\",trunks=\"vlanid\"\").",
+                        "Model is one of C(e1000 e1000-82540em e1000-82544gc e1000-82545em i82551 i82557b i82559er ne2k_isa ne2k_pci pcnet rtl8139 virtio vmxnet3).",
+                        "C(XX:XX:XX:XX:XX:XX) should be an unique MAC address. This is automatically generated if not specified.",
+                        "The C(bridge) parameter can be used to automatically add the interface to a bridge device. The Proxmox VE standard bridge is called 'vmbr0'.",
+                        "Option C(rate) is used to limit traffic bandwidth from and to this interface. It is specified as floating point number, unit is 'Megabytes per second'.",
+                        "If you specify no bridge, we create a kvm 'user' (NATed) network device, which provides DHCP and DNS services."
+                    ],
+                    "type": "dict"
+                },
+                "newid": {
+                    "description": [
+                        "VMID for the clone. Used only with clone.",
+                        "If newid is not set, the next available VM ID will be fetched from ProxmoxAPI."
+                    ],
+                    "type": "int"
+                },
+                "node": {
+                    "description": [
+                        "Proxmox VE node on which to operate.",
+                        "Only required for I(state=present).",
+                        "For every other states it will be autodiscovered."
+                    ],
+                    "type": "str"
+                },
+                "numa": {
+                    "description": [
+                        "A hash/dictionaries of NUMA topology. C(numa='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(numa[n]) where 0 \u2264 n \u2264 N.",
+                        "Values allowed are - C(\"cpu=\"<id[-id];...>\",hostnodes=\"<id[-id];...>\",memory=\"number\",policy=\"(bind|interleave|preferred)\"\").",
+                        "C(cpus) CPUs accessing this NUMA node.",
+                        "C(hostnodes) Host NUMA nodes to use.",
+                        "C(memory) Amount of memory this NUMA node provides.",
+                        "C(policy) NUMA allocation policy."
+                    ],
+                    "type": "dict"
+                },
+                "numa_enabled": {
+                    "description": [
+                        "Enables NUMA."
+                    ],
+                    "type": "bool"
+                },
+                "onboot": {
+                    "description": [
+                        "Specifies whether a VM will be started during system bootup.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(yes). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "ostype": {
+                    "choices": [
+                        "other",
+                        "wxp",
+                        "w2k",
+                        "w2k3",
+                        "w2k8",
+                        "wvista",
+                        "win7",
+                        "win8",
+                        "win10",
+                        "l24",
+                        "l26",
+                        "solaris"
+                    ],
+                    "description": [
+                        "Specifies guest operating system. This is used to enable special optimization/features for specific operating systems.",
+                        "The l26 is Linux 2.6/3.X Kernel.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(l26). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "parallel": {
+                    "description": [
+                        "A hash/dictionary of map host parallel devices. C(parallel='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - (parallel[n]) where 0 \u2264 n \u2264 2.",
+                        "Values allowed are - C(\"/dev/parport\\d+|/dev/usb/lp\\d+\")."
+                    ],
+                    "type": "dict"
+                },
+                "pool": {
+                    "description": [
+                        "Add the new VM to the specified pool."
+                    ],
+                    "type": "str"
+                },
+                "protection": {
+                    "description": [
+                        "Enable/disable the protection flag of the VM. This will enable/disable the remove VM and remove disk operations."
+                    ],
+                    "type": "bool"
+                },
+                "proxmox_default_behavior": {
+                    "choices": [
+                        "compatibility",
+                        "no_defaults"
+                    ],
+                    "description": [
+                        "Various module options used to have default values. This cause problems when user expects different behavior from proxmox by default or fill options which cause problems when they have been set.",
+                        "The default value is C(compatibility), which will ensure that the default values are used when the values are not explicitly specified by the user.",
+                        "From community.general 4.0.0 on, the default value will switch to C(no_defaults). To avoid deprecation warnings, please set I(proxmox_default_behavior) to an explicit value.",
+                        "This affects the I(acpi), I(autostart), I(balloon), I(boot), I(cores), I(cpu), I(cpuunits), I(force), I(format), I(kvm), I(memory), I(onboot), I(ostype), I(sockets), I(tablet), I(template), I(vga), options."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "reboot": {
+                    "description": [
+                        "Allow reboot. If set to C(yes), the VM exit on reboot."
+                    ],
+                    "type": "bool"
+                },
+                "revert": {
+                    "description": [
+                        "Revert a pending change."
+                    ],
+                    "type": "str"
+                },
+                "sata": {
+                    "description": [
+                        "A hash/dictionary of volume used as sata hard disk or CD-ROM. C(sata='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(sata[n]) where 0 \u2264 n \u2264 5.",
+                        "Values allowed are -  C(\"storage:size,format=value\").",
+                        "C(storage) is the storage identifier where to create the disk.",
+                        "C(size) is the size of the disk in GB.",
+                        "C(format) is the drive's backing file's data format. C(qcow2|raw|subvol)."
+                    ],
+                    "type": "dict"
+                },
+                "scsi": {
+                    "description": [
+                        "A hash/dictionary of volume used as SCSI hard disk or CD-ROM. C(scsi='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(sata[n]) where 0 \u2264 n \u2264 13.",
+                        "Values allowed are -  C(\"storage:size,format=value\").",
+                        "C(storage) is the storage identifier where to create the disk.",
+                        "C(size) is the size of the disk in GB.",
+                        "C(format) is the drive's backing file's data format. C(qcow2|raw|subvol)."
+                    ],
+                    "type": "dict"
+                },
+                "scsihw": {
+                    "choices": [
+                        "lsi",
+                        "lsi53c810",
+                        "virtio-scsi-pci",
+                        "virtio-scsi-single",
+                        "megasas",
+                        "pvscsi"
+                    ],
+                    "description": [
+                        "Specifies the SCSI controller model."
+                    ],
+                    "type": "str"
+                },
+                "searchdomains": {
+                    "description": [
+                        "cloud-init: Sets DNS search domain(s).",
+                        "If unset, PVE host settings are used."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "serial": {
+                    "description": [
+                        "A hash/dictionary of serial device to create inside the VM. C('{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - serial[n](str; required) where 0 \u2264 n \u2264 3.",
+                        "Values allowed are - C((/dev/.+|socket)).",
+                        "/!\\ If you pass through a host serial device, it is no longer possible to migrate such machines - use with special care."
+                    ],
+                    "type": "dict"
+                },
+                "shares": {
+                    "description": [
+                        "Rets amount of memory shares for auto-ballooning. (0 - 50000).",
+                        "The larger the number is, the more memory this VM gets.",
+                        "The number is relative to weights of all other running VMs.",
+                        "Using 0 disables auto-ballooning, this means no limit."
+                    ],
+                    "type": "int"
+                },
+                "skiplock": {
+                    "description": [
+                        "Ignore locks",
+                        "Only root is allowed to use this option."
+                    ],
+                    "type": "bool"
+                },
+                "smbios": {
+                    "description": [
+                        "Specifies SMBIOS type 1 fields."
+                    ],
+                    "type": "str"
+                },
+                "snapname": {
+                    "description": [
+                        "The name of the snapshot. Used only with clone."
+                    ],
+                    "type": "str"
+                },
+                "sockets": {
+                    "description": [
+                        "Sets the number of CPU sockets. (1 - N).",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(1). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "int"
+                },
+                "sshkeys": {
+                    "description": [
+                        "cloud-init: SSH key to assign to the default user. NOT TESTED with multiple keys but a multi-line value should work."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "startdate": {
+                    "description": [
+                        "Sets the initial date of the real time clock.",
+                        "Valid format for date are C('now') or C('2016-09-25T16:01:21') or C('2016-09-25')."
+                    ],
+                    "type": "str"
+                },
+                "startup": {
+                    "description": [
+                        "Startup and shutdown behavior. C([[order=]\\d+] [,up=\\d+] [,down=\\d+]).",
+                        "Order is a non-negative number defining the general startup order.",
+                        "Shutdown in done with reverse ordering."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "started",
+                        "absent",
+                        "stopped",
+                        "restarted",
+                        "current"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Indicates desired state of the instance.",
+                        "If C(current), the current state of the VM will be fetched. You can access it with C(results.status)"
+                    ],
+                    "type": "str"
+                },
+                "storage": {
+                    "description": [
+                        "Target storage for full clone."
+                    ],
+                    "type": "str"
+                },
+                "tablet": {
+                    "description": [
+                        "Enables/disables the USB tablet device.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(no). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "tags": {
+                    "description": [
+                        "List of tags to apply to the VM instance.",
+                        "Tags must start with C([a-z0-9_]) followed by zero or more of the following characters C([a-z0-9_-+.]).",
+                        "Tags are only available in Proxmox 6+."
+                    ],
+                    "elements": "str",
+                    "type": "list",
+                    "version_added": "2.3.0",
+                    "version_added_collection": "community.general"
+                },
+                "target": {
+                    "description": [
+                        "Target node. Only allowed if the original VM is on shared storage.",
+                        "Used only with clone"
+                    ],
+                    "type": "str"
+                },
+                "tdf": {
+                    "description": [
+                        "Enables/disables time drift fix."
+                    ],
+                    "type": "bool"
+                },
+                "template": {
+                    "description": [
+                        "Enables/disables the template.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(no). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "bool"
+                },
+                "timeout": {
+                    "default": 30,
+                    "description": [
+                        "Timeout for operations."
+                    ],
+                    "type": "int"
+                },
+                "update": {
+                    "default": "no",
+                    "description": [
+                        "If C(yes), the VM will be updated with new value.",
+                        "Cause of the operations of the API and security reasons, I have disabled the update of the following parameters",
+                        "C(net, virtio, ide, sata, scsi). Per example updating C(net) update the MAC address and C(virtio) create always new disk...",
+                        "Update of C(pool) is disabled. It needs an additional API endpoint not covered by this module."
+                    ],
+                    "type": "bool"
+                },
+                "validate_certs": {
+                    "default": false,
+                    "description": [
+                        "If C(no), SSL certificates will not be validated.",
+                        "This should only be used on personally controlled sites using self-signed certificates."
+                    ],
+                    "type": "bool"
+                },
+                "vcpus": {
+                    "description": [
+                        "Sets number of hotplugged vcpus."
+                    ],
+                    "type": "int"
+                },
+                "vga": {
+                    "choices": [
+                        "std",
+                        "cirrus",
+                        "vmware",
+                        "qxl",
+                        "serial0",
+                        "serial1",
+                        "serial2",
+                        "serial3",
+                        "qxl2",
+                        "qxl3",
+                        "qxl4"
+                    ],
+                    "description": [
+                        "Select VGA type. If you want to use high resolution modes (>= 1280x1024x16) then you should use option 'std' or 'vmware'.",
+                        "If I(proxmox_default_behavior) is set to C(compatiblity) (the default value), this option has a default of C(std). Note that the default value of I(proxmox_default_behavior) changes in community.general 4.0.0."
+                    ],
+                    "type": "str"
+                },
+                "virtio": {
+                    "description": [
+                        "A hash/dictionary of volume used as VIRTIO hard disk. C(virtio='{\"key\":\"value\", \"key\":\"value\"}').",
+                        "Keys allowed are - C(virto[n]) where 0 \u2264 n \u2264 15.",
+                        "Values allowed are -  C(\"storage:size,format=value\").",
+                        "C(storage) is the storage identifier where to create the disk.",
+                        "C(size) is the size of the disk in GB.",
+                        "C(format) is the drive's backing file's data format. C(qcow2|raw|subvol)."
+                    ],
+                    "type": "dict"
+                },
+                "vmid": {
+                    "description": [
+                        "Specifies the instance ID.",
+                        "If not set the next available ID will be fetched from ProxmoxAPI."
+                    ],
+                    "type": "int"
+                },
+                "watchdog": {
+                    "description": [
+                        "Creates a virtual hardware watchdog device."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "proxmoxer",
+                "requests"
+            ],
+            "short_description": "Management of Qemu(KVM) Virtual Machines in Proxmox VE cluster."
+        },
+        "examples": "\n- name: Create new VM with minimal options\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n\n- name: Create new VM with minimal options and given vmid\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    vmid: 100\n\n- name: Create new VM with two network interface options\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    net:\n      net0: 'virtio,bridge=vmbr1,rate=200'\n      net1: 'e1000,bridge=vmbr2'\n\n- name: Create new VM with one network interface, three virto hard disk, 4 cores, and 2 vcpus\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    net:\n      net0: 'virtio,bridge=vmbr1,rate=200'\n    virtio:\n      virtio0: 'VMs_LVM:10'\n      virtio1: 'VMs:2,format=qcow2'\n      virtio2: 'VMs:5,format=raw'\n    cores: 4\n    vcpus: 2\n\n- name: >\n    Clone VM with only source VM name.\n    The VM source is spynal.\n    The target VM name is zavala\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    clone: spynal\n    name: zavala\n    node: sabrewulf\n    storage: VMs\n    format: qcow2\n    timeout: 500\n\n- name: >\n    Create linked clone VM with only source VM name.\n    The VM source is spynal.\n    The target VM name is zavala\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    clone: spynal\n    name: zavala\n    node: sabrewulf\n    storage: VMs\n    full: no\n    format: unspecified\n    timeout: 500\n\n- name: Clone VM with source vmid and target newid and raw format\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    clone: arbitrary_name\n    vmid: 108\n    newid: 152\n    name: zavala\n    node: sabrewulf\n    storage: LVM_STO\n    format: raw\n    timeout: 300\n\n- name: Create new VM and lock it for snapshot\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    lock: snapshot\n\n- name: Create new VM and set protection to disable the remove VM and remove disk operations\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    protection: yes\n\n- name: Create new VM using cloud-init with a username and password\n  community.general.proxmox_kvm:\n    node: sabrewulf\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    ide:\n      ide2: 'local:cloudinit,format=qcow2'\n    ciuser: mylinuxuser\n    cipassword: supersecret\n    searchdomains: 'mydomain.internal'\n    nameservers: 1.1.1.1\n    net:\n      net0: 'virtio,bridge=vmbr1,tag=77'\n    ipconfig:\n      ipconfig0: 'ip=192.168.1.1/24,gw=192.168.1.1'\n\n- name: Create new VM using Cloud-Init with an ssh key\n  community.general.proxmox_kvm:\n    node: sabrewulf\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    ide:\n      ide2: 'local:cloudinit,format=qcow2'\n    sshkeys: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILJkVm98B71lD5XHfihwcYHE9TVpsJmK1vR1JcaU82L+'\n    searchdomains: 'mydomain.internal'\n    nameservers:\n      - '1.1.1.1'\n      - '8.8.8.8'\n    net:\n      net0: 'virtio,bridge=vmbr1,tag=77'\n    ipconfig:\n      ipconfig0: 'ip=192.168.1.1/24'\n\n- name: Start VM\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: started\n\n- name: Stop VM\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: stopped\n\n- name: Stop VM with force\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: stopped\n    force: yes\n\n- name: Restart VM\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: restarted\n\n- name: Remove VM\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: absent\n\n- name: Get VM current state\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    state: current\n\n- name: Update VM configuration\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    cores: 8\n    memory: 16384\n    update: yes\n\n- name: Delete QEMU parameters\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    delete: 'args,template,cpulimit'\n\n- name: Revert a pending change\n  community.general.proxmox_kvm:\n    api_user: root@pam\n    api_password: secret\n    api_host: helldorado\n    name: spynal\n    node: sabrewulf\n    revert: 'template,cpulimit'\n",
+        "metadata": null,
+        "return": {
+            "msg": {
+                "description": "A short message",
+                "returned": "always",
+                "sample": "VM kropta with vmid = 110 is running",
+                "type": "str"
+            },
+            "status": {
+                "description": "The current virtual machine status.",
+                "returned": "success, not clone, not absent, not update",
+                "sample": "running",
+                "type": "str"
+            },
+            "vmid": {
+                "description": "The VM vmid.",
+                "returned": "success",
+                "sample": 115,
+                "type": "int"
+            }
+        }
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "meta": {
+        "doc": {
+            "author": [
+                "Ansible Core Team"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "Meta tasks are a special kind of task which can influence Ansible internal execution or state.",
+                "Meta tasks can be used anywhere within your playbook.",
+                "This module is also supported for Windows targets."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/meta.py",
+            "has_action": false,
+            "module": "meta",
+            "notes": [
+                "C(meta) is not really a module nor action_plugin as such it cannot be overwritten.",
+                "C(clear_facts) will remove the persistent facts from M(ansible.builtin.set_fact) using C(cacheable=True), but not the current host variable it creates for the current run.",
+                "Looping on meta tasks is not supported.",
+                "Skipping C(meta) tasks with tags is not supported before Ansible 2.11.",
+                "This module is also supported for Windows targets."
+            ],
+            "options": {
+                "free_form": {
+                    "choices": [
+                        "clear_facts",
+                        "clear_host_errors",
+                        "end_host",
+                        "end_play",
+                        "flush_handlers",
+                        "noop",
+                        "refresh_inventory",
+                        "reset_connection"
+                    ],
+                    "description": [
+                        "This module takes a free form command, as a string. There is not an actual option named \"free form\".  See the examples!",
+                        "C(flush_handlers) makes Ansible run any handler tasks which have thus far been notified. Ansible inserts these tasks internally at certain points to implicitly trigger handler runs (after pre/post tasks, the final role execution, and the main tasks section of your plays).",
+                        "C(refresh_inventory) (added in Ansible 2.0) forces the reload of the inventory, which in the case of dynamic inventory scripts means they will be re-executed. If the dynamic inventory script is using a cache, Ansible cannot know this and has no way of refreshing it (you can disable the cache or, if available for your specific inventory datasource (e.g. aws), you can use the an inventory plugin instead of an inventory script). This is mainly useful when additional hosts are created and users wish to use them instead of using the M(ansible.builtin.add_host) module.",
+                        "C(noop) (added in Ansible 2.0) This literally does 'nothing'. It is mainly used internally and not recommended for general use.",
+                        "C(clear_facts) (added in Ansible 2.1) causes the gathered facts for the hosts specified in the play's list of hosts to be cleared, including the fact cache.",
+                        "C(clear_host_errors) (added in Ansible 2.1) clears the failed state (if any) from hosts specified in the play's list of hosts.",
+                        "C(end_play) (added in Ansible 2.2) causes the play to end without failing the host(s). Note that this affects all hosts.",
+                        "C(reset_connection) (added in Ansible 2.3) interrupts a persistent connection (i.e. ssh + control persist)",
+                        "C(end_host) (added in Ansible 2.8) is a per-host variation of C(end_play). Causes the play to end for the current host without failing it."
+                    ],
+                    "required": true
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.assert"
+                },
+                {
+                    "module": "ansible.builtin.fail"
+                }
+            ],
+            "short_description": "Execute Ansible 'actions'",
+            "version_added": "1.2",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n# Example showing flushing handlers on demand, not at end of play\n- template:\n    src: new.j2\n    dest: /etc/config.txt\n  notify: myhandler\n\n- name: Force all notified handlers to run at this point, not waiting for normal sync points\n  meta: flush_handlers\n\n# Example showing how to refresh inventory during play\n- name: Reload inventory, useful with dynamic inventories when play makes changes to the existing hosts\n  cloud_guest:            # this is fake module\n    name: newhost\n    state: present\n\n- name: Refresh inventory to ensure new instances exist in inventory\n  meta: refresh_inventory\n\n# Example showing how to clear all existing facts of targetted hosts\n- name: Clear gathered facts from all currently targeted hosts\n  meta: clear_facts\n\n# Example showing how to continue using a failed target\n- name: Bring host back to play after failure\n  copy:\n    src: file\n    dest: /etc/file\n  remote_user: imightnothavepermission\n\n- meta: clear_host_errors\n\n# Example showing how to reset an existing connection\n- user:\n    name: '{{ ansible_user }}'\n    groups: input\n\n- name: Reset ssh connection to allow user changes to affect 'current login user'\n  meta: reset_connection\n\n# Example showing how to end the play for specific targets\n- name: End the play for hosts that run CentOS 6\n  meta: end_host\n  when:\n  - ansible_distribution == 'CentOS'\n  - ansible_distribution_major_version == '6'\n",
+        "metadata": null,
+        "return": null
+    }
+}

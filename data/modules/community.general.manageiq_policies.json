@@ -1,0 +1,146 @@
+{
+    "community.general.manageiq_policies": {
+        "doc": {
+            "author": "Daniel Korn (@dkorn)",
+            "collection": "community.general",
+            "description": [
+                "The manageiq_policies module supports adding and deleting policy_profiles in ManageIQ."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/manageiq_policies.py",
+            "has_action": false,
+            "module": "manageiq_policies",
+            "options": {
+                "manageiq_connection": {
+                    "description": [
+                        "ManageIQ connection configuration information."
+                    ],
+                    "required": false,
+                    "suboptions": {
+                        "ca_cert": {
+                            "aliases": [
+                                "ca_bundle_path"
+                            ],
+                            "description": [
+                                "The path to a CA bundle file or directory with certificates. defaults to None."
+                            ],
+                            "type": "str"
+                        },
+                        "password": {
+                            "description": [
+                                "ManageIQ password. C(MIQ_PASSWORD) env var if set. otherwise, required if no token is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "token": {
+                            "description": [
+                                "ManageIQ token. C(MIQ_TOKEN) env var if set. otherwise, required if no username or password is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "url": {
+                            "description": [
+                                "ManageIQ environment url. C(MIQ_URL) env var if set. otherwise, it is required to pass it."
+                            ],
+                            "required": false,
+                            "type": "str"
+                        },
+                        "username": {
+                            "description": [
+                                "ManageIQ username. C(MIQ_USERNAME) env var if set. otherwise, required if no token is passed in."
+                            ],
+                            "type": "str"
+                        },
+                        "validate_certs": {
+                            "aliases": [
+                                "verify_ssl"
+                            ],
+                            "default": true,
+                            "description": [
+                                "Whether SSL certificates should be verified for HTTPS requests. defaults to True."
+                            ],
+                            "type": "bool"
+                        }
+                    },
+                    "type": "dict"
+                },
+                "policy_profiles": {
+                    "description": [
+                        "list of dictionaries, each includes the policy_profile 'name' key.",
+                        "required if state is present or absent."
+                    ],
+                    "elements": "dict",
+                    "type": "list"
+                },
+                "resource_id": {
+                    "description": [
+                        "The ID of the resource to which the profile should be [un]assigned.",
+                        "Must be specified if I(resource_name) is not set. Both options are mutually exclusive."
+                    ],
+                    "type": "int",
+                    "version_added": "2.2.0",
+                    "version_added_collection": "community.general"
+                },
+                "resource_name": {
+                    "description": [
+                        "The name of the resource to which the profile should be [un]assigned.",
+                        "Must be specified if I(resource_id) is not set. Both options are mutually exclusive."
+                    ],
+                    "type": "str"
+                },
+                "resource_type": {
+                    "choices": [
+                        "provider",
+                        "host",
+                        "vm",
+                        "blueprint",
+                        "category",
+                        "cluster",
+                        "data store",
+                        "group",
+                        "resource pool",
+                        "service",
+                        "service template",
+                        "template",
+                        "tenant",
+                        "user"
+                    ],
+                    "description": [
+                        "The type of the resource to which the profile should be [un]assigned."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present",
+                        "list"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "absent - policy_profiles should not exist,",
+                        "present - policy_profiles should exist,",
+                        "list - list current policy_profiles and policies."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "manageiq-client U(https://github.com/ManageIQ/manageiq-api-client-python/)"
+            ],
+            "short_description": "Management of resource policy_profiles in ManageIQ."
+        },
+        "examples": "\n- name: Assign new policy_profile for a provider in ManageIQ\n  community.general.manageiq_policies:\n    resource_name: 'EngLab'\n    resource_type: 'provider'\n    policy_profiles:\n      - name: openscap profile\n    manageiq_connection:\n      url: 'http://127.0.0.1:3000'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n\n- name: Unassign a policy_profile for a provider in ManageIQ\n  community.general.manageiq_policies:\n    state: absent\n    resource_name: 'EngLab'\n    resource_type: 'provider'\n    policy_profiles:\n      - name: openscap profile\n    manageiq_connection:\n      url: 'http://127.0.0.1:3000'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n\n- name: List current policy_profile and policies for a provider in ManageIQ\n  community.general.manageiq_policies:\n    state: list\n    resource_name: 'EngLab'\n    resource_type: 'provider'\n    manageiq_connection:\n      url: 'http://127.0.0.1:3000'\n      username: 'admin'\n      password: 'smartvm'\n      validate_certs: False\n",
+        "metadata": null,
+        "return": {
+            "manageiq_policies": {
+                "description": [
+                    "List current policy_profile and policies for a provider in ManageIQ"
+                ],
+                "returned": "always",
+                "sample": "{ \"changed\": false, \"profiles\": [ { \"policies\": [ { \"active\": true, \"description\": \"OpenSCAP\", \"name\": \"openscap policy\" }, { \"active\": true, \"description\": \"Analyse incoming container images\", \"name\": \"analyse incoming container images\" }, { \"active\": true, \"description\": \"Schedule compliance after smart state analysis\", \"name\": \"schedule compliance after smart state analysis\" } ], \"profile_description\": \"OpenSCAP profile\", \"profile_name\": \"openscap profile\" } ] }",
+                "type": "dict"
+            }
+        }
+    }
+}

@@ -1,0 +1,130 @@
+{
+    "community.general.xfconf": {
+        "doc": {
+            "author": [
+                "Joseph Benden (@jbenden)",
+                "Alexei Znamensky (@russoz)"
+            ],
+            "collection": "community.general",
+            "description": [
+                "This module allows for the manipulation of Xfce 4 Configuration via xfconf-query.  Please see the xfconf-query(1) man pages for more details."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/xfconf.py",
+            "has_action": false,
+            "module": "xfconf",
+            "options": {
+                "channel": {
+                    "description": [
+                        "A Xfconf preference channel is a top-level tree key, inside of the Xfconf repository that corresponds to the location for which all application properties/keys are stored. See man xfconf-query(1)"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "disable_facts": {
+                    "default": false,
+                    "description": [
+                        "For backward compatibility, output results are also returned as C(ansible_facts), but this behaviour is deprecated and will be removed in community.general 4.0.0.",
+                        "This flag disables the output as facts and also disables the deprecation warning."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.1.0",
+                    "version_added_collection": "community.general"
+                },
+                "force_array": {
+                    "aliases": [
+                        "array"
+                    ],
+                    "default": "no",
+                    "description": [
+                        "Force array even if only one element"
+                    ],
+                    "type": "bool",
+                    "version_added": "1.0.0",
+                    "version_added_collection": "community.general"
+                },
+                "property": {
+                    "description": [
+                        "A Xfce preference key is an element in the Xfconf repository that corresponds to an application preference. See man xfconf-query(1)"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "get",
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "The action to take upon the property/value."
+                    ],
+                    "type": "str"
+                },
+                "value": {
+                    "description": [
+                        "Preference properties typically have simple values such as strings, integers, or lists of strings and integers. This is ignored if the state is \"get\". For array mode, use a list of values. See man xfconf-query(1)"
+                    ],
+                    "elements": "raw",
+                    "type": "list"
+                },
+                "value_type": {
+                    "choices": [
+                        "int",
+                        "uint",
+                        "bool",
+                        "float",
+                        "double",
+                        "string"
+                    ],
+                    "description": [
+                        "The type of value being set. This is ignored if the state is \"get\". For array mode, use a list of types."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                }
+            },
+            "short_description": "Edit XFCE4 Configurations"
+        },
+        "examples": "\n- name: Change the DPI to \"192\"\n  xfconf:\n    channel: \"xsettings\"\n    property: \"/Xft/DPI\"\n    value_type: \"int\"\n    value: \"192\"\n\n- name: Set workspace names (4)\n  xfconf:\n    channel: xfwm4\n    property: /general/workspace_names\n    value_type: string\n    value: ['Main', 'Work1', 'Work2', 'Tmp']\n\n- name: Set workspace names (1)\n  xfconf:\n    channel: xfwm4\n    property: /general/workspace_names\n    value_type: string\n    value: ['Main']\n    force_array: yes\n",
+        "metadata": null,
+        "return": {
+            "channel": {
+                "description": "The channel specified in the module parameters",
+                "returned": "success",
+                "sample": "xsettings",
+                "type": "str"
+            },
+            "previous_value": {
+                "description": [
+                    "The value of the preference key before executing the module (C(none) for C(get) state). Either a single string value or a list of strings for array types."
+                ],
+                "returned": "success",
+                "sample": "\"96\" or [\"red\", \"blue\", \"green\"]",
+                "type": "string or list of strings"
+            },
+            "property": {
+                "description": "The property specified in the module parameters",
+                "returned": "success",
+                "sample": "/Xft/DPI",
+                "type": "str"
+            },
+            "value": {
+                "description": [
+                    "The value of the preference key after executing the module. Either a single string value or a list of strings for array types."
+                ],
+                "returned": "success",
+                "sample": "\"192\" or [\"orange\", \"yellow\", \"violet\"]",
+                "type": "string or list of strings"
+            },
+            "value_type": {
+                "description": [
+                    "The type of the value that was changed (C(none) for C(get) and C(reset) state). Either a single string value or a list of strings for array types."
+                ],
+                "returned": "success",
+                "sample": "\"int\" or [\"str\", \"str\", \"str\"]",
+                "type": "string or list of strings"
+            }
+        }
+    }
+}

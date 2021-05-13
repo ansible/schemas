@@ -1,0 +1,85 @@
+{
+    "community.general.clc_publicip": {
+        "doc": {
+            "author": "CLC Runner (@clc-runner)",
+            "collection": "community.general",
+            "description": [
+                "An Ansible module to add or delete public ip addresses on an existing server or servers in CenturyLink Cloud."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/clc_publicip.py",
+            "has_action": false,
+            "module": "clc_publicip",
+            "notes": [
+                "To use this module, it is required to set the below environment variables which enables access to the Centurylink Cloud - CLC_V2_API_USERNAME, the account login id for the centurylink cloud - CLC_V2_API_PASSWORD, the account password for the centurylink cloud",
+                "Alternatively, the module accepts the API token and account alias. The API token can be generated using the CLC account login and password via the HTTP api call @ https://api.ctl.io/v2/authentication/login - CLC_V2_API_TOKEN, the API token generated from https://api.ctl.io/v2/authentication/login - CLC_ACCT_ALIAS, the account alias associated with the centurylink cloud",
+                "Users can set CLC_V2_API_URL to specify an endpoint for pointing to a different CLC environment."
+            ],
+            "options": {
+                "ports": {
+                    "description": [
+                        "A list of ports to expose. This is required when state is 'present'"
+                    ],
+                    "elements": "int",
+                    "type": "list"
+                },
+                "protocol": {
+                    "choices": [
+                        "TCP",
+                        "UDP",
+                        "ICMP"
+                    ],
+                    "default": "TCP",
+                    "description": [
+                        "The protocol that the public IP will listen for."
+                    ],
+                    "type": "str"
+                },
+                "server_ids": {
+                    "description": [
+                        "A list of servers to create public ips on."
+                    ],
+                    "elements": "str",
+                    "required": true,
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Determine whether to create or delete public IPs. If present module will not create a second public ip if one already exists."
+                    ],
+                    "type": "str"
+                },
+                "wait": {
+                    "default": "yes",
+                    "description": [
+                        "Whether to wait for the tasks to finish before returning."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python = 2.7",
+                "requests >= 2.5.0",
+                "clc-sdk"
+            ],
+            "short_description": "Add and Delete public ips on servers in CenturyLink Cloud."
+        },
+        "examples": "\n# Note - You must set the CLC_V2_API_USERNAME And CLC_V2_API_PASSWD Environment variables before running these examples\n\n- name: Add Public IP to Server\n  hosts: localhost\n  gather_facts: False\n  connection: local\n  tasks:\n    - name: Create Public IP For Servers\n      community.general.clc_publicip:\n        protocol: TCP\n        ports:\n          - 80\n        server_ids:\n          - UC1TEST-SVR01\n          - UC1TEST-SVR02\n        state: present\n      register: clc\n\n    - name: Debug\n      ansible.builtin.debug:\n        var: clc\n\n- name: Delete Public IP from Server\n  hosts: localhost\n  gather_facts: False\n  connection: local\n  tasks:\n    - name: Create Public IP For Servers\n      community.general.clc_publicip:\n        server_ids:\n          - UC1TEST-SVR01\n          - UC1TEST-SVR02\n        state: absent\n      register: clc\n\n    - name: Debug\n      ansible.builtin.debug:\n        var: clc\n",
+        "metadata": null,
+        "return": {
+            "server_ids": {
+                "description": "The list of server ids that are changed",
+                "returned": "success",
+                "sample": [
+                    "UC1TEST-SVR01",
+                    "UC1TEST-SVR02"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

@@ -1,0 +1,290 @@
+{
+    "community.vmware.vmware_guest_controller": {
+        "doc": {
+            "author": [
+                "Diane Wang (@Tomorrow9) <dianew@vmware.com>"
+            ],
+            "collection": "community.vmware",
+            "description": [
+                "This module can be used to add, remove disk controllers or USB controllers belonging to given virtual machine.",
+                "All parameters and VMware object names are case sensitive."
+            ],
+            "filename": "/Users/ssbarnea/.ansible/collections/ansible_collections/community/vmware/plugins/modules/vmware_guest_controller.py",
+            "has_action": false,
+            "module": "vmware_guest_controller",
+            "notes": [
+                "Tested on vSphere 6.0, 6.5 and 6.7"
+            ],
+            "options": {
+                "controllers": {
+                    "description": [
+                        "A list of disk or USB controllers to add or remove.",
+                        "Total 4 disk controllers with the same type are allowed per VM.",
+                        "Total 2 USB controllers are allowed per VM, 1 USB 2.0 and 1 USB 3.0 or 3.1.",
+                        "For specific guest OS, supported controller types please refer to VMware Compatibility Guide."
+                    ],
+                    "suboptions": {
+                        "controller_number": {
+                            "choices": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "description": [
+                                "Disk controller bus number. When C(state) is set to C(absent), this parameter is required.",
+                                "When C(type) set to C(usb2) or C(usb3), this parameter is not required."
+                            ],
+                            "type": "int"
+                        },
+                        "state": {
+                            "choices": [
+                                "present",
+                                "absent"
+                            ],
+                            "description": [
+                                "Add new controller or remove specified existing controller.",
+                                "If C(state) is set to C(absent), the specified controller will be removed from virtual machine when there is no disk or device attaching to it.",
+                                "If specified controller is removed or not exist, no action will be taken only warning message.",
+                                "If C(state) is set to C(present), new controller with specified type will be added.",
+                                "If the number of controller with specified controller type reaches it's maximum, no action will be taken only warning message."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        },
+                        "type": {
+                            "choices": [
+                                "buslogic",
+                                "lsilogic",
+                                "lsilogicsas",
+                                "paravirtual",
+                                "sata",
+                                "nvme",
+                                "usb2",
+                                "usb3"
+                            ],
+                            "description": [
+                                "Type of disk or USB controller.",
+                                "From vSphere 6.5 and virtual machine with hardware version 13, C(nvme) controller starts to be supported."
+                            ],
+                            "required": true,
+                            "type": "str"
+                        }
+                    },
+                    "type": "list"
+                },
+                "datacenter": {
+                    "default": "ha-datacenter",
+                    "description": [
+                        "The datacenter name to which virtual machine belongs to."
+                    ],
+                    "type": "str"
+                },
+                "folder": {
+                    "description": [
+                        "Destination folder, absolute or relative path to find an existing guest.",
+                        "This is a required parameter, only if multiple VMs are found with same name.",
+                        "The folder should include the datacenter. ESX's datacenter is ha-datacenter",
+                        "Examples:",
+                        "   folder: /ha-datacenter/vm",
+                        "   folder: ha-datacenter/vm",
+                        "   folder: /datacenter1/vm",
+                        "   folder: datacenter1/vm",
+                        "   folder: /datacenter1/vm/folder1",
+                        "   folder: datacenter1/vm/folder1",
+                        "   folder: /folder1/datacenter1/vm",
+                        "   folder: folder1/datacenter1/vm",
+                        "   folder: /folder1/datacenter1/vm/folder2"
+                    ],
+                    "type": "str"
+                },
+                "gather_disk_controller_facts": {
+                    "description": [
+                        "Whether to collect existing disk and USB controllers facts only.",
+                        "When this parameter is set to C(True), C(controllers) parameter will be ignored."
+                    ],
+                    "type": "bool"
+                },
+                "hostname": {
+                    "description": [
+                        "The hostname or IP address of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_HOST) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "moid": {
+                    "description": [
+                        "Managed Object ID of the instance to manage if known, this is a unique identifier only within a single vCenter instance.",
+                        "This is required if C(name) or C(uuid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "name": {
+                    "description": [
+                        "Name of the virtual machine.",
+                        "This is a required parameter, if parameter C(uuid) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "aliases": [
+                        "pass",
+                        "pwd"
+                    ],
+                    "description": [
+                        "The password of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PASSWORD) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "port": {
+                    "default": 443,
+                    "description": [
+                        "The port number of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PORT) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "int"
+                },
+                "proxy_host": {
+                    "description": [
+                        "Address of a proxy that will receive all HTTPS requests and relay them.",
+                        "The format is a hostname or a IP.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_HOST) will be used instead.",
+                        "This feature depends on a version of pyvmomi greater than v6.7.1.2018.12"
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "proxy_port": {
+                    "description": [
+                        "Port of the HTTP proxy that will receive all HTTPS requests and relay them.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_PROXY_PORT) will be used instead."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "sleep_time": {
+                    "default": 10,
+                    "description": [
+                        "The sleep time in seconds after VM reconfigure task completes, used when not get the updated VM controller facts after VM reconfiguration.",
+                        "This parameter is not required. Maximum value is 600."
+                    ],
+                    "type": "int"
+                },
+                "use_instance_uuid": {
+                    "default": false,
+                    "description": [
+                        "Whether to use the VMware instance UUID rather than the BIOS UUID."
+                    ],
+                    "type": "bool"
+                },
+                "username": {
+                    "aliases": [
+                        "admin",
+                        "user"
+                    ],
+                    "description": [
+                        "The username of the vSphere vCenter or ESXi server.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_USER) will be used instead.",
+                        "Environment variable support added in Ansible 2.6."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the instance to gather facts if known, this is VMware's unique identifier.",
+                        "This is a required parameter, if parameter C(name) or C(moid) is not supplied."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.",
+                        "If the value is not specified in the task, the value of environment variable C(VMWARE_VALIDATE_CERTS) will be used instead.",
+                        "Environment variable support added in Ansible 2.6.",
+                        "If set to C(yes), please make sure Python >= 2.7.9 is installed on the given machine."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.7",
+                "PyVmomi"
+            ],
+            "short_description": "Manage disk or USB controllers related to virtual machine in given vCenter infrastructure"
+        },
+        "examples": "\n- name: Add disk and USB 3.0 controllers for virtual machine located by name\n  community.vmware.vmware_guest_controller:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    name: test_VM\n    controllers:\n      - state: present\n        type: sata\n      - state: present\n        type: nvme\n      - state: present\n        type: usb3\n  delegate_to: localhost\n  register: disk_controller_facts\n\n- name: Remove disk controllers and USB 2.0 from virtual machine located by moid\n  community.vmware.vmware_guest_controller:\n    hostname: \"{{ vcenter_hostname }}\"\n    username: \"{{ vcenter_username }}\"\n    password: \"{{ vcenter_password }}\"\n    datacenter: \"{{ datacenter_name }}\"\n    validate_certs: no\n    moid: vm-33\n    controllers:\n      - state: absent\n        controller_number: 1\n        type: sata\n      - state: absent\n        controller_number: 0\n        type: nvme\n      - state: absent\n        type: usb2\n  delegate_to: localhost\n  register: disk_controller_facts\n",
+        "metadata": null,
+        "return": {
+            "disk_controller_status": {
+                "description": "metadata about the virtual machine's existing disk controllers or after adding or removing operation",
+                "returned": "always",
+                "sample": {
+                    "nvme": {
+                        "0": {
+                            "controller_busnumber": 0,
+                            "controller_controllerkey": 100,
+                            "controller_devicekey": 31000,
+                            "controller_disks_devicekey": [],
+                            "controller_label": "NVME controller 0",
+                            "controller_summary": "NVME controller 0",
+                            "controller_unitnumber": 30
+                        }
+                    },
+                    "sata": {
+                        "0": {
+                            "controller_busnumber": 0,
+                            "controller_controllerkey": 100,
+                            "controller_devicekey": 15000,
+                            "controller_disks_devicekey": [
+                                16000,
+                                16001
+                            ],
+                            "controller_label": "SATA controller 0",
+                            "controller_summary": "AHCI",
+                            "controller_unitnumber": 24
+                        }
+                    },
+                    "scsi": {
+                        "0": {
+                            "controller_busnumber": 0,
+                            "controller_controllerkey": 100,
+                            "controller_devicekey": 1000,
+                            "controller_disks_devicekey": [
+                                2000
+                            ],
+                            "controller_label": "SCSI controller 0",
+                            "controller_summary": "LSI Logic SAS",
+                            "controller_unitnumber": 3
+                        },
+                        "1": {
+                            "controller_busnumber": 1,
+                            "controller_controllerkey": 100,
+                            "controller_devicekey": 1001,
+                            "controller_disks_devicekey": [],
+                            "controller_label": "SCSI controller 1",
+                            "controller_summary": "VMware paravirtual SCSI",
+                            "controller_unitnumber": 4
+                        }
+                    },
+                    "usb2": {
+                        "0": {
+                            "controller_busnumber": 0,
+                            "controller_controllerkey": 100,
+                            "controller_devicekey": 7000,
+                            "controller_disks_devicekey": [],
+                            "controller_label": "USB Controller",
+                            "controller_summary": "Auto connect Disabled",
+                            "controller_unitnumber": 22
+                        }
+                    }
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

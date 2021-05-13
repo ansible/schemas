@@ -1,0 +1,256 @@
+{
+    "community.aws.iam": {
+        "doc": {
+            "author": [
+                "Jonathan I. Davila (@defionscode)",
+                "Paul Seiffert (@seiffert)"
+            ],
+            "collection": "community.aws",
+            "description": [
+                "Allows for the management of IAM users, user API keys, groups, roles."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/iam.py",
+            "has_action": false,
+            "module": "iam",
+            "notes": [
+                "Currently boto does not support the removal of Managed Policies, the module will error out if your user/group/role has managed policies when you try to do state=absent. They will need to be removed manually.",
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "access_key_ids": {
+                    "description": [
+                        "A list of the keys that you want affected by the I(access_key_state) parameter."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "access_key_state": {
+                    "choices": [
+                        "create",
+                        "remove",
+                        "active",
+                        "inactive",
+                        "Create",
+                        "Remove",
+                        "Active",
+                        "Inactive"
+                    ],
+                    "description": [
+                        "When type is user, it creates, removes, deactivates or activates a user's access key(s). Note that actions apply only to keys specified."
+                    ],
+                    "type": "str"
+                },
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "groups": {
+                    "description": [
+                        "A list of groups the user should belong to. When I(state=update), will gracefully remove groups not listed."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "iam_type": {
+                    "choices": [
+                        "user",
+                        "group",
+                        "role"
+                    ],
+                    "description": [
+                        "Type of IAM resource."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "key_count": {
+                    "default": 1,
+                    "description": [
+                        "When I(access_key_state=create) it will ensure this quantity of keys are present."
+                    ],
+                    "type": "int"
+                },
+                "name": {
+                    "description": [
+                        "Name of IAM resource to create or identify."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "new_name": {
+                    "description": [
+                        "When I(state=update), will replace I(name) with I(new_name) on IAM resource."
+                    ],
+                    "type": "str"
+                },
+                "new_path": {
+                    "description": [
+                        "When I(state=update), will replace the path with new_path on the IAM resource."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "When I(type=user) and either I(state=present) or I(state=update), define the users login password.",
+                        "Note that this will always return 'changed'."
+                    ],
+                    "type": "str"
+                },
+                "path": {
+                    "default": "/",
+                    "description": [
+                        "When creating or updating, specify the desired path of the resource.",
+                        "If I(state=present), it will replace the current path to match what is passed in when they do not match."
+                    ],
+                    "type": "str"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "update"
+                    ],
+                    "description": [
+                        "Whether to create, delete or update the IAM resource. Note, roles cannot be updated."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "trust_policy": {
+                    "description": [
+                        "The inline (JSON or YAML) trust policy document that grants an entity permission to assume the role.",
+                        "Mutually exclusive with I(trust_policy_filepath)."
+                    ],
+                    "type": "dict"
+                },
+                "trust_policy_filepath": {
+                    "description": [
+                        "The path to the trust policy document that grants an entity permission to assume the role.",
+                        "Mutually exclusive with I(trust_policy)."
+                    ],
+                    "type": "str"
+                },
+                "update_password": {
+                    "choices": [
+                        "always",
+                        "on_create"
+                    ],
+                    "default": "always",
+                    "description": [
+                        "When to update user passwords.",
+                        "I(update_password=always) will ensure the password is set to I(password).",
+                        "I(update_password=on_create) will only set the password for newly created users."
+                    ],
+                    "type": "str"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "python >= 2.6",
+                "boto"
+            ],
+            "short_description": "Manage IAM users, groups, roles and keys",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Basic user creation example\n- name: Create two new IAM users with API keys\n  community.aws.iam:\n    iam_type: user\n    name: \"{{ item }}\"\n    state: present\n    password: \"{{ temp_pass }}\"\n    access_key_state: create\n  loop:\n    - jcleese\n    - mpython\n\n# Advanced example, create two new groups and add the pre-existing user\n# jdavila to both groups.\n- name: Create Two Groups, Mario and Luigi\n  community.aws.iam:\n    iam_type: group\n    name: \"{{ item }}\"\n    state: present\n  loop:\n     - Mario\n     - Luigi\n  register: new_groups\n\n- name: Update user\n  community.aws.iam:\n    iam_type: user\n    name: jdavila\n    state: update\n    groups: \"{{ item.created_group.group_name }}\"\n  loop: \"{{ new_groups.results }}\"\n\n# Example of role with custom trust policy for Lambda service\n- name: Create IAM role with custom trust relationship\n  community.aws.iam:\n    iam_type: role\n    name: AAALambdaTestRole\n    state: present\n    trust_policy:\n      Version: '2012-10-17'\n      Statement:\n      - Action: sts:AssumeRole\n        Effect: Allow\n        Principal:\n          Service: lambda.amazonaws.com\n\n",
+        "metadata": null,
+        "return": {
+            "role_result": {
+                "description": "the IAM.role dict returned by Boto",
+                "returned": "if iam_type=role and state=present",
+                "sample": {
+                    "arn": "arn:aws:iam::A1B2C3D4E5F6:role/my-new-role",
+                    "assume_role_policy_document": "...truncated...",
+                    "create_date": "2017-09-02T14:32:23Z",
+                    "path": "/",
+                    "role_id": "AROAA1B2C3D4E5F6G7H8I",
+                    "role_name": "my-new-role"
+                },
+                "type": "str"
+            },
+            "roles": {
+                "description": "a list containing the name of the currently defined roles",
+                "returned": "if iam_type=role and state=present",
+                "sample": [
+                    "my-new-role",
+                    "my-existing-role-1",
+                    "my-existing-role-2",
+                    "my-existing-role-3",
+                    "my-existing-role-..."
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

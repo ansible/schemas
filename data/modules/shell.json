@@ -1,0 +1,188 @@
+{
+    "shell": {
+        "doc": {
+            "author": [
+                "Ansible Core Team",
+                "Michael DeHaan"
+            ],
+            "collection": "ansible.builtin",
+            "description": [
+                "The C(shell) module takes the command name followed by a list of space-delimited arguments.",
+                "Either a free form command or C(cmd) parameter is required, see the examples.",
+                "It is almost exactly like the M(ansible.builtin.command) module but runs the command through a shell (C(/bin/sh)) on the remote node.",
+                "For Windows targets, use the M(ansible.windows.win_shell) module instead."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible/modules/shell.py",
+            "has_action": true,
+            "module": "shell",
+            "notes": [
+                "If you want to execute a command securely and predictably, it may be better to use the M(ansible.builtin.command) module instead. Best practices when writing playbooks will follow the trend of using M(ansible.builtin.command) unless the M(ansible.builtin.shell) module is explicitly required. When running ad-hoc commands, use your best judgement.",
+                "Check mode is supported when passing C(creates) or C(removes). If running in check mode and either of these are specified, the module will check for the existence of the file and report the correct changed status. If these are not supplied, the task will be skipped.",
+                "To sanitize any variables passed to the shell module, you should use C({{ var | quote }}) instead of just C({{ var }}) to make sure they do not include evil things like semicolons.",
+                "An alternative to using inline shell scripts with this module is to use the M(ansible.builtin.script) module possibly together with the M(ansible.builtin.template) module.",
+                "For rebooting systems, use the M(ansible.builtin.reboot) or M(ansible.windows.win_reboot) module."
+            ],
+            "options": {
+                "chdir": {
+                    "description": [
+                        "Change into this directory before running the command."
+                    ],
+                    "type": "path",
+                    "version_added": "0.6",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "cmd": {
+                    "description": [
+                        "The command to run followed by optional arguments."
+                    ],
+                    "type": "str"
+                },
+                "creates": {
+                    "description": [
+                        "A filename, when it already exists, this step will B(not) be run."
+                    ],
+                    "type": "path"
+                },
+                "executable": {
+                    "description": [
+                        "Change the shell used to execute the command.",
+                        "This expects an absolute path to the executable."
+                    ],
+                    "type": "path",
+                    "version_added": "0.9",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "free_form": {
+                    "description": [
+                        "The shell module takes a free form command to run, as a string.",
+                        "There is no actual parameter named 'free form'.",
+                        "See the examples on how to use this module."
+                    ],
+                    "type": "str"
+                },
+                "removes": {
+                    "description": [
+                        "A filename, when it does not exist, this step will B(not) be run."
+                    ],
+                    "type": "path",
+                    "version_added": "0.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "stdin": {
+                    "description": [
+                        "Set the stdin of the command directly to the specified value."
+                    ],
+                    "type": "str",
+                    "version_added": "2.4",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "stdin_add_newline": {
+                    "default": true,
+                    "description": [
+                        "Whether to append a newline to stdin data."
+                    ],
+                    "type": "bool",
+                    "version_added": "2.8",
+                    "version_added_collection": "ansible.builtin"
+                },
+                "warn": {
+                    "default": true,
+                    "description": [
+                        "Whether to enable task warnings."
+                    ],
+                    "type": "bool",
+                    "version_added": "1.8",
+                    "version_added_collection": "ansible.builtin"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.builtin.command"
+                },
+                {
+                    "module": "ansible.builtin.raw"
+                },
+                {
+                    "module": "ansible.builtin.script"
+                },
+                {
+                    "module": "ansible.windows.win_shell"
+                }
+            ],
+            "short_description": "Execute shell commands on targets",
+            "version_added": "0.2",
+            "version_added_collection": "ansible.builtin"
+        },
+        "examples": "\n- name: Execute the command in remote shell; stdout goes to the specified file on the remote\n  ansible.builtin.shell: somescript.sh >> somelog.txt\n\n- name: Change the working directory to somedir/ before executing the command\n  ansible.builtin.shell: somescript.sh >> somelog.txt\n  args:\n    chdir: somedir/\n\n# You can also use the 'args' form to provide the options.\n- name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist\n  ansible.builtin.shell: somescript.sh >> somelog.txt\n  args:\n    chdir: somedir/\n    creates: somelog.txt\n\n# You can also use the 'cmd' parameter instead of free form format.\n- name: This command will change the working directory to somedir/\n  ansible.builtin.shell:\n    cmd: ls -l | grep log\n    chdir: somedir/\n\n- name: Run a command that uses non-posix shell-isms (in this example /bin/sh doesn't handle redirection and wildcards together but bash does)\n  ansible.builtin.shell: cat < /tmp/*txt\n  args:\n    executable: /bin/bash\n\n- name: Run a command using a templated variable (always use quote filter to avoid injection)\n  ansible.builtin.shell: cat {{ myfile|quote }}\n\n# You can use shell to run other executables to perform actions inline\n- name: Run expect to wait for a successful PXE boot via out-of-band CIMC\n  ansible.builtin.shell: |\n    set timeout 300\n    spawn ssh admin@{{ cimc_host }}\n\n    expect \"password:\"\n    send \"{{ cimc_password }}\\n\"\n\n    expect \"\\n{{ cimc_name }}\"\n    send \"connect host\\n\"\n\n    expect \"pxeboot.n12\"\n    send \"\\n\"\n\n    exit 0\n  args:\n    executable: /usr/bin/expect\n  delegate_to: localhost\n\n# Disabling warnings\n- name: Using curl to connect to a host via SOCKS proxy (unsupported in uri). Ordinarily this would throw a warning\n  ansible.builtin.shell: curl --socks5 localhost:9000 http://www.ansible.com\n  args:\n    warn: no\n",
+        "metadata": null,
+        "return": {
+            "cmd": {
+                "description": "The command executed by the task.",
+                "returned": "always",
+                "sample": "rabbitmqctl join_cluster rabbit@master",
+                "type": "str"
+            },
+            "delta": {
+                "description": "The command execution delta time.",
+                "returned": "always",
+                "sample": "0:00:00.325771",
+                "type": "str"
+            },
+            "end": {
+                "description": "The command execution end time.",
+                "returned": "always",
+                "sample": "2016-02-25 09:18:26.755339",
+                "type": "str"
+            },
+            "msg": {
+                "description": "changed",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "rc": {
+                "description": "The command return code (0 means success).",
+                "returned": "always",
+                "sample": 0,
+                "type": "int"
+            },
+            "start": {
+                "description": "The command execution start time.",
+                "returned": "always",
+                "sample": "2016-02-25 09:18:26.429568",
+                "type": "str"
+            },
+            "stderr": {
+                "description": "The command standard error.",
+                "returned": "always",
+                "sample": "ls: cannot access foo: No such file or directory",
+                "type": "str"
+            },
+            "stderr_lines": {
+                "description": "The command standard error split in lines.",
+                "returned": "always",
+                "sample": [
+                    {
+                        "u'ls cannot access foo": "No such file or directory'"
+                    },
+                    "u'ls \u2026'"
+                ],
+                "type": "list"
+            },
+            "stdout": {
+                "description": "The command standard output.",
+                "returned": "always",
+                "sample": "Clustering node rabbit@slave1 with rabbit@master \u2026",
+                "type": "str"
+            },
+            "stdout_lines": {
+                "description": "The command standard output split in lines.",
+                "returned": "always",
+                "sample": [
+                    "u'Clustering node rabbit@slave1 with rabbit@master \u2026'"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

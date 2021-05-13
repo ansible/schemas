@@ -1,0 +1,131 @@
+{
+    "community.network.ce_dldp_interface": {
+        "doc": {
+            "author": [
+                "Zhou Zhijin (@QijunPan)"
+            ],
+            "collection": "community.network",
+            "description": [
+                "Manages interface DLDP configuration on HUAWEI CloudEngine switches."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/network/plugins/modules/ce_dldp_interface.py",
+            "has_action": false,
+            "module": "ce_dldp_interface",
+            "notes": [
+                "If C(state=present, enable=disable), interface DLDP enable will be turned off and related interface DLDP configuration will be cleared.",
+                "If C(state=absent), only local_mac is supported to configure.",
+                "This module requires the netconf system service be enabled on the remote device being managed.",
+                "Recommended connection is C(netconf).",
+                "This module also works with C(local) connections for legacy playbooks."
+            ],
+            "options": {
+                "enable": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "Set interface DLDP enable state."
+                    ]
+                },
+                "interface": {
+                    "description": [
+                        "Must be fully qualified interface name, i.e. GE1/0/1, 10GE1/0/1, 40GE1/0/22, 100GE1/0/1."
+                    ],
+                    "required": true
+                },
+                "local_mac": {
+                    "description": [
+                        "Set the source MAC address for DLDP packets sent in the DLDP-compatible mode. The value of MAC address is in H-H-H format. H contains 1 to 4 hexadecimal digits."
+                    ]
+                },
+                "mode_enable": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "Set DLDP compatible-mode enable state."
+                    ]
+                },
+                "reset": {
+                    "choices": [
+                        "enable",
+                        "disable"
+                    ],
+                    "description": [
+                        "Specify whether reseting interface DLDP state."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Manage the state of the resource."
+                    ]
+                }
+            },
+            "short_description": "Manages interface DLDP configuration on HUAWEI CloudEngine switches."
+        },
+        "examples": "\n- name: DLDP interface test\n  hosts: cloudengine\n  connection: local\n  gather_facts: no\n  vars:\n    cli:\n      host: \"{{ inventory_hostname }}\"\n      port: \"{{ ansible_ssh_port }}\"\n      username: \"{{ username }}\"\n      password: \"{{ password }}\"\n      transport: cli\n\n  tasks:\n\n  - name: \"Configure interface DLDP enable state and ensure global dldp enable is turned on\"\n    community.network.ce_dldp_interface:\n      interface: 40GE2/0/1\n      enable: enable\n      provider: \"{{ cli }}\"\n\n  - name: \"Configuire interface DLDP compatible-mode enable state  and ensure interface DLDP state is already enabled\"\n    community.network.ce_dldp_interface:\n      interface: 40GE2/0/1\n      enable: enable\n      mode_enable: enable\n      provider: \"{{ cli }}\"\n\n  - name: \"Configuire the source MAC address for DLDP packets sent in the DLDP-compatible mode  and\n           ensure interface DLDP state and compatible-mode enable state  is already enabled\"\n    community.network.ce_dldp_interface:\n      interface: 40GE2/0/1\n      enable: enable\n      mode_enable: enable\n      local_mac: aa-aa-aa\n      provider: \"{{ cli }}\"\n\n  - name: \"Reset DLDP state of specified interface and ensure interface DLDP state is already enabled\"\n    community.network.ce_dldp_interface:\n      interface: 40GE2/0/1\n      enable: enable\n      reset: enable\n      provider: \"{{ cli }}\"\n\n  - name: \"Unconfigure interface DLDP local mac address when C(state=absent)\"\n    community.network.ce_dldp_interface:\n      interface: 40GE2/0/1\n      state: absent\n      local_mac: aa-aa-aa\n      provider: \"{{ cli }}\"\n",
+        "metadata": null,
+        "return": {
+            "changed": {
+                "description": "check to see if a change was made on the device",
+                "returned": "always",
+                "sample": true,
+                "type": "bool"
+            },
+            "end_state": {
+                "description": "k/v pairs of interface DLDP configuration after module execution",
+                "returned": "always",
+                "sample": {
+                    "enable": "enable",
+                    "interface": "40GE2/0/22",
+                    "local_mac": "00aa-00aa-00aa",
+                    "mode_enable": "enable",
+                    "reset": "enable"
+                },
+                "type": "dict"
+            },
+            "existing": {
+                "description": "k/v pairs of existing interface DLDP configuration",
+                "returned": "always",
+                "sample": {
+                    "enable": "disable",
+                    "interface": "40GE2/0/22",
+                    "local_mac": null,
+                    "mode_enable": null,
+                    "reset": "disable"
+                },
+                "type": "dict"
+            },
+            "proposed": {
+                "description": "k/v pairs of parameters passed into module",
+                "returned": "always",
+                "sample": {
+                    "enable": "enalbe",
+                    "interface": "40GE2/0/22",
+                    "local_mac": "aa-aa-aa",
+                    "mode_enable": "enable",
+                    "reset": "enable"
+                },
+                "type": "dict"
+            },
+            "updates": {
+                "description": "command sent to the device",
+                "returned": "always",
+                "sample": [
+                    "dldp enable",
+                    "dldp compatible-mode enable",
+                    "dldp compatible-mode local-mac aa-aa-aa",
+                    "dldp reset"
+                ],
+                "type": "list"
+            }
+        }
+    }
+}

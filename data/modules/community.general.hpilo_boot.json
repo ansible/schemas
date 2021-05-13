@@ -1,0 +1,109 @@
+{
+    "community.general.hpilo_boot": {
+        "doc": {
+            "author": "Dag Wieers (@dagwieers)",
+            "collection": "community.general",
+            "description": [
+                "This module boots a system through its HP iLO interface. The boot media can be one of: cdrom, floppy, hdd, network or usb.",
+                "This module requires the hpilo python module."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/hpilo_boot.py",
+            "has_action": false,
+            "module": "hpilo_boot",
+            "notes": [
+                "To use a USB key image you need to specify floppy as boot media.",
+                "This module ought to be run from a system that can access the HP iLO interface directly, either by using C(local_action) or using C(delegate_to)."
+            ],
+            "options": {
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Whether to force a reboot (even when the system is already booted).",
+                        "As a safeguard, without force, hpilo_boot will refuse to reboot a server that is already running."
+                    ],
+                    "type": "bool"
+                },
+                "host": {
+                    "description": [
+                        "The HP iLO hostname/address that is linked to the physical system."
+                    ],
+                    "required": true
+                },
+                "image": {
+                    "description": [
+                        "The URL of a cdrom, floppy or usb boot media image. protocol://username:password@hostname:port/filename",
+                        "protocol is either 'http' or 'https'",
+                        "username:password is optional",
+                        "port is optional"
+                    ]
+                },
+                "login": {
+                    "default": "Administrator",
+                    "description": [
+                        "The login name to authenticate to the HP iLO interface."
+                    ]
+                },
+                "media": {
+                    "choices": [
+                        "cdrom",
+                        "floppy",
+                        "rbsu",
+                        "hdd",
+                        "network",
+                        "normal",
+                        "usb"
+                    ],
+                    "description": [
+                        "The boot media to boot the system from"
+                    ]
+                },
+                "password": {
+                    "default": "admin",
+                    "description": [
+                        "The password to authenticate to the HP iLO interface."
+                    ]
+                },
+                "ssl_version": {
+                    "choices": [
+                        "SSLv3",
+                        "SSLv23",
+                        "TLSv1",
+                        "TLSv1_1",
+                        "TLSv1_2"
+                    ],
+                    "default": "TLSv1",
+                    "description": [
+                        "Change the ssl_version used."
+                    ]
+                },
+                "state": {
+                    "choices": [
+                        "boot_always",
+                        "boot_once",
+                        "connect",
+                        "disconnect",
+                        "no_boot",
+                        "poweroff"
+                    ],
+                    "default": "boot_once",
+                    "description": [
+                        "The state of the boot media.",
+                        "no_boot: Do not boot from the device",
+                        "boot_once: Boot from the device once and then notthereafter",
+                        "boot_always: Boot from the device each time the server is rebooted",
+                        "connect: Connect the virtual media device and set to boot_always",
+                        "disconnect: Disconnects the virtual media device and set to no_boot",
+                        "poweroff: Power off the server"
+                    ]
+                }
+            },
+            "requirements": [
+                "python-hpilo"
+            ],
+            "short_description": "Boot system using specific media through HP iLO interface"
+        },
+        "examples": "\n- name: Task to boot a system using an ISO from an HP iLO interface only if the system is an HP server\n  community.general.hpilo_boot:\n    host: YOUR_ILO_ADDRESS\n    login: YOUR_ILO_LOGIN\n    password: YOUR_ILO_PASSWORD\n    media: cdrom\n    image: http://some-web-server/iso/boot.iso\n  when: cmdb_hwmodel.startswith('HP ')\n  delegate_to: localhost\n\n- name: Power off a server\n  community.general.hpilo_boot:\n    host: YOUR_ILO_HOST\n    login: YOUR_ILO_LOGIN\n    password: YOUR_ILO_PASSWORD\n    state: poweroff\n  delegate_to: localhost\n",
+        "metadata": null,
+        "return": null
+    }
+}

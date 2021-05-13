@@ -1,0 +1,212 @@
+{
+    "community.windows.win_domain_computer": {
+        "doc": {
+            "author": [
+                "Daniel S\u00e1nchez F\u00e1bregas (@Daniel-Sanchez-Fabregas)",
+                "Brian Scholer (@briantist)"
+            ],
+            "collection": "community.windows",
+            "description": [
+                "Create, read, update and delete computers in Active Directory using a windows bridge computer to launch New-ADComputer, Get-ADComputer, Set-ADComputer, Remove-ADComputer and Move-ADObject powershell commands."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/windows/plugins/modules/win_domain_computer.py",
+            "has_action": false,
+            "module": "win_domain_computer",
+            "notes": [
+                "For more information on Offline Domain Join see L(the step-by-step guide,https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd392267%28v=ws.10%29).",
+                "When using the ODJ BLOB to join a computer to the domain, it must be written out to a file.",
+                "The file must be UTF-16 encoded (in PowerShell this encoding is called C(Unicode)), and it must end in a null character. See examples.",
+                "The C(djoin.exe) part of the offline domain join process will not use I(domain_server), I(domain_username), or I(domain_password)."
+            ],
+            "options": {
+                "description": {
+                    "default": "",
+                    "description": [
+                        "Specifies a description of the object.",
+                        "This parameter sets the value of the Description property for the object.",
+                        "The LDAP display name (ldapDisplayName) for this property is description."
+                    ],
+                    "type": "str"
+                },
+                "dns_hostname": {
+                    "description": [
+                        "Specifies the fully qualified domain name (FQDN) of the computer.",
+                        "This parameter sets the DNSHostName property for a computer object.",
+                        "The LDAP display name for this property is dNSHostName.",
+                        "Required when I(state=present)."
+                    ],
+                    "type": "str"
+                },
+                "domain_password": {
+                    "description": [
+                        "The password for I(username)."
+                    ],
+                    "type": "str"
+                },
+                "domain_server": {
+                    "description": [
+                        "Specifies the Active Directory Domain Services instance to connect to.",
+                        "Can be in the form of an FQDN or NetBIOS name.",
+                        "If not specified then the value is based on the domain of the computer running PowerShell."
+                    ],
+                    "type": "str"
+                },
+                "domain_username": {
+                    "description": [
+                        "The username to use when interacting with AD.",
+                        "If this is not set then the user Ansible used to log in with will be used instead when using CredSSP or Kerberos with credential delegation."
+                    ],
+                    "type": "str"
+                },
+                "enabled": {
+                    "default": true,
+                    "description": [
+                        "Specifies if an account is enabled.",
+                        "An enabled account requires a password.",
+                        "This parameter sets the Enabled property for an account object.",
+                        "This parameter also sets the ADS_UF_ACCOUNTDISABLE flag of the Active Directory User Account Control (UAC) attribute."
+                    ],
+                    "type": "bool"
+                },
+                "managed_by": {
+                    "description": [
+                        "The value to be assigned to the LDAP C(managedBy) attribute.",
+                        "This value can be in the forms C(Distinguished Name), C(objectGUID), C(objectSid) or C(sAMAccountName), see examples for more details."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "community.windows"
+                },
+                "name": {
+                    "description": [
+                        "Specifies the name of the object.",
+                        "This parameter sets the Name property of the Active Directory object.",
+                        "The LDAP display name (ldapDisplayName) of this property is name."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "odj_blob_path": {
+                    "description": [
+                        "The path to the file where the BLOB will be saved. If omitted, a temporary file will be used.",
+                        "If I(offline_domain_join=output) the file will be deleted after its contents are returned.",
+                        "The parent directory for the BLOB file must exist; intermediate directories will not be created."
+                    ]
+                },
+                "offline_domain_join": {
+                    "choices": [
+                        "none",
+                        "output",
+                        "path"
+                    ],
+                    "default": "none",
+                    "description": [
+                        "Provisions a computer in the directory and provides a BLOB file that can be used on the target computer/image to join it to the domain while offline.",
+                        "The C(none) value doesn't do any offline join operations.",
+                        "C(output) returns the BLOB in output. The BLOB should be treated as secret (it contains the machine password) so use C(no_log) when using this option.",
+                        "C(path) preserves the offline domain join BLOB file on the target machine for later use. The path will be returned.",
+                        "If the computer already exists, no BLOB will be created/returned, and the module will operate as it would have without offline domain join."
+                    ],
+                    "type": "str"
+                },
+                "ou": {
+                    "description": [
+                        "Specifies the X.500 path of the Organizational Unit (OU) or container where the new object is created. Required when I(state=present).",
+                        "Special characters must be escaped, see L(Distinguished Names,https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/distinguished-names) for details."
+                    ],
+                    "type": "str"
+                },
+                "sam_account_name": {
+                    "description": [
+                        "Specifies the Security Account Manager (SAM) account name of the computer.",
+                        "It maximum is 256 characters, 15 is advised for older operating systems compatibility.",
+                        "The LDAP display name (ldapDisplayName) for this property is sAMAccountName.",
+                        "If ommitted the value is the same as C(name).",
+                        "Note that all computer SAMAccountNames need to end with a C($).",
+                        "If C($) is omitted, it will be added to the end."
+                    ],
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "absent",
+                        "present"
+                    ],
+                    "default": "present",
+                    "description": [
+                        "Specified whether the computer should be C(present) or C(absent) in Active Directory."
+                    ],
+                    "type": "str"
+                }
+            },
+            "seealso": [
+                {
+                    "module": "ansible.windows.win_domain"
+                },
+                {
+                    "module": "ansible.windows.win_domain_controller"
+                },
+                {
+                    "module": "community.windows.win_domain_group"
+                },
+                {
+                    "module": "ansible.windows.win_domain_membership"
+                },
+                {
+                    "module": "community.windows.win_domain_user"
+                }
+            ],
+            "short_description": "Manage computers in Active Directory"
+        },
+        "examples": "\n  - name: Add linux computer to Active Directory OU using a windows machine\n    community.windows.win_domain_computer:\n      name: one_linux_server\n      sam_account_name: linux_server$\n      dns_hostname: one_linux_server.my_org.local\n      ou: \"OU=servers,DC=my_org,DC=local\"\n      description: Example of linux server\n      enabled: yes\n      state: present\n    delegate_to: my_windows_bridge.my_org.local\n\n  - name: Remove linux computer from Active Directory using a windows machine\n    community.windows.win_domain_computer:\n      name: one_linux_server\n      state: absent\n    delegate_to: my_windows_bridge.my_org.local\n\n  - name: Provision a computer for offline domain join\n    community.windows.win_domain_computer:\n      name: newhost\n      dns_hostname: newhost.ansible.local\n      ou: 'OU=A great\\, big organizational unit name,DC=ansible,DC=local'\n      state: present\n      offline_domain_join: yes\n      odj_return_blob: yes\n    register: computer_status\n    delegate_to: windc.ansible.local\n\n  - name: Join a workgroup computer to the domain\n    vars:\n      target_blob_file: 'C:\\ODJ\\blob.txt'\n    ansible.windows.win_shell: |\n      $blob = [Convert]::FromBase64String('{{ computer_status.odj_blob }}')\n      [IO.File]::WriteAllBytes('{{ target_blob_file }}', $blob)\n      & djoin.exe --% /RequestODJ /LoadFile '{{ target_blob_file }}' /LocalOS /WindowsPath \"%SystemRoot%\"\n\n  - name: Restart to complete domain join\n    ansible.windows.win_restart:\n",
+        "metadata": null,
+        "return": {
+            "djoin": {
+                "contains": {
+                    "invocation": {
+                        "description": "The full command line used to call djoin.exe",
+                        "returned": "always",
+                        "sample": "djoin.exe /PROVISION /MACHINE compname /MACHINEOU OU=Hosts,DC=ansible,DC=local /DOMAIN ansible.local /SAVEFILE blobfile.txt",
+                        "type": "str"
+                    },
+                    "rc": {
+                        "description": "The return code from djoin.exe",
+                        "returned": "when not check mode",
+                        "sample": 87,
+                        "type": "int"
+                    },
+                    "stderr": {
+                        "description": "The stderr from djoin.exe",
+                        "returned": "when not check mode",
+                        "sample": "Invalid input parameter combination.",
+                        "type": "str"
+                    },
+                    "stdout": {
+                        "description": "The stdout from djoin.exe",
+                        "returned": "when not check mode",
+                        "sample": "Computer provisioning completed successfully.",
+                        "type": "str"
+                    }
+                },
+                "description": "Information about the invocation of djoin.exe.",
+                "returned": "when offline_domain_join is True and the computer didn't exist",
+                "type": "dict"
+            },
+            "odj_blob": {
+                "description": [
+                    "The offline domain join BLOB. This is an empty string when in check mode or when offline_domain_join is 'path'.",
+                    "This field contains the base64 encoded raw bytes of the offline domain join BLOB file."
+                ],
+                "returned": "when offline_domain_join is not 'none' and the computer didn't exist",
+                "sample": "<a long base64 string>",
+                "type": "str"
+            },
+            "odj_blob_file": {
+                "description": "The path to the offline domain join BLOB file on the target host. If odj_blob_path was specified, this will match that path.",
+                "returned": "when offline_domain_join is 'path' and the computer didn't exist",
+                "sample": "C:\\Users\\admin\\AppData\\Local\\Temp\\e4vxonty.rkb",
+                "type": "str"
+            }
+        }
+    }
+}

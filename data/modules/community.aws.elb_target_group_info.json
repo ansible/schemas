@@ -1,0 +1,306 @@
+{
+    "community.aws.elb_target_group_info": {
+        "doc": {
+            "author": "Rob White (@wimnat)",
+            "collection": "community.aws",
+            "description": [
+                "Gather information about ELB target groups in AWS",
+                "This module was called C(elb_target_group_facts) before Ansible 2.9. The usage did not change."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/aws/plugins/modules/elb_target_group_info.py",
+            "has_action": false,
+            "module": "elb_target_group_info",
+            "notes": [
+                "If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence C(AWS_URL) or C(EC2_URL), C(AWS_ACCESS_KEY_ID) or C(AWS_ACCESS_KEY) or C(EC2_ACCESS_KEY), C(AWS_SECRET_ACCESS_KEY) or C(AWS_SECRET_KEY) or C(EC2_SECRET_KEY), C(AWS_SECURITY_TOKEN) or C(EC2_SECURITY_TOKEN), C(AWS_REGION) or C(EC2_REGION)",
+                "Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See https://boto.readthedocs.io/en/latest/boto_config_tut.html",
+                "C(AWS_REGION) or C(EC2_REGION) can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file"
+            ],
+            "options": {
+                "aws_access_key": {
+                    "aliases": [
+                        "ec2_access_key",
+                        "access_key"
+                    ],
+                    "description": [
+                        "AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "aws_config": {
+                    "description": [
+                        "A dictionary to modify the botocore configuration.",
+                        "Parameters can be found at U(https://botocore.amazonaws.com/v1/documentation/api/latest/reference/config.html#botocore.config.Config).",
+                        "Only the 'user_agent' key is used for boto modules. See U(http://boto.cloudhackers.com/en/latest/boto_config_tut.html#boto) for more boto configuration."
+                    ],
+                    "type": "dict"
+                },
+                "aws_secret_key": {
+                    "aliases": [
+                        "ec2_secret_key",
+                        "secret_key"
+                    ],
+                    "description": [
+                        "AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "collect_targets_health": {
+                    "default": false,
+                    "description": [
+                        "When set to \"yes\", output contains targets health description"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "debug_botocore_endpoint_logs": {
+                    "default": "no",
+                    "description": [
+                        "Use a botocore.endpoint logger to parse the unique (rather than total) \"resource:action\" API calls made during a task, outputing the set to the resource_actions key in the task results. Use the aws_resource_action callback to output to total list made during a playbook. The ANSIBLE_DEBUG_BOTOCORE_LOGS environment variable may also be used."
+                    ],
+                    "type": "bool"
+                },
+                "ec2_url": {
+                    "description": [
+                        "Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used."
+                    ],
+                    "type": "str"
+                },
+                "load_balancer_arn": {
+                    "description": [
+                        "The Amazon Resource Name (ARN) of the load balancer."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "names": {
+                    "description": [
+                        "The names of the target groups."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "profile": {
+                    "description": [
+                        "Uses a boto profile. Only works with boto >= 2.24.0."
+                    ],
+                    "type": "str"
+                },
+                "region": {
+                    "aliases": [
+                        "aws_region",
+                        "ec2_region"
+                    ],
+                    "description": [
+                        "The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See U(http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region)"
+                    ],
+                    "type": "str"
+                },
+                "security_token": {
+                    "aliases": [
+                        "access_token"
+                    ],
+                    "description": [
+                        "AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used."
+                    ],
+                    "type": "str"
+                },
+                "target_group_arns": {
+                    "description": [
+                        "The Amazon Resource Names (ARN) of the target groups."
+                    ],
+                    "elements": "str",
+                    "required": false,
+                    "type": "list"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "When set to \"no\", SSL certificates will not be validated for boto versions >= 2.6.0."
+                    ],
+                    "type": "bool"
+                }
+            },
+            "requirements": [
+                "boto",
+                "boto3",
+                "python >= 2.6"
+            ],
+            "short_description": "Gather information about ELB target groups in AWS",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.aws"
+        },
+        "examples": "\n# Note: These examples do not set authentication details, see the AWS Guide for details.\n\n- name: Gather information about all target groups\n  community.aws.elb_target_group_info:\n\n- name: Gather information about the target group attached to a particular ELB\n  community.aws.elb_target_group_info:\n    load_balancer_arn: \"arn:aws:elasticloadbalancing:ap-southeast-2:001122334455:loadbalancer/app/my-elb/aabbccddeeff\"\n\n- name: Gather information about a target groups named 'tg1' and 'tg2'\n  community.aws.elb_target_group_info:\n    names:\n      - tg1\n      - tg2\n\n",
+        "metadata": null,
+        "return": {
+            "target_groups": {
+                "contains": {
+                    "deregistration_delay_timeout_seconds": {
+                        "description": "The amount time for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused.",
+                        "returned": "always",
+                        "sample": 300,
+                        "type": "int"
+                    },
+                    "health_check_interval_seconds": {
+                        "description": "The approximate amount of time, in seconds, between health checks of an individual target.",
+                        "returned": "always",
+                        "sample": 30,
+                        "type": "int"
+                    },
+                    "health_check_path": {
+                        "description": "The destination for the health check request.",
+                        "returned": "always",
+                        "sample": "/index.html",
+                        "type": "str"
+                    },
+                    "health_check_port": {
+                        "description": "The port to use to connect with the target.",
+                        "returned": "always",
+                        "sample": "traffic-port",
+                        "type": "str"
+                    },
+                    "health_check_protocol": {
+                        "description": "The protocol to use to connect with the target.",
+                        "returned": "always",
+                        "sample": "HTTP",
+                        "type": "str"
+                    },
+                    "health_check_timeout_seconds": {
+                        "description": "The amount of time, in seconds, during which no response means a failed health check.",
+                        "returned": "always",
+                        "sample": 5,
+                        "type": "int"
+                    },
+                    "healthy_threshold_count": {
+                        "description": "The number of consecutive health checks successes required before considering an unhealthy target healthy.",
+                        "returned": "always",
+                        "sample": 5,
+                        "type": "int"
+                    },
+                    "load_balancer_arns": {
+                        "description": "The Amazon Resource Names (ARN) of the load balancers that route traffic to this target group.",
+                        "returned": "always",
+                        "sample": [],
+                        "type": "list"
+                    },
+                    "matcher": {
+                        "description": "The HTTP codes to use when checking for a successful response from a target.",
+                        "returned": "always",
+                        "sample": {
+                            "http_code": "200"
+                        },
+                        "type": "dict"
+                    },
+                    "port": {
+                        "description": "The port on which the targets are listening.",
+                        "returned": "always",
+                        "sample": 80,
+                        "type": "int"
+                    },
+                    "protocol": {
+                        "description": "The protocol to use for routing traffic to the targets.",
+                        "returned": "always",
+                        "sample": "HTTP",
+                        "type": "str"
+                    },
+                    "stickiness_enabled": {
+                        "description": "Indicates whether sticky sessions are enabled.",
+                        "returned": "always",
+                        "sample": true,
+                        "type": "bool"
+                    },
+                    "stickiness_lb_cookie_duration_seconds": {
+                        "description": "Indicates whether sticky sessions are enabled.",
+                        "returned": "always",
+                        "sample": 86400,
+                        "type": "int"
+                    },
+                    "stickiness_type": {
+                        "description": "The type of sticky sessions.",
+                        "returned": "always",
+                        "sample": "lb_cookie",
+                        "type": "str"
+                    },
+                    "tags": {
+                        "description": "The tags attached to the target group.",
+                        "returned": "always",
+                        "sample": "{ 'Tag': 'Example' }",
+                        "type": "dict"
+                    },
+                    "target_group_arn": {
+                        "description": "The Amazon Resource Name (ARN) of the target group.",
+                        "returned": "always",
+                        "sample": "arn:aws:elasticloadbalancing:ap-southeast-2:01234567890:targetgroup/mytargetgroup/aabbccddee0044332211",
+                        "type": "str"
+                    },
+                    "target_group_name": {
+                        "description": "The name of the target group.",
+                        "returned": "always",
+                        "sample": "mytargetgroup",
+                        "type": "str"
+                    },
+                    "targets_health_description": {
+                        "contains": {
+                            "health_check_port": {
+                                "description": "The port to check target health.",
+                                "returned": "always",
+                                "sample": "80",
+                                "type": "str"
+                            },
+                            "target": {
+                                "contains": {
+                                    "id": {
+                                        "description": "The ID of the target.",
+                                        "returned": "always",
+                                        "sample": "i-0123456789",
+                                        "type": "str"
+                                    },
+                                    "port": {
+                                        "description": "The port to use to connect with the target.",
+                                        "returned": "always",
+                                        "sample": 80,
+                                        "type": "int"
+                                    }
+                                },
+                                "description": "The target metadata.",
+                                "returned": "always",
+                                "type": "complex"
+                            },
+                            "target_health": {
+                                "contains": {
+                                    "state": {
+                                        "description": "The state of the target health.",
+                                        "returned": "always",
+                                        "sample": "healthy",
+                                        "type": "str"
+                                    }
+                                },
+                                "description": "The target health status.",
+                                "returned": "always",
+                                "type": "complex"
+                            }
+                        },
+                        "description": "Targets health description.",
+                        "returned": "when collect_targets_health is enabled",
+                        "type": "complex"
+                    },
+                    "unhealthy_threshold_count": {
+                        "description": "The number of consecutive health check failures required before considering the target unhealthy.",
+                        "returned": "always",
+                        "sample": 2,
+                        "type": "int"
+                    },
+                    "vpc_id": {
+                        "description": "The ID of the VPC for the targets.",
+                        "returned": "always",
+                        "sample": "vpc-0123456",
+                        "type": "str"
+                    }
+                },
+                "description": "a list of target groups",
+                "returned": "always",
+                "type": "complex"
+            }
+        }
+    }
+}

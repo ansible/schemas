@@ -1,0 +1,333 @@
+{
+    "cloudscale_ch.cloud.server": {
+        "doc": {
+            "author": [
+                "Gaudenz Steinlin (@gaudenz)",
+                "Ren\u00e9 Moser (@resmo)",
+                "Denis Krienb\u00fchl (@href)"
+            ],
+            "collection": "cloudscale_ch.cloud",
+            "description": [
+                "Create, update, start, stop and delete servers on the cloudscale.ch IaaS service."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/cloudscale_ch/cloud/plugins/modules/server.py",
+            "has_action": false,
+            "module": "server",
+            "notes": [
+                "If I(uuid) option is provided, it takes precedence over I(name) for server selection. This allows to update the server's name.",
+                "If no I(uuid) option is provided, I(name) is used for server selection. If more than one server with this name exists, execution is aborted.",
+                "Only the I(name) and I(flavor) are evaluated for the update.",
+                "The option I(force=true) must be given to allow the reboot of existing running servers for applying the changes.",
+                "All operations are performed using the cloudscale.ch public API v1.",
+                "For details consult the full API documentation: U(https://www.cloudscale.ch/en/api/v1).",
+                "A valid API token is required for all operations. You can create as many tokens as you like using the cloudscale.ch control panel at U(https://control.cloudscale.ch)."
+            ],
+            "options": {
+                "api_timeout": {
+                    "default": 30,
+                    "description": [
+                        "Timeout in seconds for calls to the cloudscale.ch API."
+                    ],
+                    "type": "int"
+                },
+                "api_token": {
+                    "description": [
+                        "cloudscale.ch API token.",
+                        "This can also be passed in the C(CLOUDSCALE_API_TOKEN) environment variable."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "default": "https://api.cloudscale.ch/v1",
+                    "description": [
+                        "cloudscale.ch API URL.",
+                        "This can also be passed in the C(CLOUDSCALE_API_URL) environment variable."
+                    ],
+                    "type": "str",
+                    "version_added": "1.3.0",
+                    "version_added_collection": "cloudscale_ch.cloud"
+                },
+                "bulk_volume_size_gb": {
+                    "description": [
+                        "Size of the bulk storage volume in GB.",
+                        "No bulk storage volume if not set."
+                    ],
+                    "type": "int"
+                },
+                "flavor": {
+                    "description": [
+                        "Flavor of the server."
+                    ],
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Allow to stop the running server for updating if necessary."
+                    ],
+                    "type": "bool"
+                },
+                "image": {
+                    "description": [
+                        "Image used to create the server."
+                    ],
+                    "type": "str"
+                },
+                "interfaces": {
+                    "description": [
+                        "List of network interface objects specifying the interfaces to be attached to the server. See U(https://www.cloudscale.ch/en/api/v1/#interfaces-attribute-specification) for more details."
+                    ],
+                    "elements": "dict",
+                    "suboptions": {
+                        "addresses": {
+                            "description": [
+                                "Attach a private network interface and configure a subnet and/or an IP address."
+                            ],
+                            "elements": "dict",
+                            "suboptions": {
+                                "address": {
+                                    "description": [
+                                        "The static IP address of the interface. Use '[]' to avoid assigning an IP address via DHCP."
+                                    ],
+                                    "type": "str"
+                                },
+                                "subnet": {
+                                    "description": [
+                                        "UUID of the subnet from which an address will be assigned."
+                                    ],
+                                    "type": "str"
+                                }
+                            },
+                            "type": "list"
+                        },
+                        "network": {
+                            "description": [
+                                "Create a network interface on the network identified by UUID. Use 'public' instead of an UUID to attach a public network interface. Can be omitted if a subnet is provided under addresses."
+                            ],
+                            "type": "str"
+                        }
+                    },
+                    "type": "list",
+                    "version_added": "1.4.0",
+                    "version_added_collection": "cloudscale_ch.cloud"
+                },
+                "name": {
+                    "description": [
+                        "Name of the Server.",
+                        "Either I(name) or I(uuid) are required."
+                    ],
+                    "type": "str"
+                },
+                "password": {
+                    "description": [
+                        "Password for the server."
+                    ],
+                    "type": "str"
+                },
+                "server_groups": {
+                    "description": [
+                        "List of UUID or names of server groups."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "ssh_keys": {
+                    "description": [
+                        "List of SSH public keys.",
+                        "Use the full content of your .pub file here."
+                    ],
+                    "elements": "str",
+                    "type": "list"
+                },
+                "state": {
+                    "choices": [
+                        "running",
+                        "stopped",
+                        "absent"
+                    ],
+                    "default": "running",
+                    "description": [
+                        "State of the server."
+                    ],
+                    "type": "str"
+                },
+                "tags": {
+                    "description": [
+                        "Tags assosiated with the servers. Set this to C({}) to clear any tags."
+                    ],
+                    "type": "dict"
+                },
+                "use_ipv6": {
+                    "default": true,
+                    "description": [
+                        "Enable IPv6 on the public network interface."
+                    ],
+                    "type": "bool"
+                },
+                "use_private_network": {
+                    "description": [
+                        "Attach a private network interface to the server."
+                    ],
+                    "type": "bool"
+                },
+                "use_public_network": {
+                    "description": [
+                        "Attach a public network interface to the server."
+                    ],
+                    "type": "bool"
+                },
+                "user_data": {
+                    "description": [
+                        "Cloud-init configuration (cloud-config) data to use for the server."
+                    ],
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "UUID of the server.",
+                        "Either I(name) or I(uuid) are required."
+                    ],
+                    "type": "str"
+                },
+                "volume_size_gb": {
+                    "default": 10,
+                    "description": [
+                        "Size of the root volume in GB."
+                    ],
+                    "type": "int"
+                },
+                "zone": {
+                    "description": [
+                        "Zone in which the server resides (e.g. C(lgp1) or C(rma1))."
+                    ],
+                    "type": "str"
+                }
+            },
+            "short_description": "Manages servers on the cloudscale.ch IaaS service",
+            "version_added": "1.0.0",
+            "version_added_collection": "cloudscale_ch.cloud"
+        },
+        "examples": "\n# Create and start a server with an existing server group (shiny-group)\n- name: Start cloudscale.ch server\n  cloudscale_ch.cloud.server:\n    name: my-shiny-cloudscale-server\n    image: debian-10\n    flavor: flex-4\n    ssh_keys: ssh-rsa XXXXXXXXXX...XXXX ansible@cloudscale\n    server_groups: shiny-group\n    zone: lpg1\n    use_private_network: True\n    bulk_volume_size_gb: 100\n    api_token: xxxxxx\n\n# Start another server in anti-affinity (server group shiny-group)\n- name: Start second cloudscale.ch server\n  cloudscale_ch.cloud.server:\n    name: my-other-shiny-server\n    image: ubuntu-16.04\n    flavor: flex-8\n    ssh_keys: ssh-rsa XXXXXXXXXXX ansible@cloudscale\n    server_groups: shiny-group\n    zone: lpg1\n    api_token: xxxxxx\n\n# Force to update the flavor of a running server\n- name: Start cloudscale.ch server\n  cloudscale_ch.cloud.server:\n    name: my-shiny-cloudscale-server\n    image: debian-10\n    flavor: flex-8\n    force: yes\n    ssh_keys: ssh-rsa XXXXXXXXXX...XXXX ansible@cloudscale\n    use_private_network: True\n    bulk_volume_size_gb: 100\n    api_token: xxxxxx\n  register: server1\n\n# Stop the first server\n- name: Stop my first server\n  cloudscale_ch.cloud.server:\n    uuid: '{{ server1.uuid }}'\n    state: stopped\n    api_token: xxxxxx\n\n# Delete my second server\n- name: Delete my second server\n  cloudscale_ch.cloud.server:\n    name: my-other-shiny-server\n    state: absent\n    api_token: xxxxxx\n\n# Start a server and wait for the SSH host keys to be generated\n- name: Start server and wait for SSH host keys\n  cloudscale_ch.cloud.server:\n    name: my-cloudscale-server-with-ssh-key\n    image: debian-10\n    flavor: flex-4\n    ssh_keys: ssh-rsa XXXXXXXXXXX ansible@cloudscale\n    api_token: xxxxxx\n  register: server\n  until: server is not failed\n  retries: 5\n  delay: 2\n\n# Start a server with two network interfaces:\n#\n#    A public interface with IPv4/IPv6\n#    A private interface on a specific private network with an IPv4 address\n\n- name: Start a server with a public and private network interface\n  cloudscale_ch.cloud.server:\n    name: my-cloudscale-server-with-two-network-interfaces\n    image: debian-10\n    flavor: flex-4\n    ssh_keys: ssh-rsa XXXXXXXXXXX ansible@cloudscale\n    api_token: xxxxxx\n    interfaces:\n      - network: 'public'\n      - addresses:\n        - subnet: UUID_of_private_subnet\n\n# Start a server with a specific IPv4 address from subnet range\n- name: Start a server with a specific IPv4 address from subnet range\n  cloudscale_ch.cloud.server:\n    name: my-cloudscale-server-with-specific-address\n    image: debian-10\n    flavor: flex-4\n    ssh_keys: ssh-rsa XXXXXXXXXXX ansible@cloudscale\n    api_token: xxxxxx\n    interfaces:\n      - addresses:\n        - subnet: UUID_of_private_subnet\n          address: 'A.B.C.D'\n\n# Start a server with two network interfaces:\n#\n#    A public interface with IPv4/IPv6\n#    A private interface on a specific private network with no IPv4 address\n\n- name: Start a server with a private network interface and no IP address\n  cloudscale_ch.cloud.server:\n    name: my-cloudscale-server-with-specific-address\n    image: debian-10\n    flavor: flex-4\n    ssh_keys: ssh-rsa XXXXXXXXXXX ansible@cloudscale\n    api_token: xxxxxx\n    interfaces:\n      - network: 'public'\n      - network: UUID_of_private_network\n        addresses: []\n",
+        "metadata": null,
+        "return": {
+            "flavor": {
+                "description": "The flavor that has been used for this server",
+                "returned": "success when not state == absent",
+                "sample": {
+                    "memory_gb": 4,
+                    "name": "Flex-4",
+                    "slug": "flex-4",
+                    "vcpu_count": 2
+                },
+                "type": "dict"
+            },
+            "href": {
+                "description": "API URL to get details about this server",
+                "returned": "success when not state == absent",
+                "sample": "https://api.cloudscale.ch/v1/servers/cfde831a-4e87-4a75-960f-89b0148aa2cc",
+                "type": "str"
+            },
+            "image": {
+                "description": "The image used for booting this server",
+                "returned": "success when not state == absent",
+                "sample": {
+                    "default_username": "ubuntu",
+                    "name": "Ubuntu 18.04 LTS",
+                    "operating_system": "Ubuntu",
+                    "slug": "ubuntu-18.04"
+                },
+                "type": "dict"
+            },
+            "interfaces": {
+                "description": "List of network ports attached to the server",
+                "returned": "success when not state == absent",
+                "sample": [
+                    {
+                        "addresses": [
+                            "..."
+                        ],
+                        "type": "public"
+                    }
+                ],
+                "type": "list"
+            },
+            "name": {
+                "description": "The display name of the server",
+                "returned": "success",
+                "sample": "its-a-me-mario.cloudscale.ch",
+                "type": "str"
+            },
+            "server_groups": {
+                "description": "List of server groups",
+                "returned": "success when not state == absent",
+                "sample": [
+                    {
+                        "href": "https://api.cloudscale.ch/v1/server-groups/...",
+                        "name": "db-group",
+                        "uuid": "..."
+                    }
+                ],
+                "type": "list"
+            },
+            "ssh_fingerprints": {
+                "description": "A list of SSH host key fingerprints. Will be null until the host keys could be retrieved from the server.",
+                "returned": "success when not state == absent",
+                "sample": [
+                    "ecdsa-sha2-nistp256 SHA256:XXXX",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "ssh_host_keys": {
+                "description": "A list of SSH host keys. Will be null until the host keys could be retrieved from the server.",
+                "returned": "success when not state == absent",
+                "sample": [
+                    "ecdsa-sha2-nistp256 XXXXX",
+                    "..."
+                ],
+                "type": "list"
+            },
+            "state": {
+                "description": "The current status of the server",
+                "returned": "success",
+                "sample": "running",
+                "type": "str"
+            },
+            "tags": {
+                "description": "Tags assosiated with the server.",
+                "returned": "success",
+                "sample": {
+                    "project": "my project"
+                },
+                "type": "dict"
+            },
+            "uuid": {
+                "description": "The unique identifier for this server",
+                "returned": "success",
+                "sample": "cfde831a-4e87-4a75-960f-89b0148aa2cc",
+                "type": "str"
+            },
+            "volumes": {
+                "description": "List of volumes attached to the server",
+                "returned": "success when not state == absent",
+                "sample": [
+                    {
+                        "device": "/dev/vda",
+                        "size_gb": "50",
+                        "type": "ssd"
+                    }
+                ],
+                "type": "list"
+            },
+            "zone": {
+                "description": "The zone used for booting this server",
+                "returned": "success when not state == absent",
+                "sample": {
+                    "slug": "lpg1"
+                },
+                "type": "dict"
+            }
+        }
+    }
+}

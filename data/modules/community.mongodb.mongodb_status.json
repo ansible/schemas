@@ -1,0 +1,207 @@
+{
+    "community.mongodb.mongodb_status": {
+        "doc": {
+            "author": "Rhys Campbell (@rhysmeister)",
+            "collection": "community.mongodb",
+            "description": [
+                "Validates the status of the cluster.",
+                "The module expects all replicaset nodes to be PRIMARY, SECONDARY or ARBITER.",
+                "Will wait until a timeout for the replicaset state to converge if required.",
+                "Can also be used to lookup the current PRIMARY member (see examples)."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/mongodb/plugins/modules/mongodb_status.py",
+            "has_action": false,
+            "module": "mongodb_status",
+            "notes": [
+                "Requires the pymongo Python package on the remote host, version 2.4.2+. This can be installed using pip or the OS package manager. @see U(http://api.mongodb.org/python/current/installation.html)"
+            ],
+            "options": {
+                "auth_mechanism": {
+                    "choices": [
+                        "SCRAM-SHA-256",
+                        "SCRAM-SHA-1",
+                        "MONGODB-X509",
+                        "GSSAPI",
+                        "PLAIN"
+                    ],
+                    "description": [
+                        "Authentication type."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "connection_options": {
+                    "description": [
+                        "Additional connection options.",
+                        "Supply as a list of dicts or strings containing key value pairs seperated with '='."
+                    ],
+                    "elements": "raw",
+                    "required": false,
+                    "type": "list"
+                },
+                "interval": {
+                    "default": 30,
+                    "description": [
+                        "The number of seconds to wait between polling executions."
+                    ],
+                    "type": "int"
+                },
+                "login_database": {
+                    "default": "admin",
+                    "description": [
+                        "The database where login credentials are stored."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_host": {
+                    "default": "localhost",
+                    "description": [
+                        "The host running MongoDB instance to login to."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_password": {
+                    "description": [
+                        "The password used to authenticate with.",
+                        "Required when I(login_user) is specified."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "login_port": {
+                    "default": 27017,
+                    "description": [
+                        "The MongoDB server port to login to."
+                    ],
+                    "required": false,
+                    "type": "int"
+                },
+                "login_user": {
+                    "description": [
+                        "The MongoDB user to login with.",
+                        "Required when I(login_password) is specified."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "poll": {
+                    "default": 1,
+                    "description": [
+                        "The maximum number of times to query for the replicaset status before the set converges or we fail."
+                    ],
+                    "type": "int"
+                },
+                "replica_set": {
+                    "default": "rs0",
+                    "description": [
+                        "Replicaset name."
+                    ],
+                    "type": "str"
+                },
+                "ssl": {
+                    "default": false,
+                    "description": [
+                        "Whether to use an SSL connection when connecting to the database."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "ssl_ca_certs": {
+                    "description": [
+                        "The ssl_ca_certs option takes a path to a CA file."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_cert_reqs": {
+                    "choices": [
+                        "CERT_NONE",
+                        "CERT_OPTIONAL",
+                        "CERT_REQUIRED"
+                    ],
+                    "default": "CERT_REQUIRED",
+                    "description": [
+                        "Specifies whether a certificate is required from the other side of the connection, and whether it will be validated if provided."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_certfile": {
+                    "description": [
+                        "Present a client certificate using the ssl_certfile option."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_crlfile": {
+                    "description": [
+                        "The ssl_crlfile option takes a path to a CRL file."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_keyfile": {
+                    "description": [
+                        "Private key for the client certificate."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "ssl_pem_passphrase": {
+                    "description": [
+                        "Passphrase to decrypt encrypted private keys."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "validate": {
+                    "choices": [
+                        "default",
+                        "votes",
+                        "minimal"
+                    ],
+                    "default": "default",
+                    "description": [
+                        "The type of validate to perform on the replicaset.",
+                        "default, Suitable for most purposes. Validate that there are an odd number of servers and one is PRIMARY and the remainder are in a SECONDARY or ARBITER state.",
+                        "votes, Check the number of votes is odd and one is a PRIMARY and the remainder are in a SECONDARY or ARBITER state. Authentication is required here to get the replicaset configuration.",
+                        "minimal, Just checks that one server is in a PRIMARY state with the remainder being SECONDARY or ARBITER."
+                    ],
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "pymongo"
+            ],
+            "short_description": "Validates the status of the cluster.",
+            "version_added": "1.0.0",
+            "version_added_collection": "community.mongodb"
+        },
+        "examples": "\n- name: Check replicaset is healthy, fail if not after first attempt\n  community.mongodb.mongodb_status:\n    replica_set: rs0\n  when: ansible_hostname == \"mongodb1\"\n\n- name: Wait for the replicaset rs0 to converge, check 5 times, 10 second interval between checks\n  community.mongodb.mongodb_status:\n    replica_set: rs0\n    poll: 5\n    interval: 10\n  when: ansible_hostname == \"mongodb1\"\n\n# Get the replicaset status and then lookup the primary's hostname and save to a variable\n- name: Ensure replicaset is stable before beginning\n  community.mongodb.mongodb_status:\n    login_user: \"{{ admin_user }}\"\n    login_password: \"{{ admin_user_password }}\"\n    poll: 3\n    interval: 10\n  register: rs\n\n- name: Lookup PRIMARY replicaset member\n  set_fact:\n    primary: \"{{ item.key.split('.')[0] }}\"\n  loop: \"{{ lookup('dict', rs.replicaset) }}\"\n  when: \"'PRIMARY' in item.value\"\n",
+        "metadata": null,
+        "return": {
+            "failed": {
+                "description": "If the mnodule had failed or not.",
+                "returned": "always",
+                "type": "bool"
+            },
+            "iterations": {
+                "description": "Number of times the module has queried the replicaset status.",
+                "returned": "always",
+                "type": "int"
+            },
+            "msg": {
+                "description": "Status message.",
+                "returned": "always",
+                "type": "str"
+            },
+            "replicaset": {
+                "description": "The last queried status of all the members of the replicaset if obtainable.",
+                "returned": "always",
+                "type": "dict"
+            }
+        }
+    }
+}

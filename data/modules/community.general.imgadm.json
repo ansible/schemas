@@ -1,0 +1,99 @@
+{
+    "community.general.imgadm": {
+        "doc": {
+            "author": "Jasper Lievisse Adriaanse (@jasperla)",
+            "collection": "community.general",
+            "description": [
+                "Manage SmartOS virtual machine images through imgadm(1M)"
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/community/general/plugins/modules/imgadm.py",
+            "has_action": false,
+            "module": "imgadm",
+            "options": {
+                "force": {
+                    "description": [
+                        "Force a given operation (where supported by imgadm(1M))."
+                    ],
+                    "required": false,
+                    "type": "bool"
+                },
+                "pool": {
+                    "default": "zones",
+                    "description": [
+                        "zpool to import to or delete images from."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "source": {
+                    "description": [
+                        "URI for the image source."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "state": {
+                    "choices": [
+                        "present",
+                        "absent",
+                        "deleted",
+                        "imported",
+                        "updated",
+                        "vacuumed"
+                    ],
+                    "description": [
+                        "State the object operated on should be in. C(imported) is an alias for for C(present) and C(deleted) for C(absent). When set to C(vacuumed) and C(uuid) to C(*), it will remove all unused images."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "type": {
+                    "choices": [
+                        "imgapi",
+                        "docker",
+                        "dsapi"
+                    ],
+                    "default": "imgapi",
+                    "description": [
+                        "Type for image sources."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "uuid": {
+                    "description": [
+                        "Image UUID. Can either be a full UUID or C(*) for all images."
+                    ],
+                    "required": false,
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "python >= 2.6"
+            ],
+            "short_description": "Manage SmartOS images"
+        },
+        "examples": "\n- name: Import an image\n  community.general.imgadm:\n    uuid: '70e3ae72-96b6-11e6-9056-9737fd4d0764'\n    state: imported\n\n- name: Delete an image\n  community.general.imgadm:\n    uuid: '70e3ae72-96b6-11e6-9056-9737fd4d0764'\n    state: deleted\n\n- name: Update all images\n  community.general.imgadm:\n    uuid: '*'\n    state: updated\n\n- name: Update a single image\n  community.general.imgadm:\n    uuid: '70e3ae72-96b6-11e6-9056-9737fd4d0764'\n    state: updated\n\n- name: Add a source\n  community.general.imgadm:\n    source: 'https://datasets.project-fifo.net'\n    state: present\n\n- name: Add a Docker source\n  community.general.imgadm:\n    source: 'https://docker.io'\n    type: docker\n    state: present\n\n- name: Remove a source\n  community.general.imgadm:\n    source: 'https://docker.io'\n    state: absent\n",
+        "metadata": null,
+        "return": {
+            "source": {
+                "description": "Source that is managed.",
+                "returned": "When not managing an image.",
+                "sample": "https://datasets.project-fifo.net",
+                "type": "str"
+            },
+            "state": {
+                "description": "State of the target, after execution.",
+                "returned": "success",
+                "sample": "present",
+                "type": "str"
+            },
+            "uuid": {
+                "description": "UUID for an image operated on.",
+                "returned": "When not managing an image source.",
+                "sample": "70e3ae72-96b6-11e6-9056-9737fd4d0764",
+                "type": "str"
+            }
+        }
+    }
+}

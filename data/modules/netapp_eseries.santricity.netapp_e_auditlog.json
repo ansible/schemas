@@ -1,0 +1,127 @@
+{
+    "netapp_eseries.santricity.netapp_e_auditlog": {
+        "doc": {
+            "author": "Nathan Swartz (@ndswartz)",
+            "collection": "netapp_eseries.santricity",
+            "description": [
+                "This module allows an e-series storage system owner to set audit-log configuration parameters."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/netapp_eseries/santricity/plugins/modules/netapp_e_auditlog.py",
+            "has_action": false,
+            "module": "netapp_e_auditlog",
+            "notes": [
+                "Check mode is supported.",
+                "This module is currently only supported with the Embedded Web Services API v3.0 and higher.",
+                "The E-Series Ansible modules require either an instance of the Web Services Proxy (WSP), to be available to manage the storage-system, or an E-Series storage-system that supports the Embedded Web Services API.",
+                "Embedded Web Services is currently available on the E2800, E5700, EF570, and newer hardware models.",
+                "M(netapp_e_storage_system) may be utilized for configuring the systems managed by a WSP instance."
+            ],
+            "options": {
+                "api_password": {
+                    "description": [
+                        "The password to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_url": {
+                    "description": [
+                        "The url to the SANtricity Web Services Proxy or Embedded Web Services API. Example https://prod-1.wahoo.acme.com/devmgr/v2"
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "api_username": {
+                    "description": [
+                        "The username to authenticate with the SANtricity Web Services Proxy or Embedded Web Services API."
+                    ],
+                    "required": true,
+                    "type": "str"
+                },
+                "force": {
+                    "default": false,
+                    "description": [
+                        "Forces the audit-log configuration to delete log history when log messages fullness cause immediate warning or full condition.",
+                        "Warning! This will cause any existing audit-log messages to be deleted.",
+                        "This is only applicable for I(full_policy=preventSystemAccess)."
+                    ],
+                    "type": "bool"
+                },
+                "full_policy": {
+                    "choices": [
+                        "overWrite",
+                        "preventSystemAccess"
+                    ],
+                    "default": "overWrite",
+                    "description": "Specifies what audit-log should do once the number of entries approach the record limit.",
+                    "type": "str"
+                },
+                "log_level": {
+                    "choices": [
+                        "all",
+                        "writeOnly"
+                    ],
+                    "default": "writeOnly",
+                    "description": "Filters the log messages according to the specified log level selection.",
+                    "type": "str"
+                },
+                "log_path": {
+                    "description": "A local path to a file to be used for debug logging.",
+                    "required": false,
+                    "type": "str"
+                },
+                "max_records": {
+                    "default": 50000,
+                    "description": [
+                        "The maximum number log messages audit-log will retain.",
+                        "Max records must be between and including 100 and 50000."
+                    ],
+                    "type": "int"
+                },
+                "ssid": {
+                    "default": 1,
+                    "description": [
+                        "The ID of the array to manage. This value must be unique for each array."
+                    ],
+                    "required": false,
+                    "type": "str"
+                },
+                "threshold": {
+                    "default": 90,
+                    "description": [
+                        "This is the memory full percent threshold that audit-log will start issuing warning messages.",
+                        "Percent range must be between and including 60 and 90."
+                    ],
+                    "type": "int"
+                },
+                "validate_certs": {
+                    "default": true,
+                    "description": [
+                        "Should https certificates be validated?"
+                    ],
+                    "required": false,
+                    "type": "bool"
+                }
+            },
+            "short_description": "NetApp E-Series manage audit-log configuration",
+            "version_added": "2.7",
+            "version_added_collection": "netapp_eseries.santricity"
+        },
+        "examples": "\n- name: Define audit-log to prevent system access if records exceed 50000 with warnings occurring at 60% capacity.\n  netapp_e_auditlog:\n     api_url: \"https://{{ netapp_e_api_host }}/devmgr/v2\"\n     api_username: \"{{ netapp_e_api_username }}\"\n     api_password: \"{{ netapp_e_api_password }}\"\n     ssid: \"{{ netapp_e_ssid }}\"\n     validate_certs: no\n     max_records: 50000\n     log_level: all\n     full_policy: preventSystemAccess\n     threshold: 60\n     log_path: /path/to/log_file.log\n- name: Define audit-log utilize the default values.\n  netapp_e_auditlog:\n     api_url: \"https://{{ netapp_e_api_host }}/devmgr/v2\"\n     api_username: \"{{ netapp_e_api_username }}\"\n     api_password: \"{{ netapp_e_api_password }}\"\n     ssid: \"{{ netapp_e_ssid }}\"\n- name: Force audit-log configuration when full or warning conditions occur while enacting preventSystemAccess policy.\n  netapp_e_auditlog:\n     api_url: \"https://{{ netapp_e_api_host }}/devmgr/v2\"\n     api_username: \"{{ netapp_e_api_username }}\"\n     api_password: \"{{ netapp_e_api_password }}\"\n     ssid: \"{{ netapp_e_ssid }}\"\n     max_records: 5000\n     log_level: all\n     full_policy: preventSystemAccess\n     threshold: 60\n     force: yes\n",
+        "metadata": {
+            "metadata_version": "1.1",
+            "status": [
+                "deprecated"
+            ],
+            "supported_by": "community"
+        },
+        "return": {
+            "msg": {
+                "description": "Success message",
+                "returned": "on success",
+                "sample": "The settings have been updated.",
+                "type": "str"
+            }
+        }
+    }
+}

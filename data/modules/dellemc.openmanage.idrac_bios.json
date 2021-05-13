@@ -1,0 +1,201 @@
+{
+    "dellemc.openmanage.idrac_bios": {
+        "doc": {
+            "author": [
+                "Felix Stephen (@felixs88)",
+                "Anooja Vardhineni (@anooja-vardhineni)"
+            ],
+            "collection": "dellemc.openmanage",
+            "description": [
+                "This module allows to configure the BIOS attributes."
+            ],
+            "filename": "/Users/ssbarnea/.pyenv/versions/3.9.2/lib/python3.9/site-packages/ansible_collections/dellemc/openmanage/plugins/modules/idrac_bios.py",
+            "has_action": false,
+            "module": "idrac_bios",
+            "notes": [
+                "Run this module from a system that has direct access to DellEMC iDRAC.",
+                "This module supports C(check_mode)."
+            ],
+            "options": {
+                "attributes": {
+                    "description": [
+                        "Dictionary of BIOS attributes and value pair. Attributes should be part of the Redfish Dell BIOS Attribute Registry. Use U(https://I(idrac_ip)/redfish/v1/Systems/System.Embedded.1/Bios) to view the Redfish URI.",
+                        "If deprecated options are provided and the same is repeated in I(attributes) then values in I(attributes) will take precedence.",
+                        "I(attributes) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "dict"
+                },
+                "boot_mode": {
+                    "choices": [
+                        "Bios",
+                        "Uefi"
+                    ],
+                    "description": [
+                        "(deprecated)Sets boot mode to BIOS or UEFI.",
+                        "This option is deprecated, and will be removed in later version. Use I(attributes) for configuring the BIOS attributes.",
+                        "I(boot_mode) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "str"
+                },
+                "boot_sequence": {
+                    "description": [
+                        "(deprecated)Allows to set the boot sequence in  BIOS boot mode or Secure UEFI boot mode by rearranging the boot entries in Fully Qualified Device Descriptor (FQDD).",
+                        "TThis option is deprecated, and will be removed in later version. Use I(attributes) for configuring the BIOS attributes.",
+                        "I(boot_sequence) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "str"
+                },
+                "boot_sources": {
+                    "description": [
+                        "List of boot devices to set the boot sources settings.",
+                        "I(boot_sources) is mutually exclusive with I(attributes), I(boot_sequence), I(onetime_boot_mode), I(secure_boot_mode), I(nvme_mode), I(boot_mode)."
+                    ],
+                    "elements": "raw",
+                    "type": "list"
+                },
+                "idrac_ip": {
+                    "description": "iDRAC IP Address.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_password": {
+                    "aliases": [
+                        "idrac_pwd"
+                    ],
+                    "description": "iDRAC user password.",
+                    "required": true,
+                    "type": "str"
+                },
+                "idrac_port": {
+                    "default": 443,
+                    "description": "iDRAC port.",
+                    "type": "int"
+                },
+                "idrac_user": {
+                    "description": "iDRAC username.",
+                    "required": true,
+                    "type": "str"
+                },
+                "nvme_mode": {
+                    "choices": [
+                        "NonRaid",
+                        "Raid"
+                    ],
+                    "description": [
+                        "(deprecated)Configures the NVME mode in the iDRAC 9 based PowerEdge Servers.",
+                        "This option is deprecated, and will be removed in later version. Use I(attributes) for configuring the BIOS attributes.",
+                        "I(nvme_mode) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "str"
+                },
+                "onetime_boot_mode": {
+                    "choices": [
+                        "Disabled",
+                        "OneTimeBootSeq",
+                        "OneTimeCustomBootSeqStr",
+                        "OneTimeCustomHddSeqStr",
+                        "OneTimeCustomUefiBootSeqStr",
+                        "OneTimeHddSeq",
+                        "OneTimeUefiBootSeq"
+                    ],
+                    "description": [
+                        "(deprecated)Configures the one time boot mode setting.",
+                        "This option is deprecated, and will be removed in later version. Use I(attributes) for configuring the BIOS attributes.",
+                        "I(onetime_boot_mode) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "str"
+                },
+                "secure_boot_mode": {
+                    "choices": [
+                        "AuditMode",
+                        "DeployedMode",
+                        "SetupMode",
+                        "UserMode"
+                    ],
+                    "description": [
+                        "(deprecated)Configures how the BIOS uses the Secure Boot Policy Objects in iDRAC 9 based PowerEdge Servers.",
+                        "This option is deprecated, and will be removed in later version. Use I(attributes) for configuring the BIOS attributes.",
+                        "I(secure_boot_mode) is mutually exclusive with I(boot_sources)."
+                    ],
+                    "type": "str"
+                },
+                "share_mnt": {
+                    "description": "Local mount path of the network share with read-write permission for ansible user. This option is mandatory for network shares.",
+                    "type": "str"
+                },
+                "share_name": {
+                    "description": "Network share or a local path.",
+                    "type": "str"
+                },
+                "share_password": {
+                    "aliases": [
+                        "share_pwd"
+                    ],
+                    "description": "Network share user password. This option is mandatory for CIFS share.",
+                    "type": "str"
+                },
+                "share_user": {
+                    "description": "Network share user name. Use the format 'user@domain' or 'domain\\user' if user is part of a domain. This option is mandatory for CIFS share.",
+                    "type": "str"
+                }
+            },
+            "requirements": [
+                "omsdk",
+                "python >= 2.7.5"
+            ],
+            "short_description": "Configure the BIOS attributes",
+            "version_added": "2.1.0",
+            "version_added_collection": "dellemc.openmanage"
+        },
+        "examples": "\n---\n- name: Configure generic attributes of the BIOS\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    attributes:\n      BootMode : \"Bios\"\n      OneTimeBootMode: \"Enabled\"\n      BootSeqRetry: \"Enabled\"\n\n- name: Configure PXE generic attributes\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    attributes:\n      PxeDev1EnDis: \"Enabled\"\n      PxeDev1Protocol: \"IPV4\"\n      PxeDev1VlanEnDis: \"Enabled\"\n      PxeDev1VlanId: 1\n      PxeDev1Interface: \"NIC.Embedded.1-1-1\"\n      PxeDev1VlanPriority: 2\n\n- name: Configure boot sources\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    boot_sources:\n      - Name : \"NIC.Integrated.1-2-3\"\n        Enabled : true\n        Index : 0\n\n- name: Configure multiple boot sources\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    boot_sources:\n      - Name : \"NIC.Integrated.1-1-1\"\n        Enabled : true\n        Index : 0\n      - Name : \"NIC.Integrated.2-2-2\"\n        Enabled : true\n        Index : 1\n      - Name : \"NIC.Integrated.3-3-3\"\n        Enabled : true\n        Index : 2\n\n- name: Configure boot sources - Enabling\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    boot_sources:\n      - Name : \"NIC.Integrated.1-1-1\"\n        Enabled : true\n\n- name: Configure boot sources - Index\n  dellemc.openmanage.idrac_bios:\n    idrac_ip:   \"192.168.0.1\"\n    idrac_user: \"user_name\"\n    idrac_password:  \"user_password\"\n    boot_sources:\n      - Name : \"NIC.Integrated.1-1-1\"\n        Index : 0\n",
+        "metadata": null,
+        "return": {
+            "error_info": {
+                "description": "Details of the HTTP Error.",
+                "returned": "on HTTP error",
+                "sample": {
+                    "error": {
+                        "@Message.ExtendedInfo": [
+                            {
+                                "Message": "Unable to process the request because an error occurred.",
+                                "MessageArgs": [],
+                                "MessageId": "GEN1234",
+                                "RelatedProperties": [],
+                                "Resolution": "Retry the operation. If the issue persists, contact your system administrator.",
+                                "Severity": "Critical"
+                            }
+                        ],
+                        "code": "Base.1.0.GeneralError",
+                        "message": "A general error has occurred. See ExtendedInfo for more information."
+                    }
+                },
+                "type": "dict"
+            },
+            "msg": {
+                "description": "Configures the BIOS configuration attributes.",
+                "returned": "success",
+                "sample": {
+                    "@odata.context": "/redfish/v1/$metadata#DellJob.DellJob",
+                    "@odata.id": "/redfish/v1/Managers/iDRAC.Embedded.1/Jobs/JID_873888162305",
+                    "@odata.type": "#DellJob.v1_0_0.DellJob",
+                    "CompletionTime": "2020-04-20T18:50:20",
+                    "Description": "Job Instance",
+                    "EndTime": null,
+                    "Id": "JID_873888162305",
+                    "JobState": "Completed",
+                    "JobType": "ImportConfiguration",
+                    "Message": "Successfully imported and applied Server Configuration Profile.",
+                    "MessageArgs": [],
+                    "MessageId": "SYS053",
+                    "Name": "Import Configuration",
+                    "PercentComplete": 100,
+                    "StartTime": "TIME_NOW",
+                    "Status": "Success",
+                    "TargetSettingsURI": null,
+                    "retval": true
+                },
+                "type": "dict"
+            }
+        }
+    }
+}
