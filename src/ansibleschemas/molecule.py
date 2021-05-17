@@ -109,6 +109,7 @@ class ProvisionerModel(BaseModel):
     name: Optional[Literal["ansible"]]
     log: Optional[bool]
     env: Optional[Mapping[str, Any]]
+    playbooks: Optional[Mapping[str, Any]]
     inventory: Optional[Mapping[str, Any]]
     config_options: Optional[ProvisionerConfigOptionsModel]
 
