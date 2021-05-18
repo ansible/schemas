@@ -16,6 +16,47 @@
       "title": "ContainerRegistryModel",
       "type": "object"
     },
+    "MoleculeDependencyModel": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "env": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Env",
+          "type": "object"
+        },
+        "name": {
+          "enum": [
+            "galaxy",
+            "shell"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "object"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "MoleculeDependencyModel",
+      "type": "object"
+    },
     "MoleculeDriverModel": {
       "additionalProperties": false,
       "properties": {
@@ -69,6 +110,10 @@
     "MoleculePlatformModel": {
       "additionalProperties": false,
       "properties": {
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
         "dockerfile": {
           "title": "Dockerfile",
           "type": "string"
@@ -99,6 +144,27 @@
           "title": "Name",
           "type": "string"
         },
+        "network_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "bridge",
+                "host",
+                "none"
+              ],
+              "type": "string"
+            },
+            {
+              "pattern": "^service:[a-zA-Z0-9:_.\\\\-]+$",
+              "type": "string"
+            },
+            {
+              "pattern": "^container:[a-zA-Z0-9][a-zA-Z0-9_.-]+$",
+              "type": "string"
+            }
+          ],
+          "title": "Network Mode"
+        },
         "pkg_extras": {
           "title": "Pkg Extras",
           "type": "string"
@@ -109,6 +175,13 @@
         },
         "registry": {
           "$ref": "#/definitions/ContainerRegistryModel"
+        },
+        "tmpfs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tmpfs",
+          "type": "array"
         },
         "ulimits": {
           "items": {
@@ -268,8 +341,15 @@
     "molecule/*/molecule.yml"
   ],
   "properties": {
+    "dependency": {
+      "$ref": "#/definitions/MoleculeDependencyModel"
+    },
     "driver": {
       "$ref": "#/definitions/MoleculeDriverModel"
+    },
+    "lint": {
+      "title": "Lint",
+      "type": "string"
     },
     "log": {
       "default": true,
