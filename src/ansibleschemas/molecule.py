@@ -20,8 +20,8 @@ class MoleculeDependencyModel(BaseModel):
         "shell",
     ]
     command: Optional[str]
-    options: Optional[Mapping[str, str]]
-    env: Optional[Mapping[str, str]]
+    options: Optional[Mapping[str, Any]]
+    env: Optional[Mapping[str, Any]]
     enabled: Optional[bool] = Field(default=True)
 
     class Config:

@@ -1,4 +1,20 @@
 ---
+dependency:
+  name: shell
+  enabled: true
+  command: path/to/command --flag1 subcommand --flag2
+  options:
+    ignore-certs: true
+    ignore-errors: true
+  env:
+    FOO: bar
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+
 driver:
   name: podman
   options:
@@ -35,9 +51,15 @@ platforms:
     image: ubi7/ubi-init
     registry:
       url: registry.access.redhat.com
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
     volumes:
       - /etc/ci/mirror_info.sh:/etc/ci/mirror_info.sh:ro
       - /etc/pki/rpm-gpg:/etc/pki/rpm-gpg
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    network_mode: service:vpn
     privileged: true
     environment: &env
       http_proxy: "{{ lookup('env', 'http_proxy') }}"
