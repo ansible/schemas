@@ -1,8 +1,9 @@
 # Used to generate JSON Validations chema for requirements.
+import re
 import sys
-from typing import Any, List, Mapping, Optional
+from typing import Any, List, Mapping, Optional, Union
 
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, ConstrainedStr, Extra, Field
 
 from . import consts
 
@@ -10,6 +11,21 @@ if sys.version_info >= (3, 8):
     from typing import Literal  # pylint: disable=no-name-in-module
 else:
     from typing_extensions import Literal
+
+
+class MoleculeDependencyModel(BaseModel):
+    # https://github.com/ansible-community/toolset/blob/main/requirements.in
+    name: Literal[
+        "galaxy",
+        "shell",
+    ]
+    command: Optional[str]
+    options: Optional[Mapping[str, str]]
+    env: Optional[Mapping[str, str]]
+    enabled: Optional[bool] = Field(default=True)
+
+    class Config:
+        extra = Extra.forbid
 
 
 class MoleculeDriverOptionsModel(BaseModel):
@@ -52,6 +68,14 @@ class ContainerRegistryModel(BaseModel):
         extra = Extra.forbid
 
 
+class NetworkModeServiceString(ConstrainedStr):
+    regex = re.compile(r'^service:[a-zA-Z0-9:_.\\-]+$')
+
+
+class NetworkModeContainerString(ConstrainedStr):
+    regex = re.compile(r'^container:[a-zA-Z0-9][a-zA-Z0-9_.-]+$')
+
+
 class MoleculePlatformModel(BaseModel):
     name: str
     hostname: Optional[str]
@@ -62,6 +86,19 @@ class MoleculePlatformModel(BaseModel):
     registry: Optional[ContainerRegistryModel]
     dockerfile: Optional[str]
     volumes: Optional[List[str]]
+    tmpfs: Optional[List[str]]
+    command: Optional[str]
+    network_mode: Union[
+        Optional[
+            Literal[
+                "bridge",
+                "host",
+                "none",
+            ]
+        ],
+        NetworkModeServiceString,
+        NetworkModeContainerString,
+    ]
     privileged: Optional[bool]
     ulimits: Optional[List[str]]
     # other
@@ -129,7 +166,9 @@ class VerifierModel(BaseModel):
 
 class MoleculeScenarioModel(BaseModel):
     log: Optional[bool] = Field(default=True)
+    dependency: Optional[MoleculeDependencyModel]
     driver: MoleculeDriverModel
+    lint: Optional[str]
     platforms: List[MoleculePlatformModel]
     provisioner: Optional[ProvisionerModel]
     scenario: Mapping[
