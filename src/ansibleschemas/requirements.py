@@ -31,9 +31,11 @@ class CollectionStringModel(BaseModel):
 
 
 class RoleModel(BaseModel):
+    # https://galaxy.ansible.com/docs/using/installing.html#installing-multiple-roles-from-a-file
     name: Optional[str]
     src: Optional[str]
-    version: Optional[str] = "*"
+    version: Optional[str] = "master"
+    scm: Optional[Union[Literal["git"], Literal["hg"]]] = "git"
 
     class Config:
         title = "Role"
