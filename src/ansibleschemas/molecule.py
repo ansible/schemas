@@ -56,6 +56,8 @@ class MoleculeDriverModel(BaseModel):
         ]
     ]
     options: Optional[MoleculeDriverOptionsModel]
+    # vagrant
+    provider: Optional[Mapping[str, Any]]
 
     class Config:
         extra = Extra.forbid
@@ -103,6 +105,10 @@ class MoleculePlatformModel(BaseModel):
     ulimits: Optional[List[str]]
     # other
     pkg_extras: Optional[str]
+    box: Optional[str]
+    memory: Optional[int]
+    cpus: Optional[int]
+    provider_raw_config_args: Optional[List[str]]
 
     class Config:
         extra = Extra.forbid
