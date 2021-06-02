@@ -78,6 +78,7 @@ class PlayModel(_SharedModel):
 
 
 class ImportPlaybookModel(BaseModel):
+    name: Optional[str]
     import_playbook: str
 
     class Config:
@@ -85,7 +86,7 @@ class ImportPlaybookModel(BaseModel):
 
 
 class PlaybookFileModel(BaseModel):
-    __root__: List[Union[PlayModel, ImportPlaybookModel]]
+    __root__: List[Union[ImportPlaybookModel, PlayModel]]
 
     class Config:
         extra = Extra.forbid
