@@ -1,8 +1,8 @@
 # Used to generate JSON Validations chema for requirements.
+import json
 from enum import Enum
 from typing import List, Mapping, Optional
 
-import requests
 from pydantic import BaseModel, Extra, Field
 
 from . import consts
@@ -23,10 +23,7 @@ class CollectionVersionConstraintModel(BaseModel):
 
 
 spdx_licenses = []
-SPDX_URL = (
-    "https://raw.githubusercontent.com/spdx/license-list-data/master/json/licenses.json"
-)
-for lic in requests.get(SPDX_URL).json()['licenses']:
+for lic in json.loads(open("data/licenses.json", "r").read())['licenses']:
     if not lic.get('isDeprecatedLicenseId', False):
         spdx_licenses.append(lic['licenseId'])
 # https://spdx.org/licenses/
