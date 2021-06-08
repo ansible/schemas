@@ -4,7 +4,7 @@ from typing import Any, List, Mapping, Optional, Union
 from pydantic import BaseModel, Extra, Field, create_model
 
 from . import consts
-from ._modules import ANSIBLE_MODULES
+from .api import ansible_modules
 
 
 def cleanup_schema(schema: Any) -> None:
@@ -93,27 +93,10 @@ class BlockModel(_SharedModel):
 # https://pydantic-docs.helpmanual.io/usage/postponed_annotations/#self-referencing-models
 BlockModel.update_forward_refs()
 
-
-# generated_tasks_models = {}
-
-# Disabled due to scalability issues with >31mb JSON file
-# https://github.com/ansible-community/schemas/issues/11
-# for module in ANSIBLE_MODULES:
-
-#     if module in ['copy']:
-#         module_sanitized = f"{module}_"
-#     else:
-#         module_sanitized = module
-#     generated_tasks_models[module] = create_model(
-#         module,
-#         **{module_sanitized: (str, Field(alias=module))},
-#         __base__=TaskModel)
-
-
 # Alternative approach of combining all modules into a single BeremothModel,
 # which seems to produce ~1.1mb file.
 kwargs = dict()
-for module in ANSIBLE_MODULES:
+for module in ansible_modules():
 
     if module in ['copy']:
         module_sanitized = f"{module}_"
