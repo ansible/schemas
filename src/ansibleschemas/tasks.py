@@ -38,7 +38,7 @@ class _SharedModel(BaseModel):
     port: Optional[int]
     remote_user: Optional[str]
     run_once: Optional[bool]
-    tags: Optional[List[str]]
+    tags: Optional[Union[str, List[str]]]
     throttle: Optional[int]
     timeout: Optional[int]
     vars: Optional[Mapping[str, Any]]
