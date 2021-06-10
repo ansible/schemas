@@ -51,7 +51,7 @@ class TaskModel(_SharedModel):
     async_: Optional[int] = Field(alias="async")
     changed_when: Optional[bool]
     delay: Optional[int]
-    delegate_facts: Optional[str]
+    delegate_facts: Optional[bool]
     delegate_to: Optional[str]
     failed_when: Optional[str]
     local_action: Optional[str]
@@ -86,7 +86,7 @@ class BlockModel(_SharedModel):
     always: "Optional[List[Union[TaskModel, BlockModel]]]" = None
     block: "Optional[List[Union[TaskModel, BlockModel]]]" = None
     rescue: "Optional[List[Union[TaskModel, BlockModel]]]" = None
-    delegate_facts: Optional[str]
+    delegate_facts: Optional[bool]
     delegate_to: Optional[str]
 
 
