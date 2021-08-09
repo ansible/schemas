@@ -80,6 +80,7 @@ class PlayModel(_SharedModel):
 class ImportPlaybookModel(BaseModel):
     name: Optional[str]
     import_playbook: str
+    vars: Optional[Mapping[str, Any]]
 
     class Config:
         extra = Extra.forbid
