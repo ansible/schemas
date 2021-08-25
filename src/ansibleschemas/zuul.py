@@ -113,6 +113,8 @@ class JobModel(BaseModel):
     allowed_projects: Optional[str] = Field(alias="allowed-projects")
     requires: Optional[List[str]]
     provides: Optional[str]
+    branches: Optional[str]
+    final: bool = False
 
     class Config:
         extra = Extra.forbid
