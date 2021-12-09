@@ -93,7 +93,7 @@ GALAXY_PLATFORMS = {
     'HardenedBSD': ['10', '11'],
     'IOS': [],
     'Junos': [],
-    'macOS': ['Big-Sur', 'High-Sierra', 'Sierra'],
+    'macOS': ['Big-Sur', 'Catalina', 'High-Sierra', 'Mojave', 'Monterey', 'Sierra'],
     'MacOSX': [
         '10.10',
         '10.11',
