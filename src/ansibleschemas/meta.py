@@ -24,16 +24,16 @@ for platform_name, platform_versions in GALAXY_PLATFORMS.items():
         raise RuntimeError("Platforms versions are supposed to be list of strings.")
 
     args = {v: v for v in platform_versions}
-    args['any'] = 'any'
+    args['all'] = 'all'
     versionsEnum = Enum(f"{platform_name}PlatformVersionsEnum", args)  # type: ignore
 
     kwargs['name'] = Field(platform_name, const=True)
-    kwargs['versions'] = Field("any")
+    kwargs['versions'] = Field("all")
 
     model = create_model(
         f"{platform_name}PlatformModel",
         name=(str, Field(platform_name, const=True)),
-        versions=(List[versionsEnum], "any"),
+        versions=(List[versionsEnum], "all"),
     )  # type: ignore
     model.update_forward_refs()
     all_platforms.append(model)
