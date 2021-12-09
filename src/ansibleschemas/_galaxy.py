@@ -173,6 +173,7 @@ GALAXY_PLATFORMS = {
         'groovy',
         'hirsute',
         'impish',
+        'jammy',
         'lucid',
         'maverick',
         'natty',
