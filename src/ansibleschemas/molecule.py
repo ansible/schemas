@@ -85,6 +85,7 @@ class MoleculePlatformModel(BaseModel):
     groups: Optional[List[str]]
     # container specific
     image: Optional[str]
+    pre_build_image: Optional[bool]
     registry: Optional[ContainerRegistryModel]
     dockerfile: Optional[str]
     volumes: Optional[List[str]]
