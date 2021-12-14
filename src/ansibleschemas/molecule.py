@@ -114,27 +114,28 @@ class MoleculePlatformModel(BaseModel):
     class Config:
         extra = Extra.forbid
 
+
 class MoleculeScenarioModel(BaseModel):
     name: Optional[str]
 
     class ScenarioSequence(BaseModel):
         __root__: List[
-                Literal[
-                    "check",
-                    "cleanup",
-                    "converge",
-                    "create",
-                    "dependency",
-                    "destroy",
-                    "idempotence",
-                    "lint",
-                    "prepare",
-                    "side_effect",
-                    "syntax",
-                    "test",
-                    "verify",
-                ]
+            Literal[
+                "check",
+                "cleanup",
+                "converge",
+                "create",
+                "dependency",
+                "destroy",
+                "idempotence",
+                "lint",
+                "prepare",
+                "side_effect",
+                "syntax",
+                "test",
+                "verify",
             ]
+        ]
 
         class Config:
             extra = Extra.forbid
@@ -152,9 +153,10 @@ class MoleculeScenarioModel(BaseModel):
     syntax_sequence: Optional[ScenarioSequence]
     test_sequence: Optional[ScenarioSequence]
     verify_sequence: Optional[ScenarioSequence]
-   
+
     class Config:
         extra = Extra.forbid
+
 
 class ProvisionerConfigOptionsModel(BaseModel):
     class ProvisionerConfigOptionsDefaultsModel(BaseModel):
