@@ -114,6 +114,47 @@ class MoleculePlatformModel(BaseModel):
     class Config:
         extra = Extra.forbid
 
+class MoleculeScenarioModel(BaseModel):
+    name: Optional[str]
+
+    class ScenarioSequence(BaseModel):
+        __root__: List[
+                Literal[
+                    "check",
+                    "cleanup",
+                    "converge",
+                    "create",
+                    "dependency",
+                    "destroy",
+                    "idempotence",
+                    "lint",
+                    "prepare",
+                    "side_effect",
+                    "syntax",
+                    "test",
+                    "verify",
+                ]
+            ]
+
+        class Config:
+            extra = Extra.forbid
+
+    check_sequence: Optional[ScenarioSequence]
+    cleanup_sequence: Optional[ScenarioSequence]
+    converge_sequence: Optional[ScenarioSequence]
+    create_sequence: Optional[ScenarioSequence]
+    dependency_sequence: Optional[ScenarioSequence]
+    destroy_sequence: Optional[ScenarioSequence]
+    idempotence_sequence: Optional[ScenarioSequence]
+    lint_sequence: Optional[ScenarioSequence]
+    prepare_sequence: Optional[ScenarioSequence]
+    side_effect_sequence: Optional[ScenarioSequence]
+    syntax_sequence: Optional[ScenarioSequence]
+    test_sequence: Optional[ScenarioSequence]
+    verify_sequence: Optional[ScenarioSequence]
+   
+    class Config:
+        extra = Extra.forbid
 
 class ProvisionerConfigOptionsModel(BaseModel):
     class ProvisionerConfigOptionsDefaultsModel(BaseModel):
@@ -171,49 +212,14 @@ class VerifierModel(BaseModel):
         extra = Extra.forbid
 
 
-class MoleculeScenarioModel(BaseModel):
+class MoleculeModel(BaseModel):
     log: Optional[bool] = Field(default=True)
     dependency: Optional[MoleculeDependencyModel]
     driver: MoleculeDriverModel
     lint: Optional[str]
     platforms: List[MoleculePlatformModel]
     provisioner: Optional[ProvisionerModel]
-    scenario: Optional[
-        Mapping[
-            Literal[
-                "check_sequence",
-                "cleanup_sequence",
-                "converge_sequence",
-                "create_sequence",
-                "dependency_sequence",
-                "destroy_sequence",
-                "idempotence_sequence",
-                "lint_sequence",
-                "prepare_sequence",
-                "side_effect_sequence",
-                "syntax_sequence",
-                "test_sequence",
-                "verify_sequence",
-            ],
-            List[
-                Literal[
-                    "check",
-                    "cleanup",
-                    "converge",
-                    "create",
-                    "dependency",
-                    "destroy",
-                    "idempotence",
-                    "lint",
-                    "prepare",
-                    "side_effect",
-                    "syntax",
-                    "test",
-                    "verify",
-                ]
-            ],
-        ]
-    ]
+    scenario: Optional[MoleculeScenarioModel]
     verifier: Optional[VerifierModel]
 
     class Config:

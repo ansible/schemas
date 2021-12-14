@@ -14,7 +14,7 @@ from ansibleschemas.ansiblelint import AnsibleLintModel
 from ansibleschemas.api import ansible_modules
 from ansibleschemas.galaxy import GalaxyFileModel
 from ansibleschemas.meta import MetaModel
-from ansibleschemas.molecule import MoleculeScenarioModel
+from ansibleschemas.molecule import MoleculeModel
 from ansibleschemas.playbook import PlaybookFileModel
 from ansibleschemas.requirements import RequirementsFileModel
 from ansibleschemas.tasks import TasksListModel
@@ -120,7 +120,7 @@ def main() -> None:
         "ansible-lint": AnsibleLintModel,
         "galaxy": GalaxyFileModel,
         "meta": MetaModel,
-        "molecule": MoleculeScenarioModel,
+        "molecule": MoleculeModel,
         "playbook": PlaybookFileModel,
         "requirements": RequirementsFileModel,
         "tasks": TasksListModel,
