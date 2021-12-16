@@ -111,6 +111,7 @@ kwargs['__base__'] = TaskModel  # type: ignore
 # kwargs['schema_extra'] = cleanup_schema  # type: ignore
 
 BeremothTaskModel = create_model("BeremothTaskModel", **kwargs)  # type: ignore
+# pylint: disable=no-member
 BeremothTaskModel.__config__.schema_extra = cleanup_schema  # type: ignore
 
 # all_tasks_models = (TaskModel, BlockModel, *tuple(generated_tasks_models.values()))
