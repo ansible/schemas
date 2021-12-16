@@ -170,14 +170,15 @@ class YamlItem(JSONSchemaItem):
             result_file = file.parent / (file.name + ".json")
             if not result_file.is_file():
                 raise ValidationException(result=result)
-            expected_result = open(result_file).read()
-            # We remove first line due to known bug
-            # https://github.com/ajv-validator/ajv-cli/issues/16
-            output = result.stderr.split("\n", 1)[-1]
-            if output != expected_result:
-                raise ValidationException(
-                    result=result, expected_result=expected_result
-                )
+            with open(result_file) as file:
+                expected_result = file.read()
+                # We remove first line due to known bug
+                # https://github.com/ajv-validator/ajv-cli/issues/16
+                output = result.stderr.split("\n", 1)[-1]
+                if output != expected_result:
+                    raise ValidationException(
+                        result=result, expected_result=expected_result
+                    )
 
 
 class ValidationException(Exception):
