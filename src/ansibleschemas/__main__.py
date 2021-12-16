@@ -82,7 +82,9 @@ def dump_galaxy_platforms() -> None:
 def dump_module_doc(module):
     """Dumps module docs as json."""
     try:
-        module_json = subprocess.check_output(["ansible-doc", "-j", module], universal_newlines=True)
+        module_json = subprocess.check_output(
+            ["ansible-doc", "-j", module], universal_newlines=True
+        )
         data = json.loads(module_json)
         # we remove filename from the dump as that prevents reproduceble builds as
         # they are full paths.
@@ -110,7 +112,9 @@ def doc_dump() -> None:
     modules = list(ansible_modules())
     with Progress() as progress:
         results = []
-        task_id = progress.add_task("Dumping doc for each module ...", total=len(modules))
+        task_id = progress.add_task(
+            "Dumping doc for each module ...", total=len(modules)
+        )
         with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
             for result in pool.imap(dump_module_doc, modules):
                 results.append(result)
@@ -133,7 +137,9 @@ def map_type(ansible_type: str) -> str:
         return 'object'
     if ansible_type == 'float':
         return 'number'
-    raise NotImplementedError(f"Unable to map ansible type {ansible_type} to JSON Schema type.")
+    raise NotImplementedError(
+        f"Unable to map ansible type {ansible_type} to JSON Schema type."
+    )
 
 
 def main() -> None:
@@ -169,9 +175,7 @@ def main() -> None:
 
         output_file = out_dir / f"{schema_filenames[schema]}.json"
         with open(output_file, "w") as file:
-            file.write(model.schema_json(
-                indent=2,
-                sort_keys=True))
+            file.write(model.schema_json(indent=2, sort_keys=True))
             # by_alias
             # skip_defaults
             # exclude_unset
