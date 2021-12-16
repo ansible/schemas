@@ -26,7 +26,32 @@ from ansibleschemas.zuul import ZuulConfigModel
 GALAXY_API_URL = "https://galaxy.ansible.com"
 out_dir = Path(os.getcwd()) / "f"
 module_dir = Path(__file__).resolve().parents[0]
-GENERATED_HEADER = "# pylint: disable-all\n"
+
+
+def pretty_plattforms(value: dict) -> str:
+    """Pretty prints the plattform dictionary"""
+    items = [
+        '\n' + ' ' * 4 + repr(key) + ': ' + _pretty_list(value[key], len(repr(key)))
+        for key in value
+    ]
+    return '{%s}' % (','.join(items) + ',\n')
+
+
+def _pretty_list(value: list, key_length: int) -> str:
+    """Pretty prints a list. Automatically warps lines if line length of 88 is exceeded (-> black compatibility)."""
+    htchar = ' '
+    indent = 4
+    nlch = '\n' + htchar * indent
+    items = [repr(item) for item in value]
+    if (len(', '.join(items)) + key_length + 9) > 88:
+        return '[%s]' % (
+            nlch
+            + htchar * indent
+            + (',' + nlch + htchar * indent).join(items)
+            + ','
+            + nlch
+        )
+    return '[%s]' % (', '.join(items))
 
 
 def dump_galaxy_platforms() -> None:
@@ -51,7 +76,7 @@ def dump_galaxy_platforms() -> None:
                 platforms[name].append(release)
 
     with open(filename, "w") as file:
-        file.write(GENERATED_HEADER + f"\nGALAXY_PLATFORMS = {platforms}\n")
+        file.write(f"GALAXY_PLATFORMS = {pretty_plattforms(platforms)}\n")
 
 
 def dump_module_doc(module):
@@ -114,7 +139,7 @@ def map_type(ansible_type: str) -> str:
 def main() -> None:
     """Main entry point"""
 
-    # dump_galaxy_platforms()
+    dump_galaxy_platforms()
 
     schemas = {
         "ansible-lint": AnsibleLintModel,
