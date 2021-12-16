@@ -26,7 +26,32 @@ from ansibleschemas.zuul import ZuulConfigModel
 GALAXY_API_URL = "https://galaxy.ansible.com"
 out_dir = Path(os.getcwd()) / "f"
 module_dir = Path(__file__).resolve().parents[0]
-GENERATED_HEADER = "# pylint: disable-all\n"
+
+
+def pretty_plattforms(value: dict) -> str:
+    """Pretty prints the plattform dictionary"""
+    items = [
+        '\n' + ' ' * 4 + repr(key) + ': ' + _pretty_list(value[key], len(repr(key)))
+        for key in value
+    ]
+    return '{%s}' % (','.join(items) + ',\n')
+
+
+def _pretty_list(value: list, key_length: int) -> str:
+    """Pretty prints a list. Automatically warps lines if line length of 88 is exceeded (-> black compatibility)."""
+    htchar = ' '
+    indent = 4
+    nlch = '\n' + htchar * indent
+    items = [repr(item) for item in value]
+    if (len(', '.join(items)) + key_length + 9) > 88:
+        return '[%s]' % (
+            nlch
+            + htchar * indent
+            + (',' + nlch + htchar * indent).join(items)
+            + ','
+            + nlch
+        )
+    return '[%s]' % (', '.join(items))
 
 
 def dump_galaxy_platforms() -> None:
@@ -51,13 +76,15 @@ def dump_galaxy_platforms() -> None:
                 platforms[name].append(release)
 
     with open(filename, "w") as file:
-        file.write(GENERATED_HEADER + f"\nGALAXY_PLATFORMS = {platforms}\n")
+        file.write(f"GALAXY_PLATFORMS = {pretty_plattforms(platforms)}\n")
 
 
 def dump_module_doc(module):
     """Dumps module docs as json."""
     try:
-        module_json = subprocess.check_output(["ansible-doc", "-j", module], universal_newlines=True)
+        module_json = subprocess.check_output(
+            ["ansible-doc", "-j", module], universal_newlines=True
+        )
         data = json.loads(module_json)
         # we remove filename from the dump as that prevents reproduceble builds as
         # they are full paths.
@@ -85,7 +112,9 @@ def doc_dump() -> None:
     modules = list(ansible_modules())
     with Progress() as progress:
         results = []
-        task_id = progress.add_task("Dumping doc for each module ...", total=len(modules))
+        task_id = progress.add_task(
+            "Dumping doc for each module ...", total=len(modules)
+        )
         with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
             for result in pool.imap(dump_module_doc, modules):
                 results.append(result)
@@ -108,13 +137,15 @@ def map_type(ansible_type: str) -> str:
         return 'object'
     if ansible_type == 'float':
         return 'number'
-    raise NotImplementedError(f"Unable to map ansible type {ansible_type} to JSON Schema type.")
+    raise NotImplementedError(
+        f"Unable to map ansible type {ansible_type} to JSON Schema type."
+    )
 
 
 def main() -> None:
     """Main entry point"""
 
-    # dump_galaxy_platforms()
+    dump_galaxy_platforms()
 
     schemas = {
         "ansible-lint": AnsibleLintModel,
@@ -144,9 +175,7 @@ def main() -> None:
 
         output_file = out_dir / f"{schema_filenames[schema]}.json"
         with open(output_file, "w") as file:
-            file.write(model.schema_json(
-                indent=2,
-                sort_keys=True))
+            file.write(model.schema_json(indent=2, sort_keys=True))
             # by_alias
             # skip_defaults
             # exclude_unset
