@@ -4,6 +4,7 @@ import json
 import multiprocessing
 import os
 import subprocess
+from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from pathlib import Path
 from typing import Dict, List
 
@@ -26,6 +27,34 @@ from ansibleschemas.zuul import ZuulConfigModel
 GALAXY_API_URL = "https://galaxy.ansible.com"
 out_dir = Path(os.getcwd()) / "f"
 module_dir = Path(__file__).resolve().parents[0]
+
+
+def parse_args() -> Namespace:
+    """Parse commandline arguments."""
+
+    example_text = """
+examples:
+  generate schemas without fetching any external data:
+    ansibleschemas
+
+  update the list of Galaxy platforms and generate schemas:
+    ansibleschemas --dump-galaxy-platforms
+"""
+
+    parser = ArgumentParser(
+        description="Generate JSON/YAML Validation schemas for Ansible content.",
+        prog="ansibleschemas",
+        epilog=example_text,
+        formatter_class=RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        '-p',
+        '--dump-galaxy-platforms',
+        default=os.environ.get('DUMP_GALAXY_PLATFORMS'),
+        action='store_true',
+        help="Query the Galaxy API and dump all Galaxy platforms into a python module.",
+    )
+    return parser.parse_args()
 
 
 def pretty_plattforms(value: dict) -> str:
@@ -145,7 +174,10 @@ def map_type(ansible_type: str) -> str:
 def main() -> None:
     """Main entry point"""
 
-    dump_galaxy_platforms()
+    args = parse_args()
+
+    if args.dump_galaxy_platforms:
+        dump_galaxy_platforms()
 
     schemas = {
         "ansible-lint": AnsibleLintModel,
