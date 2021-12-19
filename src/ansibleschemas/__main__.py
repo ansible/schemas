@@ -145,7 +145,7 @@ def map_type(ansible_type: str) -> str:
 def main() -> None:
     """Main entry point"""
 
-    dump_galaxy_platforms()
+    # dump_galaxy_platforms()
 
     schemas = {
         "ansible-lint": AnsibleLintModel,
