@@ -1,4 +1,4 @@
-# Used to generate JSON Validations chema for requirements.
+# Used to generate JSON Validations Schema for molecule config files.
 import re
 import sys
 from typing import Any, List, Mapping, Optional, Union
