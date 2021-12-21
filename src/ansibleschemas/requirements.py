@@ -1,4 +1,4 @@
-# Used to generate JSON Validations chema for requirements.
+# Used to generate JSON Validations Schema for requirements.
 import sys
 from typing import List, Optional, Union
 

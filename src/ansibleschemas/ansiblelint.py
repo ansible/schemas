@@ -1,4 +1,4 @@
-# Used to generate JSON Validations chema for ansible-lint config files
+# Used to generate JSON Validations Schema for ansible-lint config files
 # https://github.com/ansible-community/ansible-lint/blob/master/.ansible-lint
 from typing import Any, Dict, List, Mapping, Optional
 
