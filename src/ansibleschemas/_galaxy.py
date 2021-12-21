@@ -1,4 +1,6 @@
-GALAXY_PLATFORMS = {
+from typing import Dict, List
+
+GALAXY_PLATFORMS: Dict[str, List[str]] = {
     'AIX': ['6.1', '7.1', '7.2'],
     'Alpine': [],
     'Amazon': [

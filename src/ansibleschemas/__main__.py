@@ -6,11 +6,11 @@ import os
 import subprocess
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from pathlib import Path
-from typing import Dict, List
 
 import requests
 from rich.progress import Progress
 
+from ansibleschemas._galaxy import GALAXY_PLATFORMS
 from ansibleschemas.ansiblelint import AnsibleLintModel
 from ansibleschemas.api import ansible_modules
 from ansibleschemas.galaxy import GalaxyFileModel
@@ -27,6 +27,10 @@ from ansibleschemas.zuul import ZuulConfigModel
 GALAXY_API_URL = "https://galaxy.ansible.com"
 out_dir = Path(os.getcwd()) / "f"
 module_dir = Path(__file__).resolve().parents[0]
+
+GALAXY_FILE_HEADER = """from typing import Dict, List
+
+GALAXY_PLATFORMS: Dict[str, List[str]]"""
 
 
 def parse_args() -> Namespace:
@@ -87,7 +91,6 @@ def dump_galaxy_platforms() -> None:
     """Dumps galaxy platforms into a python module."""
     filename = f"{module_dir}/_galaxy.py"
     print(f"Dumping list of Galaxy platforms to {filename}")
-    platforms: Dict[str, List[str]] = {}
     result = {'next_link': '/api/v1/platforms/'}
     while result.get('next_link', None):
         url = GALAXY_API_URL + result['next_link']
@@ -99,13 +102,17 @@ def dump_galaxy_platforms() -> None:
             release = entry.get('release', None)
             if not name or not isinstance(name, str):
                 continue
-            if name and name not in platforms:
-                platforms[name] = []
-            if release not in ['any', 'None'] and release not in platforms[name]:
-                platforms[name].append(release)
+            if name and name not in GALAXY_PLATFORMS:
+                GALAXY_PLATFORMS[name] = []
+            if (
+                release not in ['any', 'all', 'None']
+                and release not in GALAXY_PLATFORMS[name]
+            ):
+                GALAXY_PLATFORMS[name].append(release)
+                GALAXY_PLATFORMS[name].sort()
 
     with open(filename, "w") as file:
-        file.write(f"GALAXY_PLATFORMS = {pretty_plattforms(platforms)}\n")
+        file.write(f"{GALAXY_FILE_HEADER} = {pretty_plattforms(GALAXY_PLATFORMS)}\n")
 
 
 def dump_module_doc(module):
