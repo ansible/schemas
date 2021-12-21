@@ -4,7 +4,6 @@ from typing import Any, List, Mapping, Optional, Union
 from pydantic import BaseModel, Extra, Field, create_model
 
 from . import consts
-from .api import ansible_modules
 
 
 def cleanup_schema(schema: Any) -> None:
@@ -96,17 +95,6 @@ BlockModel.update_forward_refs()
 # Alternative approach of combining all modules into a single BeremothModel,
 # which seems to produce ~1.1mb file.
 kwargs = dict()
-for module in ansible_modules():
-
-    if module in ['copy']:
-        module_sanitized = f"{module}_"
-    else:
-        module_sanitized = module
-    # Optional is used because we only need one of them
-    kwargs[module_sanitized] = (
-        Optional[Mapping[str, Any]],
-        Field(title=".", alias=module),
-    )
 kwargs['__base__'] = TaskModel  # type: ignore
 # kwargs['schema_extra'] = cleanup_schema  # type: ignore
 
