@@ -1,4 +1,4 @@
-# Used to generate JSON Validations schema for Zuul config files.
+# Used to generate JSON Validations Schema for Zuul config files.
 import sys
 from typing import Any, List, Mapping, Optional, Union
 

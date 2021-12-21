@@ -1,4 +1,4 @@
-# Used to generate JSON Validations Schema for requirements.
+# Used to generate JSON Validations Schema for tasks.
 from typing import Any, List, Mapping, Optional, Union
 
 from pydantic import BaseModel, Extra, Field, create_model
