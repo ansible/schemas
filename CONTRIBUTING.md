@@ -25,7 +25,7 @@ This will query the API and replace the current list of galaxy platforms.
 
 ### Updating dependencies
 
-Run the following command to update dependency lock files `requirements.txt`
+Run the following command to update dependency lock files `constraints.txt`
 and `package-lock.json`:
 
 ```shell
