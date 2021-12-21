@@ -35,7 +35,7 @@ jobs:
     - run: npm test
   tox:
     name: >-
-      ${{ matrix.tox_env }}
+      ${{ matrix.toxenv }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -43,15 +43,19 @@ jobs:
         include:
         - python-version: 3.8
           os: ubuntu-20.04
-          tox_env: py38,lint
+          toxenv: py38
         - python-version: 3.9
           os: ubuntu-20.04
-          tox_env: py39,lint
+          toxenv: py39
         - python-version: '3.10'
           os: ubuntu-20.04
-          tox_env: py310,lint
+          toxenv: py310
+        - python-version: 3.8
+          os: ubuntu-20.04
+          toxenv: lint
     env:
       TOX_PARALLEL_NO_SPINNER: 1
+      TOXENV: ${{ matrix.toxenv }}
       FORCE_COLOR: 1
 
     steps:
@@ -82,13 +86,13 @@ jobs:
       run: >-
         python3 -m pip freeze --all
 
-    - name: >-
-        Initialize tox envs
+    - name: Initialize tox envs
       run: |
         set -ex
-        ${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }} --notest --skip-missing-interpreters false -vv
+        tox --notest --skip-missing-interpreters false -vv
 
-    - name: Test with tox -e ${{ matrix.tox_env }}
+    - name: >-
+        Test with tox -e ${{ matrix.toxenv }}
       run: |
         set -ex
-        ${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}
+        tox
