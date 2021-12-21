@@ -26,9 +26,8 @@ documentation](CONTRIBUTING.md).
 
 ## Activating the schemas
 
-At this moment installing [Ansible VS Code Extension by Red Hat]
-(https://marketplace.visualstudio.com/items?itemName=redhat.ansible) will
-activate these schemas. The file patterns used to trigger their use can be seen
+At this moment installing [Ansible VS Code Extension by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.ansible)
+will activate these schemas. The file patterns used to trigger their use can be seen
 [here](https://github.com/ansible-community/vscode-ansible/blob/master/package.json#L44-L94)
 
 Because these schemas are generic, you can easily use them with any validators
