@@ -11,10 +11,12 @@
           "type": "string"
         },
         "config": {
+          "description": "Specify the path to the ansible configuration file",
           "title": "Config",
           "type": "string"
         },
         "inventories": {
+          "description": "Specify an inventory file path or host list",
           "items": {
             "type": "string"
           },
@@ -22,15 +24,11 @@
           "type": "array"
         },
         "playbook": {
+          "description": "Specify the playbook name",
           "title": "Playbook",
           "type": "string"
         }
       },
-      "required": [
-        "config",
-        "inventories",
-        "playbook"
-      ],
       "title": "AnsibleModel",
       "type": "object"
     },
@@ -82,22 +80,31 @@
           "$ref": "#/definitions/ExecutionEnvironmentModel"
         },
         "help-config": {
+          "default": false,
+          "description": "Help options for ansible-config command in stdout mode",
           "title": "Help-Config",
           "type": "boolean"
         },
         "help-doc": {
+          "default": false,
+          "description": "Help options for ansible-doc command in stdout mode",
           "title": "Help-Doc",
           "type": "boolean"
         },
         "help-inventory": {
+          "default": false,
+          "description": "Help options for ansible-inventory command in stdout mode",
           "title": "Help-Inventory",
           "type": "boolean"
         },
         "help-playbook": {
+          "default": false,
+          "description": "Help options for ansible-playbook command in stdout mode",
           "title": "Help-Playbook",
           "type": "boolean"
         },
         "inventory-columns": {
+          "description": "Specify a host attribute to show in the inventory view",
           "items": {
             "type": "string"
           },
@@ -108,6 +115,12 @@
           "$ref": "#/definitions/LoggingModel"
         },
         "mode": {
+          "default": "interactive",
+          "description": "Specify the user-interface mode",
+          "enum": [
+            "stdout",
+            "interactive"
+          ],
           "title": "Mode",
           "type": "string"
         },
@@ -115,19 +128,6 @@
           "$ref": "#/definitions/PlaybookArtifactModel"
         }
       },
-      "required": [
-        "ansible",
-        "ansible-runner",
-        "color",
-        "documentation",
-        "editor",
-        "exec",
-        "execution-environment",
-        "inventory-columns",
-        "logging",
-        "mode",
-        "playbook-artifact"
-      ],
       "title": "AnsibleNavigatorModel",
       "type": "object"
     },
@@ -140,7 +140,7 @@
           "type": "string"
         },
         "rotate-artifacts-count": {
-          "description": "Keep ansible-runner artifact directories, for last n runs, if set to 0 artifact directories won\u2019t be deleted",
+          "description": "Keep ansible-runner artifact directories, for last n runs, if set to 0 artifact directories won't be deleted",
           "title": "Rotate-Artifacts-Count",
           "type": "integer"
         },
@@ -157,18 +157,18 @@
       "additionalProperties": false,
       "properties": {
         "enable": {
+          "default": false,
+          "description": "Enable the use of color in the display",
           "title": "Enable",
           "type": "boolean"
         },
         "osc4": {
+          "default": true,
+          "description": "Enable or disable terminal color changing support with OSC 4",
           "title": "Osc4",
           "type": "boolean"
         }
       },
-      "required": [
-        "enable",
-        "osc4"
-      ],
       "title": "ColorModel",
       "type": "object"
     },
@@ -179,9 +179,6 @@
           "$ref": "#/definitions/PluginModel"
         }
       },
-      "required": [
-        "plugin"
-      ],
       "title": "DocumentationModel",
       "type": "object"
     },
@@ -189,17 +186,18 @@
       "additionalProperties": false,
       "properties": {
         "command": {
+          "default": "vi +{line_number} {filename}",
+          "description": "Specify the editor command",
           "title": "Command",
           "type": "string"
         },
         "console": {
+          "default": true,
+          "description": "Specify if the editor is console based",
           "title": "Console",
           "type": "boolean"
         }
       },
-      "required": [
-        "command"
-      ],
       "title": "EditorModel",
       "type": "object"
     },
@@ -207,6 +205,7 @@
       "additionalProperties": false,
       "properties": {
         "pass": {
+          "description": "Specify an exiting environment variable to be passed through to and set within the execution environment",
           "items": {
             "type": "string"
           },
@@ -217,13 +216,11 @@
           "additionalProperties": {
             "type": "string"
           },
+          "description": "Specify an environment variable and a value to be set within the execution environment",
           "title": "Set",
           "type": "object"
         }
       },
-      "required": [
-        "pass"
-      ],
       "title": "EnvironmentVariablesModel",
       "type": "object"
     },
@@ -231,17 +228,18 @@
       "additionalProperties": false,
       "properties": {
         "command": {
+          "default": "/bin/bash",
+          "description": "Specify the command to run within the execution environment",
           "title": "Command",
           "type": "string"
         },
         "shell": {
+          "default": true,
+          "description": "Specify the exec command should be run in a shell",
           "title": "Shell",
           "type": "boolean"
         }
       },
-      "required": [
-        "command"
-      ],
       "title": "ExecModel",
       "type": "object"
     },
@@ -260,6 +258,7 @@
           "type": "string"
         },
         "container-options": {
+          "description": "Extra parameters passed to the container engine command",
           "items": {
             "type": "string"
           },
@@ -267,6 +266,8 @@
           "type": "array"
         },
         "enabled": {
+          "default": true,
+          "description": "Enable or disable the use of an execution environment",
           "title": "Enabled",
           "type": "boolean"
         },
@@ -274,14 +275,25 @@
           "$ref": "#/definitions/EnvironmentVariablesModel"
         },
         "image": {
+          "default": "quay.io/ansible/creator-ee:v0.2.0",
+          "description": "Specify the name of the execution environment image",
           "title": "Image",
           "type": "string"
         },
         "pull-policy": {
+          "default": "tag",
+          "description": "Specify the image pull policy.\nalways: Always pull the image\nmissing: Pull if not locally available\nnever: Never pull the image\ntag: if the image tag is 'latest', always pull the image, otherwise pull if not locally available",
+          "enum": [
+            "always",
+            "missing",
+            "never",
+            "tag"
+          ],
           "title": "Pull-Policy",
           "type": "string"
         },
         "volume-mounts": {
+          "description": "Specify volume to be bind mounted within an execution environment",
           "items": {
             "$ref": "#/definitions/VolumeMountsModel"
           },
@@ -289,14 +301,6 @@
           "type": "array"
         }
       },
-      "required": [
-        "enabled",
-        "environment-variables",
-        "image",
-        "pull-policy",
-        "volume-mounts",
-        "container-options"
-      ],
       "title": "ExecutionEnvironmentModel",
       "type": "object"
     },
@@ -304,22 +308,31 @@
       "additionalProperties": false,
       "properties": {
         "append": {
+          "default": true,
+          "description": "Specify if log messages should be appended to an existing log file, otherwise a new log file will be created per session",
           "title": "Append",
           "type": "boolean"
         },
         "file": {
+          "default": "$PWD/ansible-navigator.",
+          "description": "Specify the full path for the ansible-navigator log file",
           "title": "File",
           "type": "string"
         },
         "level": {
+          "default": "warning",
+          "description": "Specify the ansible-navigator log level",
+          "enum": [
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "critical"
+          ],
           "title": "Level",
           "type": "string"
         }
       },
-      "required": [
-        "level",
-        "file"
-      ],
       "title": "LoggingModel",
       "type": "object"
     },
@@ -327,23 +340,23 @@
       "additionalProperties": false,
       "properties": {
         "enable": {
+          "default": true,
+          "description": "Enable or disable the creation of artifacts for completed playbooks.\nNote: not compatible with 'mode: stdout' when playbooks require user input",
           "title": "Enable",
           "type": "boolean"
         },
         "replay": {
+          "description": "Specify the path for the playbook artifact to replay",
           "title": "Replay",
           "type": "string"
         },
         "save-as": {
+          "default": "{playbook_dir}/{playbook_name}-artifact-{ts_utc}.json",
+          "description": "Specify the name for artifacts created from completed playbooks",
           "title": "Save-As",
           "type": "string"
         }
       },
-      "required": [
-        "enable",
-        "replay",
-        "save-as"
-      ],
       "title": "PlaybookArtifactModel",
       "type": "object"
     },
@@ -351,18 +364,32 @@
       "additionalProperties": false,
       "properties": {
         "name": {
+          "description": "Specify the plugin name",
           "title": "Name",
           "type": "string"
         },
         "type": {
+          "default": "module",
+          "description": "Specify the plugin type",
+          "enum": [
+            "become",
+            "cache",
+            "callback",
+            "cliconf",
+            "connection",
+            "httpapi",
+            "inventory",
+            "lookup",
+            "module",
+            "netconf",
+            "shell",
+            "strategy",
+            "vars"
+          ],
           "title": "Type",
           "type": "string"
         }
       },
-      "required": [
-        "name",
-        "type"
-      ],
       "title": "PluginModel",
       "type": "object"
     },
@@ -384,8 +411,7 @@
       },
       "required": [
         "src",
-        "dest",
-        "label"
+        "dest"
       ],
       "title": "VolumeMountsModel",
       "type": "object"
