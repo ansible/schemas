@@ -1,5 +1,11 @@
 # Schemas for Ansible, Zuul and Molecule
 
+[![tox](https://github.com/ansible-community/schemas/actions/workflows/test.yml/badge.svg)](https://github.com/ansible-community/schemas/actions/workflows/test.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Repository License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+
+## About Schemas for Ansible, Zuul and Molecule
+
 This project aims to generate JSON/YAML validation schemas for Ansible
 files such as playbooks, tasks, requirements, meta or vars and also for
 Zuul and Molecule configuration.
