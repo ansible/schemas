@@ -1,18 +1,14 @@
 """Rebuilds JSON Schemas from our models."""
-import glob
 import json
-import multiprocessing
 import os
 import subprocess
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from pathlib import Path
 
 import requests
-from rich.progress import Progress
 
 from ansibleschemas._galaxy import GALAXY_PLATFORMS
 from ansibleschemas.ansiblelint import AnsibleLintModel
-from ansibleschemas.api import ansible_modules
 from ansibleschemas.galaxy import GalaxyFileModel
 from ansibleschemas.meta import MetaModel
 from ansibleschemas.molecule import MoleculeModel
@@ -137,24 +133,6 @@ def dump_module_doc(module):
     except subprocess.CalledProcessError:
         print(f"Module {module} skipped as it failed to export documentation.")
     return module
-
-
-def doc_dump() -> None:
-    """Dump documentation for all Ansible modules."""
-    files = glob.glob('data/modules/*.json')
-    for file in files:
-        os.remove(file)
-
-    modules = list(ansible_modules())
-    with Progress() as progress:
-        results = []
-        task_id = progress.add_task(
-            "Dumping doc for each module ...", total=len(modules)
-        )
-        with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
-            for result in pool.imap(dump_module_doc, modules):
-                results.append(result)
-                progress.advance(task_id)
 
 
 def map_type(ansible_type: str) -> str:
