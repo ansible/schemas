@@ -43,6 +43,7 @@ function lint(file: string): boolean {
       if (validator) {
         let target = yaml.load(fs.readFileSync(file, 'utf8'));
         result = (validator(target) ? !expect_fail : expect_fail);
+        if (!result) console.log(validator.errors)
       }
       break;
     }
