@@ -1,5 +1,5 @@
-# Used to generate JSON Validations chema for ansible-navigator config files
-# https://github.com/ansible-community/ansible-lint/blob/master/.ansible-lint
+# Used to generate JSON Validation Schema for ansible-navigator config files
+# https://ansible-navigator.readthedocs.io/en/latest/settings/#the-ansible-navigator-settings-file
 import sys
 from typing import List, Mapping, Optional
 
