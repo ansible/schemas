@@ -24,6 +24,10 @@ fs.readdir("f/", function(err, files) {
   schemaFiles.forEach(function (file) {
     let schema_json = JSON.parse(fs.readFileSync(`f/${file}`, 'utf8'));
     const validator = ajv.compile(schema_json);
+    if (schema_json.examples == undefined) {
+      console.error(`Schema file ${file} is missing an examples key that we need for documenting file matching patterns.`);
+      return process.exit(1);
+    }
     schema_json['examples'].forEach(function(glob: string) {
       globToValidatorMap.set(glob, validator);
     });
@@ -33,6 +37,7 @@ fs.readdir("f/", function(err, files) {
 
 function lint(file: string): boolean {
   let result = false;
+  let found = false;
   let expect_fail = fs.existsSync(`${file}.fail`)
   // determine which validator to use
   for (let key of Array.from(globToValidatorMap.keys())) {
@@ -45,9 +50,15 @@ function lint(file: string): boolean {
         result = (validator(target) ? !expect_fail : expect_fail);
         if (!result) console.log(validator.errors)
       }
+      found = true;
       break;
     }
   }
+  if (!found) {
+    console.error(`Failed to match file ${file} to a schema pattern.`)
+    result = false;
+  }
+
   return result;
 }
 
