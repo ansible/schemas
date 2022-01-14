@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Ansible Execution Environment Schema",
+  "description": "See https://docs.ansible.com/automation-controller/latest/html/userguide/ee_reference.html",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+    "execution-environment.yml"
+  ],
+  "properties": {
+    "build_arg_defaults": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "EE_BASE_IMAGE": {
+          "type": "string"
+        }
+      }
+    },
+    "ansible_config": {
+      "title": "Ansible configuration file",
+      "type": "string",
+      "examples": ["ansible.cfg"]
+    },
+    "dependencies": {
+      "title": "Dependencies",
+      "description": "Allows adding system, python or galaxy dependencies.",
+      "type": "object",
+      "properties": {
+        "galaxy": {
+          "title": "Optional galaxy file",
+          "markdownDescription": "Example `requirements.yml`",
+          "type": "string",
+          "examples": ["requirements.yml"]
+        },
+        "python": {
+          "type": "string",
+          "title": "Optional python package dependencies",
+          "markdownDescription": "Example `requirements.txt`",
+          "examples": ["requirements.txt"]
+        },
+        "system": {
+          "type": "string",
+          "title": "Optional system dependencies using bindep format",
+          "markdownDescription": "Example `bindep.txt`",
+          "examples": ["bindep.txt"]
+        }
+      }
+    },
+    "additional_build_steps": {
+      "type": "object",
+      "title": "Commands to append or prepend to container build process.",
+      "properties": {
+        "prepend": {
+          "type": ["string", "array"],
+          "examples": ["RUN cat /etc/os-release"]
+        },
+        "append": {
+          "type": ["string", "array"],
+          "examples": ["RUN cat /etc/os-release"]
+        }
+      }
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer",
+      "enum": [1]
+    }
+  },
+  "required": [
+    "version",
+    "dependencies"
+  ]
+}
