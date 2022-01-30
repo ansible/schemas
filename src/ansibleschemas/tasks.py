@@ -11,8 +11,8 @@ def cleanup_schema(schema: Any) -> None:
     # https://github.com/samuelcolvin/pydantic/discussions/2495#discussioncomment-450329
     # schema.pop('title', None)  # remove title of model
     # pylint: disable=unused-variable
-    for field_name, field_props in schema.get('properties', {}).items():
-        field_props.pop('title', None)  # remove title of fields
+    for field_name, field_props in schema.get("properties", {}).items():
+        field_props.pop("title", None)  # remove title of fields
 
 
 class _SharedModel(BaseModel):
@@ -95,7 +95,7 @@ BlockModel.update_forward_refs()
 # Alternative approach of combining all modules into a single BeremothModel,
 # which seems to produce ~1.1mb file.
 kwargs = dict()
-kwargs['__base__'] = TaskModel  # type: ignore
+kwargs["__base__"] = TaskModel  # type: ignore
 # kwargs['schema_extra'] = cleanup_schema  # type: ignore
 
 BeremothTaskModel = create_model("BeremothTaskModel", **kwargs)  # type: ignore

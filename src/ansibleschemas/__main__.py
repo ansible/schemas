@@ -49,10 +49,10 @@ examples:
         formatter_class=RawTextHelpFormatter,
     )
     parser.add_argument(
-        '-p',
-        '--dump-galaxy-platforms',
-        default=os.environ.get('DUMP_GALAXY_PLATFORMS'),
-        action='store_true',
+        "-p",
+        "--dump-galaxy-platforms",
+        default=os.environ.get("DUMP_GALAXY_PLATFORMS"),
+        action="store_true",
         help="Query the Galaxy API and dump all Galaxy platforms into a python module.",
     )
     return parser.parse_args()
@@ -61,48 +61,48 @@ examples:
 def pretty_plattforms(value: dict) -> str:
     """Pretty prints the plattform dictionary"""
     items = [
-        '\n' + ' ' * 4 + repr(key) + ': ' + _pretty_list(value[key], len(repr(key)))
+        "\n" + " " * 4 + repr(key) + ": " + _pretty_list(value[key], len(repr(key)))
         for key in value
     ]
-    return '{%s}' % (','.join(items) + ',\n')
+    return "{%s}" % (",".join(items) + ",\n")
 
 
 def _pretty_list(value: list, key_length: int) -> str:
     """Pretty prints a list. Automatically warps lines if line length of 88 is exceeded (-> black compatibility)."""
-    htchar = ' '
+    htchar = " "
     indent = 4
-    nlch = '\n' + htchar * indent
+    nlch = "\n" + htchar * indent
     items = [repr(item) for item in value]
-    if (len(', '.join(items)) + key_length + 9) > 88:
-        return '[%s]' % (
+    if (len(", ".join(items)) + key_length + 9) > 88:
+        return "[%s]" % (
             nlch
             + htchar * indent
-            + (',' + nlch + htchar * indent).join(items)
-            + ','
+            + ("," + nlch + htchar * indent).join(items)
+            + ","
             + nlch
         )
-    return '[%s]' % (', '.join(items))
+    return "[%s]" % (", ".join(items))
 
 
 def dump_galaxy_platforms() -> None:
     """Dumps galaxy platforms into a python module."""
     filename = f"{module_dir}/_galaxy.py"
     print(f"Dumping list of Galaxy platforms to {filename}")
-    result = {'next_link': '/api/v1/platforms/'}
-    while result.get('next_link', None):
-        url = GALAXY_API_URL + result['next_link']
+    result = {"next_link": "/api/v1/platforms/"}
+    while result.get("next_link", None):
+        url = GALAXY_API_URL + result["next_link"]
         result = requests.get(url).json()
-        for entry in result['results']:
+        for entry in result["results"]:
             if not isinstance(entry, dict):
                 continue
-            name = entry.get('name', None)
-            release = entry.get('release', None)
+            name = entry.get("name", None)
+            release = entry.get("release", None)
             if not name or not isinstance(name, str):
                 continue
             if name and name not in GALAXY_PLATFORMS:
                 GALAXY_PLATFORMS[name] = []
             if (
-                release not in ['any', 'all', 'None']
+                release not in ["any", "all", "None"]
                 and release not in GALAXY_PLATFORMS[name]
             ):
                 GALAXY_PLATFORMS[name].append(release)
@@ -140,18 +140,18 @@ def map_type(ansible_type: str) -> str:
     """Return JSON date type for a given Ansible type."""
     # https://json-schema.org/understanding-json-schema/reference/type.html
     # raw is used for file mode by ansible
-    if ansible_type in ['str', 'filename', 'path', 'raw', 'sid']:
-        return 'string'
-    if ansible_type == 'list':
-        return 'array'
-    if ansible_type == 'bool':
-        return 'boolean'
-    if ansible_type == 'int':
-        return 'integer'
-    if ansible_type in ['dict', 'jsonarg', 'json']:
-        return 'object'
-    if ansible_type == 'float':
-        return 'number'
+    if ansible_type in ["str", "filename", "path", "raw", "sid"]:
+        return "string"
+    if ansible_type == "list":
+        return "array"
+    if ansible_type == "bool":
+        return "boolean"
+    if ansible_type == "int":
+        return "integer"
+    if ansible_type in ["dict", "jsonarg", "json"]:
+        return "object"
+    if ansible_type == "float":
+        return "number"
     raise NotImplementedError(
         f"Unable to map ansible type {ansible_type} to JSON Schema type."
     )

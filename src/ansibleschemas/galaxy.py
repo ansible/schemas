@@ -24,9 +24,9 @@ class CollectionVersionConstraintModel(BaseModel):
 
 spdx_licenses = []
 with open("data/licenses.json", "r") as file:
-    for lic in json.loads(file.read())['licenses']:
-        if not lic.get('isDeprecatedLicenseId', False):
-            spdx_licenses.append(lic['licenseId'])
+    for lic in json.loads(file.read())["licenses"]:
+        if not lic.get("isDeprecatedLicenseId", False):
+            spdx_licenses.append(lic["licenseId"])
 # https://spdx.org/licenses/
 args = {v: v for v in sorted(spdx_licenses)}
 spdxEnum = Enum("SPDXLicenseEnum", args)  # type: ignore
