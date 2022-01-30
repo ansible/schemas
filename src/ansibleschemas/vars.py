@@ -8,7 +8,7 @@ from . import consts
 
 
 class EncryptedString(ConstrainedStr):
-    regex = re.compile(r'^\$ANSIBLE_VAULT;')
+    regex = re.compile(r"^\$ANSIBLE_VAULT;")
 
 
 class VarsModel(BaseModel):

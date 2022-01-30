@@ -71,11 +71,11 @@ class ContainerRegistryModel(BaseModel):
 
 
 class NetworkModeServiceString(ConstrainedStr):
-    regex = re.compile(r'^service:[a-zA-Z0-9:_.\\-]+$')
+    regex = re.compile(r"^service:[a-zA-Z0-9:_.\\-]+$")
 
 
 class NetworkModeContainerString(ConstrainedStr):
-    regex = re.compile(r'^container:[a-zA-Z0-9][a-zA-Z0-9_.-]+$')
+    regex = re.compile(r"^container:[a-zA-Z0-9][a-zA-Z0-9_.-]+$")
 
 
 class MoleculePlatformModel(BaseModel):

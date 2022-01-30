@@ -47,7 +47,7 @@ def pytest_collect_file(parent, path) -> Optional["Node"]:
     except RuntimeError:
         # ignore unknown file types
         return None
-    if lintable.kind == 'json-schema':
+    if lintable.kind == "json-schema":
         return SchemaFile.from_parent(parent, fspath=path)  # type: ignore
     if not lintable.kind:
         return None
@@ -113,7 +113,7 @@ class JSONSchemaItem(pytest.Item):
         if isinstance(excinfo.value, ValidationException):
             result = excinfo.value.result
             if result:
-                if not hasattr(result, 'args'):
+                if not hasattr(result, "args"):
                     return str(result)
                 cmd = " ".join(result.args)
                 return "\n".join(
