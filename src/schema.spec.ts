@@ -1,9 +1,9 @@
-import * as assert from 'assert';
 import * as path from 'path';
 import Ajv from "ajv"
 import fs from 'fs';
 import minimatch from 'minimatch';
 import yaml from 'js-yaml';
+import { assert } from "chai";
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -31,9 +31,8 @@ describe('schemas under f/', function () {
     describe(schema_file, function () {
       getTestFiles(schema_json.examples).forEach(({ file: test_file, expect_fail }) => {
         it(`linting ${test_file}`, function () {
-          const result = (validator(yaml.load(fs.readFileSync(test_file, 'utf8'))) ? !expect_fail : expect_fail);
-          if (!result) console.log(validator.errors)
-          assert.strictEqual(result, true);
+          const result = validator(yaml.load(fs.readFileSync(test_file, 'utf8')));
+          assert.equal(result, !expect_fail, `${JSON.stringify(validator.errors)}`);
         });
       });
     });
@@ -46,12 +45,12 @@ function getTestFiles(globs: string[]): { file: string, expect_fail: boolean }[]
     .map((glob: any) => minimatch.match(test_files, path.join('**', glob)))
     .flat()));
   const negative_files = Array.from(new Set(globs
-    .map((glob: any) => minimatch.match(test_files, path.join('**', glob)))
+    .map((glob: any) => minimatch.match(negative_test_files, path.join('**', glob)))
     .flat()));
 
   // All fails ending with fail, like `foo.fail.yml` are expected to fail validation
   let result = files.map(f => ({ file: f, expect_fail: false }))
-  result.concat(negative_files.map(f => ({ file: f, expect_fail: true })));
+  result = result.concat(negative_files.map(f => ({ file: f, expect_fail: true })));
   return result;
 }
 
