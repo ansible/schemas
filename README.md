@@ -17,11 +17,11 @@ historical forms which are still allowed by Ansible itself.
 Not any file accepted by Ansible will pass these schemas but we do expect
 that any file that passed these schemas should be accepted by Ansible.
 
-* YAML 1.2 booleans are required as `true` or `false`, while Ansible itself
+- YAML 1.2 booleans are required as `true` or `false`, while Ansible itself
   allows you to use more relaxed forms like `yes` or `no`.
-* Inline actions are not allowed, as schema cannot validate them
-* Non builtin modules must be called using `action:` blocks
-* Module arguments are not yet verified but we plan to implement it
+- Inline actions are not allowed, as schema cannot validate them
+- Non builtin modules must be called using `action:` blocks
+- Module arguments are not yet verified but we plan to implement it
 
 As these schemas are still experimental, creating pull-requests to improve the
 schema is of much greater help. Though you are still welcome to report bugs

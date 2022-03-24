@@ -32,12 +32,10 @@ and `package-lock.json`:
 tox -e deps
 ```
 
-
 ## Submitting Pull Requests
 
 Fixes and features for schemas will go through the Github pull request process.
 Submit your pull request (PR) against the `main` branch.
-
 
 Here are a few things you can do to help get your pull request accepted faster:
 
@@ -45,7 +43,6 @@ Here are a few things you can do to help get your pull request accepted faster:
   - python tests: `tox`
   - validation tests using mocha: `npm test`
 - Write good commit messages. See [How to write a Git commit message](https://chris.beams.io/posts/git-commit/).
-
 
 ## Reporting Issues
 

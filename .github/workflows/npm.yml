@@ -1,19 +1,19 @@
 name: npm
 
 on:
-  create:  # is used for publishing to PyPI and TestPyPI
-    tags:  # any tag regardless of its name, no branches
-    - "**"
-  push:  # only publishes pushes to the main branch to TestPyPI
-    branches:  # any integration branch but not tag
-    - "main"
+  create: # is used for publishing to PyPI and TestPyPI
+    tags: # any tag regardless of its name, no branches
+      - "**"
+  push: # only publishes pushes to the main branch to TestPyPI
+    branches: # any integration branch but not tag
+      - "main"
   pull_request:
   release:
     types:
-    - published  # It seems that you can publish directly without creating
-    - prereleased
+      - published # It seems that you can publish directly without creating
+      - prereleased
   schedule:
-  - cron: 1 0 * * *  # Run daily at 0:01 UTC
+    - cron: 1 0 * * * # Run daily at 0:01 UTC
   # Run every Friday at 18:02 UTC
   # https://crontab.guru/#2_18_*_*_5
   # - cron: 2 18 * * 5
@@ -26,48 +26,48 @@ jobs:
       matrix:
         node-version: [15.x]
         npm_target:
-        - test
-        - lint
+          - test
+          - lint
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
 
-    # https://github.com/actions/cache
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.cfg') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+      # https://github.com/actions/cache
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install test deps
-      run: |
-        npm ci
-        python3 -m pip install --upgrade pre-commit
+      - name: Install test deps
+        run: |
+          npm ci
+          python3 -m pip install --upgrade pre-commit
 
-    - run: npm ci
+      - run: npm ci
 
-    - run: npm run ${{ matrix.npm_target }}
+      - run: npm run ${{ matrix.npm_target }}
 
-  check:  # This job does nothing and is only used for the branch protection
+  check: # This job does nothing and is only used for the branch protection
     if: always()
 
     needs:
-    - npm
+      - npm
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Decide whether the needed jobs succeeded or failed
-      uses: re-actors/alls-green@release/v1
-      with:
-        jobs: ${{ toJSON(needs) }}
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
