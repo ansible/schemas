@@ -13,7 +13,8 @@ const ajv = new Ajv({
 });
 
 // load whitelist of all test file subjects schemas can reference
-const example_files = getAllFiles('./examples');
+const test_files = getAllFiles('./test');
+const negative_test_files = getAllFiles('./negative_test');
 
 // load all schemas
 const schema_files = fs.readdirSync("f/").filter(el => path.extname(el) === '.json');
@@ -21,19 +22,19 @@ console.log(`Schemas: ${schema_files}`);
 
 describe('schemas under f/', function () {
   schema_files.forEach(schema_file => {
-      const schema_json = JSON.parse(fs.readFileSync(`f/${schema_file}`, 'utf8'));
-      const validator = ajv.compile(schema_json);
-      if (schema_json.examples == undefined) {
-        console.error(`Schema file ${schema_file} is missing an examples key that we need for documenting file matching patterns.`);
-        return process.exit(1);
-      }
-      describe(schema_file, function() {
-        getTestFiles(schema_json.examples).forEach(({ file: test_file, expect_fail }) => {
-          it(`linting ${test_file}`, function () {
-            const result = (validator(yaml.load(fs.readFileSync(test_file, 'utf8'))) ? !expect_fail : expect_fail);
-            if (!result) console.log(validator.errors)
-            assert.strictEqual(result, true);
-          });
+    const schema_json = JSON.parse(fs.readFileSync(`f/${schema_file}`, 'utf8'));
+    const validator = ajv.compile(schema_json);
+    if (schema_json.examples == undefined) {
+      console.error(`Schema file ${schema_file} is missing an examples key that we need for documenting file matching patterns.`);
+      return process.exit(1);
+    }
+    describe(schema_file, function () {
+      getTestFiles(schema_json.examples).forEach(({ file: test_file, expect_fail }) => {
+        it(`linting ${test_file}`, function () {
+          const result = (validator(yaml.load(fs.readFileSync(test_file, 'utf8'))) ? !expect_fail : expect_fail);
+          if (!result) console.log(validator.errors)
+          assert.strictEqual(result, true);
+        });
       });
     });
   });
@@ -42,9 +43,16 @@ describe('schemas under f/', function () {
 // find all tests for each schema file
 function getTestFiles(globs: string[]): { file: string, expect_fail: boolean }[] {
   const files = Array.from(new Set(globs
-    .map((glob: any) => minimatch.match(example_files, path.join('**', glob)))
+    .map((glob: any) => minimatch.match(test_files, path.join('**', glob)))
     .flat()));
-  return files.map(f => ({ file: f, expect_fail: fs.existsSync(`${f}.fail`) }));
+  const negative_files = Array.from(new Set(globs
+    .map((glob: any) => minimatch.match(test_files, path.join('**', glob)))
+    .flat()));
+
+  // All fails ending with fail, like `foo.fail.yml` are expected to fail validation
+  let result = files.map(f => ({ file: f, expect_fail: false }))
+  result.concat(negative_files.map(f => ({ file: f, expect_fail: true })));
+  return result;
 }
 
 function getAllFiles(dir: string): string[] {
