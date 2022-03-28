@@ -2,34 +2,26 @@
 
 You are welcome to contribute to the schemas for Ansible, Zuul and Molecule!
 
-## Extending the schemas
+## Setting up the project for development
 
-Changes to the schemas need to be made in `src/ansibleschemas/`. They are then
-generated with `tox` in the directory `f/`. The generated files need to be
-included with each commit as that's the way they are published at the moment.
+You need node.js version 16 or newer.
 
-### Updating the Galaxy Platforms
-
-`GALAXY_PLATFORMS` in `src/ansibleschemas/_galaxy.py` lists the commonly known
-platforms and versions available on Galaxy. They can be viewed visiting
-https://galaxy.ansible.com/api/v1/platforms/.
-
-For updating the list of platforms and versions you can set the environment variable
-`DUMP_GALAXY_PLATFORMS` and run `tox`:
+To set up the project, go to the project root directory and run:
 
 ```shell
-DUMP_GALAXY_PLATFORMS=1 tox
+npm install
 ```
 
-This will query the API and replace the current list of galaxy platforms.
+## Extending the schemas
+
+The schemas are in the directory `f/`. You can modify them directly.
 
 ### Updating dependencies
 
-Run the following command to update dependency lock files `constraints.txt`
-and `package-lock.json`:
+To update the dependency lock file `package-lock.json`, go to the project root directory and run:
 
 ```shell
-tox -e deps
+npm run deps
 ```
 
 ## Submitting Pull Requests
@@ -39,9 +31,7 @@ Submit your pull request (PR) against the `main` branch.
 
 Here are a few things you can do to help get your pull request accepted faster:
 
-- Check that the following commands run without reporting any errors
-  - python tests: `tox`
-  - validation tests using mocha: `npm test`
+- Run `npm test` and check that it returns without reporting any errors.
 - Write good commit messages. See [How to write a Git commit message](https://chris.beams.io/posts/git-commit/).
 
 ## Reporting Issues
