@@ -22,6 +22,9 @@ any file that passed these schemas should be accepted by Ansible.
 - Inline actions are not allowed, as schema cannot validate them
 - Non builtin modules must be called using `action:` blocks
 - Module arguments are not yet verified but we plan to implement it
+- Out schemas are strict about use of jinja2 templating and require `{{` on
+  arguments declared as **explicit**, which forbid use of `{{` on those marked
+  as **implicit**. See section below for details.
 
 As these schemas are still experimental, creating pull-requests to improve the
 schema is of much greater help. Though you are still welcome to report bugs but
@@ -45,6 +48,47 @@ extension.
 
 - [playbook subschema url](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/definitions/playbook)
 - [tasks subschema uri](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/definitions/tasks)
+
+## Jinja2 implicit vs explicit templating
+
+While Ansible might allow you to combine implicit and explicit templating, our
+schema will not. Our schemas will only allow you to use the recommended form,
+either by forbidding you to use the curly braces on implicit ones or forcing you
+to add them on explicit ones.
+
+Examples:
+
+```yaml
+- name: some task
+  command: echo 123
+  register: result
+  vars:
+    become_method_var: sudo
+  become_method: become_method_var # <-- schema will not allow this
+  # become_method: "{{ become_method_var }}" # <-- that is allowed
+```
+
+### How to find if a field is implicit or explicit?
+
+Run assuming that your keyword is `no_log`, you can run
+`ansible-doc -t keyword no_log`, which will give you the following output:
+
+```yaml
+failed_when:
+  applies_to:
+    - Task
+  description:
+    Conditional expression that overrides the task's normal 'failed' status.
+  priority: 0
+  template: implicit
+  type: list
+```
+
+As you can see the `template` field tells you if is implicit or explicit.
+
+Being more restrictive, schema protects you from common accidents, like writing
+a simple string in an explicit field. That will always evaluate as true instead
+of being evaluated as a jinja template.
 
 ## Activating the schemas
 
