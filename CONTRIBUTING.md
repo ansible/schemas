@@ -1,6 +1,6 @@
 # Developing Schemas
 
-You are welcome to contribute to the schemas for Ansible, Zuul and Molecule!
+You are welcome to contribute to the schemas for Ansible and Molecule!
 
 ## Setting up the project for development
 

@@ -1,14 +1,14 @@
-# Schemas for Ansible, Zuul and Molecule
+# Schemas for Ansible and its related tools
 
 [![ci](https://github.com/ansible-community/schemas/actions/workflows/npm.yml/badge.svg)](https://github.com/ansible-community/schemas/actions/workflows/npm.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Repository License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
-## About Schemas for Ansible, Zuul and Molecule
+## About Schemas
 
 This project aims to generate JSON/YAML validation schemas for Ansible
 files such as playbooks, tasks, requirements, meta or vars and also for
-Zuul and Molecule configuration.
+Molecule configuration.
 
 Keep in mind that these schemas will limit your freedom of choice regarding
 the syntax you can use to write Ansible tasks as they do not allow some
