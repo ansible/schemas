@@ -25,6 +25,7 @@ console.log(`Schemas: ${schema_files}`);
 describe("schemas under f/", function () {
   schema_files.forEach((schema_file) => {
     const schema_json = JSON.parse(fs.readFileSync(`f/${schema_file}`, "utf8"));
+    ajv.addSchema(schema_json);
     const validator = ajv.compile(schema_json);
     if (schema_json.examples == undefined) {
       console.error(
@@ -35,7 +36,7 @@ describe("schemas under f/", function () {
     describe(schema_file, function () {
       getTestFiles(schema_json.examples).forEach(
         ({ file: test_file, expect_fail }) => {
-          it(`linting ${test_file}`, function () {
+          it(`linting ${test_file} using ${schema_file}`, function () {
             const result = validator(
               yaml.load(fs.readFileSync(test_file, "utf8"))
             );
@@ -47,6 +48,33 @@ describe("schemas under f/", function () {
           });
         }
       );
+      // All /definitions/ that have examples property are assumed to be
+      // subschemas, "tasks" being the primary such case, which is also used
+      // for validating separated files.
+      for (var definition in schema_json.definitions) {
+        if (schema_json.definitions[definition].examples) {
+          const subschema_uri = `${schema_json["$id"]}#/definitions/${definition}`;
+          const subschema_validator = ajv.getSchema(subschema_uri);
+          if (!subschema_validator) {
+            console.error(`Failed to load subschema ${subschema_uri}`);
+            return process.exit(1);
+          }
+          getTestFiles(schema_json.definitions[definition].examples).forEach(
+            ({ file: test_file, expect_fail }) => {
+              it(`linting ${test_file} using ${subschema_uri}`, function () {
+                const result = subschema_validator(
+                  yaml.load(fs.readFileSync(test_file, "utf8"))
+                );
+                assert.equal(
+                  result,
+                  !expect_fail,
+                  `${JSON.stringify(validator.errors)}`
+                );
+              });
+            }
+          );
+        }
+      }
     });
   });
 });
