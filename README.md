@@ -30,6 +30,22 @@ expect them to take a longer time until someone finds time to fix them.
 If you want to help improve the schemas, have a look at the
 [development documentation](CONTRIBUTING.md).
 
+## Schema Bundle
+
+We are currently migrating towards a single [ansible.json](/f/ansible.json)
+schema bundle, one that contains subschema definitions for all the supported
+file types.
+
+To configure your validator or editor to use the bundle, use the new URLs below,
+the part after the `#` in the URLs is essential for informing the loader about
+which subschema to use. You can also look at our own
+[settings.json](.vscode/settings.json) to understand how to configure
+[vscode-yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+extension.
+
+- [playbook subschema url](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/definitions/playbook)
+- [tasks subschema uri](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/definitions/tasks)
+
 ## Activating the schemas
 
 At this moment installing
