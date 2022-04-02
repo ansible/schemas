@@ -3,25 +3,25 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "additionalProperties": false,
   "definitions": {
-    "no_log": {
-      "title": "no_log",
-      "markdownDescription": "Use for protecting sensitive data. See [no_log](https://docs.ansible.com/ansible/latest/reference_appendices/logging.html)",
-      "$ref": "#/definitions/templated-boolean"
-    },
-    "templated-boolean": {
-      "oneOf": [
-        {
-          "type": "boolean"
+    "ansible.builtin.import_playbook": {
+      "additionalProperties": false,
+      "properties": {
+        "ansible.builtin.import_playbook": {
+          "markdownDescription": "* Includes a file with a list of plays to be executed.\n *  Files with a list of plays can only be included at the top level.\n * You cannot use this action inside a play.\n\nSee [import_playbook](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html)",
+          "title": "Import Playbook",
+          "type": "string"
         },
-        {
-          "type": "string",
-          "$ref": "#/definitions/full-jinja"
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "vars": {
+          "title": "Vars",
+          "type": "object"
         }
-      ]
-    },
-    "full-jinja": {
-      "type": "string",
-      "pattern": "^\\{\\{.*\\}\\}$"
+      },
+      "required": ["ansible.builtin.import_playbook"],
+      "type": "object"
     },
     "block": {
       "properties": {
@@ -74,8 +74,8 @@
               }
             ]
           },
-          "title": "Block",
           "markdownDescription": "Blocks create logical groups of tasks. Blocks also offer ways to handle task errors, similar to exception handling in many programming languages. See [blocks](https://docs.ansible.com/ansible/latest/user_guide/playbooks_blocks.html)",
+          "title": "Block",
           "type": "array"
         },
         "check_mode": {
@@ -204,28 +204,20 @@
       "required": ["block"],
       "type": "object"
     },
-    "ansible.builtin.import_playbook": {
-      "additionalProperties": false,
-      "properties": {
-        "ansible.builtin.import_playbook": {
-          "title": "Import Playbook",
-          "type": "string",
-          "markdownDescription": "* Includes a file with a list of plays to be executed.\n *  Files with a list of plays can only be included at the top level.\n * You cannot use this action inside a play.\n\nSee [import_playbook](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html)"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "vars": {
-          "title": "Vars",
-          "type": "object"
-        }
-      },
-      "required": ["ansible.builtin.import_playbook"],
-      "type": "object"
+    "full-jinja": {
+      "pattern": "^\\{\\{.*\\}\\}$",
+      "type": "string"
+    },
+    "no_log": {
+      "$ref": "#/definitions/templated-boolean",
+      "markdownDescription": "Use for protecting sensitive data. See [no_log](https://docs.ansible.com/ansible/latest/reference_appendices/logging.html)",
+      "title": "no_log"
     },
     "play": {
       "additionalProperties": false,
+      "not": {
+        "required": ["ansible.builtin.import_playbook"]
+      },
       "properties": {
         "any_errors_fatal": {
           "title": "Any Errors Fatal",
@@ -376,8 +368,8 @@
               }
             ]
           },
-          "title": "Roles",
           "markdownDescription": "Roles let you automatically load related vars, files, tasks, handlers, and other Ansible artifacts based on a known file structure. After you group your content in roles, you can easily reuse them and share them with other users.\n See [roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#roles)",
+          "title": "Roles",
           "type": "array"
         },
         "run_once": {
@@ -385,15 +377,13 @@
           "type": "boolean"
         },
         "serial": {
-          "title": "Batch size",
-          "markdownDescription": "Integer, percentage or list of those. See [Setting the batch size with serial](https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#setting-the-batch-size-with-serial)",
           "anyOf": [
             {
               "type": "integer"
             },
             {
-              "type": "string",
-              "pattern": "^\\d+\\.?\\d*%?$"
+              "pattern": "^\\d+\\.?\\d*%?$",
+              "type": "string"
             },
             {
               "items": {
@@ -402,14 +392,16 @@
                     "type": "integer"
                   },
                   {
-                    "type": "string",
-                    "pattern": "^\\d+\\.?\\d*%?$"
+                    "pattern": "^\\d+\\.?\\d*%?$",
+                    "type": "string"
                   }
                 ]
               },
               "type": "array"
             }
-          ]
+          ],
+          "markdownDescription": "Integer, percentage or list of those. See [Setting the batch size with serial](https://docs.ansible.com/ansible/latest/user_guide/playbooks_strategies.html#setting-the-batch-size-with-serial)",
+          "title": "Batch size"
         },
         "strategy": {
           "title": "Strategy",
@@ -455,8 +447,8 @@
           "items": {
             "$ref": "#/definitions/vars_prompt"
           },
-          "title": "vars_prompt",
           "markdownDescription": "See [vars_prompt](https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html)",
+          "title": "vars_prompt",
           "type": "array"
         },
         "when": {
@@ -475,13 +467,11 @@
         }
       },
       "required": ["hosts"],
-      "not": {
-        "required": ["ansible.builtin.import_playbook"]
-      },
       "title": "play",
       "type": "object"
     },
     "play-role": {
+      "markdownDescription": "See [roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#roles)",
       "properties": {
         "any_errors_fatal": {
           "title": "Any Errors Fatal",
@@ -611,11 +601,13 @@
       },
       "required": ["role"],
       "title": "play-role",
-      "markdownDescription": "See [roles](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#roles)",
       "type": "object"
     },
     "task": {
       "additionalProperties": true,
+      "not": {
+        "required": ["block"]
+      },
       "properties": {
         "action": {
           "title": "Action",
@@ -733,7 +725,6 @@
           "$ref": "#/definitions/no_log"
         },
         "notify": {
-          "title": "Notify",
           "anyOf": [
             {
               "type": "string"
@@ -744,7 +735,8 @@
               },
               "type": "array"
             }
-          ]
+          ],
+          "title": "Notify"
         },
         "poll": {
           "title": "Poll",
@@ -869,9 +861,6 @@
         }
       },
       "title": "task",
-      "not": {
-        "required": ["block"]
-      },
       "type": "object"
     },
     "tasks": {
@@ -889,6 +878,17 @@
       },
       "title": "Ansible Tasks Schema",
       "type": "array"
+    },
+    "templated-boolean": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/definitions/full-jinja",
+          "type": "string"
+        }
+      ]
     },
     "vars_prompt": {
       "additionalProperties": false,

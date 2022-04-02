@@ -1,10 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "definitions": {
-    "TemplatedStringModel": {
-      "type": "string",
-      "pattern": "^\\{\\{.*\\}\\}$"
-    },
     "BlockModel": {
       "properties": {
         "always": {
@@ -113,7 +109,6 @@
           "type": "string"
         },
         "no_log": {
-          "title": "No Log",
           "anyOf": [
             {
               "$ref": "#/definitions/TemplatedStringModel"
@@ -121,7 +116,8 @@
             {
               "type": "boolean"
             }
-          ]
+          ],
+          "title": "No Log"
         },
         "port": {
           "title": "Port",
@@ -196,6 +192,9 @@
     },
     "TaskModel": {
       "additionalProperties": true,
+      "not": {
+        "required": ["block"]
+      },
       "properties": {
         "action": {
           "title": "Action",
@@ -310,7 +309,6 @@
           "type": "string"
         },
         "no_log": {
-          "title": "No Log",
           "anyOf": [
             {
               "$ref": "#/definitions/TemplatedStringModel"
@@ -318,10 +316,10 @@
             {
               "type": "boolean"
             }
-          ]
+          ],
+          "title": "No Log"
         },
         "notify": {
-          "title": "Notify",
           "anyOf": [
             {
               "type": "string"
@@ -332,7 +330,8 @@
               },
               "type": "array"
             }
-          ]
+          ],
+          "title": "Notify"
         },
         "poll": {
           "title": "Poll",
@@ -456,11 +455,12 @@
           "title": "With Together"
         }
       },
-      "not": {
-        "required": ["block"]
-      },
       "title": "TaskModel",
       "type": "object"
+    },
+    "TemplatedStringModel": {
+      "pattern": "^\\{\\{.*\\}\\}$",
+      "type": "string"
     }
   },
   "examples": ["tasks/*.yml", "handlers/*.yml"],
