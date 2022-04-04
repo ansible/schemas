@@ -13,6 +13,13 @@ repos:
       - id: check-byte-order-marker
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v5.9.0
+    hooks:
+      - id: cspell
+        # entry: codespell --relative
+        args: [--relative, --no-progress, --no-summary]
+        name: Spell check with cspell
   - repo: https://github.com/pre-commit/mirrors-prettier
     # keep it before markdownlint and eslint
     rev: "v2.6.1"
@@ -22,11 +29,19 @@ repos:
           (?x)^(
             data/.*
           )$
+        always_run: true
+        additional_dependencies:
+          - prettier
+          - prettier-plugin-sort-json
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.31.1
+    hooks:
+      - id: markdownlint
   - repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
     hooks:
       - id: codespell
-        entry: codespell --ignore-words=words.txt
+        entry: codespell --ignore-words=.config/dictionary.txt
         exclude: >
           (?x)^(
             data/.*|
