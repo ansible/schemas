@@ -24,6 +24,11 @@ console.log(`Schemas: ${schema_files}`);
 
 describe("schemas under f/", function () {
   schema_files.forEach((schema_file) => {
+    if (["ansible-tasks.json", "ansible-playbook.json"].includes(schema_file)) {
+      console.warn(`Skipped processing deprecated schema ${schema_file}`);
+      return;
+    }
+
     const schema_json = JSON.parse(fs.readFileSync(`f/${schema_file}`, "utf8"));
     ajv.addSchema(schema_json);
     const validator = ajv.compile(schema_json);
