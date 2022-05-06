@@ -4,6 +4,7 @@ import fs from "fs";
 import minimatch from "minimatch";
 import yaml from "js-yaml";
 import { assert } from "chai";
+import stringify from "safe-stable-stringify";
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -42,9 +43,19 @@ describe("schemas under f/", function () {
       getTestFiles(schema_json.examples).forEach(
         ({ file: test_file, expect_fail }) => {
           it(`linting ${test_file} using ${schema_file}`, function () {
+            var errors_md = "";
             const result = validator(
               yaml.load(fs.readFileSync(test_file, "utf8"))
             );
+            if (validator.errors) {
+              errors_md += "# ajv errors\n\n```json\n";
+              errors_md += stringify(validator.errors, null, 2);
+              errors_md += "\n```\n";
+            }
+            // dump errors to markdown file for manual inspection
+            if (errors_md) {
+              fs.writeFileSync(`${test_file}.md`, errors_md);
+            }
             assert.equal(
               result,
               !expect_fail,
