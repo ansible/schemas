@@ -13,3 +13,17 @@
   }
 ]
 ```
+
+# check-jsonschema
+
+stderr:
+
+```
+  negative_test/molecule/platforms_children/molecule.yml::$.platforms[0].children: 2 is not of type 'array'
+```
+
+stdout:
+
+```
+Schema validation errors were encountered.
+```

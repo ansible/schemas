@@ -22,3 +22,18 @@
   }
 ]
 ```
+
+# check-jsonschema
+
+stderr:
+
+```
+  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[0]: 'foo' is not of type 'object'
+  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[1]: 'bar' is not of type 'object'
+```
+
+stdout:
+
+```
+Schema validation errors were encountered.
+```
