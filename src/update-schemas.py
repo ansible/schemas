@@ -53,7 +53,7 @@ print("Updating invalid var names")
 with open("f/ansible-vars.json", "r+", encoding="utf-8") as f:
     vars_schema = json.load(f)
     vars_schema['anyOf'][0]['patternProperties'] = {
-        f"^(?!{'|'.join(invalid_var_names)})[a-zA-Z_][\\w]*$": {}
+        f"^(?!({'|'.join(invalid_var_names)})$)[a-zA-Z_][\\w]*$": {}
     }
     f.seek(0)
     json.dump(vars_schema, f, indent=2)
