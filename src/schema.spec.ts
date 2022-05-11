@@ -5,6 +5,27 @@ import minimatch from "minimatch";
 import yaml from "js-yaml";
 import { assert } from "chai";
 import stringify from "safe-stable-stringify";
+import { integer } from "vscode-languageserver-types";
+import { exec } from "child_process";
+const spawnSync = require("child_process").spawnSync;
+
+function ansiRegex({ onlyFirst = false } = {}) {
+  const pattern = [
+    "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+    "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))",
+  ].join("|");
+
+  return new RegExp(pattern, onlyFirst ? undefined : "g");
+}
+
+function stripAnsi(data: string) {
+  if (typeof data !== "string") {
+    throw new TypeError(
+      `Expected a \`string\`, got \`${typeof data}\ = ${data}`
+    );
+  }
+  return data.replace(ansiRegex(), "");
+}
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -50,8 +71,26 @@ describe("schemas under f/", function () {
             if (validator.errors) {
               errors_md += "# ajv errors\n\n```json\n";
               errors_md += stringify(validator.errors, null, 2);
-              errors_md += "\n```\n";
+              errors_md += "\n```\n\n";
             }
+            // validate using check-jsonschema (python-jsonschema):
+            // const py = exec();
+            const proc = spawnSync(
+              `python3 -m check_jsonschema --schemafile f/${schema_file} ${test_file}`,
+              { shell: true, encoding: "utf-8", stdio: "pipe" }
+            );
+            if (proc.status != 0) {
+              // real errors are sent to stderr due to https://github.com/python-jsonschema/check-jsonschema/issues/88
+              errors_md += "# check-jsonschema\n\nstderr:\n\n```\n";
+              errors_md += stripAnsi(proc.output[2]);
+              errors_md += "```\n";
+              if (proc.output[1]) {
+                errors_md += "\nstdout:\n\n```\n";
+                errors_md += stripAnsi(proc.output[1]);
+                errors_md += "```\n";
+              }
+            }
+
             // dump errors to markdown file for manual inspection
             if (errors_md) {
               fs.writeFileSync(`${test_file}.md`, errors_md);

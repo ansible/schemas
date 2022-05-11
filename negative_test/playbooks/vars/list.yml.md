@@ -38,3 +38,20 @@
   }
 ]
 ```
+
+# check-jsonschema
+
+stderr:
+
+```
+  negative_test/playbooks/vars/list.yml::$: ['foo', 'bar'] is not valid under any of the given schemas
+  Underlying errors caused this.
+  Best Match:
+    $: ['foo', 'bar'] is not of type 'object'
+```
+
+stdout:
+
+```
+Schema validation errors were encountered.
+```
