@@ -28,12 +28,12 @@
 stderr:
 
 ```
-  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[0]: 'foo' is not of type 'object'
-  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[1]: 'bar' is not of type 'object'
+Schema validation errors were encountered.
 ```
 
 stdout:
 
 ```
-Schema validation errors were encountered.
+  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[0]: 'foo' is not of type 'object'
+  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[1]: 'bar' is not of type 'object'
 ```

@@ -75,8 +75,11 @@ describe("schemas under f/", function () {
             }
             // validate using check-jsonschema (python-jsonschema):
             // const py = exec();
+            // Do not use python -m ... calling notation because for some
+            // reason, nodejs environment lacks some env variables needed
+            // and breaks usage from inside virtualenvs.
             const proc = spawnSync(
-              `python3 -m check_jsonschema --schemafile f/${schema_file} ${test_file}`,
+              `check-jsonschema --schemafile f/${schema_file} ${test_file}`,
               { shell: true, encoding: "utf-8", stdio: "pipe" }
             );
             if (proc.status != 0) {
@@ -92,8 +95,16 @@ describe("schemas under f/", function () {
             }
 
             // dump errors to markdown file for manual inspection
+            const md_filename = `${test_file}.md`;
             if (errors_md) {
-              fs.writeFileSync(`${test_file}.md`, errors_md);
+              fs.writeFileSync(md_filename, errors_md);
+            } else {
+              // if no error occurs, we should ensure there is no md file present
+              fs.unlink(md_filename, function (err) {
+                if (err && err.code != "ENOENT") {
+                  console.error(`Failed to remove ${md_filename}.`);
+                }
+              });
             }
             assert.equal(
               result,
