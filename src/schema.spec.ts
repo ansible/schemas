@@ -74,17 +74,17 @@ describe("schemas under f/", function () {
             // reason, nodejs environment lacks some env variables needed
             // and breaks usage from inside virtualenvs.
             const proc = spawnSync(
-              `check-jsonschema --schemafile f/${schema_file} ${test_file}`,
+              `check-jsonschema -o json --schemafile f/${schema_file} ${test_file}`,
               { shell: true, encoding: "utf-8", stdio: "pipe" }
             );
             if (proc.status != 0) {
               // real errors are sent to stderr due to https://github.com/python-jsonschema/check-jsonschema/issues/88
-              errors_md += "# check-jsonschema\n\nstderr:\n\n```\n";
-              errors_md += stripAnsi(proc.output[2]);
+              errors_md += "# check-jsonschema\n\nstdout:\n\n```json\n";
+              errors_md += stripAnsi(proc.output[1]);
               errors_md += "```\n";
-              if (proc.output[1]) {
-                errors_md += "\nstdout:\n\n```\n";
-                errors_md += stripAnsi(proc.output[1]);
+              if (proc.output[2]) {
+                errors_md += "\nstderr:\n\n```\n";
+                errors_md += stripAnsi(proc.output[2]);
                 errors_md += "```\n";
               }
             }

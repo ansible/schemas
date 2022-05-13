@@ -16,14 +16,18 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/inventory/broken_dev_inventory.yml::$.all: Additional properties are not allowed ('foo' was unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/inventory/broken_dev_inventory.yml",
+      "path": "$.all",
+      "message": "Additional properties are not allowed ('foo' was unexpected)",
+      "has_sub_errors": false
+    }
+  ]
+}
 ```

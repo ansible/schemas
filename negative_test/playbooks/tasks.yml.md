@@ -104,17 +104,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tasks.yml::$[0]: {'hosts': 'localhost', 'pre_tasks': 'foo', 'post_tasks': {}, 'tasks': 1, 'handlers': 1.0} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('handlers', 'hosts', 'post_tasks', 'pre_tasks', 'tasks' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tasks.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'pre_tasks': 'foo', 'post_tasks': {}, 'tasks': 1, 'handlers': 1.0} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('handlers', 'hosts', 'post_tasks', 'pre_tasks', 'tasks' were unexpected)"
+      }
+    }
+  ]
+}
 ```

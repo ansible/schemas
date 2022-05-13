@@ -69,17 +69,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/loop.yml::$[0]: {'hosts': 'localhost', 'tasks': [{'name': 'that should pass', 'ansible.builtin.debug': {'var': 'item'}, 'loop': 123}]} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('hosts', 'tasks' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/loop.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'tasks': [{'name': 'that should pass', 'ansible.builtin.debug': {'var': 'item'}, 'loop': 123}]} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('hosts', 'tasks' were unexpected)"
+      }
+    }
+  ]
+}
 ```

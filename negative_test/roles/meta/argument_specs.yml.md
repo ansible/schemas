@@ -16,14 +16,18 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/roles/meta/argument_specs.yml::$.argument_specs.main: Additional properties are not allowed ('foo' was unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/roles/meta/argument_specs.yml",
+      "path": "$.argument_specs.main",
+      "message": "Additional properties are not allowed ('foo' was unexpected)",
+      "has_sub_errors": false
+    }
+  ]
+}
 ```

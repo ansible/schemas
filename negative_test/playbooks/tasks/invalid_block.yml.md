@@ -30,17 +30,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tasks/invalid_block.yml::$[0]: {'block': {}} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: {'block': {}} should not be valid under {'required': ['block']}
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tasks/invalid_block.yml",
+      "path": "$[0]",
+      "message": "{'block': {}} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "{'block': {}} should not be valid under {'required': ['block']}"
+      }
+    }
+  ]
+}
 ```

@@ -145,17 +145,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/invalid-failed-when.yml::$[0]: {'hosts': 'localhost', 'tasks': [{'debug': {'msg': 'failed_when should not accept numeric'}, 'failed_when': 123}, {'debug': {'msg': 'failed_when should not accept sequence'}, 'failed_when': ['foo', 'bar']}, {'debug': {'msg': 'failed_when should not accept map'}, 'failed_when': {}}]} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('hosts', 'tasks' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/invalid-failed-when.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'tasks': [{'debug': {'msg': 'failed_when should not accept numeric'}, 'failed_when': 123}, {'debug': {'msg': 'failed_when should not accept sequence'}, 'failed_when': ['foo', 'bar']}, {'debug': {'msg': 'failed_when should not accept map'}, 'failed_when': {}}]} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('hosts', 'tasks' were unexpected)"
+      }
+    }
+  ]
+}
 ```

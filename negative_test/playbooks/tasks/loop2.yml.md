@@ -35,17 +35,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tasks/loop2.yml::$[0]: {'ansible.builtin.debug': {'var': 'item'}, 'loop': 123} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: 'block' is a required property
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tasks/loop2.yml",
+      "path": "$[0]",
+      "message": "{'ansible.builtin.debug': {'var': 'item'}, 'loop': 123} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "'block' is a required property"
+      }
+    }
+  ]
+}
 ```
