@@ -59,36 +59,48 @@
   {
     "instancePath": "/0/handlers",
     "keyword": "type",
-    "message": "must be array",
+    "message": "must be array,null",
     "params": {
-      "type": "array"
+      "type": [
+        "array",
+        "null"
+      ]
     },
     "schemaPath": "#/type"
   },
   {
     "instancePath": "/0/post_tasks",
     "keyword": "type",
-    "message": "must be array",
+    "message": "must be array,null",
     "params": {
-      "type": "array"
+      "type": [
+        "array",
+        "null"
+      ]
     },
     "schemaPath": "#/type"
   },
   {
     "instancePath": "/0/pre_tasks",
     "keyword": "type",
-    "message": "must be array",
+    "message": "must be array,null",
     "params": {
-      "type": "array"
+      "type": [
+        "array",
+        "null"
+      ]
     },
     "schemaPath": "#/type"
   },
   {
     "instancePath": "/0/tasks",
     "keyword": "type",
-    "message": "must be array",
+    "message": "must be array,null",
     "params": {
-      "type": "array"
+      "type": [
+        "array",
+        "null"
+      ]
     },
     "schemaPath": "#/type"
   },
