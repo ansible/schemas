@@ -25,15 +25,24 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[0]: 'foo' is not of type 'object'
-  negative_test/molecule/platforms_networks/molecule.yml::$.platforms[0].networks[1]: 'bar' is not of type 'object'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/molecule/platforms_networks/molecule.yml",
+      "path": "$.platforms[0].networks[0]",
+      "message": "'foo' is not of type 'object'",
+      "has_sub_errors": false
+    },
+    {
+      "filename": "negative_test/molecule/platforms_networks/molecule.yml",
+      "path": "$.platforms[0].networks[1]",
+      "message": "'bar' is not of type 'object'",
+      "has_sub_errors": false
+    }
+  ]
+}
 ```

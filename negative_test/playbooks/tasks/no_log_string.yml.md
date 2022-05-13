@@ -77,17 +77,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tasks/no_log_string.yml::$[0]: {'ansible.builtin.debug': {'msg': 'foo'}, 'vars': {'some_var': True}, 'no_log': 'some_var'} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: 'block' is a required property
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tasks/no_log_string.yml",
+      "path": "$[0]",
+      "message": "{'ansible.builtin.debug': {'msg': 'foo'}, 'vars': {'some_var': True}, 'no_log': 'some_var'} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "'block' is a required property"
+      }
+    }
+  ]
+}
 ```

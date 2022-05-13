@@ -32,17 +32,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/roles/meta/main.yml::$: {'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $: {'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/roles/meta/main.yml",
+      "path": "$",
+      "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$",
+        "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'"
+      }
+    }
+  ]
+}
 ```

@@ -32,17 +32,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/roles/meta_invalid_collection/meta/main.yml::$: {'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $: {'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/roles/meta_invalid_collection/meta/main.yml",
+      "path": "$",
+      "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$",
+        "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'"
+      }
+    }
+  ]
+}
 ```

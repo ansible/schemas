@@ -57,17 +57,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/reqs3/meta/requirements.yml::$: {'foo': 'bar'} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $: {'foo': 'bar'} is not of type 'array'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/reqs3/meta/requirements.yml",
+      "path": "$",
+      "message": "{'foo': 'bar'} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$",
+        "message": "{'foo': 'bar'} is not of type 'array'"
+      }
+    }
+  ]
+}
 ```

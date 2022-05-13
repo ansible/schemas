@@ -111,17 +111,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/no_log_partial_template.yml::$[0]: {'hosts': 'localhost', 'vars': {'some_var': True}, 'tasks': [{'ansible.builtin.debug': {'msg': 'foo'}, 'no_log': 'foo-{{ some_var }}'}]} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('hosts', 'tasks' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/no_log_partial_template.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'vars': {'some_var': True}, 'tasks': [{'ansible.builtin.debug': {'msg': 'foo'}, 'no_log': 'foo-{{ some_var }}'}]} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('hosts', 'tasks' were unexpected)"
+      }
+    }
+  ]
+}
 ```

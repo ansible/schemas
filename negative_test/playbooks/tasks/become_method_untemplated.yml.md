@@ -97,17 +97,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tasks/become_method_untemplated.yml::$[0]: {'command': 'echo 123', 'vars': {'sudo_var': 'doo'}, 'become_method': 'sudo_var'} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: 'block' is a required property
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tasks/become_method_untemplated.yml",
+      "path": "$[0]",
+      "message": "{'command': 'echo 123', 'vars': {'sudo_var': 'doo'}, 'become_method': 'sudo_var'} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "'block' is a required property"
+      }
+    }
+  ]
+}
 ```

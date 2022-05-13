@@ -41,17 +41,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/vars/list.yml::$: ['foo', 'bar'] is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $: ['foo', 'bar'] is not of type 'object'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/vars/list.yml",
+      "path": "$",
+      "message": "['foo', 'bar'] is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$",
+        "message": "['foo', 'bar'] is not of type 'object'"
+      }
+    }
+  ]
+}
 ```

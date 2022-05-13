@@ -16,14 +16,18 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/molecule/platforms_children/molecule.yml::$.platforms[0].children: 2 is not of type 'array'
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/molecule/platforms_children/molecule.yml",
+      "path": "$.platforms[0].children",
+      "message": "2 is not of type 'array'",
+      "has_sub_errors": false
+    }
+  ]
+}
 ```

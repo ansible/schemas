@@ -111,17 +111,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/ignore_errors.yml::$[0]: {'hosts': 'localhost', 'tasks': [{'command': 'echo 123', 'vars': {'should_ignore_errors': True}, 'ignore_errors': 'should_ignore_errors'}]} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('hosts', 'tasks' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/ignore_errors.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'tasks': [{'command': 'echo 123', 'vars': {'should_ignore_errors': True}, 'ignore_errors': 'should_ignore_errors'}]} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('hosts', 'tasks' were unexpected)"
+      }
+    }
+  ]
+}
 ```

@@ -66,17 +66,22 @@
 
 # check-jsonschema
 
-stderr:
-
-```
-Schema validation errors were encountered.
-```
-
 stdout:
 
-```
-  negative_test/playbooks/tags-mapping.yml::$[0]: {'hosts': 'localhost', 'tags': {}} is not valid under any of the given schemas
-  Underlying errors caused this.
-  Best Match:
-    $[0]: Additional properties are not allowed ('hosts', 'tags' were unexpected)
+```json
+{
+  "status": "fail",
+  "errors": [
+    {
+      "filename": "negative_test/playbooks/tags-mapping.yml",
+      "path": "$[0]",
+      "message": "{'hosts': 'localhost', 'tags': {}} is not valid under any of the given schemas",
+      "has_sub_errors": true,
+      "best_match": {
+        "path": "$[0]",
+        "message": "Additional properties are not allowed ('hosts', 'tags' were unexpected)"
+      }
+    }
+  ]
+}
 ```
