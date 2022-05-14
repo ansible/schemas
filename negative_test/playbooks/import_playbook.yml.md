@@ -9,14 +9,14 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/properties/ansible.builtin.import_playbook/type"
+    "schemaPath": "#/definitions/ansible.builtin.import_playbook/patternProperties/%5E(ansible%5C.builtin%5C.)%3Fimport_playbook%24/type"
   },
   {
     "instancePath": "/0",
     "keyword": "not",
     "message": "must NOT be valid",
     "params": {},
-    "schemaPath": "#/not"
+    "schemaPath": "#/allOf/0/not"
   },
   {
     "instancePath": "/0",
@@ -38,10 +38,12 @@
   },
   {
     "instancePath": "/0",
-    "keyword": "anyOf",
-    "message": "must match a schema in anyOf",
-    "params": {},
-    "schemaPath": "#/items/anyOf"
+    "keyword": "oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "schemaPath": "#/items/oneOf"
   }
 ]
 ```

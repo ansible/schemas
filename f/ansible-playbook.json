@@ -5,8 +5,30 @@
   "definitions": {
     "ansible.builtin.import_playbook": {
       "additionalProperties": false,
-      "properties": {
-        "ansible.builtin.import_playbook": {
+      "oneOf": [
+        {
+          "not": {
+            "required": [
+              "import_playbook"
+            ]
+          },
+          "required": [
+            "ansible.builtin.import_playbook"
+          ]
+        },
+        {
+          "not": {
+            "required": [
+              "ansible.builtin.import_playbook"
+            ]
+          },
+          "required": [
+            "import_playbook"
+          ]
+        }
+      ],
+      "patternProperties": {
+        "^(ansible\\.builtin\\.)?import_playbook$": {
           "markdownDescription": "* Includes a file with a list of plays to be executed.\n *  Files with a list of plays can only be included at the top level.\n * You cannot use this action inside a play.\n\nSee [import_playbook](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/import_playbook_module.html)",
           "title": "Import Playbook",
           "type": "string"
@@ -20,9 +42,6 @@
           "type": "object"
         }
       },
-      "required": [
-        "ansible.builtin.import_playbook"
-      ],
       "type": "object"
     },
     "become_method": {
@@ -271,11 +290,22 @@
     },
     "play": {
       "additionalProperties": false,
-      "not": {
-        "required": [
-          "ansible.builtin.import_playbook"
-        ]
-      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "ansible.builtin.import_playbook"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "import_playbook"
+            ]
+          }
+        }
+      ],
       "properties": {
         "any_errors_fatal": {
           "title": "Any Errors Fatal",
@@ -666,7 +696,7 @@
         "playbooks/*.yaml"
       ],
       "items": {
-        "anyOf": [
+        "oneOf": [
           {
             "$ref": "#/definitions/ansible.builtin.import_playbook"
           },
@@ -1053,7 +1083,7 @@
     "playbooks/*.yaml"
   ],
   "items": {
-    "anyOf": [
+    "oneOf": [
       {
         "$ref": "#/definitions/ansible.builtin.import_playbook"
       },
