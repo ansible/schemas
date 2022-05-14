@@ -4,15 +4,6 @@
 [
   {
     "instancePath": "/0",
-    "keyword": "required",
-    "message": "must have required property 'ansible.builtin.import_playbook'",
-    "params": {
-      "missingProperty": "ansible.builtin.import_playbook"
-    },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/required"
-  },
-  {
-    "instancePath": "/0",
     "keyword": "additionalProperties",
     "message": "must NOT have additional properties",
     "params": {
@@ -22,12 +13,10 @@
   },
   {
     "instancePath": "/0",
-    "keyword": "additionalProperties",
-    "message": "must NOT have additional properties",
-    "params": {
-      "additionalProperty": "import_playbook"
-    },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "keyword": "not",
+    "message": "must NOT be valid",
+    "params": {},
+    "schemaPath": "#/allOf/1/not"
   },
   {
     "instancePath": "/0",
@@ -40,10 +29,12 @@
   },
   {
     "instancePath": "/0",
-    "keyword": "anyOf",
-    "message": "must match a schema in anyOf",
-    "params": {},
-    "schemaPath": "#/items/anyOf"
+    "keyword": "oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "schemaPath": "#/items/oneOf"
   }
 ]
 ```
@@ -63,7 +54,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "Additional properties are not allowed ('hosts', 'import_playbook' were unexpected)"
+        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'vars'"
       }
     }
   ]
