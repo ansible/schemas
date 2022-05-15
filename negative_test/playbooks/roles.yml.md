@@ -9,7 +9,7 @@
     "params": {
       "missingProperty": "ansible.builtin.import_playbook"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf/0/required"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/0/required"
   },
   {
     "instancePath": "/0",
@@ -18,7 +18,7 @@
     "params": {
       "missingProperty": "import_playbook"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf/1/required"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/1/required"
   },
   {
     "instancePath": "/0",
@@ -27,7 +27,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf"
   },
   {
     "instancePath": "/0",
@@ -36,7 +36,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
   },
   {
     "instancePath": "/0",
@@ -45,7 +45,7 @@
     "params": {
       "additionalProperty": "roles"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
   },
   {
     "instancePath": "/0/roles",

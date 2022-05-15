@@ -18,7 +18,7 @@
     "params": {
       "pattern": "^\\{\\{.*\\}\\}$"
     },
-    "schemaPath": "#/definitions/full-jinja/pattern"
+    "schemaPath": "#/$defs/full-jinja/pattern"
   },
   {
     "instancePath": "/0/ignore_errors",
@@ -54,7 +54,7 @@
     "params": {
       "pattern": "^\\{\\{.*\\}\\}$"
     },
-    "schemaPath": "#/definitions/full-jinja/pattern"
+    "schemaPath": "#/$defs/full-jinja/pattern"
   },
   {
     "instancePath": "/0/ignore_errors",

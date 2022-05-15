@@ -9,7 +9,7 @@
     "params": {
       "type": "object"
     },
-    "schemaPath": "#/definitions/platform-network/type"
+    "schemaPath": "#/$defs/platform-network/type"
   },
   {
     "instancePath": "/platforms/0/networks/1",
@@ -18,7 +18,7 @@
     "params": {
       "type": "object"
     },
-    "schemaPath": "#/definitions/platform-network/type"
+    "schemaPath": "#/$defs/platform-network/type"
   }
 ]
 ```

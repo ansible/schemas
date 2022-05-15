@@ -9,7 +9,7 @@
     "params": {
       "missingProperty": "ansible.builtin.import_playbook"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf/0/required"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/0/required"
   },
   {
     "instancePath": "/0",
@@ -18,7 +18,7 @@
     "params": {
       "missingProperty": "import_playbook"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf/1/required"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/1/required"
   },
   {
     "instancePath": "/0",
@@ -27,7 +27,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/oneOf"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf"
   },
   {
     "instancePath": "/0",
@@ -36,7 +36,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
   },
   {
     "instancePath": "/0",
@@ -45,7 +45,7 @@
     "params": {
       "additionalProperty": "tasks"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
   },
   {
     "instancePath": "/0/tasks/0/failed_when",
@@ -54,7 +54,7 @@
     "params": {
       "type": "boolean"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/0/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/0/type"
   },
   {
     "instancePath": "/0/tasks/0/failed_when",
@@ -63,7 +63,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/1/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/1/type"
   },
   {
     "instancePath": "/0/tasks/0/failed_when",
@@ -72,7 +72,7 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/2/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/2/type"
   },
   {
     "instancePath": "/0/tasks/0/failed_when",
@@ -81,7 +81,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf"
+    "schemaPath": "#/$defs/complex_conditional/oneOf"
   },
   {
     "instancePath": "/0/tasks/0",
@@ -106,7 +106,7 @@
     "params": {
       "type": "boolean"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/0/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/0/type"
   },
   {
     "instancePath": "/0/tasks/2/failed_when",
@@ -115,7 +115,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/1/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/1/type"
   },
   {
     "instancePath": "/0/tasks/2/failed_when",
@@ -124,7 +124,7 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/2/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/2/type"
   },
   {
     "instancePath": "/0/tasks/2/failed_when",
@@ -133,7 +133,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf"
+    "schemaPath": "#/$defs/complex_conditional/oneOf"
   },
   {
     "instancePath": "/0/tasks/2",

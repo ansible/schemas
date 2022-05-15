@@ -109,18 +109,18 @@ describe("schemas under f/", function () {
           });
         }
       );
-      // All /definitions/ that have examples property are assumed to be
+      // All /$defs/ that have examples property are assumed to be
       // subschemas, "tasks" being the primary such case, which is also used
       // for validating separated files.
-      for (var definition in schema_json.definitions) {
-        if (schema_json.definitions[definition].examples) {
-          const subschema_uri = `${schema_json["$id"]}#/definitions/${definition}`;
+      for (var definition in schema_json["$defs"]) {
+        if (schema_json["$defs"][definition].examples) {
+          const subschema_uri = `${schema_json["$id"]}#/$defs/${definition}`;
           const subschema_validator = ajv.getSchema(subschema_uri);
           if (!subschema_validator) {
             console.error(`Failed to load subschema ${subschema_uri}`);
             return process.exit(1);
           }
-          getTestFiles(schema_json.definitions[definition].examples).forEach(
+          getTestFiles(schema_json["$defs"][definition].examples).forEach(
             ({ file: test_file, expect_fail }) => {
               it(`linting ${test_file} using ${subschema_uri}`, function () {
                 const result = subschema_validator(

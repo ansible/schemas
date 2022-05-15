@@ -73,11 +73,11 @@ for subschema in ['tasks', 'playbook']:
         if key in sub_json:
             del sub_json[key]
     for key in sub_json:
-        if key not in ['$schema', 'definitions']:
+        if key not in ['$schema', '$defs']:
             print(f"Unexpected key found at combined schema root: ${key}")
             sys.exit(2)
     # Copy keys from subschema to root
-    for key, value in combined_json['definitions'][subschema].items():
+    for key, value in combined_json['$defs'][subschema].items():
         sub_json[key] = value
     sub_json['$comment'] = 'Generated from ansible.json, do not edit.'
     sub_json['$id'] = f"https://raw.githubusercontent.com/ansible/schemas/main/f/ansible-{subschema}.json"
