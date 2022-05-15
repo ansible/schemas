@@ -9,7 +9,7 @@
     "params": {
       "type": "boolean"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/0/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/0/type"
   },
   {
     "instancePath": "/0/when",
@@ -18,7 +18,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/1/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/1/type"
   },
   {
     "instancePath": "/0/when",
@@ -27,7 +27,7 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/2/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/2/type"
   },
   {
     "instancePath": "/0/when",
@@ -36,7 +36,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf"
+    "schemaPath": "#/$defs/complex_conditional/oneOf"
   },
   {
     "instancePath": "/0",
@@ -54,7 +54,7 @@
     "params": {
       "type": "boolean"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/0/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/0/type"
   },
   {
     "instancePath": "/0/when",
@@ -63,7 +63,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/1/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/1/type"
   },
   {
     "instancePath": "/0/when",
@@ -72,7 +72,7 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf/2/type"
+    "schemaPath": "#/$defs/complex_conditional/oneOf/2/type"
   },
   {
     "instancePath": "/0/when",
@@ -81,7 +81,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/definitions/complex_conditional/oneOf"
+    "schemaPath": "#/$defs/complex_conditional/oneOf"
   },
   {
     "instancePath": "/0",

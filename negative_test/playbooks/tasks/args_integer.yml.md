@@ -27,7 +27,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/full-jinja/type"
+    "schemaPath": "#/$defs/full-jinja/type"
   },
   {
     "instancePath": "/0/args",

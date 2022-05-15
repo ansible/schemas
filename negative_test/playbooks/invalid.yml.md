@@ -9,7 +9,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
   },
   {
     "instancePath": "/0",

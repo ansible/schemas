@@ -9,7 +9,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/definitions/ansible.builtin.import_playbook/patternProperties/%5E(ansible%5C.builtin%5C.)%3Fimport_playbook%24/type"
+    "schemaPath": "#/$defs/ansible.builtin.import_playbook/patternProperties/%5E(ansible%5C.builtin%5C.)%3Fimport_playbook%24/type"
   },
   {
     "instancePath": "/0",

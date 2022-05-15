@@ -9,7 +9,7 @@
     "params": {
       "additionalProperty": "foo"
     },
-    "schemaPath": "#/definitions/special-group/additionalProperties"
+    "schemaPath": "#/$defs/special-group/additionalProperties"
   }
 ]
 ```

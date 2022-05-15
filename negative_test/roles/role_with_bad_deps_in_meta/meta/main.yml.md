@@ -18,7 +18,7 @@
     "params": {
       "missingProperty": "role"
     },
-    "schemaPath": "#/definitions/DependencyModel/anyOf/0/required"
+    "schemaPath": "#/$defs/DependencyModel/anyOf/0/required"
   },
   {
     "instancePath": "/dependencies/0",
@@ -27,7 +27,7 @@
     "params": {
       "missingProperty": "src"
     },
-    "schemaPath": "#/definitions/DependencyModel/anyOf/1/required"
+    "schemaPath": "#/$defs/DependencyModel/anyOf/1/required"
   },
   {
     "instancePath": "/dependencies/0",
@@ -36,14 +36,14 @@
     "params": {
       "missingProperty": "name"
     },
-    "schemaPath": "#/definitions/DependencyModel/anyOf/2/required"
+    "schemaPath": "#/$defs/DependencyModel/anyOf/2/required"
   },
   {
     "instancePath": "/dependencies/0",
     "keyword": "anyOf",
     "message": "must match a schema in anyOf",
     "params": {},
-    "schemaPath": "#/definitions/DependencyModel/anyOf"
+    "schemaPath": "#/$defs/DependencyModel/anyOf"
   },
   {
     "instancePath": "",
