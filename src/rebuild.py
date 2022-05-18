@@ -60,20 +60,15 @@ def is_ref_used(obj: Any, ref: str) -> bool:
     ref_use = f"#/$defs/{ref}"
     if isinstance(obj, dict):
         if obj.get("$ref", None) == ref_use:
-            # breakpoint()
             return True
-        for value in obj.values():
-            if isinstance(value, (dict, list)):
-                if is_ref_used(value, ref):
-                    # breakpoint()
+        for _ in obj.values():
+            if isinstance(_, (dict, list)):
+                if is_ref_used(_, ref):
                     return True
     elif isinstance(obj, list):
-        for value in obj:
-            # if value.get("$ref", None) == ref:
-            #     return True
-            if isinstance(value, (dict, list)):
-                if is_ref_used(value, ref):
-                    # breakpoint()
+        for _ in obj:
+            if isinstance(_, (dict, list)):
+                if is_ref_used(_, ref):
                     return True
     return False
 
