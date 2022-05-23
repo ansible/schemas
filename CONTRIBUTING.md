@@ -38,5 +38,5 @@ Here are a few things you can do to help get your pull request accepted faster:
 
 ## Reporting Issues
 
-We welcome your feedback, and encourage you to file an issue when you run into a
+We welcome your feedback and encourage you to file an issue when you run into a
 problem.
