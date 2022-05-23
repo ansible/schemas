@@ -20,15 +20,15 @@ any file that passed these schemas should be accepted by Ansible.
 - YAML 1.2 booleans are required as `true` or `false`, while Ansible itself
   allows you to use more relaxed forms like `yes` or `no`.
 - Inline actions are not allowed, as schema cannot validate them
-- Non builtin modules must be called using `action:` blocks
+- Non-built-in modules must be called using `action:` blocks
 - Module arguments are not yet verified but we plan to implement it
-- Out schemas are strict about use of jinja2 templating and require `{{` on
-  arguments declared as **explicit**, which forbid use of `{{` on those marked
-  as **implicit**. See section below for details.
+- Out schemas are strict about usage of jinja2 templating and require `{{` on
+  arguments declared as **explicit**, which forbid the use of `{{` on those
+  marked as **implicit**. See the section below for details.
 
-As these schemas are still experimental, creating pull-requests to improve the
+As these schemas are still experimental, creating pull requests to improve the
 schema is of much greater help. Though you are still welcome to report bugs but
-expect them to take a longer time until someone finds time to fix them.
+expect them to take a long time until someone finds time to fix them.
 
 If you want to help improve the schemas, have a look at the
 [development documentation](CONTRIBUTING.md).
@@ -41,8 +41,8 @@ file types.
 
 To configure your validator or editor to use the bundle, use the new URLs below,
 the part after the `#` in the URLs is essential for informing the loader about
-which subschema to use. You can also look at our own
-[settings.json](.vscode/settings.json) to understand how to configure
+which subschema to use. You can also look at our
+[settings.json](.vscode/settings.json) to understand how to configure the
 [vscode-yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
 extension.
 
