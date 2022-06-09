@@ -7,7 +7,7 @@
     "keyword": "not",
     "message": "must NOT be valid",
     "params": {},
-    "schemaPath": "#/not"
+    "schemaPath": "#/allOf/0/not"
   },
   {
     "instancePath": "/0/block",

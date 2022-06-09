@@ -9,7 +9,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/additionalProperties"
   },
   {
     "instancePath": "/0",
@@ -54,7 +54,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'vars'"
+        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
       }
     }
   ]

@@ -7,14 +7,14 @@
     "keyword": "not",
     "message": "must NOT be valid",
     "params": {},
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/0/not"
+    "schemaPath": "#/oneOf/0/not"
   },
   {
     "instancePath": "/0",
     "keyword": "not",
     "message": "must NOT be valid",
     "params": {},
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/1/not"
+    "schemaPath": "#/oneOf/1/not"
   },
   {
     "instancePath": "/0",
@@ -23,7 +23,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf"
+    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0",
