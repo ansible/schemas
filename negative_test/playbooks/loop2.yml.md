@@ -9,7 +9,7 @@
     "params": {
       "missingProperty": "ansible.builtin.import_playbook"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/0/required"
+    "schemaPath": "#/oneOf/0/required"
   },
   {
     "instancePath": "/0",
@@ -18,7 +18,7 @@
     "params": {
       "missingProperty": "import_playbook"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/1/required"
+    "schemaPath": "#/oneOf/1/required"
   },
   {
     "instancePath": "/0",
@@ -27,7 +27,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf"
+    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0",
@@ -36,7 +36,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/additionalProperties"
   },
   {
     "instancePath": "/0",
@@ -45,7 +45,7 @@
     "params": {
       "additionalProperty": "tasks"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/additionalProperties"
   },
   {
     "instancePath": "/0/tasks/0/loop",
@@ -102,7 +102,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'vars'"
+        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
       }
     }
   ]

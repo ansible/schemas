@@ -9,7 +9,7 @@
     "params": {
       "missingProperty": "ansible.builtin.import_playbook"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/0/required"
+    "schemaPath": "#/oneOf/0/required"
   },
   {
     "instancePath": "/0",
@@ -18,7 +18,7 @@
     "params": {
       "missingProperty": "import_playbook"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf/1/required"
+    "schemaPath": "#/oneOf/1/required"
   },
   {
     "instancePath": "/0",
@@ -27,7 +27,7 @@
     "params": {
       "passingSchemas": null
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/oneOf"
+    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0",
@@ -36,16 +36,7 @@
     "params": {
       "additionalProperty": "hosts"
     },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
-  },
-  {
-    "instancePath": "/0",
-    "keyword": "additionalProperties",
-    "message": "must NOT have additional properties",
-    "params": {
-      "additionalProperty": "tags"
-    },
-    "schemaPath": "#/$defs/ansible.builtin.import_playbook/additionalProperties"
+    "schemaPath": "#/additionalProperties"
   },
   {
     "instancePath": "/0/tags",
@@ -54,7 +45,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/properties/tags/anyOf/0/type"
+    "schemaPath": "#/$defs/tags/anyOf/0/type"
   },
   {
     "instancePath": "/0/tags",
@@ -63,14 +54,39 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/properties/tags/anyOf/1/type"
+    "schemaPath": "#/$defs/tags/anyOf/1/type"
   },
   {
     "instancePath": "/0/tags",
     "keyword": "anyOf",
     "message": "must match a schema in anyOf",
     "params": {},
-    "schemaPath": "#/properties/tags/anyOf"
+    "schemaPath": "#/$defs/tags/anyOf"
+  },
+  {
+    "instancePath": "/0/tags",
+    "keyword": "type",
+    "message": "must be string",
+    "params": {
+      "type": "string"
+    },
+    "schemaPath": "#/$defs/tags/anyOf/0/type"
+  },
+  {
+    "instancePath": "/0/tags",
+    "keyword": "type",
+    "message": "must be array",
+    "params": {
+      "type": "array"
+    },
+    "schemaPath": "#/$defs/tags/anyOf/1/type"
+  },
+  {
+    "instancePath": "/0/tags",
+    "keyword": "anyOf",
+    "message": "must match a schema in anyOf",
+    "params": {},
+    "schemaPath": "#/$defs/tags/anyOf"
   },
   {
     "instancePath": "/0",
@@ -99,7 +115,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts', 'tags' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'vars'"
+        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
       }
     }
   ]

@@ -9,7 +9,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/properties/tags/anyOf/0/type"
+    "schemaPath": "#/$defs/tags/anyOf/0/type"
   },
   {
     "instancePath": "/0/tags",
@@ -18,14 +18,14 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/properties/tags/anyOf/1/type"
+    "schemaPath": "#/$defs/tags/anyOf/1/type"
   },
   {
     "instancePath": "/0/tags",
     "keyword": "anyOf",
     "message": "must match a schema in anyOf",
     "params": {},
-    "schemaPath": "#/properties/tags/anyOf"
+    "schemaPath": "#/$defs/tags/anyOf"
   },
   {
     "instancePath": "/0",
@@ -43,7 +43,7 @@
     "params": {
       "type": "string"
     },
-    "schemaPath": "#/properties/tags/anyOf/0/type"
+    "schemaPath": "#/$defs/tags/anyOf/0/type"
   },
   {
     "instancePath": "/0/tags",
@@ -52,14 +52,14 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/properties/tags/anyOf/1/type"
+    "schemaPath": "#/$defs/tags/anyOf/1/type"
   },
   {
     "instancePath": "/0/tags",
     "keyword": "anyOf",
     "message": "must match a schema in anyOf",
     "params": {},
-    "schemaPath": "#/properties/tags/anyOf"
+    "schemaPath": "#/$defs/tags/anyOf"
   },
   {
     "instancePath": "/0",
