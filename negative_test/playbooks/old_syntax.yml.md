@@ -48,40 +48,13 @@
     "schemaPath": "#/additionalProperties"
   },
   {
-    "instancePath": "/0/tasks/0/command",
+    "instancePath": "/0/tasks/0/ansible.builtin.template",
     "keyword": "type",
     "message": "must be object",
     "params": {
       "type": "object"
     },
     "schemaPath": "#/additionalProperties/type"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "type",
-    "message": "must be boolean",
-    "params": {
-      "type": "boolean"
-    },
-    "schemaPath": "#/oneOf/0/type"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "pattern",
-    "message": "must match pattern \"^\\{\\{.*\\}\\}$\"",
-    "params": {
-      "pattern": "^\\{\\{.*\\}\\}$"
-    },
-    "schemaPath": "#/$defs/full-jinja/pattern"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "oneOf",
-    "message": "must match exactly one schema in oneOf",
-    "params": {
-      "passingSchemas": null
-    },
-    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0/tasks/0",
@@ -91,33 +64,6 @@
       "missingProperty": "block"
     },
     "schemaPath": "#/required"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "type",
-    "message": "must be boolean",
-    "params": {
-      "type": "boolean"
-    },
-    "schemaPath": "#/oneOf/0/type"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "pattern",
-    "message": "must match pattern \"^\\{\\{.*\\}\\}$\"",
-    "params": {
-      "pattern": "^\\{\\{.*\\}\\}$"
-    },
-    "schemaPath": "#/$defs/full-jinja/pattern"
-  },
-  {
-    "instancePath": "/0/tasks/0/ignore_errors",
-    "keyword": "oneOf",
-    "message": "must match exactly one schema in oneOf",
-    "params": {
-      "passingSchemas": null
-    },
-    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0/tasks/0",
@@ -147,9 +93,9 @@ stdout:
   "status": "fail",
   "errors": [
     {
-      "filename": "negative_test/playbooks/ignore_errors.yml",
+      "filename": "negative_test/playbooks/old_syntax.yml",
       "path": "$[0]",
-      "message": "{'hosts': 'localhost', 'tasks': [{'command': 'echo 123', 'vars': {'should_ignore_errors': True}, 'ignore_errors': 'should_ignore_errors'}]} is not valid under any of the given schemas",
+      "message": "{'hosts': 'localhost', 'tasks': [{'ansible.builtin.template': 'src=sshd_config.j2 dest=/etc/ssh/sshd_config'}]} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",

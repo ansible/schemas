@@ -57,7 +57,7 @@ stdout:
     {
       "filename": "negative_test/playbooks/tasks/with_items_untemplated_string.yml",
       "path": "$[0]",
-      "message": "{'command': 'echo 123', 'with_items': 'foobar'} is not valid under any of the given schemas",
+      "message": "{'command': {'cmd': 'echo 123'}, 'with_items': 'foobar'} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",

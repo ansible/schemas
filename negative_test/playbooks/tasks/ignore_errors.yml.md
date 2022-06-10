@@ -86,7 +86,7 @@ stdout:
     {
       "filename": "negative_test/playbooks/tasks/ignore_errors.yml",
       "path": "$[0]",
-      "message": "{'command': 'echo 123', 'vars': {'should_ignore_errors': True}, 'ignore_errors': 'should_ignore_errors'} is not valid under any of the given schemas",
+      "message": "{'command': {'cmd': 'echo 123'}, 'vars': {'should_ignore_errors': True}, 'ignore_errors': 'should_ignore_errors'} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",

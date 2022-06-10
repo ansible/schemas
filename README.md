@@ -49,6 +49,20 @@ extension.
 - [playbook subschema url](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/$defs/playbook)
 - [tasks subschema uri](https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json#/$defs/tasks)
 
+## No shorthand syntax
+
+While Ansible still allows old shorthand module calling syntax, our schemas do
+not allow it. Look at the example below to see how to use the new syntax.
+
+```yaml
+# Unsupported by schemas:
+- ansible.builtin.command: touch foo.txt creates=foo.txt
+# Rewrite them using full syntax:
+- ansible.builtin.command:
+    cmd: touch foo.txt
+    creates: foo.txt
+```
+
 ## Jinja2 implicit vs explicit templating
 
 While Ansible might allow you to combine implicit and explicit templating, our

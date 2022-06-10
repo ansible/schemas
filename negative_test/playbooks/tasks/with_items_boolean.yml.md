@@ -28,6 +28,19 @@
     "schemaPath": "#/properties/with_items/anyOf"
   },
   {
+    "instancePath": "/0/with_items",
+    "keyword": "type",
+    "message": "must be string,object,array",
+    "params": {
+      "type": [
+        "string",
+        "object",
+        "array"
+      ]
+    },
+    "schemaPath": "#/patternProperties/%5Ewith_/type"
+  },
+  {
     "instancePath": "/0",
     "keyword": "required",
     "message": "must have required property 'block'",
@@ -57,7 +70,7 @@ stdout:
     {
       "filename": "negative_test/playbooks/tasks/with_items_boolean.yml",
       "path": "$[0]",
-      "message": "{'command': 'echo 123', 'with_items': True} is not valid under any of the given schemas",
+      "message": "{'command': {'cmd': 'echo 123'}, 'with_items': True} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",

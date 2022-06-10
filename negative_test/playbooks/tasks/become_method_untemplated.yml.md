@@ -106,7 +106,7 @@ stdout:
     {
       "filename": "negative_test/playbooks/tasks/become_method_untemplated.yml",
       "path": "$[0]",
-      "message": "{'command': 'echo 123', 'vars': {'sudo_var': 'doo'}, 'become_method': 'sudo_var'} is not valid under any of the given schemas",
+      "message": "{'command': {'cmd': 'echo 123'}, 'vars': {'sudo_var': 'doo'}, 'become_method': 'sudo_var'} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
