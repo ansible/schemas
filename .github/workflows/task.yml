@@ -1,4 +1,4 @@
-name: npm
+name: task
 
 on:
   create: # is used for publishing to PyPI and TestPyPI
@@ -19,17 +19,17 @@ on:
   # - cron: 2 18 * * 5
 
 jobs:
-  npm:
+  task:
     runs-on: ubuntu-latest
-    name: ${{ matrix.npm_target }}
+    name: ${{ matrix.task_name }}
     strategy:
       matrix:
         node-version: [16.x]
-        npm_target:
+        task_name:
           - test
           - lint
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       # https://github.com/actions/cache
       - uses: actions/cache@v2
@@ -49,20 +49,19 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install test deps
-        run: |
-          npm ci
-          python3 -m pip install --upgrade pre-commit
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npm ci
-
-      - run: npm run ${{ matrix.npm_target }}
+      - run: task ${{ matrix.task_name }}
 
   check: # This job does nothing and is only used for the branch protection
     if: always()
 
     needs:
-      - npm
+      - task
 
     runs-on: ubuntu-latest
 

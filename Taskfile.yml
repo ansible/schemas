@@ -1,0 +1,79 @@
+# see https://taskfile.dev/#/
+version: "3"
+output: group
+vars:
+  VERSION:
+    sh: node -p "require('./package.json').version"
+tasks:
+  default:
+    desc: Run most commands
+    deps:
+      - lint
+      - test
+    cmds:
+      - echo Passed all checks!
+  setup:
+    desc: Install dependencies
+    run: once # avoid duplicate runs as all task depend on this
+    cmds:
+      - npm ci
+      - pip3 install --user 'pip-tools>=6.6.2' pre-commit
+      # check that tools we need are installed
+      - npm --version
+      - pip-compile --version
+      - pre-commit --version
+    sources:
+      - Taskfile.yml
+      - package.json
+      - package-lock.json
+  deps:
+    desc: Update dependencies
+    deps:
+      - setup
+    cmds:
+      - pip-compile -q --no-header --no-annotate --output-file=requirements.txt
+        requirements.in
+      - npm run deps
+  lint:
+    desc: Lint the project
+    deps:
+      - setup
+    env:
+      PRE_COMMIT_COLOR: always
+    cmds:
+      - python3 -m pre_commit run -a
+    silent: true
+    sources:
+      - "*"
+      - "*.*"
+      - ".config"
+      - ".github"
+      - ".vscode"
+      - data
+      - f
+      - negative_test
+      - src
+      - test
+  test:
+    desc: Run all tests
+    deps:
+      - setup
+    cmds:
+      - npm run test
+    sources:
+      - f/
+      - negative_test/
+      - test/
+      - src/
+      - package.json
+      - package-lock.json
+      - Taskfile.yml
+      - tsconfig.json
+    interactive: true
+  pr:
+    desc: Opens a pull request using gh
+    deps:
+      - lint
+    cmds:
+      - gh pr create
+    interactive: true
