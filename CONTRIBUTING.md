@@ -4,13 +4,9 @@ You are welcome to contribute to the schemas for Ansible and Molecule!
 
 ## Setting up the project for development
 
-You need node.js version 16 or newer.
-
-To set up the project, go to the project root directory and run:
-
-```shell
-npm install
-```
+We are using `task`[https://taskfile.dev/] as a build tool and if you want to
+see the list of tasks available without running them run `task -l` or look
+inside `Taskfile.yml`.
 
 ## Extending the schemas
 
@@ -18,12 +14,8 @@ The schemas are in the directory `f/`. You can modify them directly.
 
 ### Updating dependencies
 
-To update the dependency lock file `package-lock.json`, go to the project root
-directory and run:
-
-```shell
-npm run deps
-```
+To update the test dependencies run `task deps` and if all tests are passing
+make a pull request to update them.
 
 ## Submitting Pull Requests
 
@@ -32,7 +24,7 @@ Submit your pull request (PR) against the `main` branch.
 
 Here are a few things you can do to help get your pull request accepted faster:
 
-- Run `npm test` and check that it returns without reporting any errors.
+- Run `task` and check that it returns without reporting any errors.
 - Write good commit messages. See
   [How to write a Git commit message](https://chris.beams.io/posts/git-commit/).
 
