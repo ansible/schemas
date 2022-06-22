@@ -103,7 +103,37 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'tasks': [{'name': 'that should pass', 'ansible.builtin.debug': {'var': 'item'}, 'loop': {}}]} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "{'name': 'that should pass', 'ansible.builtin.debug': {'var': 'item'}, 'loop': {}} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tasks[0].loop",
+          "message": "{} is not of type 'string', 'array'"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

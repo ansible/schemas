@@ -71,7 +71,29 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}, 'dependencies': [{'version': 'foo'}]} is not of type 'null'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}, 'dependencies': [{'version': 'foo'}]} is not of type 'null'"
+        },
+        {
+          "path": "$.dependencies[0]",
+          "message": "{'version': 'foo'} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$.dependencies[0]",
+          "message": "'role' is a required property"
+        },
+        {
+          "path": "$.dependencies[0]",
+          "message": "'src' is a required property"
+        },
+        {
+          "path": "$.dependencies[0]",
+          "message": "'name' is a required property"
+        }
+      ]
     }
   ]
 }

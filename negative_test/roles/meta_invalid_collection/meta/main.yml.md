@@ -46,7 +46,17 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'"
+        },
+        {
+          "path": "$.collections[0]",
+          "message": "'foo' does not match '^[a-z_]+\\\\.[a-z_]+$'"
+        }
+      ]
     }
   ]
 }

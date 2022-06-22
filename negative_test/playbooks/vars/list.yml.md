@@ -55,7 +55,21 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "['foo', 'bar'] is not of type 'object'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "['foo', 'bar'] is not of type 'object'"
+        },
+        {
+          "path": "$",
+          "message": "['foo', 'bar'] is not of type 'string'"
+        },
+        {
+          "path": "$",
+          "message": "['foo', 'bar'] is not of type 'null'"
+        }
+      ]
     }
   ]
 }

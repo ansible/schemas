@@ -71,7 +71,29 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "{'foo': 'bar'} is not of type 'array'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "{'foo': 'bar'} is not of type 'array'"
+        },
+        {
+          "path": "$",
+          "message": "Additional properties are not allowed ('foo' was unexpected)"
+        },
+        {
+          "path": "$",
+          "message": "{'foo': 'bar'} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$",
+          "message": "'collections' is a required property"
+        },
+        {
+          "path": "$",
+          "message": "'roles' is a required property"
+        }
+      ]
     }
   ]
 }

@@ -91,7 +91,37 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        },
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].no_log",
+          "message": "'some_var' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }
