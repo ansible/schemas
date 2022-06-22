@@ -19,10 +19,13 @@ tasks:
       - npm ci
       - '[ "x$VIRTUAL_ENV" == "x" ] && USERARG="--user"; pip3 install $USERARG
         "pip-tools>=6.6.2" pre-commit'
+      - '[ "x$VIRTUAL_ENV" == "x" ] && USERARG="--user"; pip3 install $USERARG
+        -r requirements.txt'
       # check that tools we need are installed
       - npm --version
       - pip-compile --version
       - pre-commit --version
+      - check-jsonschema --version
     sources:
       - Taskfile.yml
       - package.json
@@ -34,6 +37,8 @@ tasks:
     cmds:
       - pip-compile -q --no-header --no-annotate --output-file=requirements.txt
         requirements.in
+      - '[ "x$VIRTUAL_ENV" == "x" ] && USERARG="--user"; pip3 install $USERARG
+        -U -r requirements.txt'
       - npm run deps
   lint:
     desc: Lint the project
