@@ -116,7 +116,49 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'tags': 123} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not of type 'string'"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not of type 'array'"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not of type 'string'"
+        },
+        {
+          "path": "$[0].tags",
+          "message": "123 is not of type 'array'"
+        }
+      ]
     }
   ]
 }

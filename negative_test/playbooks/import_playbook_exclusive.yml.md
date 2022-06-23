@@ -94,7 +94,37 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "Additional properties are not allowed ('ansible.builtin.import_playbook', 'import_playbook' were unexpected)"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "{'ansible.builtin.import_playbook': 'foo.yml', 'import_playbook': 'other.yml'} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'ansible.builtin.import_playbook': 'foo.yml', 'import_playbook': 'other.yml'} should not be valid under {'required': ['import_playbook']}"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'ansible.builtin.import_playbook': 'foo.yml', 'import_playbook': 'other.yml'} should not be valid under {'required': ['ansible.builtin.import_playbook']}"
+        },
+        {
+          "path": "$[0]",
+          "message": "Additional properties are not allowed ('ansible.builtin.import_playbook', 'import_playbook' were unexpected)"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'ansible.builtin.import_playbook': 'foo.yml', 'import_playbook': 'other.yml'} should not be valid under {'required': ['ansible.builtin.import_playbook']}"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'ansible.builtin.import_playbook': 'foo.yml', 'import_playbook': 'other.yml'} should not be valid under {'required': ['import_playbook']}"
+        },
+        {
+          "path": "$[0]",
+          "message": "'hosts' is a required property"
+        }
+      ]
     }
   ]
 }

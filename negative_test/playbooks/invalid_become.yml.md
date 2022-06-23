@@ -102,7 +102,37 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'become', 'hosts' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'become', 'hosts' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'become': 'yes'} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].become",
+          "message": "'yes' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].become",
+          "message": "'yes' is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].become",
+          "message": "'yes' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        }
+      ]
     }
   ]
 }

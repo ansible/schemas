@@ -46,7 +46,17 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "{'galaxy_info': {'description': 'bar', 'min_ansible_version': '2.9', 'company': 'foo', 'license': 'MIT', 'galaxy_tags': 'database', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'"
+        },
+        {
+          "path": "$.galaxy_info.galaxy_tags",
+          "message": "'database' is not of type 'array'"
+        }
+      ]
     }
   ]
 }

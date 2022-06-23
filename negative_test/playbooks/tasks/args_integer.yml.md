@@ -73,7 +73,25 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].args",
+          "message": "123 is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].args",
+          "message": "123 is not of type 'object'"
+        },
+        {
+          "path": "$[0].args",
+          "message": "123 is not of type 'string'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

@@ -46,7 +46,17 @@ stdout:
       "best_match": {
         "path": "$",
         "message": "{'galaxy_info': {'description': 'foo', 'min_ansible_version': '2.9', 'namespace': 'foo-bar', 'company': 'foo', 'license': 'MIT', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$",
+          "message": "{'galaxy_info': {'description': 'foo', 'min_ansible_version': '2.9', 'namespace': 'foo-bar', 'company': 'foo', 'license': 'MIT', 'platforms': [{'name': 'Alpine', 'versions': ['all']}]}} is not of type 'null'"
+        },
+        {
+          "path": "$.galaxy_info.namespace",
+          "message": "'foo-bar' does not match '^[a-z][a-z0-9_]+$'"
+        }
+      ]
     }
   ]
 }

@@ -84,7 +84,33 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'vars_prompt': [{'name': 'username', 'prompt': 'What is your username?', 'private': False, 'tags': ['foo']}]} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].vars_prompt",
+          "message": "[{'name': 'username', 'prompt': 'What is your username?', 'private': False, 'tags': ['foo']}] is not of type 'object'"
+        },
+        {
+          "path": "$[0].vars_prompt[0]",
+          "message": "Additional properties are not allowed ('tags' was unexpected)"
+        }
+      ]
     }
   ]
 }

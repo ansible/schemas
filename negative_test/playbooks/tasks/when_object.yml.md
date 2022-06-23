@@ -109,7 +109,45 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].when",
+          "message": "{} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'string'"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'array'"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'string'"
+        },
+        {
+          "path": "$[0].when",
+          "message": "{} is not of type 'array'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

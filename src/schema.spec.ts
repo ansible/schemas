@@ -74,7 +74,7 @@ describe("schemas under f/", function () {
             // reason, nodejs environment lacks some env variables needed
             // and breaks usage from inside virtualenvs.
             const proc = spawnSync(
-              `check-jsonschema -o json --schemafile f/${schema_file} ${test_file}`,
+              `check-jsonschema -v -o json --schemafile f/${schema_file} ${test_file}`,
               { shell: true, encoding: "utf-8", stdio: "pipe" }
             );
             if (proc.status != 0) {
