@@ -2,8 +2,16 @@
 version: "3"
 output: group
 vars:
+  HOSTNAME:
+    sh: echo ${HOSTNAME:-localhost}
   VERSION:
     sh: node -p "require('./package.json').version"
+env: &env
+  FORCE_COLOR: "true"
+  PRE_COMMIT_COLOR: always
+  # basically the same thing from .envrc file:
+  VIRTUAL_ENV: # "{{.VIRTUAL_ENV}}"
+    sh: echo "${VIRTUAL_ENV:-out/venvs/${HOSTNAME:-localhost}}"
 tasks:
   default:
     desc: Run most commands
@@ -16,23 +24,20 @@ tasks:
     desc: Install dependencies
     run: once # avoid duplicate runs as all task depend on this
     cmds:
+      - ./tools/test-setup.sh
       - npm ci
-      - pip3 install --user 'pip-tools>=6.6.2' pre-commit
-      # check that tools we need are installed
-      - npm --version
-      - pip-compile --version
-      - pre-commit --version
     sources:
-      - Taskfile.yml
-      - package.json
       - package-lock.json
+      - package.json
+      - tools/test-setup.sh
   deps:
     desc: Update dependencies
     deps:
       - setup
     cmds:
-      - pip-compile -q --no-header --no-annotate --output-file=requirements.txt
-        requirements.in
+      - source $VIRTUAL_ENV/bin/activate && pip-compile -q --no-header
+        --no-annotate --output-file=.config/requirements.txt
+        .config/requirements.in
       - npm run deps
   lint:
     desc: Lint the project
@@ -41,7 +46,7 @@ tasks:
     env:
       PRE_COMMIT_COLOR: always
     cmds:
-      - python3 -m pre_commit run -a
+      - $VIRTUAL_ENV/bin/python3 -m pre_commit run -a
     silent: true
     sources:
       - "*"
