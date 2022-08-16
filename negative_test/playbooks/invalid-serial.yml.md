@@ -54,7 +54,7 @@
     "params": {
       "type": "integer"
     },
-    "schemaPath": "#/properties/serial/anyOf/0/type"
+    "schemaPath": "#/oneOf/0/type"
   },
   {
     "instancePath": "/0/serial",
@@ -63,7 +63,25 @@
     "params": {
       "pattern": "^\\d+\\.?\\d*%?$"
     },
-    "schemaPath": "#/properties/serial/anyOf/1/pattern"
+    "schemaPath": "#/oneOf/1/pattern"
+  },
+  {
+    "instancePath": "/0/serial",
+    "keyword": "pattern",
+    "message": "must match pattern \"^\\{\\{.*\\}\\}$\"",
+    "params": {
+      "pattern": "^\\{\\{.*\\}\\}$"
+    },
+    "schemaPath": "#/$defs/full-jinja/pattern"
+  },
+  {
+    "instancePath": "/0/serial",
+    "keyword": "oneOf",
+    "message": "must match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null
+    },
+    "schemaPath": "#/oneOf"
   },
   {
     "instancePath": "/0/serial",
@@ -72,7 +90,7 @@
     "params": {
       "type": "array"
     },
-    "schemaPath": "#/properties/serial/anyOf/2/type"
+    "schemaPath": "#/properties/serial/anyOf/1/type"
   },
   {
     "instancePath": "/0/serial",
@@ -133,11 +151,19 @@ stdout:
         },
         {
           "path": "$[0].serial",
+          "message": "'10%BAD' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].serial",
           "message": "'10%BAD' is not of type 'integer'"
         },
         {
           "path": "$[0].serial",
           "message": "'10%BAD' does not match '^\\\\d+\\\\.?\\\\d*%?$'"
+        },
+        {
+          "path": "$[0].serial",
+          "message": "'10%BAD' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
         },
         {
           "path": "$[0].serial",

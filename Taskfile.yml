@@ -66,6 +66,8 @@ tasks:
       - lint
     cmds:
       - npm run test
+      # Fail if git reports dirty after test run:
+      - sh -c '[ -z "`git status --porcelain negative_test/ test/`" ]'
     sources:
       - f/
       - negative_test/
@@ -76,10 +78,6 @@ tasks:
       - Taskfile.yml
       - tsconfig.json
     interactive: true
-  test_clean:
-    desc: Check that test/ and negative_test/ have no change
-    cmds:
-      - sh -c '[ -z "`git status --porcelain negative_test/ test/`" ]'
   pr:
     desc: Opens a pull request using gh
     deps:
