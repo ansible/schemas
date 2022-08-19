@@ -44,7 +44,17 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "{'block': {}} should not be valid under {'required': ['block']}"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "{'block': {}} should not be valid under {'required': ['block']}"
+        },
+        {
+          "path": "$[0].block",
+          "message": "{} is not of type 'array'"
+        }
+      ]
     }
   ]
 }

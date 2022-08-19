@@ -54,8 +54,22 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        },
+        {
+          "path": "$[0]",
+          "message": "Additional properties are not allowed ('import_playbook' was unexpected)"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'name': 'foo', 'hosts': 'localhost', 'import_playbook': 'included.yml'} should not be valid under {'required': ['import_playbook']}"
+        }
+      ]
     }
   ]
 }

@@ -97,8 +97,38 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'tasks': [{'ansible.builtin.debug': {'msg': '{{ item }}'}, 'with_cartesian': []}]} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "{'ansible.builtin.debug': {'msg': '{{ item }}'}, 'with_cartesian': []} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "{'ansible.builtin.debug': {'msg': '{{ item }}'}, 'with_cartesian': []} should not be valid under {'required': ['with_cartesian']}"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

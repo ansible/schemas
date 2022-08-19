@@ -126,8 +126,50 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+        "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'tasks': [{'name': 'foo', 'ansible.builtin.debug': {'msg': 'foo!'}, 'failed_when': 123}]} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "{'name': 'foo', 'ansible.builtin.debug': {'msg': 'foo!'}, 'failed_when': 123} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tasks[0].failed_when",
+          "message": "123 is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].tasks[0].failed_when",
+          "message": "123 is not of type 'boolean'"
+        },
+        {
+          "path": "$[0].tasks[0].failed_when",
+          "message": "123 is not of type 'string'"
+        },
+        {
+          "path": "$[0].tasks[0].failed_when",
+          "message": "123 is not of type 'array'"
+        },
+        {
+          "path": "$[0].tasks[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

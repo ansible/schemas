@@ -83,8 +83,30 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts', 'roles' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+        "message": "'hosts', 'roles' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'hosts', 'roles' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'roles': 'xxx'} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].roles",
+          "message": "'xxx' is not of type 'array'"
+        }
+      ]
     }
   ]
 }

@@ -49,7 +49,17 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].local_action",
+          "message": "[] is not of type 'string', 'object'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

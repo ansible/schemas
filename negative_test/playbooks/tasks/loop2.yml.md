@@ -49,7 +49,17 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].loop",
+          "message": "123 is not of type 'string', 'array'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

@@ -62,7 +62,25 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].with_items",
+          "message": "'foobar' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].with_items",
+          "message": "'foobar' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        },
+        {
+          "path": "$[0].with_items",
+          "message": "'foobar' is not of type 'array'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

@@ -111,7 +111,37 @@ stdout:
       "best_match": {
         "path": "$[0]",
         "message": "'block' is a required property"
-      }
+      },
+      "sub_errors": [
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' is not one of ['sudo', 'su', 'pbrun', 'pfexec', 'runas', 'dzdo', 'ksu', 'doas', 'machinectl']"
+        },
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        },
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' is not one of ['sudo', 'su', 'pbrun', 'pfexec', 'runas', 'dzdo', 'ksu', 'doas', 'machinectl']"
+        },
+        {
+          "path": "$[0].become_method",
+          "message": "'sudo_var' does not match '^\\\\{\\\\{.*\\\\}\\\\}$'"
+        },
+        {
+          "path": "$[0]",
+          "message": "'block' is a required property"
+        }
+      ]
     }
   ]
 }

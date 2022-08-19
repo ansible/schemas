@@ -149,8 +149,42 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'handlers', 'hosts', 'post_tasks', 'pre_tasks', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars'"
-      }
+        "message": "'handlers', 'hosts', 'post_tasks', 'pre_tasks', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+      },
+      "sub_errors": [
+        {
+          "path": "$[0]",
+          "message": "'handlers', 'hosts', 'post_tasks', 'pre_tasks', 'tasks' do not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        },
+        {
+          "path": "$[0]",
+          "message": "{'hosts': 'localhost', 'pre_tasks': 'foo', 'post_tasks': {}, 'tasks': 1, 'handlers': 1.0} is not valid under any of the given schemas"
+        },
+        {
+          "path": "$[0]",
+          "message": "'ansible.builtin.import_playbook' is a required property"
+        },
+        {
+          "path": "$[0]",
+          "message": "'import_playbook' is a required property"
+        },
+        {
+          "path": "$[0].handlers",
+          "message": "1.0 is not of type 'array', 'null'"
+        },
+        {
+          "path": "$[0].post_tasks",
+          "message": "{} is not of type 'array', 'null'"
+        },
+        {
+          "path": "$[0].pre_tasks",
+          "message": "'foo' is not of type 'array', 'null'"
+        },
+        {
+          "path": "$[0].tasks",
+          "message": "1 is not of type 'array', 'null'"
+        }
+      ]
     }
   ]
 }
