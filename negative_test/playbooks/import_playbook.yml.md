@@ -63,7 +63,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "Additional properties are not allowed ('ansible.builtin.import_playbook' was unexpected)"
+        "message": "{'ansible.builtin.import_playbook': {}} should not be valid under {'required': ['ansible.builtin.import_playbook']}"
       },
       "sub_errors": [
         {

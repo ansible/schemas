@@ -54,7 +54,7 @@ stdout:
       "has_sub_errors": true,
       "best_match": {
         "path": "$[0]",
-        "message": "'hosts' does not match any of the regexes: '^(ansible\\\\.builtin\\\\.)?import_playbook$', 'name', 'tags', 'vars', 'when'"
+        "message": "{'name': 'foo', 'hosts': 'localhost', 'import_playbook': 'included.yml'} should not be valid under {'required': ['import_playbook']}"
       },
       "sub_errors": [
         {
