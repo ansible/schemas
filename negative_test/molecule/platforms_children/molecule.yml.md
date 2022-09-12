@@ -28,6 +28,7 @@ stdout:
       "message": "2 is not of type 'array'",
       "has_sub_errors": false
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```
