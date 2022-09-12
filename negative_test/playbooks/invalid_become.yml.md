@@ -134,6 +134,7 @@ stdout:
         }
       ]
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```

@@ -80,6 +80,7 @@ stdout:
         }
       ]
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```

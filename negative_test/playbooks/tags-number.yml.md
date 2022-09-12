@@ -160,6 +160,7 @@ stdout:
         }
       ]
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```
