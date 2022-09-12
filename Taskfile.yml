@@ -48,6 +48,7 @@ tasks:
       PRE_COMMIT_COLOR: always
     cmds:
       - $VIRTUAL_ENV/bin/python3 -m pre_commit run -a
+      - task: summary
     silent: true
     sources:
       - "*"
@@ -67,7 +68,7 @@ tasks:
       - lint
     cmds:
       - npm run test
-      - git status --untracked-files --porcelain
+      - task: summary
     sources:
       - f/
       - negative_test/
@@ -85,3 +86,8 @@ tasks:
     cmds:
       - gh pr create
     interactive: true
+  summary:
+    desc: Ensure that git does not report dirty
+    cmds:
+      # https://stackoverflow.com/questions/5139290/how-to-check-if-theres-nothing-to-be-committed-in-the-current-branch
+      - git diff --exit-code
