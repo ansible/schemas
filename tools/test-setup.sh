@@ -62,7 +62,7 @@ EOF
 fi
 # install gh if missing
 command -v gh >/dev/null 2>&1 || {
-    log notice "Trying to install missing gh on ${OS} ..."
+    log notice "Trying to install missing gh on ${OS:-null} ..."
     # https://github.com/cli/cli/blob/trunk/docs/install_linux.md
     if [[ -f "/usr/bin/apt-get" ]]; then
       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
@@ -134,7 +134,7 @@ system:
 env:
   ARCH: ${ARCH:-null}  # taskfile
   OS: ${OS:-null}    # taskfile
-  OSTYPE: ${OSTYPE}
+  OSTYPE: ${OSTYPE:-null}
 tools:
   bash: $(get_version bash)
   gh: $(get_version gh || echo null)
