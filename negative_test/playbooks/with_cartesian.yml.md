@@ -52,7 +52,7 @@
     "keyword": "not",
     "message": "must NOT be valid",
     "params": {},
-    "schemaPath": "#/allOf/3/not"
+    "schemaPath": "#/allOf/6/not"
   },
   {
     "instancePath": "/0/tasks/0",
@@ -130,6 +130,7 @@ stdout:
         }
       ]
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```

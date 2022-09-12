@@ -28,6 +28,7 @@ stdout:
       "message": "Additional properties are not allowed ('foo' was unexpected)",
       "has_sub_errors": false
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```

@@ -43,6 +43,7 @@ stdout:
       "message": "'bar' is not of type 'object'",
       "has_sub_errors": false
     }
-  ]
+  ],
+  "parse_errors": []
 }
 ```
