@@ -3,13 +3,13 @@
 ```json
 [
   {
-    "instancePath": "",
-    "keyword": "type",
-    "message": "must be null",
+    "instancePath": "/collections/0",
+    "keyword": "pattern",
+    "message": "must match pattern \"^[a-z_]+\\.[a-z_]+$\"",
     "params": {
-      "type": "null"
+      "pattern": "^[a-z_]+\\.[a-z_]+$"
     },
-    "schemaPath": "#/anyOf/0/type"
+    "schemaPath": "#/$defs/collections/items/pattern"
   },
   {
     "instancePath": "/collections/0",
@@ -18,7 +18,16 @@
     "params": {
       "pattern": "^[a-z_]+\\.[a-z_]+$"
     },
-    "schemaPath": "#/anyOf/1/properties/collections/items/pattern"
+    "schemaPath": "#/$defs/collections/items/pattern"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "additionalProperties",
+    "message": "must NOT have additional properties",
+    "params": {
+      "additionalProperty": "min_ansible_version"
+    },
+    "schemaPath": "#/additionalProperties"
   },
   {
     "instancePath": "",
@@ -44,17 +53,21 @@ stdout:
       "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not valid under any of the given schemas",
       "has_sub_errors": true,
       "best_match": {
-        "path": "$",
-        "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'"
+        "path": "$.galaxy_info",
+        "message": "Additional properties are not allowed ('min_ansible_version' was unexpected)"
       },
       "sub_errors": [
         {
-          "path": "$",
-          "message": "{'collections': ['foo'], 'galaxy_info': {'description': 'foo', 'license': 'bar', 'min_ansible_version': '2.10', 'platforms': [{'name': 'Fedora', 'versions': ['all']}]}} is not of type 'null'"
+          "path": "$.collections[0]",
+          "message": "'foo' does not match '^[a-z_]+\\\\.[a-z_]+$'"
         },
         {
           "path": "$.collections[0]",
           "message": "'foo' does not match '^[a-z_]+\\\\.[a-z_]+$'"
+        },
+        {
+          "path": "$.galaxy_info",
+          "message": "Additional properties are not allowed ('min_ansible_version' was unexpected)"
         }
       ]
     }
