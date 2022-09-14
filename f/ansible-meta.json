@@ -1323,7 +1323,9 @@
           "const": 1
         }
       },
-      "title": "Meta Schema v1 (standalone role)"
+      "required": ["version"],
+      "title": "Meta Schema v1 (standalone role)",
+      "type": "object"
     },
     "v2": {
       "additionalProperties": false,
@@ -1349,7 +1351,8 @@
           "const": 2
         }
       },
-      "title": "Meta Schema v2 (role inside collection)"
+      "title": "Meta Schema v2 (role inside collection)",
+      "type": "object"
     },
     "vCenterPlatformModel": {
       "properties": {
@@ -1392,14 +1395,26 @@
   },
   "$id": "https://raw.githubusercontent.com/ansible/schemas/main/f/ansible-meta.json",
   "$schema": "http://json-schema.org/draft-07/schema",
-  "anyOf": [
-    {
-      "$ref": "#/$defs/v1"
-    },
-    {
-      "$ref": "#/$defs/v2"
-    }
-  ],
+  "else": {
+    "$ref": "#/$defs/v2"
+  },
   "examples": ["meta/main.yml"],
-  "title": "Ansible Meta Schema v1/v2"
+  "if": {
+    "properties": {
+      "version": {
+        "const": 1
+      }
+    }
+  },
+  "properties": {
+    "version": {
+      "enum": [1, 2],
+      "type": "integer"
+    }
+  },
+  "then": {
+    "$ref": "#/$defs/v1"
+  },
+  "title": "Ansible Meta Schema v1/v2",
+  "type": "object"
 }
