@@ -37,7 +37,16 @@
     "schemaPath": "#/anyOf"
   },
   {
-    "instancePath": "",
+    "instancePath": "/galaxy_info",
+    "keyword": "required",
+    "message": "must have required property 'standalone'",
+    "params": {
+      "missingProperty": "standalone"
+    },
+    "schemaPath": "#/then/required"
+  },
+  {
+    "instancePath": "/galaxy_info",
     "keyword": "if",
     "message": "must match \"then\" schema",
     "params": {
@@ -79,6 +88,12 @@ stdout:
           "message": "'name' is a required property"
         }
       ]
+    },
+    {
+      "filename": "negative_test/roles/role_with_bad_deps_in_meta/meta/main.yml",
+      "path": "$.galaxy_info",
+      "message": "'standalone' is a required property",
+      "has_sub_errors": false
     }
   ],
   "parse_errors": []

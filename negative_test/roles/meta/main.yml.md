@@ -3,6 +3,24 @@
 ```json
 [
   {
+    "instancePath": "/galaxy_info",
+    "keyword": "required",
+    "message": "must have required property 'standalone'",
+    "params": {
+      "missingProperty": "standalone"
+    },
+    "schemaPath": "#/then/required"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "if",
+    "message": "must match \"then\" schema",
+    "params": {
+      "failingKeyword": "then"
+    },
+    "schemaPath": "#/if"
+  },
+  {
     "instancePath": "/galaxy_info/galaxy_tags",
     "keyword": "type",
     "message": "must be array",
@@ -10,15 +28,6 @@
       "type": "array"
     },
     "schemaPath": "#/properties/galaxy_tags/type"
-  },
-  {
-    "instancePath": "",
-    "keyword": "if",
-    "message": "must match \"then\" schema",
-    "params": {
-      "failingKeyword": "then"
-    },
-    "schemaPath": "#/if"
   }
 ]
 ```
@@ -31,6 +40,12 @@ stdout:
 {
   "status": "fail",
   "errors": [
+    {
+      "filename": "negative_test/roles/meta/main.yml",
+      "path": "$.galaxy_info",
+      "message": "'standalone' is a required property",
+      "has_sub_errors": false
+    },
     {
       "filename": "negative_test/roles/meta/main.yml",
       "path": "$.galaxy_info.galaxy_tags",
