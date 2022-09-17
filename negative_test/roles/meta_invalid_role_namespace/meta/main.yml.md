@@ -3,6 +3,24 @@
 ```json
 [
   {
+    "instancePath": "/galaxy_info",
+    "keyword": "required",
+    "message": "must have required property 'standalone'",
+    "params": {
+      "missingProperty": "standalone"
+    },
+    "schemaPath": "#/then/required"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "if",
+    "message": "must match \"then\" schema",
+    "params": {
+      "failingKeyword": "then"
+    },
+    "schemaPath": "#/if"
+  },
+  {
     "instancePath": "/galaxy_info/namespace",
     "keyword": "pattern",
     "message": "must match pattern \"^[a-z][a-z0-9_]+$\"",
@@ -10,15 +28,6 @@
       "pattern": "^[a-z][a-z0-9_]+$"
     },
     "schemaPath": "#/properties/namespace/pattern"
-  },
-  {
-    "instancePath": "",
-    "keyword": "if",
-    "message": "must match \"then\" schema",
-    "params": {
-      "failingKeyword": "then"
-    },
-    "schemaPath": "#/if"
   }
 ]
 ```
@@ -31,6 +40,12 @@ stdout:
 {
   "status": "fail",
   "errors": [
+    {
+      "filename": "negative_test/roles/meta_invalid_role_namespace/meta/main.yml",
+      "path": "$.galaxy_info",
+      "message": "'standalone' is a required property",
+      "has_sub_errors": false
+    },
     {
       "filename": "negative_test/roles/meta_invalid_role_namespace/meta/main.yml",
       "path": "$.galaxy_info.namespace",
