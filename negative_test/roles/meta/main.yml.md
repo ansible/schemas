@@ -5,11 +5,20 @@
   {
     "instancePath": "/galaxy_info",
     "keyword": "required",
+    "message": "must have required property 'author'",
+    "params": {
+      "missingProperty": "author"
+    },
+    "schemaPath": "#/allOf/0/then/required"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "required",
     "message": "must have required property 'standalone'",
     "params": {
       "missingProperty": "standalone"
     },
-    "schemaPath": "#/then/required"
+    "schemaPath": "#/allOf/0/then/required"
   },
   {
     "instancePath": "/galaxy_info",
@@ -18,7 +27,25 @@
     "params": {
       "failingKeyword": "then"
     },
-    "schemaPath": "#/if"
+    "schemaPath": "#/allOf/0/if"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "required",
+    "message": "must have required property 'standalone'",
+    "params": {
+      "missingProperty": "standalone"
+    },
+    "schemaPath": "#/allOf/1/then/required"
+  },
+  {
+    "instancePath": "/galaxy_info",
+    "keyword": "if",
+    "message": "must match \"then\" schema",
+    "params": {
+      "failingKeyword": "then"
+    },
+    "schemaPath": "#/allOf/1/if"
   },
   {
     "instancePath": "/galaxy_info/galaxy_tags",
@@ -40,6 +67,18 @@ stdout:
 {
   "status": "fail",
   "errors": [
+    {
+      "filename": "negative_test/roles/meta/main.yml",
+      "path": "$.galaxy_info",
+      "message": "'author' is a required property",
+      "has_sub_errors": false
+    },
+    {
+      "filename": "negative_test/roles/meta/main.yml",
+      "path": "$.galaxy_info",
+      "message": "'standalone' is a required property",
+      "has_sub_errors": false
+    },
     {
       "filename": "negative_test/roles/meta/main.yml",
       "path": "$.galaxy_info",
